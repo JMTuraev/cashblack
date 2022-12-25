@@ -1,0 +1,202 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sms_autofill/sms_autofill.dart';
+
+import '../../../../view_models/client_home_view_model.dart';
+import '../../../../view_models/client_login_view_model.dart';
+import '../../../../widgets/hero_title_widget.dart';
+import '../../../../widgets/main_button_widget.dart';
+import '../../../../widgets/small_title_widget.dart';
+import '../../../../widgets/text_button_widget.dart';
+import '../../client_home_view.dart/client_home_view.dart';
+
+class ClientLoginVerifyView extends StatefulWidget {
+  const ClientLoginVerifyView({Key? key}) : super(key: key);
+
+  @override
+  State<ClientLoginVerifyView> createState() => _ClientLoginVerifyViewState();
+}
+
+class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
+    with CodeAutoFill, SingleTickerProviderStateMixin {
+  String? appSignature;
+  String? otpCode;
+
+  AnimationController? _animationController;
+  int levelClock = 60;
+
+  final TextEditingController textController = TextEditingController();
+
+  @override
+  void codeUpdated() {
+    print('update');
+    setState(() {
+      otpCode = code!;
+      print(code);
+      print(otpCode);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+        vsync: this, duration: Duration(seconds: levelClock));
+
+    _animationController!.forward();
+
+    listenForCode();
+
+    SmsAutoFill().getAppSignature.then((signature) {
+      setState(() {
+        appSignature = signature;
+        otpCode = code;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    cancel();
+    _animationController!.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HeroTitleWidget(
+                text: 'Verification Code',
+              ),
+              const SizedBox(height: 20),
+              const SmallTitleWidget(
+                text: 'Please type the verification code sent to',
+              ),
+              const SizedBox(height: 5),
+              SmallTitleWidget(
+                text: context.read<ClientLoginViewModel>().phone,
+              ),
+              const SizedBox(height: 40),
+              PinFieldAutoFill(
+                controller: textController,
+                autoFocus: true,
+                codeLength: 5,
+                decoration: BoxLooseDecoration(
+                  gapSpace: 40,
+                  textStyle: const TextStyle(
+                    fontSize: 20,
+                    // color: Colors.white,
+                  ),
+                  strokeColorBuilder:
+                      FixedColorBuilder(Colors.black.withOpacity(0.3)),
+                ),
+                currentCode: otpCode,
+                onCodeSubmitted: (code) {},
+                onCodeChanged: (code) {
+                  if (code!.length == 5) {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  }
+                },
+              ),
+              const SizedBox(height: 20),
+              TextButtonWidget(
+                text: 'Didn\'t receive the code. Resend code',
+                method: () {
+                  print(_animationController!.isCompleted.toString());
+                  _animationController!.reset();
+                  _animationController!.forward();
+                },
+              ),
+              const SizedBox(height: 20),
+              _Countdown(
+                animation: StepTween(
+                  begin: levelClock, // THIS IS A USER ENTERED NUMBER
+                  end: 0,
+                ).animate(_animationController!),
+              ),
+              const SizedBox(height: 20),
+              MainButtonWidget(
+                text: 'Verify',
+                method: () async {
+                  print(otpCode);
+                  await context.read<ClientHomeViewModel>().getProfile();
+                  bool checked = await context
+                      .read<ClientLoginViewModel>()
+                      .onVerifyButtonPressed(otpCode ?? textController.text);
+                  // bool hasShop =
+                  //     context.read<ClientHomeViewModel>().user.shops.isNotEmpty;
+
+                  // print(hasShop);
+
+                  checked
+                      ? Navigator.of(context).pushAndRemoveUntil(
+                          CupertinoPageRoute(
+                            builder: (context) => const ClientHomeView(),
+                          ),
+                          (route) => false)
+                      : null;
+                },
+              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 32),
+              //   child: Builder(
+              //     builder: (_) {
+              //       if (otpCode == null) {
+              //         return _Countdown(
+              //           animation: StepTween(
+              //             begin: levelClock, // THIS IS A USER ENTERED NUMBER
+              //             end: 0,
+              //           ).animate(_animationController!),
+              //         );
+              //       }
+              // return MainButtonWidget(
+              //   text: 'Verify',
+              //   method: () {
+              //     Navigator.of(context).pushAndRemoveUntil(
+              //         CupertinoPageRoute(
+              //           builder: (context) => CreateStoreView(),
+              //         ),
+              //         (route) => false);
+              //   },
+              // );
+              //     },
+              //   ),
+              // ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Countdown extends AnimatedWidget {
+  _Countdown({Key? key, required this.animation})
+      : super(key: key, listenable: animation);
+  Animation<int> animation;
+
+  @override
+  build(BuildContext context) {
+    Duration clockTimer = Duration(seconds: animation.value);
+
+    String timerText =
+        '${clockTimer.inMinutes.remainder(60).toString()}:${clockTimer.inSeconds.remainder(60).toString().padLeft(2, '0')}';
+    return Center(
+      child: Text(
+        timerText,
+        style: const TextStyle(
+          fontSize: 16,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}

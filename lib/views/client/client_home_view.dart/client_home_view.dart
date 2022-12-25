@@ -1,0 +1,75 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import '../barcode_view/barcode_view.dart';
+import '../client_notifications_view/client_notifications_view.dart';
+import '../main_view/main_view.dart';
+import '../settings_view/settings_view.dart';
+
+class ClientHomeView extends StatefulWidget {
+  const ClientHomeView({Key? key}) : super(key: key);
+
+  @override
+  State<ClientHomeView> createState() => _ClientHomeViewState();
+}
+
+class _ClientHomeViewState extends State<ClientHomeView> {
+  int currentIndex = 0;
+  void onChange(index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> body = [
+      const MainView(),
+      const BarcodeView(),
+      const ClientNotificationsView(),
+      const SettingsView(),
+    ];
+    List<BottomNavigationBarItem> items = [
+      const BottomNavigationBarItem(
+        icon: Icon(CupertinoIcons.home),
+        label: 'Главная',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(CupertinoIcons.viewfinder),
+        label: 'Баркод',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(CupertinoIcons.chat_bubble),
+        label: 'Уведомления',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(CupertinoIcons.settings),
+        label: 'Настройки',
+      ),
+    ];
+    return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: true,
+        currentIndex: currentIndex,
+        onTap: onChange,
+        type: BottomNavigationBarType.fixed,
+        items: items,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+      ),
+      // body: IndexedStack(
+      //   index: currentIndex,
+      //   children: body,
+      // ),
+      body: SafeArea(
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            body.elementAt(currentIndex),
+            const Divider(height: 1),
+          ],
+        ),
+      ),
+    );
+  }
+}

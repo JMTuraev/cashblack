@@ -1,0 +1,15 @@
+{
+  "messages": [
+    {
+      "recipient": "998973000225",
+      "message-id": "abc000000001",
+
+      "sms": {
+        "originator": "3700",
+        "content": {
+          "text": "Test message"
+        }
+      }
+    }
+  ]
+}
