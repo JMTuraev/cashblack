@@ -14,8 +14,8 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       shops: (json['shops_id'] as List<dynamic>)
           .map((e) => Shop.fromJson(e as Map<String, dynamic>))
           .toList(),
-      barcode: json['barcode_id'] as String,
-      barcodeImage: json['barcode'] as String,
+      barcode: json['barcode_id'] as String?,
+      barcodeImage: json['barcode'] as String?,
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{

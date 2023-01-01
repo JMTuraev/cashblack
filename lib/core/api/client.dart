@@ -20,7 +20,7 @@ class Client {
     Map<String, dynamic> body = {
       'username': '+$phoneNumber',
       'password': '1',
-      'groups': [1],
+      // 'groups': [1],
     };
 
     Uri url = Uri.parse('$path/user_sigin_up_views/$appSignature/');
@@ -323,6 +323,30 @@ class Client {
       print(json.decode(resBody));
     } else {
       print(res.reasonPhrase);
+    }
+  }
+
+  Future<void> getBalance() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/my_blance/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(json.decode(resBody));
+      var decode = (json.decode(resBody));
+      print(decode);
+    } else {
+      print(res.reasonPhrase);
+      throw Exception();
     }
   }
 }

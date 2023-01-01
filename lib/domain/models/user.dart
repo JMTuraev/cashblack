@@ -18,9 +18,9 @@ class User {
   final List<Shop> shops;
 
   @JsonKey(name: 'barcode_id')
-  final String barcode;
+  final String? barcode;
   @JsonKey(name: 'barcode')
-  final String barcodeImage;
+  final String? barcodeImage;
 
   User({
     required this.id,
@@ -28,8 +28,8 @@ class User {
     required this.firstName,
     required this.lastName,
     required this.shops,
-    required this.barcode,
-    required this.barcodeImage,
+    this.barcode,
+    this.barcodeImage,
   });
 
   factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);

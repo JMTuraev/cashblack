@@ -45,7 +45,7 @@ class BarcodeView extends StatelessWidget {
             ),
             // color: Colors.white,
             padding: const EdgeInsets.all(10),
-            data: user.barcode,
+            data: user.barcode ?? '1234567890123',
             barcode: Barcode.ean13(),
           ),
         ],
