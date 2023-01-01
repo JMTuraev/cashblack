@@ -29,7 +29,7 @@ class PaymentClientView extends StatelessWidget {
             const SizedBox(height: 20),
             TextField(
               decoration: InputDecoration(
-                hintText: 'Summa',
+                hintText: 'Сумма',
                 border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(10),

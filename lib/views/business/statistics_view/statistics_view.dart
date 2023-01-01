@@ -85,7 +85,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                         ? ElevatedButton(
                             onPressed: () {},
                             child: const Text(
-                              'Cashback',
+                              'Кэшбэк',
                               style: TextStyle(
                                 color: Colors.white,
                               ),
@@ -99,7 +99,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                               });
                             },
                             child: const Text(
-                              'Cashback',
+                              'Кэшбэк',
                               style: TextStyle(
                                 color: Colors.white,
                               ),
@@ -211,17 +211,17 @@ class _SumWidget extends StatelessWidget {
       columns: const <DataColumn>[
         DataColumn(
           label: Expanded(
-            child: Center(child: Text('Telefon')),
+            child: Center(child: Text('Телефон')),
           ),
         ),
         DataColumn(
           label: Expanded(
-            child: Center(child: Text('Savdo')),
+            child: Center(child: Text('Торговля')),
           ),
         ),
         DataColumn(
           label: Expanded(
-            child: Center(child: Text('Cashback')),
+            child: Center(child: Text('Кэшбэк')),
           ),
         ),
         DataColumn(
@@ -260,17 +260,17 @@ class _CashbackWidget extends StatelessWidget {
       columns: const <DataColumn>[
         DataColumn(
           label: Expanded(
-            child: Center(child: Text('Klient')),
+            child: Center(child: Text('Клиент')),
           ),
         ),
         DataColumn(
           label: Expanded(
-            child: Center(child: Text('Jami Cashback')),
+            child: Center(child: Text('Все')),
           ),
         ),
         DataColumn(
           label: Expanded(
-            child: Center(child: Text('Ishlatilgan Cashback')),
+            child: Center(child: Text('Использованные')),
           ),
         ),
       ],

@@ -45,7 +45,7 @@ class SettingsView extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      '1 200 000 UZS',
+                      '0 UZS',
                       style: TextStyle(
                         fontSize: 28,
                       ),
@@ -246,7 +246,7 @@ class _BrandCardWidget extends StatelessWidget {
                   ),
                 );
               },
-              text: 'Edit',
+              text: 'Изменить',
             ),
           )
         ],
@@ -273,7 +273,7 @@ class _ProfileCardWidget extends StatelessWidget {
             children: [
               user!.firstName.isEmpty && user!.lastName.isEmpty
                   ? const _SimpleTextWidget(
-                      title: 'Ism familiya kiritilmagan',
+                      title: 'Имя не указано',
                     )
                   : _SimpleTextWidget(
                       title: '${user!.firstName} ${user!.lastName}',
@@ -295,7 +295,7 @@ class _ProfileCardWidget extends StatelessWidget {
                   ),
                 );
               },
-              text: 'Edit',
+              text: 'Изменить',
             ),
           ),
         ],

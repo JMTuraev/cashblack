@@ -19,8 +19,7 @@ class PaymentSuccessView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Center(
-                    child: MediumTitleWidget(text: 'Muvaffaqiyatli to`landi')),
+                const Center(child: MediumTitleWidget(text: 'Счет пополнено')),
                 const SizedBox(height: 20),
                 MainButtonWidget(
                   text: 'OK',

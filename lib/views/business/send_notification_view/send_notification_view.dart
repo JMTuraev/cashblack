@@ -175,7 +175,7 @@ class _FilePickerWidget extends StatelessWidget {
               const Icon(CupertinoIcons.photo),
               const SizedBox(width: 10),
               const Text(
-                'Select photo',
+                'Выберите картинку',
                 style: TextStyle(fontSize: 16),
               ),
             ],

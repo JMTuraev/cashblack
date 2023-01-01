@@ -66,7 +66,7 @@ class _MainViewState extends State<MainView> {
                     ? ElevatedButton(
                         onPressed: () {},
                         child: const Text(
-                          'Sum of cashback',
+                          'Сумма кэшбэка',
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -80,7 +80,7 @@ class _MainViewState extends State<MainView> {
                           });
                         },
                         child: const Text(
-                          'Sum of cashback',
+                          'Сумма кэшбэка',
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -93,7 +93,7 @@ class _MainViewState extends State<MainView> {
                     ? ElevatedButton(
                         onPressed: () {},
                         child: const Text(
-                          'Sum of goods',
+                          'Сумма продукции',
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -107,7 +107,7 @@ class _MainViewState extends State<MainView> {
                           });
                         },
                         child: const Text(
-                          'Sum of goods',
+                          'Сумма продукции',
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -199,7 +199,7 @@ class _CashbackWidget extends StatelessWidget {
     return Column(
       children: [
         const Text(
-          '100 000 UZS',
+          '123 000 UZS',
           style: TextStyle(
             fontSize: 28,
           ),
@@ -225,7 +225,7 @@ class _GoodsWidget extends StatelessWidget {
     return Column(
       children: [
         const Text(
-          '1 200 000 UZS',
+          '0 UZS',
           style: TextStyle(
             fontSize: 28,
           ),

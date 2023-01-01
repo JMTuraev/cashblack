@@ -104,7 +104,7 @@ class _ScannerViewState extends State<ScannerView> {
               vertical: 20,
             ),
             child: MainButtonWidget(
-              text: 'Continue',
+              text: 'Далее',
               method: () {
                 Navigator.of(context).push(
                   CupertinoPageRoute(
