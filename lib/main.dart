@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
         ),
         // home: const BusinessHomeView(),
         home: isLogged
-            ? (isBusiness ? const ClientHomeView() : const ClientHomeView())
+            ? (isBusiness ? const BusinessHomeView() : const ClientHomeView())
             : const SelectTypeView(),
       ),
     );

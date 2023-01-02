@@ -110,7 +110,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               ),
               const SizedBox(height: 20),
               TextButtonWidget(
-                text: 'Didn\'t receive the code. Resend code',
+                text: 'Не получили код. Отправить код еще раз',
                 method: () {
                   print(_animationController!.isCompleted.toString());
                   _animationController!.reset();
@@ -126,7 +126,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               ),
               const SizedBox(height: 20),
               MainButtonWidget(
-                text: 'Verify',
+                text: 'Подтвердить',
                 method: () async {
                   print(otpCode);
                   await context.read<BusinessHomeViewModel>().getProfile();

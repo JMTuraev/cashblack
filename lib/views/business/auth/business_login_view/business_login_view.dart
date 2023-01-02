@@ -47,7 +47,8 @@ class BusinessLoginView extends StatelessWidget {
             const HeroTitleWidget(text: 'Введите номер телефона'),
             const SizedBox(height: 20),
             const SmallTitleWidget(
-                text: 'We will send you the verification code'),
+              text: 'Мы отправляем вам код подтверждения',
+            ),
             const SizedBox(height: 20),
             TextField(
               inputFormatters: [maskFormatter],
@@ -61,7 +62,7 @@ class BusinessLoginView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             _MainButtonWidget(
-              text: 'Register',
+              text: 'Вход',
               method: context.watch<BusinessLoginViewModel>().isLoading
                   ? null
                   : submit,

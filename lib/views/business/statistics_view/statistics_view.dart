@@ -23,7 +23,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   @override
   Widget build(BuildContext context) {
     final sumRows = List<DataRow>.generate(
-      20,
+      1,
       (i) => DataRow(
         cells: [
           const DataCell(Center(child: Text('97 333 22 33'))),
@@ -35,7 +35,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     );
 
     final cashbackRows = List<DataRow>.generate(
-      20,
+      1,
       (i) => const DataRow(
         cells: [
           DataCell(Center(child: Text('97 333 22 33'))),
