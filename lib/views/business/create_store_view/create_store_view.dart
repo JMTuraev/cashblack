@@ -103,7 +103,16 @@ class _CreateStoreViewState extends State<CreateStoreView> {
               child: Column(
                 children: [
                   const SizedBox(height: 40),
-                  HeroTitleWidget(text: 'Create'),
+                  const HeroTitleWidget(text: 'Создать'),
+                  const SizedBox(height: 20),
+                  _fileList.isEmpty
+                      ? _FilePickerWidget(onTap: selectImage)
+                      : _ImageViewWidget(
+                          fileList: _fileList,
+                          onTap: () {
+                            dltImages(_fileList.first);
+                          },
+                        ),
                   const SizedBox(height: 20),
                   // _SelectCategoryWidget(
                   //   selectedOption: _selectedCategory,
@@ -137,15 +146,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                   ),
                   const SizedBox(height: 20),
                   _BrandNameWidget(controller: _brandName),
-                  const SizedBox(height: 20),
-                  _fileList.isEmpty
-                      ? _FilePickerWidget(onTap: selectImage)
-                      : _ImageViewWidget(
-                          fileList: _fileList,
-                          onTap: () {
-                            dltImages(_fileList.first);
-                          },
-                        ),
+
                   const SizedBox(height: 20),
                   _CashbackWidget(
                     controller: _cashback,
@@ -248,7 +249,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                               int.parse(_selectedCity!));
                           Navigator.of(context).pushAndRemoveUntil(
                               CupertinoPageRoute(
-                                builder: (context) => BusinessHomeView(),
+                                builder: (context) => const BusinessHomeView(),
                               ),
                               (route) => false);
                         } else
@@ -311,11 +312,15 @@ class _ImageViewWidget extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           SizedBox(
-            height: 100,
-            width: 100,
-            child: Image.file(
-              File(_fileList.first!.path),
-              fit: BoxFit.cover,
+            child: ClipRRect(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              borderRadius: BorderRadius.circular(100),
+              child: Image.file(
+                File(_fileList.first!.path),
+                fit: BoxFit.cover,
+                height: 150,
+                width: 150,
+              ),
             ),
           ),
           Positioned(

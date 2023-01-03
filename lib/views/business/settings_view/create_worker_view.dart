@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:provider/provider.dart';
 
+import '../../../view_models/settings_view_model.dart';
 import '../../../widgets/helpers.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/medium_title_widget.dart';
@@ -17,6 +19,8 @@ class CreateWorkerView extends StatelessWidget {
         filter: {"#": RegExp(r'[0-9]')},
         type: MaskAutoCompletionType.lazy);
 
+    TextEditingController fistNameController = TextEditingController();
+
     return ScreenWrapper(
         child: Form(
       child: Align(
@@ -25,11 +29,14 @@ class CreateWorkerView extends StatelessWidget {
           children: [
             MediumTitleWidget(text: 'Добавить сотрудник'),
             const SizedBox(height: 20),
-            TextFieldWidget(hintText: 'Ism Familiya'),
+            TextFieldWidget(
+              hintText: 'Имя',
+              controller: fistNameController,
+            ),
             const SizedBox(height: 20),
             TextField(
               decoration: InputDecoration(
-                hintText: 'Telefon',
+                hintText: 'Телефон',
                 border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(10),
@@ -48,9 +55,16 @@ class CreateWorkerView extends StatelessWidget {
             MainButtonWidget(
               text: 'OK',
               method: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    Helpers.customSnackBar(
-                        'Sotrudnik qo`shiladi, klient emas bu'));
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //     Helpers.customSnackBar(
+                //         'Sotrudnik qo`shiladi, klient emas bu'));
+
+                context.read<SettingsViewModel>().createWorker(
+                      maskFormatter.getUnmaskedText(),
+                      '1',
+                      fistNameController.text,
+                      ' ',
+                    );
                 Navigator.pop(context);
               },
             ),

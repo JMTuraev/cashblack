@@ -26,7 +26,8 @@ class ClientLoginView extends StatelessWidget {
         // await
         provider.sendSms(
           maskFormatter.unmaskText(phoneController.text),
-          provider.appSignature = await SmsAutoFill().getAppSignature,
+          // provider.appSignature = await SmsAutoFill().getAppSignature,
+          provider.appSignature = 'tempapp1',
         );
         Navigator.of(context).push(
           CupertinoPageRoute(

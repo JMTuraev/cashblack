@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/shop.dart';
 import '../../../domain/models/user.dart';
+import '../../../domain/models/worker.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/settings_view_model.dart';
 import '../../../widgets/helpers.dart';
@@ -152,41 +153,87 @@ class SettingsView extends StatelessWidget {
               ),
             ],
           ),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 13,
-            separatorBuilder: (context, index) {
-              return const Divider(
-                height: 1,
-              );
-            },
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: const Text(
-                  'Сотрудник Имя Фамилия',
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-                subtitle: const Text('+998 90 123 45 56'),
-                trailing: IconButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          Helpers.customSnackBar('Sotrudnikni o`chirish'));
-                    },
-                    icon: const Icon(
-                      CupertinoIcons.clear_circled,
-                    )),
-                contentPadding: const EdgeInsets.all(0),
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      Helpers.customSnackBar(
-                          'Ichida info bo`lish-bo`lmasligini aniqlash kerak'));
-                },
-              );
+          FutureBuilder(
+            future: context.read<SettingsViewModel>().getWorkers(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<Worker> workers = snapshot.data as List<Worker>;
+                return ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: workers.length,
+                  separatorBuilder: (context, index) {
+                    return const Divider(
+                      height: 1,
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(
+                        '${workers[index].firstName} ${workers[index].lastName}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                      subtitle: const Text('+998 90 123 45 56'),
+                      trailing: IconButton(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                Helpers.customSnackBar(
+                                    'Sotrudnikni o`chirish'));
+                          },
+                          icon: const Icon(
+                            CupertinoIcons.clear_circled,
+                          )),
+                      contentPadding: const EdgeInsets.all(0),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            Helpers.customSnackBar(
+                                'Ichida info bo`lish-bo`lmasligini aniqlash kerak'));
+                      },
+                    );
+                  },
+                );
+              } else {
+                return Text('');
+              }
             },
           ),
+          // ListView.separated(
+          //   shrinkWrap: true,
+          //   physics: const NeverScrollableScrollPhysics(),
+          //   itemCount: 1,
+          //   separatorBuilder: (context, index) {
+          //     return const Divider(
+          //       height: 1,
+          //     );
+          //   },
+          //   itemBuilder: (context, index) {
+          //     return ListTile(
+          //       title: const Text(
+          //         'Сотрудник Имя Фамилия',
+          //         style: TextStyle(
+          //           fontSize: 14,
+          //         ),
+          //       ),
+          //       subtitle: const Text('+998 90 123 45 56'),
+          //       trailing: IconButton(
+          //           onPressed: () {
+          //             ScaffoldMessenger.of(context).showSnackBar(
+          //                 Helpers.customSnackBar('Sotrudnikni o`chirish'));
+          //           },
+          //           icon: const Icon(
+          //             CupertinoIcons.clear_circled,
+          //           )),
+          //       contentPadding: const EdgeInsets.all(0),
+          //       onTap: () {
+          //         ScaffoldMessenger.of(context).showSnackBar(
+          //             Helpers.customSnackBar(
+          //                 'Ichida info bo`lish-bo`lmasligini aniqlash kerak'));
+          //       },
+          //     );
+          //   },
+          // ),
         ],
       ),
     );
@@ -228,7 +275,7 @@ class _BrandCardWidget extends StatelessWidget {
                         size: 16,
                       ),
                       const SizedBox(width: 4),
-                      Text('${shop.cashback} % ${shop.id}'),
+                      Text('${shop.cashback} %'),
                     ],
                   ),
                 ],

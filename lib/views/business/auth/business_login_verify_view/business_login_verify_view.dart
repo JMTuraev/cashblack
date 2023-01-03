@@ -12,6 +12,8 @@ import '../../../../widgets/text_button_widget.dart';
 import '../../business_home_view/business_home_view.dart';
 import '../../create_store_view/create_store_view.dart';
 
+import 'package:image_editor/image_editor.dart';
+
 class BusinessLoginVerifyView extends StatefulWidget {
   const BusinessLoginVerifyView({Key? key}) : super(key: key);
 

@@ -50,7 +50,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app require access for Photo Library usage</string>
+	<string>Used to demonstrate image picker plugin</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera.</string>
 	<key>io.flutter.embedded_views_preview</key>

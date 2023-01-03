@@ -41,7 +41,7 @@ class SettingsView extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      '200 000 UZS',
+                      '0 UZS',
                       style: TextStyle(
                         fontSize: 28,
                       ),
@@ -91,15 +91,15 @@ class SettingsView extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           const Text(
-            'A`zo magazinlar',
+            'Магазины',
             style: TextStyle(
               fontSize: 18,
             ),
           ),
           const SizedBox(height: 15),
-          const _BrandCardWidget(),
-          const SizedBox(height: 10),
-          const _BrandCardWidget(),
+          // const _BrandCardWidget(),
+          // const SizedBox(height: 10),
+          // const _BrandCardWidget(),
         ],
       ),
     );
@@ -165,7 +165,7 @@ class _ProfileCardWidget extends StatelessWidget {
             children: [
               user!.firstName.isEmpty && user!.lastName.isEmpty
                   ? const _SimpleTextWidget(
-                      title: 'Ism familiya kiritilmagan',
+                      title: 'Имя не введено',
                     )
                   : _SimpleTextWidget(
                       title: '${user!.firstName} ${user!.lastName}',
@@ -187,7 +187,7 @@ class _ProfileCardWidget extends StatelessWidget {
                   ),
                 );
               },
-              text: 'Edit',
+              text: 'Изменить',
             ),
           ),
         ],

@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../domain/models/sum_stat.dart';
+import '../../../view_models/statistics_view_model.dart';
 
 class StatisticsView extends StatefulWidget {
   const StatisticsView({super.key});
@@ -200,6 +204,62 @@ class _SumWidget extends StatelessWidget {
       fontWeight: FontWeight.bold,
       fontSize: 15,
     );
+    return FutureBuilder(
+      future: context.read<StatisticsViewModel>().getSumStats(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<SumStat> sumStat = snapshot.data as List<SumStat>;
+          return DataTable(
+            horizontalMargin: 20,
+            columnSpacing: 20,
+            headingTextStyle: textStyle,
+            border: TableBorder.all(
+              width: 1,
+              color: Colors.white70,
+            ),
+            columns: const <DataColumn>[
+              DataColumn(
+                label: Expanded(
+                  child: Center(child: Text('Телефон')),
+                ),
+              ),
+              DataColumn(
+                label: Expanded(
+                  child: Center(child: Text('Торговля')),
+                ),
+              ),
+              DataColumn(
+                label: Expanded(
+                  child: Center(child: Text('Кэшбэк')),
+                ),
+              ),
+              DataColumn(
+                label: Expanded(
+                  child: Center(child: Text('Сотрудник')),
+                ),
+              ),
+            ],
+            rows: sumStat
+                .map((e) => DataRow(
+                      cells: [
+                        DataCell(Center(child: Text(e.userName))),
+                        DataCell(Center(child: Text(e.price))),
+                        DataCell(Center(child: Text(e.cashback.toString()))),
+                        DataCell(
+                          Center(
+                            child: Text(e.salesman.toString()),
+                          ),
+                        ),
+                      ],
+                    ))
+                .toList(),
+          );
+        } else {
+          return Text('Нет данных');
+        }
+      },
+    );
+
     return DataTable(
       horizontalMargin: 20,
       columnSpacing: 20,

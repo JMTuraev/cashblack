@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +8,8 @@ import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/medium_title_widget.dart';
 import '../../../widgets/screen_wrapper.dart';
 import '../../../widgets/text_field_widget.dart';
+import '../business_home_view/business_home_view.dart';
+import '../main_view/main_view.dart';
 
 class EditNameView extends StatelessWidget {
   const EditNameView({
@@ -32,23 +35,23 @@ class EditNameView extends StatelessWidget {
         alignment: Alignment.center,
         child: Column(
           children: [
-            const MediumTitleWidget(text: 'Edit profile'),
+            const MediumTitleWidget(text: 'Редактировать профиль'),
             const SizedBox(height: 20),
             user.firstName.isEmpty && user.lastName.isEmpty
                 ? const _SimpleTextWidget(
-                    title: 'Ism familiya kiritilmagan',
+                    title: '',
                   )
                 : _SimpleTextWidget(
                     title: '${user.firstName} ${user.lastName}',
                   ),
             const SizedBox(height: 20),
             TextFieldWidget(
-              hintText: 'Ismi',
+              hintText: 'Имя',
               controller: firstNameController,
             ),
             const SizedBox(height: 20),
             TextFieldWidget(
-              hintText: ' Familiya',
+              hintText: ' Фамилия',
               controller: lastNameController,
             ),
             // TextField(
@@ -79,7 +82,8 @@ class EditNameView extends StatelessWidget {
                       firstNameController.text,
                       lastNameController.text,
                     );
-                Navigator.pop(context);
+                Navigator.pop(context, true);
+                // context.read<SettingsViewModel>().rebuild();
               },
             ),
           ],

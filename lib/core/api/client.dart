@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import '../../domain/models/category.dart';
 import '../../domain/models/city.dart';
+import '../../domain/models/sum_stat.dart';
 import '../../domain/models/user.dart';
+import '../../domain/models/worker.dart';
 import '../../utils/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -71,7 +73,6 @@ class Client {
     Map<String, dynamic> body = {
       'username': '+$phoneNumber',
       'password': '1',
-      'groups': [1],
     };
 
     Uri url = Uri.parse('$path/create_client_view/$appSignature/');
@@ -289,6 +290,59 @@ class Client {
     }
   }
 
+  Future<List<Worker>> getWorkers() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/shop_client_views/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(json.decode(resBody));
+      List<Worker> worker;
+      var decode = (json.decode(resBody) as List);
+      worker = decode.map((e) => Worker.fromJson(e)).toList().reversed.toList();
+      return worker;
+    } else {
+      print(res.reasonPhrase);
+      return [];
+    }
+  }
+
+  Future<List<SumStat>> getSumStatistics() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/statistics_today/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(json.decode(resBody));
+      List<SumStat> sumStat;
+      var decode = (json.decode(resBody)['list'] as List);
+      sumStat =
+          decode.map((e) => SumStat.fromJson(e)).toList().reversed.toList();
+      return sumStat;
+    } else {
+      print(res.reasonPhrase);
+      return [];
+    }
+  }
+
   Future<void> createStore(
     int userId,
     int category,
@@ -312,6 +366,39 @@ class Client {
     };
 
     Uri url = Uri.parse('$path/shops_views/');
+    http.Request req = http.Request('POST', url);
+    req.body = json.encode(body);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(json.decode(resBody));
+    } else {
+      print(res.reasonPhrase);
+    }
+  }
+
+  Future<void> createWorker(
+    String userName,
+    String password,
+    String firstName,
+    String lastName,
+  ) async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+    Map<String, dynamic> body = {
+      'username': userName,
+      'password': password,
+      'first_name': firstName,
+      'last_name': lastName,
+    };
+
+    Uri url = Uri.parse('$path/create_sotrutnik_view/');
     http.Request req = http.Request('POST', url);
     req.body = json.encode(body);
     req.headers.addAll(headers);

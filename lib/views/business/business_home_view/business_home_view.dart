@@ -60,7 +60,7 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
     ];
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: true,
+        // showUnselectedLabels: true,
         currentIndex: currentIndex,
         onTap: context.read<BusinessHomeViewModel>().onChange,
         type: BottomNavigationBarType.fixed,

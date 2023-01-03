@@ -8,6 +8,7 @@ import 'view_models/client_home_view_model.dart';
 import 'view_models/client_login_view_model.dart';
 import 'view_models/create_store_view_view_model.dart';
 import 'view_models/settings_view_model.dart';
+import 'view_models/statistics_view_model.dart';
 import 'views/business/auth/business_login_view/business_login_view.dart';
 import 'views/business/business_home_view/business_home_view.dart';
 import 'views/business/create_store_view/create_store_view.dart';
@@ -59,6 +60,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SettingsViewModel>(
           create: (ctx) => SettingsViewModel(),
         ),
+        ChangeNotifierProvider<StatisticsViewModel>(
+          create: (ctx) => StatisticsViewModel(),
+        ),
         ChangeNotifierProvider<ClientLoginViewModel>(
           create: (ctx) => ClientLoginViewModel(),
           child: const ClientLoginView(),
@@ -75,10 +79,10 @@ class MyApp extends StatelessWidget {
           // colorSchemeSeed: Colors.grey[800],
           useMaterial3: true,
         ),
-        // home: const BusinessHomeView(),
-        home: isLogged
-            ? (isBusiness ? const BusinessHomeView() : const ClientHomeView())
-            : const SelectTypeView(),
+        home: const CreateStoreView(),
+        // home: isLogged
+        //     ? (isBusiness ? const BusinessHomeView() : const ClientHomeView())
+        //     : const SelectTypeView(),
       ),
     );
   }

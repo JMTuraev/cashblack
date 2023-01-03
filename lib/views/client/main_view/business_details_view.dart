@@ -98,13 +98,50 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: SingleChildScrollView(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: _SumWidget(rows: sumRows),
-                  ),
+                child: ListView.builder(
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 8,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('20 01 2023'),
+                                // Spacer(),
+                                Text('Sotrudnik ismi'),
+                              ],
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('1000'),
+                                // Spacer(),
+                                Text('10'),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
+              // Expanded(
+              //   child: SingleChildScrollView(
+              //     child: SingleChildScrollView(
+              //       scrollDirection: Axis.horizontal,
+              //       child: _SumWidget(rows: sumRows),
+              //     ),
+              //   ),
+              // ),
               // Expanded(
               //   child: _SumWidget(),
               // ),
