@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +44,30 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
           child: Column(
             children: [
               const MediumTitleWidget(text: 'Business name'),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Spacer(),
+                  Text(
+                    '2 400 300',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Icon(Icons.circle, size: 6),
+                  SizedBox(width: 10),
+                  Text(
+                    '2 400 300',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Spacer(),
+                ],
+              ),
               const SizedBox(height: 20),
               _FilterWidget(
                 categoryItems: const [
@@ -99,37 +125,14 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
               const SizedBox(height: 20),
               Expanded(
                 child: ListView.builder(
-                  itemCount: 5,
+                  itemCount: 1,
                   itemBuilder: (context, index) {
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 8,
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('20 01 2023'),
-                                // Spacer(),
-                                Text('Sotrudnik ismi'),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('1000'),
-                                // Spacer(),
-                                Text('10'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+                    return Column(
+                      children: [
+                        _CardGeneric(color: Colors.red.shade200),
+                        _CardGeneric(color: Colors.green.shade200),
+                        _CardGeneric(color: Colors.red.shade200),
+                      ],
                     );
                   },
                 ),
@@ -149,6 +152,292 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _Card extends StatelessWidget {
+  const _Card({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          '3 января 2023, понедельник',
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 10,
+            ),
+            child: Column(
+              children: [
+                SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Buxoro markaziy bozori 12-do`kon ikkinchi bo`lim',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 6),
+                Row(
+                  // mainAxisAlignment:
+                  //     MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_drop_up,
+                          color: Colors.green[300],
+                        ),
+                        Text(
+                          '200 000',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Spacer(),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.red[300],
+                        ),
+                        Text(
+                          '2 100',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 6),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CardGeneric extends StatelessWidget {
+  const _CardGeneric({
+    Key? key,
+    required this.color,
+  }) : super(key: key);
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          '3 января 2023, понедельник',
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        Card(
+          color: color,
+          child: Card(
+            margin: const EdgeInsets.symmetric(
+              vertical: 1,
+              horizontal: 1,
+            ),
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 6,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 6),
+                    Row(
+                      // mainAxisAlignment:
+                      //     MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_drop_up,
+                              color: Colors.green[300],
+                            ),
+                            Text(
+                              '200 000 000 UZS',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                        // Spacer(),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.red[300],
+                            ),
+                            Text(
+                              '2 100 000 UZS',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        Text(
+                          '22:22',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Buxoro markaziy bozori 12-do`kon ikkinchi bo`lim',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[200],
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CardRed extends StatelessWidget {
+  const _CardRed({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          '3 января 2023, понедельник',
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        Card(
+          color: Colors.red[200],
+          child: Card(
+            margin: const EdgeInsets.symmetric(
+              vertical: 1,
+              horizontal: 1,
+            ),
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 10,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 6),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Buxoro markaziy bozori 12-do`kon ikkinchi bo`lim',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    Row(
+                      // mainAxisAlignment:
+                      //     MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_drop_up,
+                              color: Colors.green[300],
+                            ),
+                            Text(
+                              '200 000',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                        // Spacer(),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.red[300],
+                            ),
+                            Text(
+                              '2 100',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

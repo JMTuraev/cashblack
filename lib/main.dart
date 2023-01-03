@@ -79,10 +79,10 @@ class MyApp extends StatelessWidget {
           // colorSchemeSeed: Colors.grey[800],
           useMaterial3: true,
         ),
-        home: const CreateStoreView(),
-        // home: isLogged
-        //     ? (isBusiness ? const BusinessHomeView() : const ClientHomeView())
-        //     : const SelectTypeView(),
+        // home: const CreateStoreView(),
+        home: isLogged
+            ? (isBusiness ? const BusinessHomeView() : const ClientHomeView())
+            : const SelectTypeView(),
       ),
     );
   }

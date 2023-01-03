@@ -31,40 +31,48 @@ class SettingsView extends StatelessWidget {
               children: [
                 Column(
                   children: [
+                    // const Center(
+                    //   child: Text(
+                    //     'Cashback баланс',
+                    //     style: TextStyle(
+                    //       fontSize: 16,
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 4),
+                    // const Text(
+                    //   '0 UZS',
+                    //   style: TextStyle(
+                    //     fontSize: 28,
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 10),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     Navigator.of(context).push(
+                    //       CupertinoPageRoute(
+                    //         builder: (context) => PaymentsHistoryView(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: Column(
+                    //     children: const [
+                    //       Icon(
+                    //         CupertinoIcons.arrow_right_arrow_left_circle,
+                    //         size: 30,
+                    //       ),
+                    //       Text('История'),
+                    //     ],
+                    //   ),
+                    // )
                     const Center(
                       child: Text(
-                        'Cashback баланс',
+                        'Настройки',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 22,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      '0 UZS',
-                      style: TextStyle(
-                        fontSize: 28,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          CupertinoPageRoute(
-                            builder: (context) => PaymentsHistoryView(),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        children: const [
-                          Icon(
-                            CupertinoIcons.arrow_right_arrow_left_circle,
-                            size: 30,
-                          ),
-                          Text('История'),
-                        ],
-                      ),
-                    )
                   ],
                 ),
                 Positioned(

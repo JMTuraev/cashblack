@@ -120,12 +120,12 @@ class _ImageViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(1),
       child: Stack(
         children: <Widget>[
           SizedBox(
-            height: 100,
-            width: 100,
+            height: 200,
+            width: double.infinity,
             child: Image.file(
               File(_fileList.first!.path),
               fit: BoxFit.cover,

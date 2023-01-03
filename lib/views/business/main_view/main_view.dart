@@ -55,67 +55,63 @@ class _MainViewState extends State<MainView> {
     return ScreenWrapper(
       child: Column(
         children: [
-          // _SwitcherWidget(
-          //   isCashback: isCashback,
-          //   isGoods: isGoods,
+          // Row(
+          //   children: [
+          //     Expanded(
+          //       child: isCashback
+          //           ? ElevatedButton(
+          //               onPressed: () {},
+          //               child: const Text(
+          //                 'Сумма кэшбэка',
+          //                 style: TextStyle(
+          //                   color: Colors.white,
+          //                 ),
+          //               ),
+          //             )
+          //           : OutlinedButton(
+          //               onPressed: () {
+          //                 setState(() {
+          //                   isCashback = true;
+          //                   isGoods = false;
+          //                 });
+          //               },
+          //               child: const Text(
+          //                 'Сумма кэшбэка',
+          //                 style: TextStyle(
+          //                   color: Colors.white,
+          //                 ),
+          //               ),
+          //             ),
+          //     ),
+          //     const SizedBox(width: 10),
+          //     Expanded(
+          //       child: isGoods
+          //           ? ElevatedButton(
+          //               onPressed: () {},
+          //               child: const Text(
+          //                 'Сумма продукции',
+          //                 style: TextStyle(
+          //                   color: Colors.white,
+          //                 ),
+          //               ),
+          //             )
+          //           : OutlinedButton(
+          //               onPressed: () {
+          //                 setState(() {
+          //                   isCashback = false;
+          //                   isGoods = true;
+          //                 });
+          //               },
+          //               child: const Text(
+          //                 'Сумма продукции',
+          //                 style: TextStyle(
+          //                   color: Colors.white,
+          //                 ),
+          //               ),
+          //             ),
+          //     ),
+          //   ],
           // ),
-          Row(
-            children: [
-              Expanded(
-                child: isCashback
-                    ? ElevatedButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Сумма кэшбэка',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      )
-                    : OutlinedButton(
-                        onPressed: () {
-                          setState(() {
-                            isCashback = true;
-                            isGoods = false;
-                          });
-                        },
-                        child: const Text(
-                          'Сумма кэшбэка',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: isGoods
-                    ? ElevatedButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Сумма продукции',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      )
-                    : OutlinedButton(
-                        onPressed: () {
-                          setState(() {
-                            isCashback = false;
-                            isGoods = true;
-                          });
-                        },
-                        child: const Text(
-                          'Сумма продукции',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-              ),
-            ],
-          ),
           SizedBox(height: 20),
           isCashback ? _CashbackWidget() : _GoodsWidget(),
           SizedBox(height: 20),
@@ -130,59 +126,59 @@ class _MainViewState extends State<MainView> {
           //     child: Text('Filter'),
           //   ),
           // )),
-          _FilterWidget(
-            categoryItems: [
-              DropdownMenuItem<String>(
-                enabled: false,
-                value: '0',
-                child: Text(
-                  'Выберите',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              DropdownMenuItem<String>(
-                value: '1',
-                child: Text('Сегодня'),
-              ),
-              DropdownMenuItem<String>(
-                value: '2',
-                child: Text('Вчера'),
-              ),
-              DropdownMenuItem<String>(
-                value: '3',
-                child: Text('Позавчера'),
-              ),
-              DropdownMenuItem<String>(
-                value: '4',
-                child: Text('Эта неделя'),
-              ),
-              DropdownMenuItem<String>(
-                value: '5',
-                child: Text('Прошлая неделя'),
-              ),
-              DropdownMenuItem<String>(
-                value: '6',
-                child: Text('Этот месяц'),
-              ),
-              DropdownMenuItem<String>(
-                value: '7',
-                child: Text('Прошлый месяц'),
-              ),
-              DropdownMenuItem<String>(
-                value: '8',
-                child: Text('Последные три месяца'),
-              ),
-              DropdownMenuItem<String>(
-                value: '9',
-                child: Text('Этот год'),
-              ),
-            ],
-            hint: 'Выберите',
-            onChanged: onFilterChanged,
-            selectedOption: _filter,
-          ),
+          // _FilterWidget(
+          //   categoryItems: [
+          //     DropdownMenuItem<String>(
+          //       enabled: false,
+          //       value: '0',
+          //       child: Text(
+          //         'Выберите',
+          //         style: TextStyle(
+          //           fontWeight: FontWeight.bold,
+          //         ),
+          //       ),
+          //     ),
+          //     DropdownMenuItem<String>(
+          //       value: '1',
+          //       child: Text('Сегодня'),
+          //     ),
+          //     DropdownMenuItem<String>(
+          //       value: '2',
+          //       child: Text('Вчера'),
+          //     ),
+          //     DropdownMenuItem<String>(
+          //       value: '3',
+          //       child: Text('Позавчера'),
+          //     ),
+          //     DropdownMenuItem<String>(
+          //       value: '4',
+          //       child: Text('Эта неделя'),
+          //     ),
+          //     DropdownMenuItem<String>(
+          //       value: '5',
+          //       child: Text('Прошлая неделя'),
+          //     ),
+          //     DropdownMenuItem<String>(
+          //       value: '6',
+          //       child: Text('Этот месяц'),
+          //     ),
+          //     DropdownMenuItem<String>(
+          //       value: '7',
+          //       child: Text('Прошлый месяц'),
+          //     ),
+          //     DropdownMenuItem<String>(
+          //       value: '8',
+          //       child: Text('Последные три месяца'),
+          //     ),
+          //     DropdownMenuItem<String>(
+          //       value: '9',
+          //       child: Text('Этот год'),
+          //     ),
+          //   ],
+          //   hint: 'Выберите',
+          //   onChanged: onFilterChanged,
+          //   selectedOption: _filter,
+          // ),
         ],
       ),
     );
@@ -282,6 +278,9 @@ class _ChartCashbackWidget extends StatelessWidget {
             //   ),
             // ),
             ),
+        gridData: FlGridData(
+          show: false,
+        ),
         lineBarsData: [
           LineChartBarData(
             color: Colors.red,
@@ -292,13 +291,31 @@ class _ChartCashbackWidget extends StatelessWidget {
               color: Colors.red.withOpacity(0.3),
             ),
             spots: [
-              // FlSpot(0, 3),
+              FlSpot(0, 3),
               // FlSpot(1, 3.5),
               // FlSpot(2, 4),
               // FlSpot(3, 2),
               // FlSpot(4, 3),
               // FlSpot(5, 3.4),
-              // FlSpot(11, 4),
+              FlSpot(11, 4),
+            ],
+          ),
+          LineChartBarData(
+            color: Colors.blue,
+            isCurved: true,
+            barWidth: 5,
+            belowBarData: BarAreaData(
+              show: true,
+              color: Colors.blue.withOpacity(0.3),
+            ),
+            spots: [
+              FlSpot(0, 0.5),
+              // FlSpot(1, 3.5),
+              // FlSpot(2, 4),
+              // FlSpot(3, 2),
+              // FlSpot(4, 3),
+              // FlSpot(5, 3.4),
+              FlSpot(11, 1),
             ],
           ),
         ],

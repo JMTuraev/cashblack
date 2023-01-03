@@ -1,14 +1,16 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../domain/models/category.dart';
 import '../../domain/models/city.dart';
 import '../../domain/models/sum_stat.dart';
 import '../../domain/models/user.dart';
+import '../../domain/models/user_category.dart';
 import '../../domain/models/worker.dart';
 import '../../utils/constants.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Client {
   final storage = const FlutterSecureStorage();
@@ -431,6 +433,39 @@ class Client {
       print(json.decode(resBody));
       var decode = (json.decode(resBody));
       print(decode);
+    } else {
+      print(res.reasonPhrase);
+      throw Exception();
+    }
+  }
+
+  Future<List<UserCategory>> getRegisteredCategoriesForClient() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/client_category/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(json.decode(resBody));
+      List<UserCategory> userCategory;
+
+      // var decode = (json.decode(resBody));
+      // print(decode);
+
+      var decode = (json.decode(resBody) as List);
+      userCategory = decode.map((e) => UserCategory.fromJson(e)).toList();
+
+      print(userCategory.first.id.first);
+      print(userCategory.first.name.first);
+      return userCategory;
     } else {
       print(res.reasonPhrase);
       throw Exception();

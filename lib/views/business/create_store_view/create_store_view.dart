@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -29,11 +30,45 @@ class _CreateStoreViewState extends State<CreateStoreView> {
 
   final ImagePicker _picker = ImagePicker();
   List<File?> _fileList = [];
+  // File? _imageFile;
+
+  void getFromGallery() async {
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxHeight: 1080,
+      maxWidth: 1080,
+    );
+    _cropImage(pickedFile!.path);
+    // Navigator.pop(context);
+  }
+
+  void _cropImage(filepath) async {
+    clearImages();
+    var croppedImage = await ImageCropper.platform.cropImage(
+      sourcePath: filepath,
+      maxHeight: 1080,
+      maxWidth: 1080,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      cropStyle: CropStyle.circle,
+      uiSettings: <PlatformUiSettings>[],
+    );
+    if (croppedImage != null) {
+      setState(() {
+        _fileList.add(File(croppedImage.path));
+      });
+    }
+  }
 
   void dltImages(data) {
     setState(() {
       _fileList.remove(data);
       //   dltImages(_fileList.first);
+    });
+  }
+
+  void clearImages() {
+    setState(() {
+      _fileList.clear();
     });
   }
 
@@ -106,11 +141,15 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                   const HeroTitleWidget(text: 'Создать'),
                   const SizedBox(height: 20),
                   _fileList.isEmpty
-                      ? _FilePickerWidget(onTap: selectImage)
+                      ? _FilePickerWidget(onTap: getFromGallery)
                       : _ImageViewWidget(
                           fileList: _fileList,
-                          onTap: () {
-                            dltImages(_fileList.first);
+                          onDelete: () {
+                            // dltImages(_fileList.first);
+                            clearImages();
+                          },
+                          onEdit: () {
+                            getFromGallery();
                           },
                         ),
                   const SizedBox(height: 20),
@@ -298,12 +337,14 @@ class _ImageViewWidget extends StatelessWidget {
   const _ImageViewWidget({
     Key? key,
     required List<File?> fileList,
-    required this.onTap,
+    required this.onDelete,
+    required this.onEdit,
   })  : _fileList = fileList,
         super(key: key);
 
   final List<File?> _fileList;
-  final Function onTap;
+  final Function onDelete;
+  final Function onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -312,23 +353,27 @@ class _ImageViewWidget extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           SizedBox(
-            child: ClipRRect(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              borderRadius: BorderRadius.circular(100),
-              child: Image.file(
-                File(_fileList.first!.path),
-                fit: BoxFit.cover,
-                height: 150,
-                width: 150,
+            child: GestureDetector(
+              onTap: () => onEdit(),
+              child: ClipRRect(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                borderRadius: BorderRadius.circular(100),
+                child: Image.file(
+                  File(_fileList.first!.path),
+                  fit: BoxFit.cover,
+                  height: 150,
+                  width: 150,
+                ),
               ),
             ),
           ),
           Positioned(
-              right: 1,
-              child: GestureDetector(
-                onTap: () => onTap(),
-                child: const Icon(Icons.cancel, color: Colors.redAccent),
-              ))
+            right: 1,
+            child: GestureDetector(
+              onTap: () => onDelete(),
+              child: const Icon(Icons.cancel, color: Colors.redAccent),
+            ),
+          ),
         ],
       ),
     );

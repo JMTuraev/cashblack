@@ -35,7 +35,7 @@ class _ClientHomeViewState extends State<ClientHomeView> {
         label: 'Главная',
       ),
       const BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.viewfinder),
+        icon: Icon(Icons.credit_card),
         label: 'Баркод',
       ),
       const BottomNavigationBarItem(
@@ -49,7 +49,7 @@ class _ClientHomeViewState extends State<ClientHomeView> {
     ];
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: true,
+        showUnselectedLabels: false,
         currentIndex: currentIndex,
         onTap: onChange,
         type: BottomNavigationBarType.fixed,

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../../view_models/business_login_view_model.dart';
 import '../../../../widgets/hero_title_widget.dart';
