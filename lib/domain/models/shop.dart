@@ -12,6 +12,8 @@ class Shop {
   final int userId;
   @JsonKey(name: 'name_shops')
   final String name;
+  @JsonKey(name: 'brand_img')
+  final String? image;
   final int cashback;
   @JsonKey(name: 'categor_id')
   final Category category;
@@ -27,6 +29,7 @@ class Shop {
     required this.category,
     required this.province,
     required this.city,
+    this.image,
   });
 
   factory Shop.fromJson(Map<String, Object?> json) => _$ShopFromJson(json);

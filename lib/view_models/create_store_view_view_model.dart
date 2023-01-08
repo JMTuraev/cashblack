@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../core/api/client.dart';
 import '../domain/models/category.dart';
 import '../domain/models/city.dart';
+import '../domain/models/user.dart';
 
 class CreateStoreViewViewModel extends ChangeNotifier {
   final Client _client = Client();
@@ -40,21 +43,28 @@ class CreateStoreViewViewModel extends ChangeNotifier {
     return _client.getCities();
   }
 
+  Future<User> getProfile() async {
+    print('user laod');
+    return _client.getProfile();
+  }
+
   Future<void> createstore(
-    int userId,
+    // int userId,
     int category,
     String name,
     double cashback,
     int province,
     int city,
+    File file,
   ) async {
     return _client.createStore(
-      userId,
+      // userId,
       category,
       name,
       cashback,
       province,
       city,
+      file,
     );
   }
 }

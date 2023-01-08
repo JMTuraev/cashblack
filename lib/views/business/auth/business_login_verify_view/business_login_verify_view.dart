@@ -140,6 +140,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                       .isNotEmpty;
 
                   print(hasShop);
+                  // TODO has SHop kerak
 
                   checked
                       ? (hasShop

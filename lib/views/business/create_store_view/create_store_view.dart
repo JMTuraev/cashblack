@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/category.dart';
 import '../../../domain/models/city.dart';
+import '../../../domain/models/user.dart';
 import '../../../view_models/create_store_view_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
@@ -25,6 +26,8 @@ class _CreateStoreViewState extends State<CreateStoreView> {
   String? _selectedCategory;
   String? _selectedProvince;
   String? _selectedCity;
+
+  User? user;
 
   bool _isChecked = false;
 
@@ -98,6 +101,17 @@ class _CreateStoreViewState extends State<CreateStoreView> {
     setState(() {
       _selectedCity = value;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+  }
+
+  void loadUser() async {
+    user = await context.read<CreateStoreViewViewModel>().getProfile();
+    print(user?.id.toString());
   }
 
   TextEditingController _brandName = TextEditingController();
@@ -276,16 +290,19 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                   MainButtonWidget(
                       text: 'OK',
                       method: () {
+                        print(user!.id);
+
+                        // if (1 == 2) {
                         if (_isChecked) {
-                          print(
-                              '$_selectedCategory  $_selectedProvince $_selectedProvince');
                           context.read<CreateStoreViewViewModel>().createstore(
-                              29,
-                              int.parse(_selectedCategory!),
-                              _brandName.text,
-                              double.parse(_cashback.text),
-                              int.parse(_selectedProvince!),
-                              int.parse(_selectedCity!));
+                                // user!.id,
+                                int.parse(_selectedCategory!),
+                                _brandName.text,
+                                double.parse(_cashback.text),
+                                int.parse(_selectedProvince!),
+                                int.parse(_selectedCity!),
+                                _fileList[0]!,
+                              );
                           Navigator.of(context).pushAndRemoveUntil(
                               CupertinoPageRoute(
                                 builder: (context) => const BusinessHomeView(),

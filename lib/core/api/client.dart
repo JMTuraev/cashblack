@@ -1,14 +1,19 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../domain/models/balance.dart';
 import '../../domain/models/category.dart';
 import '../../domain/models/city.dart';
+import '../../domain/models/one_month_statistic.dart';
 import '../../domain/models/sum_stat.dart';
 import '../../domain/models/user.dart';
 import '../../domain/models/user_category.dart';
+import '../../domain/models/user_shop.dart';
 import '../../domain/models/worker.dart';
 import '../../utils/constants.dart';
 
@@ -20,10 +25,16 @@ class Client {
 
   var header = {'Content-Type': 'application/json'};
 
-  Future<bool> register(String phoneNumber, String appSignature) async {
+  Future<bool> register(
+    String phoneNumber,
+    String appSignature,
+    String promoCode,
+  ) async {
     Map<String, dynamic> body = {
-      'username': '+$phoneNumber',
+      'username': phoneNumber,
       'password': '1',
+      //todo promocode
+      'promo_code': promoCode,
       // 'groups': [1],
     };
 
@@ -51,7 +62,7 @@ class Client {
 
   Future<void> login(String phoneNumber) async {
     Map<String, String> body = {
-      'username': '+$phoneNumber',
+      'username': phoneNumber,
       'password': '1',
     };
 
@@ -73,7 +84,7 @@ class Client {
 
   Future<bool> registerClient(String phoneNumber, String appSignature) async {
     Map<String, dynamic> body = {
-      'username': '+$phoneNumber',
+      'username': phoneNumber,
       'password': '1',
     };
 
@@ -201,7 +212,7 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
+      print('user' + json.decode(resBody).toString());
       User user;
       var decode = (json.decode(resBody));
       user = User.fromJson(decode);
@@ -281,7 +292,7 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
+      print('statbiroy' + json.decode(resBody).toString());
       List<City> city;
       var decode = (json.decode(resBody) as List);
       city = decode.map((e) => City.fromJson(e)).toList();
@@ -299,7 +310,8 @@ class Client {
       'Authorization': value!
     };
 
-    Uri url = Uri.parse('$path/shop_client_views/');
+    // Uri url = Uri.parse('$path/shop_client_views/');
+    Uri url = Uri.parse('$path/sotrutnik_view/');
     http.Request req = http.Request('GET', url);
     req.headers.addAll(headers);
 
@@ -307,7 +319,7 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
+      print('workers' + json.decode(resBody).toString());
       List<Worker> worker;
       var decode = (json.decode(resBody) as List);
       worker = decode.map((e) => Worker.fromJson(e)).toList().reversed.toList();
@@ -325,7 +337,9 @@ class Client {
       'Authorization': value!
     };
 
-    Uri url = Uri.parse('$path/statistics_today/');
+//todo start end
+    Uri url =
+        Uri.parse('$path/cashbacks_filter_statistics/2022-01-01/2023-12-12/');
     http.Request req = http.Request('GET', url);
     req.headers.addAll(headers);
 
@@ -333,11 +347,42 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
+      print('stats' + json.decode(resBody).toString());
       List<SumStat> sumStat;
       var decode = (json.decode(resBody)['list'] as List);
-      sumStat =
-          decode.map((e) => SumStat.fromJson(e)).toList().reversed.toList();
+      sumStat = decode.map((e) => SumStat.fromJson(e)).toList();
+      return sumStat;
+    } else {
+      print(res.reasonPhrase);
+      return [];
+    }
+  }
+
+  Future<List<OneMonthStatistic>> getOneMonthStatistics() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/cashback_one_month_statistics/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('biroylik' + json.decode(resBody).toString());
+      List<OneMonthStatistic> sumStat;
+      var decode = (json.decode(resBody)['list'] as List);
+      sumStat = decode
+          .map((e) => OneMonthStatistic.fromJson(e))
+          .toList()
+          .reversed
+          .toList();
+      print(sumStat);
+
       return sumStat;
     } else {
       print(res.reasonPhrase);
@@ -346,12 +391,13 @@ class Client {
   }
 
   Future<void> createStore(
-    int userId,
+    // int userId,
     int category,
     String name,
     double cashback,
     int province,
     int city,
+    File file,
   ) async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
@@ -364,13 +410,73 @@ class Client {
       'categor_id': category,
       'provinse_id': province,
       'distrik_id': city,
-      'user_id': userId
+      // 'user_id': userId,
+      'brand_img': file,
     };
 
     Uri url = Uri.parse('$path/shops_views/');
-    http.Request req = http.Request('POST', url);
-    req.body = json.encode(body);
-    req.headers.addAll(headers);
+    http.MultipartRequest req = http.MultipartRequest('POST', url);
+    // req.body = json.encode(body);
+    // req.headers.addAll(headers);
+    req.fields['name_shops'] = name;
+    req.fields['cashback'] = cashback.toString();
+    req.fields['categor_id'] = category.toString();
+    req.fields['provinse_id'] = province.toString();
+    req.fields['distrik_id'] = city.toString();
+    // req.fields['user_id'] = userId.toString();
+    req.fields['distrik_id'] = city.toString();
+
+    var picture = await http.MultipartFile.fromPath('brand_img', file.path);
+
+    req.files.add(picture);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(json.decode(resBody));
+    } else {
+      print(res.reasonPhrase);
+    }
+  }
+
+  Future<void> editStore(
+    int shopId,
+    int category,
+    String name,
+    double cashback,
+    int province,
+    int city,
+    File file,
+  ) async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+    Map<String, dynamic> body = {
+      'name_shops': name,
+      'cashback': cashback,
+      'categor_id': category,
+      'provinse_id': province,
+      'distrik_id': city,
+      'brand_img': file,
+    };
+
+    Uri url = Uri.parse('$path/shops_update_view/$shopId/');
+    http.MultipartRequest req = http.MultipartRequest('POST', url);
+    // req.body = json.encode(body);
+    // req.headers.addAll(headers);
+    req.fields['name_shops'] = name;
+    req.fields['cashback'] = cashback.toString();
+    req.fields['categor_id'] = category.toString();
+    req.fields['provinse_id'] = province.toString();
+    req.fields['distrik_id'] = city.toString();
+    req.fields['distrik_id'] = city.toString();
+
+    var picture = await http.MultipartFile.fromPath('brand_img', file.path);
+
+    req.files.add(picture);
 
     var res = await req.send();
     final resBody = await res.stream.bytesToString();
@@ -400,7 +506,7 @@ class Client {
       'last_name': lastName,
     };
 
-    Uri url = Uri.parse('$path/create_sotrutnik_view/');
+    Uri url = Uri.parse('$path/sotrutnik_view/');
     http.Request req = http.Request('POST', url);
     req.body = json.encode(body);
     req.headers.addAll(headers);
@@ -415,7 +521,7 @@ class Client {
     }
   }
 
-  Future<void> getBalance() async {
+  Future<Balance> getBalance() async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
       'Content-Type': ' application/json; charset=utf-8',
@@ -432,7 +538,9 @@ class Client {
     if (res.statusCode >= 200 && res.statusCode < 300) {
       print(json.decode(resBody));
       var decode = (json.decode(resBody));
-      print(decode);
+      var decoded = Balance.fromJson(decode);
+      print(decoded);
+      return decoded;
     } else {
       print(res.reasonPhrase);
       throw Exception();
@@ -463,12 +571,74 @@ class Client {
       var decode = (json.decode(resBody) as List);
       userCategory = decode.map((e) => UserCategory.fromJson(e)).toList();
 
-      print(userCategory.first.id.first);
-      print(userCategory.first.name.first);
+      print(userCategory.first.name);
       return userCategory;
     } else {
       print(res.reasonPhrase);
       throw Exception();
+    }
+  }
+
+  Future<List<UserShop>> getRegisteredMarketsForClient(int id) async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/client_shops/$id/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(json.decode(resBody));
+      List<UserShop> userShop;
+
+      // var decode = (json.decode(resBody));
+      // print(decode);
+
+      var decode = (json.decode(resBody) as List);
+      userShop = decode.map((e) => UserShop.fromJson(e)).toList();
+
+      print(userShop.first.name);
+      return userShop;
+    } else {
+      print(res.reasonPhrase);
+      throw Exception();
+    }
+  }
+
+  Future<void> payCashback(
+    String price,
+    String barcodeId,
+  ) async {
+    Map<String, String> body = {
+      'price': price,
+    };
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    barcodeId = '2724815414507';
+
+//todo batcode get
+    Uri url = Uri.parse('$path/cashbak_create/$barcodeId/False/');
+    http.Request req = http.Request('POST', url);
+    req.body = json.encode(body);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(json.decode(resBody));
+    } else {
+      print(res.reasonPhrase);
     }
   }
 }

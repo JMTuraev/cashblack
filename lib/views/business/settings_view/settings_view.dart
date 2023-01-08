@@ -1,10 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/balance.dart';
 import '../../../domain/models/shop.dart';
 import '../../../domain/models/user.dart';
 import '../../../domain/models/worker.dart';
+import '../../../utils/constants.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/settings_view_model.dart';
 import '../../../widgets/helpers.dart';
@@ -45,11 +48,18 @@ class SettingsView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      '0 UZS',
-                      style: TextStyle(
-                        fontSize: 28,
-                      ),
+                    FutureBuilder(
+                      future: context.read<SettingsViewModel>().getBalance(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          var balance = snapshot.data as Balance;
+                          return Text(
+                            balance.amount,
+                            style: TextStyle(fontSize: 28),
+                          );
+                        } else
+                          return Text('no data');
+                      },
                     ),
                     const SizedBox(height: 10),
                     Row(
@@ -175,7 +185,13 @@ class SettingsView extends StatelessWidget {
                           fontSize: 14,
                         ),
                       ),
-                      subtitle: const Text('+998 90 123 45 56'),
+                      subtitle: Text(
+                        workers[index].userName.replaceAllMapped(
+                              RegExp(r'(\d{3})(\d{2})(\d{3})(\d{2})(\d+)'),
+                              (m) =>
+                                  '+(${m[1]}) ${m[2]} ${m[3]} ${m[4]} ${m[5]}',
+                            ),
+                      ),
                       trailing: IconButton(
                           onPressed: () {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -186,11 +202,11 @@ class SettingsView extends StatelessWidget {
                             CupertinoIcons.clear_circled,
                           )),
                       contentPadding: const EdgeInsets.all(0),
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            Helpers.customSnackBar(
-                                'Ichida info bo`lish-bo`lmasligini aniqlash kerak'));
-                      },
+                      // onTap: () {
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //       Helpers.customSnackBar(
+                      //           'Ichida info bo`lish-bo`lmasligini aniqlash kerak'));
+                      // },
                     );
                   },
                 );
@@ -250,15 +266,19 @@ class _BrandCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var imageUrl = Constants.media + shop.image!;
     return _BorderContainerWidget(
       child: Stack(
         children: [
           Row(
             children: [
-              const SizedBox(
+              SizedBox(
                 width: 60,
                 height: 60,
-                child: FlutterLogo(),
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  errorWidget: (context, url, error) => Icon(Icons.clear),
+                ),
               ),
               const SizedBox(width: 20),
               Column(

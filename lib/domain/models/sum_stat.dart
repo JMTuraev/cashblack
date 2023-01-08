@@ -9,14 +9,14 @@ class SumStat {
   final String price;
   final double cashback;
   final String? salesman;
-  final String date;
+  final String? date;
 
   SumStat({
     required this.userName,
     required this.price,
     required this.cashback,
     this.salesman,
-    required this.date,
+    this.date,
   });
 
   factory SumStat.fromJson(Map<String, Object?> json) =>

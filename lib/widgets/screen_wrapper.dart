@@ -5,10 +5,12 @@ class ScreenWrapper extends StatelessWidget {
     super.key,
     required this.child,
     this.appBar,
+    this.edge,
   });
 
   final Widget child;
   final PreferredSizeWidget? appBar;
+  final EdgeInsetsGeometry? edge;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class ScreenWrapper extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: edge ?? const EdgeInsets.all(20),
             child: child,
           ),
         ),

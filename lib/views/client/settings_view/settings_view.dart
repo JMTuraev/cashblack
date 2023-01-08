@@ -16,7 +16,7 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User user = context.read<ClientHomeViewModel>().user;
+    User user = context.watch<ClientHomeViewModel>().user;
 
     return ScreenWrapper(
       child: Column(
@@ -157,6 +157,55 @@ class _BrandCardWidget extends StatelessWidget {
 
 class _ProfileCardWidget extends StatelessWidget {
   const _ProfileCardWidget({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
+
+  final User? user;
+
+  @override
+  Widget build(BuildContext context) {
+    return _BorderContainerWidget(
+      child: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              user!.firstName.isEmpty && user!.lastName.isEmpty
+                  ? const _SimpleTextWidget(
+                      title: 'Имя не указано',
+                    )
+                  : _SimpleTextWidget(
+                      title: '${user!.firstName} ${user!.lastName}',
+                    ),
+              const SizedBox(height: 10),
+              Text(user!.userName),
+            ],
+          ),
+          Positioned(
+            top: 5,
+            right: 5,
+            child: TextButtonWidget(
+              method: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => EditNameView(
+                      user: user!,
+                    ),
+                  ),
+                );
+              },
+              text: 'Изменить',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileCardWidget2 extends StatelessWidget {
+  const _ProfileCardWidget2({
     Key? key,
     required this.user,
   }) : super(key: key);

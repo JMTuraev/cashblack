@@ -1,4 +1,5 @@
 import '../core/api/client.dart';
+import '../domain/models/one_month_statistic.dart';
 import '../domain/models/user.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,10 @@ class BusinessHomeViewModel extends ChangeNotifier {
 
   Future<void> getProfile() async {
     user = await _client.getProfile();
+  }
+
+  Future<List<OneMonthStatistic>> getStatistics() async {
+    return _client.getOneMonthStatistics();
   }
 
   void onChange(int index) {

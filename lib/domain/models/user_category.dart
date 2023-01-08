@@ -1,26 +1,21 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'user_category.g.dart';
+
+@JsonSerializable()
 class UserCategory {
   UserCategory({
     required this.id,
     required this.name,
+    required this.logo,
   });
 
-  final List<int> id;
-  final List<String> name;
+  final int id;
+  final String name;
+  final String logo;
 
-  factory UserCategory.fromRawJson(String str) =>
-      UserCategory.fromJson(json.decode(str));
+  factory UserCategory.fromJson(Map<String, Object?> json) =>
+      _$UserCategoryFromJson(json);
 
-  String toRawJson() => json.encode(toJson());
-
-  factory UserCategory.fromJson(Map<String, dynamic> json) => UserCategory(
-        id: List<int>.from(json["id"].map((x) => x)),
-        name: List<String>.from(json["name"].map((x) => x)),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": List<dynamic>.from(id.map((x) => x)),
-        "name": List<dynamic>.from(name.map((x) => x)),
-      };
+  Map<String, Object?> toJson() => _$UserCategoryToJson(this);
 }

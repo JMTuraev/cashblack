@@ -219,13 +219,13 @@ class _EditStoreViewState extends State<EditStoreView> {
                       method: () {
                         print(
                             '$_selectedCategory  $_selectedProvince $_selectedProvince');
-                        context.read<CreateStoreViewViewModel>().createstore(
-                            29,
-                            int.parse(_selectedCategory!),
-                            _brandName.text,
-                            double.parse(_cashback.text),
-                            int.parse(_selectedProvince!),
-                            int.parse(_selectedCity!));
+                        // context.read<CreateStoreViewViewModel>().createstore(
+                        //     29,
+                        //     int.parse(_selectedCategory!),
+                        //     _brandName.text,
+                        //     double.parse(_cashback.text),
+                        //     int.parse(_selectedProvince!),
+                        //     int.parse(_selectedCity!));
                         Navigator.of(context).pushAndRemoveUntil(
                             CupertinoPageRoute(
                               builder: (context) => BusinessHomeView(),

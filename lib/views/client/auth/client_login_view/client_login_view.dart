@@ -27,6 +27,7 @@ class ClientLoginView extends StatelessWidget {
         provider.sendSms(
           maskFormatter.unmaskText(phoneController.text),
           // provider.appSignature = await SmsAutoFill().getAppSignature,
+          // TODO appsign
           provider.appSignature = 'tempapp1',
         );
         Navigator.of(context).push(
@@ -50,6 +51,16 @@ class ClientLoginView extends StatelessWidget {
                 text: 'We will send you the verification code'),
             const SizedBox(height: 20),
             TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: false,
+                // hintStyle: TextStyle(color: Colors.grey[800]),
+                hintText: "Телефон",
+
+                // fillColor: Colors.white70,
+              ),
               inputFormatters: [maskFormatter],
               controller: phoneController,
               autocorrect: false,

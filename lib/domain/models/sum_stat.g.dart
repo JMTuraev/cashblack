@@ -11,7 +11,7 @@ SumStat _$SumStatFromJson(Map<String, dynamic> json) => SumStat(
       price: json['price'] as String,
       cashback: (json['cashback'] as num).toDouble(),
       salesman: json['salesman'] as String?,
-      date: json['date'] as String,
+      date: json['date'] as String?,
     );
 
 Map<String, dynamic> _$SumStatToJson(SumStat instance) => <String, dynamic>{

@@ -7,6 +7,7 @@ import 'view_models/business_login_view_model.dart';
 import 'view_models/client_home_view_model.dart';
 import 'view_models/client_login_view_model.dart';
 import 'view_models/create_store_view_view_model.dart';
+import 'view_models/payment_client_view_model.dart';
 import 'view_models/settings_view_model.dart';
 import 'view_models/statistics_view_model.dart';
 import 'views/business/auth/business_login_view/business_login_view.dart';
@@ -69,6 +70,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<ClientHomeViewModel>(
           create: (ctx) => ClientHomeViewModel(),
+        ),
+        ChangeNotifierProvider<PaymentClientViewModel>(
+          create: (ctx) => PaymentClientViewModel(),
         ),
       ],
       child: MaterialApp(

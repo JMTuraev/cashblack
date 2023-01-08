@@ -1,7 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/user_category.dart';
+import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/medium_title_widget.dart';
 import '../../business/settings_view/payments_history_view.dart';
@@ -18,13 +21,14 @@ class _MainViewState extends State<MainView> {
   @override
   void initState() {
     context.read<ClientHomeViewModel>().getProfile();
-    context.read<ClientHomeViewModel>().getCategories();
+    // context.read<ClientHomeViewModel>().getCategories();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var userCategoryList = context.read<ClientHomeViewModel>().userCategory;
+    // var userCategoryList = context.watch<ClientHomeViewModel>().userCategory;
+    // var userShops = context.watch<ClientHomeViewModel>().userShop;
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -72,46 +76,66 @@ class _MainViewState extends State<MainView> {
                 ),
                 Center(child: MediumTitleWidget(text: 'Категории')),
                 SizedBox(height: 20),
-                Expanded(
-                  child: GridView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                FutureBuilder(
+                  future: context
+                      .watch<ClientHomeViewModel>()
+                      .getJoinedCategories(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<UserCategory> userCategoryList =
+                          snapshot.data as List<UserCategory>;
+
+                      return Expanded(
+                        child: GridView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             crossAxisSpacing: 10,
-                            mainAxisSpacing: 10),
-                    itemCount: userCategoryList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: (() {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              builder: (context) => BusinessListView(),
-                            ),
-                          );
-                        }),
-                        child: Card(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          child: Column(
-                            children: [
-                              Spacer(),
-                              FlutterLogo(
-                                size: 120,
-                              ),
-                              // Placeholder(
-                              //   // fallbackWidth: 100,
-                              //   fallbackHeight: 140,
-                              // ),
-                              Spacer(),
-                              Text(userCategoryList[index].name.first),
-                              Spacer(),
-                            ],
+                            mainAxisSpacing: 10,
                           ),
+                          itemCount: userCategoryList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              // ignore: unnecessary_parenthesis
+                              onTap: (() {
+                                Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                    builder: (context) => BusinessListView(
+                                      shopId: userCategoryList[index].id,
+                                      name: userCategoryList[index].name,
+                                    ),
+                                  ),
+                                );
+                              }),
+                              child: Card(
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                child: Column(
+                                  children: [
+                                    Spacer(),
+                                    CachedNetworkImage(
+                                      width: 150,
+                                      imageUrl: Constants.media +
+                                          userCategoryList[index].logo,
+                                    ),
+                                    // Placeholder(
+                                    //   // fallbackWidth: 100,
+                                    //   fallbackHeight: 140,
+                                    // ),
+                                    Spacer(),
+                                    Text(userCategoryList[index].name),
+                                    Spacer(),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       );
-                    },
-                  ),
+                    } else
+                      return Text('');
+                  },
                 ),
               ],
             ),

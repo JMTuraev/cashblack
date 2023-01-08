@@ -14,7 +14,7 @@ class BarcodeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User user = context.read<ClientHomeViewModel>().user;
+    User user = context.watch<ClientHomeViewModel>().user;
 
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -45,7 +45,8 @@ class BarcodeView extends StatelessWidget {
             ),
             // color: Colors.white,
             padding: const EdgeInsets.all(10),
-            data: user.barcode ?? '978020137962',
+            // data: user.barcode ?? '978020137962',
+            data: user.barcode!,
             barcode: Barcode.ean13(),
           ),
         ],

@@ -14,6 +14,7 @@ class BusinessLoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController phoneController = TextEditingController(text: '');
+    TextEditingController promoCodeController = TextEditingController(text: '');
     var provider = context.read<BusinessLoginViewModel>();
     MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
         mask: '+### ## ### ## ##',
@@ -26,7 +27,9 @@ class BusinessLoginView extends StatelessWidget {
         provider.sendSms(
           maskFormatter.unmaskText(phoneController.text),
           // provider.appSignature = await SmsAutoFill().getAppSignature,
+          // TODO appsign
           provider.appSignature = 'tempapp1',
+          promoCodeController.text,
         );
         Navigator.of(context).push(
           CupertinoPageRoute(
@@ -35,6 +38,8 @@ class BusinessLoginView extends StatelessWidget {
         );
       }
     }
+
+    // TODO promo kerak
 
     return Scaffold(
       body: Padding(
@@ -46,10 +51,19 @@ class BusinessLoginView extends StatelessWidget {
             const HeroTitleWidget(text: 'Введите номер телефона'),
             const SizedBox(height: 20),
             const SmallTitleWidget(
-              text: 'Мы отправляем вам код подтверждения',
+              text: 'Мы отправим вам код подтверждения',
             ),
             const SizedBox(height: 20),
             TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: false,
+                // hintStyle: TextStyle(color: Colors.grey[800]),
+                hintText: "Телефон",
+                // fillColor: Colors.white70,
+              ),
               inputFormatters: [maskFormatter],
               controller: phoneController,
               autocorrect: false,
@@ -58,6 +72,24 @@ class BusinessLoginView extends StatelessWidget {
               keyboardAppearance: Brightness.dark,
               showCursor: true,
               keyboardType: TextInputType.phone,
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: false,
+                // hintStyle: TextStyle(color: Colors.grey[800]),
+                hintText: "Промокод",
+                // fillColor: Colors.white70,
+              ),
+              controller: promoCodeController,
+              autocorrect: false,
+              autofocus: true,
+              enableSuggestions: false,
+              keyboardAppearance: Brightness.dark,
+              showCursor: true,
             ),
             const SizedBox(height: 20),
             _MainButtonWidget(

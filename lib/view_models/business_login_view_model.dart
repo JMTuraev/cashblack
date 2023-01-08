@@ -11,14 +11,13 @@ class BusinessLoginViewModel extends ChangeNotifier {
 
   bool isLoading = false;
 
-  Future<void> sendSms(String phoneNumber, String phoneId) async {
+  Future<void> sendSms(
+      String phoneNumber, String phoneId, String promoCode) async {
     isLoading = true;
     notifyListeners();
     phone = phoneNumber;
-    bool isRegister = await _client.register(
-      phoneNumber,
-      appSignature,
-    );
+    bool isRegister =
+        await _client.register(phoneNumber, appSignature, promoCode);
     if (!isRegister) {
       await _client.login(phoneNumber);
     }

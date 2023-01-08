@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../domain/models/balance.dart';
 import '../domain/models/worker.dart';
 
 class SettingsViewModel extends ChangeNotifier {
@@ -28,6 +29,10 @@ class SettingsViewModel extends ChangeNotifier {
 
   Future<List<Worker>> getWorkers() async {
     return _client.getWorkers();
+  }
+
+  Future<Balance> getBalance() async {
+    return _client.getBalance();
   }
 
   Future<void> logout() async {

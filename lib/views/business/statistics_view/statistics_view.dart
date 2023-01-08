@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sum_stat.dart';
@@ -167,15 +171,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                 selectedOption: _filter,
               ),
               const SizedBox(height: 20),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: summa
-                        ? _SumWidget(rows: sumRows)
-                        : _CashbackWidget(
-                            rows: cashbackRows,
-                          ),
+              Container(
+                child: Container(
+                  child: Container(
+                    // scrollDirection: Axis.horizontal,
+                    child: summa ? _SumWidget() : Text('data'),
                   ),
                 ),
               ),
@@ -193,10 +193,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 class _SumWidget extends StatelessWidget {
   const _SumWidget({
     Key? key,
-    required this.rows,
   }) : super(key: key);
-
-  final List<DataRow> rows;
 
   @override
   Widget build(BuildContext context) {
@@ -209,88 +206,41 @@ class _SumWidget extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<SumStat> sumStat = snapshot.data as List<SumStat>;
-          return DataTable(
-            horizontalMargin: 20,
-            columnSpacing: 20,
-            headingTextStyle: textStyle,
-            border: TableBorder.all(
-              width: 1,
-              color: Colors.white70,
+          // return Text('data');
+          final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
+          return Expanded(
+            // child: ListView.builder(
+            //   // shrinkWrap: true,
+            //   // physics: const NeverScrollableScrollPhysics(),
+            //   itemCount: sumStat.length,
+            //   itemBuilder: (context, index) => const Text('1'),
+            // ),
+            child: GroupedListView<SumStat, String>(
+              elements: sumStat,
+              // groupBy: (element) => formatter.format(element.date),
+              groupBy: (element) =>
+                  formatter.format(DateTime.parse(element.date!)),
+              groupSeparatorBuilder: (String groupByValue) =>
+                  Text(groupByValue),
+              itemBuilder: (context, SumStat element) =>
+                  _CardStat(sumStat: element),
+              groupHeaderBuilder: (SumStat element) => Center(
+                child: Text(
+                  formatter.format(DateTime.parse(element.date!)),
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+              // useStickyGroupSeparators: true,
+              // floatingHeader: true,
+              order: GroupedListOrder.DESC,
             ),
-            columns: const <DataColumn>[
-              DataColumn(
-                label: Expanded(
-                  child: Center(child: Text('Телефон')),
-                ),
-              ),
-              DataColumn(
-                label: Expanded(
-                  child: Center(child: Text('Торговля')),
-                ),
-              ),
-              DataColumn(
-                label: Expanded(
-                  child: Center(child: Text('Кэшбэк')),
-                ),
-              ),
-              DataColumn(
-                label: Expanded(
-                  child: Center(child: Text('Сотрудник')),
-                ),
-              ),
-            ],
-            rows: sumStat
-                .map((e) => DataRow(
-                      cells: [
-                        DataCell(Center(child: Text(e.userName))),
-                        DataCell(Center(child: Text(e.price))),
-                        DataCell(Center(child: Text(e.cashback.toString()))),
-                        DataCell(
-                          Center(
-                            child: Text(e.salesman.toString()),
-                          ),
-                        ),
-                      ],
-                    ))
-                .toList(),
           );
         } else {
           return Text('Нет данных');
         }
       },
-    );
-
-    return DataTable(
-      horizontalMargin: 20,
-      columnSpacing: 20,
-      headingTextStyle: textStyle,
-      border: TableBorder.all(
-        width: 1,
-        color: Colors.white70,
-      ),
-      columns: const <DataColumn>[
-        DataColumn(
-          label: Expanded(
-            child: Center(child: Text('Телефон')),
-          ),
-        ),
-        DataColumn(
-          label: Expanded(
-            child: Center(child: Text('Торговля')),
-          ),
-        ),
-        DataColumn(
-          label: Expanded(
-            child: Center(child: Text('Кэшбэк')),
-          ),
-        ),
-        DataColumn(
-          label: Expanded(
-            child: Center(child: Text('Сотрудник')),
-          ),
-        ),
-      ],
-      rows: [...rows],
     );
   }
 }
@@ -309,33 +259,34 @@ class _CashbackWidget extends StatelessWidget {
       fontWeight: FontWeight.bold,
       fontSize: 15,
     );
-    return DataTable(
-      horizontalMargin: 20,
-      columnSpacing: 20,
-      headingTextStyle: textStyle,
-      border: TableBorder.all(
-        width: 1,
-        color: Colors.white70,
-      ),
-      columns: const <DataColumn>[
-        DataColumn(
-          label: Expanded(
-            child: Center(child: Text('Клиент')),
-          ),
-        ),
-        DataColumn(
-          label: Expanded(
-            child: Center(child: Text('Все')),
-          ),
-        ),
-        DataColumn(
-          label: Expanded(
-            child: Center(child: Text('Использованные')),
-          ),
-        ),
-      ],
-      rows: [...rows],
-    );
+    return Text('data');
+    // return DataTable(
+    //   horizontalMargin: 20,
+    //   columnSpacing: 20,
+    //   headingTextStyle: textStyle,
+    //   border: TableBorder.all(
+    //     width: 1,
+    //     color: Colors.white70,
+    //   ),
+    //   columns: const <DataColumn>[
+    //     DataColumn(
+    //       label: Expanded(
+    //         child: Center(child: Text('Клиент')),
+    //       ),
+    //     ),
+    //     DataColumn(
+    //       label: Expanded(
+    //         child: Center(child: Text('Все')),
+    //       ),
+    //     ),
+    //     DataColumn(
+    //       label: Expanded(
+    //         child: Center(child: Text('Использованные')),
+    //       ),
+    //     ),
+    //   ],
+    //   rows: [...rows],
+    // );
   }
 }
 
@@ -380,6 +331,103 @@ class _FilterWidget extends StatelessWidget {
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
               ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CardStat extends StatelessWidget {
+  const _CardStat({
+    Key? key,
+    required this.sumStat,
+  }) : super(key: key);
+
+  final SumStat sumStat;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white30,
+      child: Card(
+        margin: const EdgeInsets.symmetric(
+          vertical: 1,
+          horizontal: 1,
+        ),
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 6,
+            ),
+            child: Column(
+              children: [
+                SizedBox(height: 6),
+                Row(
+                  // mainAxisAlignment:
+                  //     MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_drop_up,
+                          color: Colors.green[300],
+                        ),
+                        Text(
+                          sumStat.price,
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Spacer(),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.red[300],
+                        ),
+                        Text(
+                          sumStat.cashback.toString(),
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    Text(
+                      sumStat.date.toString(),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        sumStat.userName,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[200],
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 6),
+              ],
             ),
           ),
         ),
