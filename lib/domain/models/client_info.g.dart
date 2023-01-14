@@ -1,25 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sum_stat.dart';
+part of 'client_info.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SumStat _$SumStatFromJson(Map<String, dynamic> json) => SumStat(
-      userName: json['phone'] as String,
+ClientInfo _$ClientInfoFromJson(Map<String, dynamic> json) => ClientInfo(
+      fullName: json['full_name'] as String,
       price: json['price'] as int,
       cashback: (json['cashback'] as num).toDouble(),
-      fullName: json['full_name'] as String?,
-      salesman: json['salesman'] as String?,
-      date: json['date'] as String?,
+      date: json['date'] as String,
     );
 
-Map<String, dynamic> _$SumStatToJson(SumStat instance) => <String, dynamic>{
-      'phone': instance.userName,
+Map<String, dynamic> _$ClientInfoToJson(ClientInfo instance) =>
+    <String, dynamic>{
       'full_name': instance.fullName,
       'price': instance.price,
       'cashback': instance.cashback,
-      'salesman': instance.salesman,
       'date': instance.date,
     };

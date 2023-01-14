@@ -47,8 +47,10 @@ class BusinessListView extends StatelessWidget {
                           onTap: () {
                             Navigator.of(context).push(
                               CupertinoPageRoute(
-                                builder: (context) =>
-                                    const BusinessDetailsView(),
+                                builder: (context) => BusinessDetailsView(
+                                  id: shops[index].id,
+                                  name: shops[index].name,
+                                ),
                               ),
                             );
                           },
@@ -70,16 +72,16 @@ class BusinessListView extends StatelessWidget {
                                     title: shops[index].name,
                                   ),
                                   const SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        CupertinoIcons.money_dollar_circle,
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(shops[index].id.toString()),
-                                    ],
-                                  ),
+                                  // Row(
+                                  //   children: [
+                                  //     const Icon(
+                                  //       CupertinoIcons.money_dollar_circle,
+                                  //       size: 16,
+                                  //     ),
+                                  //     const SizedBox(width: 4),
+                                  //     Text(shops[index].id.toString()),
+                                  //   ],
+                                  // ),
                                 ],
                               )
                             ],

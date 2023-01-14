@@ -15,6 +15,7 @@ class PaymentClientView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController priceController = TextEditingController();
+    TextEditingController cashBackController = TextEditingController();
 
     return ScreenWrapper(
         child: Column(
@@ -43,7 +44,7 @@ class PaymentClientView extends StatelessWidget {
                 // const SizedBox(height: 20),
                 TextField(
                   decoration: InputDecoration(
-                    hintText: 'Сумма',
+                    hintText: 'Сумма покупки',
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(10),
@@ -61,17 +62,17 @@ class PaymentClientView extends StatelessWidget {
                 MainButtonWidget(
                   text: 'Начисление',
                   method: () async {
-                    // await context
-                    //     .read<PaymentClientViewModel>()
-                    //     .sendCashback(priceController.text, 'barcodeId')
-                    //     .then(
-                    //       (value) => Navigator.pushReplacement(
-                    //         context,
-                    //         CupertinoPageRoute(
-                    //           builder: (context) => PaymentSuccessView(),
-                    //         ),
-                    //       ),
-                    //     );
+                    await context
+                        .read<PaymentClientViewModel>()
+                        .sendCashback(priceController.text, 'barcodeId')
+                        .then(
+                          (value) => Navigator.pushReplacement(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => PaymentSuccessView(),
+                            ),
+                          ),
+                        );
                   },
                 ),
               ],
@@ -95,14 +96,14 @@ class PaymentClientView extends StatelessWidget {
                 // const SizedBox(height: 20),
                 TextField(
                   decoration: InputDecoration(
-                    hintText: 'Сумма',
+                    hintText: 'Сумма товаров',
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(10),
                       ),
                     ),
                   ),
-                  controller: priceController,
+                  controller: cashBackController,
                   autocorrect: false,
                   enableSuggestions: false,
                   keyboardAppearance: Brightness.dark,
@@ -111,11 +112,11 @@ class PaymentClientView extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 MainButtonWidget(
-                  text: 'Pay',
+                  text: 'Оплата для товара',
                   method: () async {
                     await context
                         .read<PaymentClientViewModel>()
-                        .sendCashback(priceController.text, 'barcodeId')
+                        .payForGoods(cashBackController.text, 'barcodeId')
                         .then(
                           (value) => Navigator.pushReplacement(
                             context,

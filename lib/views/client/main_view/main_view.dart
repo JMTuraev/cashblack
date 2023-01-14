@@ -54,24 +54,24 @@ class _MainViewState extends State<MainView> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          CupertinoPageRoute(
-                            builder: (context) => PaymentsHistoryView(),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        children: const [
-                          Icon(
-                            CupertinoIcons.arrow_right_arrow_left_circle,
-                            size: 30,
-                          ),
-                          Text('История'),
-                        ],
-                      ),
-                    )
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     Navigator.of(context).push(
+                    //       CupertinoPageRoute(
+                    //         builder: (context) => PaymentsHistoryView(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: Column(
+                    //     children: const [
+                    //       Icon(
+                    //         CupertinoIcons.arrow_right_arrow_left_circle,
+                    //         size: 30,
+                    //       ),
+                    //       Text('История'),
+                    //     ],
+                    //   ),
+                    // )
                   ],
                 ),
                 Center(child: MediumTitleWidget(text: 'Категории')),
@@ -115,7 +115,7 @@ class _MainViewState extends State<MainView> {
                                   children: [
                                     Spacer(),
                                     CachedNetworkImage(
-                                      width: 150,
+                                      width: 120,
                                       imageUrl: Constants.media +
                                           userCategoryList[index].logo,
                                     ),

@@ -52,13 +52,17 @@ class SettingsView extends StatelessWidget {
                       future: context.read<SettingsViewModel>().getBalance(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          var balance = snapshot.data as Balance;
+                          print('sn   ' + snapshot.data.toString());
+                          var balance = snapshot.data as List<Balance>;
                           return Text(
-                            balance.amount,
+                            balance.first.amount + ' UZS',
                             style: TextStyle(fontSize: 28),
                           );
                         } else
-                          return Text('no data');
+                          return Text(
+                            '',
+                            style: TextStyle(fontSize: 28),
+                          );
                       },
                     ),
                     const SizedBox(height: 10),

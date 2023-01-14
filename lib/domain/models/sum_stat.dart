@@ -6,7 +6,9 @@ part 'sum_stat.g.dart';
 class SumStat {
   @JsonKey(name: 'phone')
   final String userName;
-  final String price;
+  @JsonKey(name: 'full_name')
+  final String? fullName;
+  final int price;
   final double cashback;
   final String? salesman;
   final String? date;
@@ -15,6 +17,7 @@ class SumStat {
     required this.userName,
     required this.price,
     required this.cashback,
+    this.fullName,
     this.salesman,
     this.date,
   });

@@ -6,6 +6,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/sum_cashback.dart';
 import '../../../domain/models/sum_stat.dart';
 import '../../../view_models/statistics_view_model.dart';
 
@@ -28,30 +29,23 @@ class _StatisticsViewState extends State<StatisticsView> {
     });
   }
 
+  String start = '2022-01-01';
+  String end = '2069-12-12';
+
   @override
   Widget build(BuildContext context) {
-    final sumRows = List<DataRow>.generate(
-      1,
-      (i) => DataRow(
-        cells: [
-          const DataCell(Center(child: Text('97 333 22 33'))),
-          const DataCell(Center(child: Text('1 400 300'))),
-          const DataCell(Center(child: Text('20 000'))),
-          DataCell(Center(child: Text('Сотрудник Имя Фамилия ${i + 1}'))),
-        ],
-      ),
-    );
+    Future<List<SumStat>> stats =
+        context.watch<StatisticsViewModel>().getSumStats();
+    // Future<List<SumStat>> stats =
+    //     context.watch<StatisticsViewModel>().getSumStats(
+    //           start: start,
+    //           end: end,
+    //         );
 
-    final cashbackRows = List<DataRow>.generate(
-      1,
-      (i) => const DataRow(
-        cells: [
-          DataCell(Center(child: Text('97 333 22 33'))),
-          DataCell(Center(child: Text('300 000'))),
-          DataCell(Center(child: Text('30 200'))),
-        ],
-      ),
-    );
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-YYYY');
+    final String formatted = formatter.format(now);
+    // print('bugun ' + formatted);
 
     return Scaffold(
       body: SafeArea(
@@ -117,65 +111,76 @@ class _StatisticsViewState extends State<StatisticsView> {
                 ],
               ),
               const SizedBox(height: 20),
-              _FilterWidget(
-                categoryItems: [
-                  const DropdownMenuItem<String>(
-                    enabled: false,
-                    value: '0',
-                    child: Text(
-                      'Выберите',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const DropdownMenuItem<String>(
-                    value: '1',
-                    child: Text('Сегодня'),
-                  ),
-                  const DropdownMenuItem<String>(
-                    value: '2',
-                    child: Text('Вчера'),
-                  ),
-                  const DropdownMenuItem<String>(
-                    value: '3',
-                    child: Text('Позавчера'),
-                  ),
-                  const DropdownMenuItem<String>(
-                    value: '4',
-                    child: Text('Эта неделя'),
-                  ),
-                  const DropdownMenuItem<String>(
-                    value: '5',
-                    child: Text('Прошлая неделя'),
-                  ),
-                  const DropdownMenuItem<String>(
-                    value: '6',
-                    child: Text('Этот месяц'),
-                  ),
-                  const DropdownMenuItem<String>(
-                    value: '7',
-                    child: Text('Прошлый месяц'),
-                  ),
-                  const DropdownMenuItem<String>(
-                    value: '8',
-                    child: Text('Последные три месяца'),
-                  ),
-                  const DropdownMenuItem<String>(
-                    value: '9',
-                    child: Text('Этот год'),
-                  ),
-                ],
-                hint: 'Выберите',
-                onChanged: onFilterChanged,
-                selectedOption: _filter,
-              ),
+              summa
+                  ? _FilterWidget(
+                      categoryItems: [
+                        const DropdownMenuItem<String>(
+                          enabled: false,
+                          value: '0',
+                          child: Text(
+                            'Выберите',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: '1',
+                          child: const Text('Сегодня'),
+                          onTap: () => stats =
+                              context.read<StatisticsViewModel>().getSumStats(
+                                    start: formatted,
+                                    end: formatted,
+                                  ),
+                        ),
+                        const DropdownMenuItem<String>(
+                          value: '2',
+                          child: Text('Вчера'),
+                        ),
+                        const DropdownMenuItem<String>(
+                          value: '3',
+                          child: Text('Позавчера'),
+                        ),
+                        const DropdownMenuItem<String>(
+                          value: '4',
+                          child: Text('Эта неделя'),
+                        ),
+                        const DropdownMenuItem<String>(
+                          value: '5',
+                          child: Text('Прошлая неделя'),
+                        ),
+                        const DropdownMenuItem<String>(
+                          value: '6',
+                          child: Text('Этот месяц'),
+                        ),
+                        const DropdownMenuItem<String>(
+                          value: '7',
+                          child: Text('Прошлый месяц'),
+                        ),
+                        const DropdownMenuItem<String>(
+                          value: '8',
+                          child: Text('Последные три месяца'),
+                        ),
+                        const DropdownMenuItem<String>(
+                          value: '9',
+                          child: Text('Этот год'),
+                        ),
+                      ],
+                      hint: 'Выберите',
+                      onChanged: onFilterChanged,
+                      selectedOption: _filter,
+                    )
+                  : SizedBox(),
               const SizedBox(height: 20),
               Container(
                 child: Container(
                   child: Container(
                     // scrollDirection: Axis.horizontal,
-                    child: summa ? _SumWidget() : Text('data'),
+                    child: summa
+                        ? _SumWidget(
+                            stats: stats,
+                          )
+                        : _CashbackWidget(),
                   ),
                 ),
               ),
@@ -193,7 +198,10 @@ class _StatisticsViewState extends State<StatisticsView> {
 class _SumWidget extends StatelessWidget {
   const _SumWidget({
     Key? key,
+    required this.stats,
   }) : super(key: key);
+
+  final Future<List<SumStat>> stats;
 
   @override
   Widget build(BuildContext context) {
@@ -202,24 +210,22 @@ class _SumWidget extends StatelessWidget {
       fontSize: 15,
     );
     return FutureBuilder(
-      future: context.read<StatisticsViewModel>().getSumStats(),
+      future: stats,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<SumStat> sumStat = snapshot.data as List<SumStat>;
           // return Text('data');
           final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
+          final DateFormat sorter = DateFormat('dd MMMM yyyy');
           return Expanded(
-            // child: ListView.builder(
-            //   // shrinkWrap: true,
-            //   // physics: const NeverScrollableScrollPhysics(),
-            //   itemCount: sumStat.length,
-            //   itemBuilder: (context, index) => const Text('1'),
-            // ),
             child: GroupedListView<SumStat, String>(
               elements: sumStat,
-              // groupBy: (element) => formatter.format(element.date),
-              groupBy: (element) =>
-                  formatter.format(DateTime.parse(element.date!)),
+              groupBy: (element) {
+                DateTime dates = DateTime.parse(element.date!);
+                return DateUtils.dateOnly(dates).toString();
+
+                // return DateTime(dates.year, dates.month, dates.day).toString();
+              },
               groupSeparatorBuilder: (String groupByValue) =>
                   Text(groupByValue),
               itemBuilder: (context, SumStat element) =>
@@ -227,7 +233,7 @@ class _SumWidget extends StatelessWidget {
               groupHeaderBuilder: (SumStat element) => Center(
                 child: Text(
                   formatter.format(DateTime.parse(element.date!)),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                   ),
                 ),
@@ -238,7 +244,7 @@ class _SumWidget extends StatelessWidget {
             ),
           );
         } else {
-          return Text('Нет данных');
+          return const Text('Нет данных');
         }
       },
     );
@@ -248,10 +254,7 @@ class _SumWidget extends StatelessWidget {
 class _CashbackWidget extends StatelessWidget {
   const _CashbackWidget({
     Key? key,
-    required this.rows,
   }) : super(key: key);
-
-  final List<DataRow> rows;
 
   @override
   Widget build(BuildContext context) {
@@ -259,34 +262,26 @@ class _CashbackWidget extends StatelessWidget {
       fontWeight: FontWeight.bold,
       fontSize: 15,
     );
-    return Text('data');
-    // return DataTable(
-    //   horizontalMargin: 20,
-    //   columnSpacing: 20,
-    //   headingTextStyle: textStyle,
-    //   border: TableBorder.all(
-    //     width: 1,
-    //     color: Colors.white70,
-    //   ),
-    //   columns: const <DataColumn>[
-    //     DataColumn(
-    //       label: Expanded(
-    //         child: Center(child: Text('Клиент')),
-    //       ),
-    //     ),
-    //     DataColumn(
-    //       label: Expanded(
-    //         child: Center(child: Text('Все')),
-    //       ),
-    //     ),
-    //     DataColumn(
-    //       label: Expanded(
-    //         child: Center(child: Text('Использованные')),
-    //       ),
-    //     ),
-    //   ],
-    //   rows: [...rows],
-    // );
+    return FutureBuilder(
+      future: context.watch<StatisticsViewModel>().getCashbackStats(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<SumCashback> sumCashback = snapshot.data as List<SumCashback>;
+          // return Text('data');
+
+          return Expanded(
+            child: ListView.builder(
+              itemCount: sumCashback.length,
+              itemBuilder: (context, index) => _CardCashback(
+                sumCashback: sumCashback[index],
+              ),
+            ),
+          );
+        } else {
+          return const Text('Нет данных');
+        }
+      },
+    );
   }
 }
 
@@ -349,6 +344,8 @@ class _CardStat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final DateFormat timeFormatter = DateFormat.Hm();
+
     return Card(
       color: Colors.white30,
       child: Card(
@@ -364,10 +361,8 @@ class _CardStat extends StatelessWidget {
             ),
             child: Column(
               children: [
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Row(
-                  // mainAxisAlignment:
-                  //     MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
@@ -376,9 +371,9 @@ class _CardStat extends StatelessWidget {
                           color: Colors.green[300],
                         ),
                         Text(
-                          sumStat.price,
-                          style: TextStyle(
-                            fontSize: 16,
+                          sumStat.price.toString(),
+                          style: const TextStyle(
+                            fontSize: 18,
                           ),
                         ),
                       ],
@@ -392,15 +387,19 @@ class _CardStat extends StatelessWidget {
                         ),
                         Text(
                           sumStat.cashback.toString(),
-                          style: TextStyle(
-                            fontSize: 16,
+                          style: const TextStyle(
+                            fontSize: 18,
                           ),
                         ),
                       ],
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Text(
-                      sumStat.date.toString(),
+                      Intl.withLocale(
+                        'ru_RU',
+                        () => timeFormatter
+                            .format(DateTime.parse(sumStat.date.toString())),
+                      ),
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey[400],
@@ -408,11 +407,22 @@ class _CardStat extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    SizedBox(width: 8),
+                    Text(
+                      sumStat.fullName.toString(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[200],
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(width: 16),
                     Expanded(
                       child: Text(
                         sumStat.userName,
@@ -424,9 +434,112 @@ class _CardStat extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    SizedBox(width: 8),
                   ],
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CardCashback extends StatelessWidget {
+  const _CardCashback({
+    Key? key,
+    required this.sumCashback,
+  }) : super(key: key);
+
+  final SumCashback sumCashback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white30,
+      child: Card(
+        margin: const EdgeInsets.symmetric(
+          vertical: 1,
+          horizontal: 1,
+        ),
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 6,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: 8),
+                    Text(
+                      sumCashback.name,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[200],
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        sumCashback.phone.replaceAllMapped(
+                          RegExp(r'(\d{3})(\d{2})(\d{3})(\d{2})(\d+)'),
+                          (m) => '+(${m[1]}) ${m[2]} ${m[3]} ${m[4]} ${m[5]}',
+                        ),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[200],
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_drop_up,
+                          color: Colors.green[300],
+                        ),
+                        Text(
+                          sumCashback.sum.toString(),
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Spacer(),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.red[300],
+                        ),
+                        Text(
+                          sumCashback.cashback.toStringAsFixed(2),
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
               ],
             ),
           ),

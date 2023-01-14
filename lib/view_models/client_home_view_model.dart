@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/api/client.dart';
+import '../domain/models/client_statistics.dart';
 import '../domain/models/user.dart';
 import '../domain/models/user_category.dart';
 import '../domain/models/user_shop.dart';
@@ -28,6 +29,10 @@ class ClientHomeViewModel extends ChangeNotifier {
 
   Future<List<UserShop>> getJoinedShops(int id) async {
     return _client.getRegisteredMarketsForClient(id);
+  }
+
+  Future<ClientStatistics> getShopStatistics(int id) async {
+    return _client.getShopStatistics(id);
   }
 
   void onChange(int index) {

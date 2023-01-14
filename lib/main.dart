@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'view_models/balance_view_model.dart';
 import 'view_models/business_home_view_model.dart';
 import 'view_models/business_login_view_model.dart';
 import 'view_models/client_home_view_model.dart';
 import 'view_models/client_login_view_model.dart';
 import 'view_models/create_store_view_view_model.dart';
 import 'view_models/payment_client_view_model.dart';
+import 'view_models/send_notification_view_model.dart';
 import 'view_models/settings_view_model.dart';
 import 'view_models/statistics_view_model.dart';
 import 'views/business/auth/business_login_view/business_login_view.dart';
@@ -74,6 +76,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<PaymentClientViewModel>(
           create: (ctx) => PaymentClientViewModel(),
         ),
+        ChangeNotifierProvider<SendNotificationViewModel>(
+          create: (ctx) => SendNotificationViewModel(),
+        ),
+        ChangeNotifierProvider<BalanceViewModel>(
+          create: (ctx) => BalanceViewModel(),
+        ),
       ],
       child: MaterialApp(
         title: 'Cashblack',
@@ -83,6 +91,10 @@ class MyApp extends StatelessWidget {
           // colorSchemeSeed: Colors.grey[800],
           useMaterial3: true,
         ),
+        // locale: Locale('ru', 'RU'),
+        // supportedLocales: [
+        //   Locale('ru', 'RU'),
+        // ],
         // home: const CreateStoreView(),
         home: isLogged
             ? (isBusiness ? const BusinessHomeView() : const ClientHomeView())

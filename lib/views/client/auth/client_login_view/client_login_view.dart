@@ -47,8 +47,7 @@ class ClientLoginView extends StatelessWidget {
           children: [
             const HeroTitleWidget(text: 'Введите номер телефона'),
             const SizedBox(height: 20),
-            const SmallTitleWidget(
-                text: 'We will send you the verification code'),
+            const SmallTitleWidget(text: 'Мы отправим вам код подтверждения'),
             const SizedBox(height: 20),
             TextField(
               decoration: InputDecoration(
@@ -72,72 +71,17 @@ class ClientLoginView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             _MainButtonWidget(
-              text: 'Register',
+              text: 'Вход',
               method: context.watch<ClientLoginViewModel>().isLoading
                   ? null
                   : submit,
             ),
             const SizedBox(height: 20),
+            _PublicOfferWidget(),
             // _NumbersWidget(phoneController: phoneController),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _NumbersWidget extends StatelessWidget {
-  const _NumbersWidget({
-    Key? key,
-    required this.phoneController,
-  }) : super(key: key);
-
-  final TextEditingController phoneController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(
-              child: const Text('1'),
-              onPressed: () {
-                phoneController.text += '1';
-                print(phoneController.value);
-              },
-            ),
-            ElevatedButton(onPressed: () {}, child: const Text('2')),
-            ElevatedButton(onPressed: () {}, child: const Text('3')),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(onPressed: () {}, child: const Text('4')),
-            ElevatedButton(onPressed: () {}, child: const Text('5')),
-            ElevatedButton(onPressed: () {}, child: const Text('6')),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(onPressed: () {}, child: const Text('7')),
-            ElevatedButton(onPressed: () {}, child: const Text('8')),
-            ElevatedButton(onPressed: () {}, child: const Text('9')),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(onPressed: () {}, child: const Text('+')),
-            ElevatedButton(onPressed: () {}, child: const Text('0')),
-            ElevatedButton(
-                onPressed: () {}, child: const Icon(CupertinoIcons.back)),
-          ],
-        ),
-      ],
     );
   }
 }
@@ -174,6 +118,62 @@ class _MainButtonWidget extends StatelessWidget {
             color: Colors.white,
             fontSize: 16,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PublicOfferWidget extends StatelessWidget {
+  const _PublicOfferWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: TextButton(
+        onPressed: () {
+          showModalBottomSheet(
+            // enableDrag: true,
+            context: context,
+            builder: (context) {
+              return Container(
+                margin: EdgeInsets.symmetric(
+                  vertical: 20,
+                  horizontal: 16,
+                ),
+                height: double.infinity,
+                width: double.infinity,
+                child: ListView(
+                  children: [
+                    SizedBox(height: 6),
+                    Text(
+                      'Public offer',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      'Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: Text(
+          'Публичная оферта',
         ),
       ),
     );

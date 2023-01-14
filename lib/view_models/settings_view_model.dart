@@ -31,7 +31,7 @@ class SettingsViewModel extends ChangeNotifier {
     return _client.getWorkers();
   }
 
-  Future<Balance> getBalance() async {
+  Future<List<Balance>> getBalance() async {
     return _client.getBalance();
   }
 

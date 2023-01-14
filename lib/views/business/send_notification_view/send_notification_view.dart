@@ -4,7 +4,9 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
+import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/helpers.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/medium_title_widget.dart';
@@ -39,7 +41,8 @@ class _SendNotificationViewState extends State<SendNotificationView> {
     });
   }
 
-  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +52,12 @@ class _SendNotificationViewState extends State<SendNotificationView> {
         children: [
           MediumTitleWidget(text: 'Отправка уведомлений'),
           const SizedBox(height: 20),
-          TextFieldWidget(hintText: 'Заголовок'),
+          TextFieldWidget(hintText: 'Заголовок', controller: _titleController),
           const SizedBox(height: 20),
-          MultilineTextFieldWidget(hintText: 'Текст'),
+          MultilineTextFieldWidget(
+            hintText: 'Текст',
+            controller: _contentController,
+          ),
           const SizedBox(height: 20),
           _fileList.isEmpty
               ? _FilePickerWidget(onTap: selectImage)
@@ -61,43 +67,44 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                     dltImages(_fileList.first);
                   },
                 ),
-          const SizedBox(height: 20),
-          TextFormField(
-            controller: _dateController,
-            decoration: InputDecoration(
-              prefixIcon: Icon(CupertinoIcons.calendar),
-              hintText: 'Дата',
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-              ),
-            ),
-            readOnly: true,
-            onTap: () async {
-              DateTime? pickedDate = await showDatePicker(
-                context: context,
-                initialDate: _dateController.text.isNotEmpty
-                    ? DateTime.parse(_dateController.text)
-                    : DateTime.now(),
-                firstDate: DateTime(2022),
-                lastDate: DateTime(2100),
-              );
-              if (pickedDate == null) return;
-              setState(
-                () {
-                  _dateController.text = pickedDate.toString();
-                },
-              );
-            },
-          ),
+          // const SizedBox(height: 20),
+          // TextFormField(
+          //   controller: _dateController,
+          //   decoration: InputDecoration(
+          //     prefixIcon: Icon(CupertinoIcons.calendar),
+          //     hintText: 'Дата',
+          //     border: const OutlineInputBorder(
+          //       borderRadius: BorderRadius.all(
+          //         Radius.circular(10),
+          //       ),
+          //     ),
+          //   ),
+          //   readOnly: true,
+          //   onTap: () async {
+          //     DateTime? pickedDate = await showDatePicker(
+          //       context: context,
+          //       initialDate: _dateController.text.isNotEmpty
+          //           ? DateTime.parse(_dateController.text)
+          //           : DateTime.now(),
+          //       firstDate: DateTime(2022),
+          //       lastDate: DateTime(2100),
+          //     );
+          //     if (pickedDate == null) return;
+          //     setState(
+          //       () {
+          //         _dateController.text = pickedDate.toString();
+          //       },
+          //     );
+          //   },
+          // ),
           const SizedBox(height: 20),
           MainButtonWidget(
             text: 'Отправить',
-            method: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                Helpers.customSnackBar('Klientlarga notifcation boradi'),
-              );
+            method: () async {
+              await context.read<SendNotificationViewModel>().send(
+                  _fileList[0]!,
+                  _titleController.text,
+                  _contentController.text);
             },
           ),
         ],

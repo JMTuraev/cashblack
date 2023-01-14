@@ -1,15 +1,22 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
+import '../../../domain/models/client_info.dart';
+import '../../../domain/models/client_statistics.dart';
+import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/medium_title_widget.dart';
 
 class BusinessDetailsView extends StatefulWidget {
-  const BusinessDetailsView({super.key});
+  BusinessDetailsView({super.key, required this.id, required this.name});
 
   @override
   State<BusinessDetailsView> createState() => _BusinessDetailsViewState();
+
+  final int id;
+  final String name;
 }
 
 class _BusinessDetailsViewState extends State<BusinessDetailsView> {
@@ -25,6 +32,9 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    Future<ClientStatistics> stats =
+        context.watch<ClientHomeViewModel>().getShopStatistics(widget.id);
+
     final sumRows = List<DataRow>.generate(
       20,
       (i) => const DataRow(
@@ -43,31 +53,47 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              const MediumTitleWidget(text: 'Business name'),
+              MediumTitleWidget(text: widget.name),
               const SizedBox(height: 20),
-              Row(
-                children: [
-                  Spacer(),
-                  Text(
-                    '2 400 300',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Icon(Icons.circle, size: 6),
-                  SizedBox(width: 10),
-                  Text(
-                    '2 400 300',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Spacer(),
-                ],
+              FutureBuilder(
+                future: stats,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    var stat = snapshot.data as ClientStatistics;
+                    return Row(
+                      children: [
+                        Spacer(),
+                        Text(
+                          stat.allSum.toString(),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Icon(Icons.circle, size: 6),
+                        SizedBox(width: 10),
+                        Text(
+                          stat.allCashback.toStringAsFixed(2),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Spacer(),
+                      ],
+                    );
+                  } else
+                    return Text(
+                      '',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                },
               ),
+
               const SizedBox(height: 20),
               _FilterWidget(
                 categoryItems: const [
@@ -124,18 +150,59 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: ListView.builder(
-                  itemCount: 1,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        _CardGeneric(color: Colors.red.shade200),
-                        _CardGeneric(color: Colors.green.shade200),
-                        _CardGeneric(color: Colors.red.shade200),
-                      ],
-                    );
+                child: FutureBuilder(
+                  future: stats,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      var stat = snapshot.data!.clientInfo as List<ClientInfo>;
+
+                      // return Text('data');
+                      final DateFormat formatter =
+                          DateFormat('dd MMMM yyyy, EEEE');
+                      final DateFormat sorter = DateFormat('dd MMMM yyyy');
+                      return Expanded(
+                        child: GroupedListView<ClientInfo, String>(
+                          elements: stat,
+                          groupBy: (element) {
+                            DateTime dates = DateTime.parse(element.date);
+                            return DateUtils.dateOnly(dates).toString();
+
+                            // return DateTime(dates.year, dates.month, dates.day).toString();
+                          },
+                          groupSeparatorBuilder: (String groupByValue) =>
+                              Text(groupByValue),
+                          itemBuilder: (context, ClientInfo element) =>
+                              _CardStat(sumStat: element),
+                          groupHeaderBuilder: (ClientInfo element) => Center(
+                            child: Text(
+                              formatter.format(DateTime.parse(element.date!)),
+                              style: const TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          // useStickyGroupSeparators: true,
+                          // floatingHeader: true,
+                          order: GroupedListOrder.DESC,
+                        ),
+                      );
+                    } else {
+                      return const Text('Нет данных');
+                    }
                   },
                 ),
+                // child: ListView.builder(
+                //   itemCount: 2,
+                //   itemBuilder: (context, index) {
+                //     return Column(
+                //       children: [
+                //         _CardGeneric(color: Colors.red.shade200),
+                //         _CardGeneric(color: Colors.green.shade200),
+                //         _CardGeneric(color: Colors.red.shade200),
+                //       ],
+                //     );
+                //   },
+                // ),
               ),
               // Expanded(
               //   child: SingleChildScrollView(
@@ -543,6 +610,218 @@ class _FilterWidget extends StatelessWidget {
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
               ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CardStat extends StatelessWidget {
+  const _CardStat({
+    Key? key,
+    required this.sumStat,
+  }) : super(key: key);
+
+  final ClientInfo sumStat;
+
+  @override
+  Widget build(BuildContext context) {
+    final DateFormat timeFormatter = DateFormat.Hm();
+
+    return Card(
+      color: Colors.green[300],
+      child: Card(
+        margin: const EdgeInsets.symmetric(
+          vertical: 1,
+          horizontal: 1,
+        ),
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 6,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_drop_up,
+                          color: Colors.green[300],
+                        ),
+                        Text(
+                          sumStat.price.toString(),
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Spacer(),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.red[300],
+                        ),
+                        Text(
+                          sumStat.cashback.toString(),
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Text(
+                      Intl.withLocale(
+                        'ru_RU',
+                        () => timeFormatter
+                            .format(DateTime.parse(sumStat.date.toString())),
+                      ),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: 8),
+                    Text(
+                      sumStat.fullName.toString(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[200],
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        sumStat.fullName,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[200],
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                  ],
+                ),
+                const SizedBox(height: 6),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CardCashback extends StatelessWidget {
+  const _CardCashback({
+    Key? key,
+    required this.sumCashback,
+  }) : super(key: key);
+
+  final ClientInfo sumCashback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white30,
+      child: Card(
+        margin: const EdgeInsets.symmetric(
+          vertical: 1,
+          horizontal: 1,
+        ),
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 6,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: 8),
+                    Text(
+                      sumCashback.fullName,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[200],
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        sumCashback.fullName,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[200],
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_drop_up,
+                          color: Colors.green[300],
+                        ),
+                        Text(
+                          sumCashback.fullName,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Spacer(),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.red[300],
+                        ),
+                        Text(
+                          sumCashback.cashback.toStringAsFixed(2),
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+              ],
             ),
           ),
         ),

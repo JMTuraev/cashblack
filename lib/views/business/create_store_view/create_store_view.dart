@@ -178,7 +178,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                       if (snapshot.hasData) {
                         var category = snapshot.data as List<Category>;
                         return _SelectCategoryWidget(
-                          hint: 'Select Category',
+                          hint: 'Категория',
                           selectedOption: _selectedCategory,
                           categoryItems: category
                               .map(
@@ -192,7 +192,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                         );
                       } else {
                         return const _DefaultSelectCategoryWidget(
-                          hint: 'Select Category',
+                          hint: 'Категория',
                         );
                       }
                     },
@@ -216,7 +216,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                       if (snapshot.hasData) {
                         var provincy = snapshot.data as List<Province>;
                         return _SelectCategoryWidget(
-                          hint: 'Select province',
+                          hint: 'Область',
                           selectedOption: _selectedProvince,
                           categoryItems: provincy
                               .map(
@@ -230,7 +230,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                         );
                       } else {
                         return const _DefaultSelectCategoryWidget(
-                          hint: 'Select Category',
+                          hint: 'Категория',
                         );
                       }
                     },
@@ -246,7 +246,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                       if (snapshot.hasData) {
                         var city = snapshot.data as List<City>;
                         return _SelectCategoryWidget(
-                          hint: 'Select City',
+                          hint: 'Город',
                           selectedOption: _selectedCity,
                           categoryItems: city
                               .map(
@@ -260,7 +260,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                         );
                       } else {
                         return const _DefaultSelectCategoryWidget(
-                          hint: 'Select Category',
+                          hint: 'Категория',
                         );
                       }
                     },
@@ -289,25 +289,31 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                   const SizedBox(height: 20),
                   MainButtonWidget(
                       text: 'OK',
-                      method: () {
+                      method: () async {
                         print(user!.id);
 
                         // if (1 == 2) {
                         if (_isChecked) {
-                          context.read<CreateStoreViewViewModel>().createstore(
+                          context
+                              .read<CreateStoreViewViewModel>()
+                              .createstore(
                                 // user!.id,
                                 int.parse(_selectedCategory!),
                                 _brandName.text,
-                                double.parse(_cashback.text),
+                                int.parse(_cashback.text),
                                 int.parse(_selectedProvince!),
                                 int.parse(_selectedCity!),
                                 _fileList[0]!,
+                              )
+                              .then(
+                                (value) =>
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        CupertinoPageRoute(
+                                          builder: (context) =>
+                                              const BusinessHomeView(),
+                                        ),
+                                        (route) => false),
                               );
-                          Navigator.of(context).pushAndRemoveUntil(
-                              CupertinoPageRoute(
-                                builder: (context) => const BusinessHomeView(),
-                              ),
-                              (route) => false);
                         } else
                           print('check');
                       }),
@@ -335,7 +341,7 @@ class _CashbackWidget extends StatelessWidget {
     return TextFormField(
         controller: controller,
         decoration: const InputDecoration(
-          hintText: 'Cashback',
+          hintText: 'Кэшбек',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(10),
@@ -412,26 +418,31 @@ class _FilePickerWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(
-            const Radius.circular(10),
+            const Radius.circular(90),
           ),
           color: Colors.grey[800],
         ),
-        width: double.infinity,
+        width: 150,
+        height: 150,
         child: DottedBorder(
           borderType: BorderType.RRect,
-          radius: const Radius.circular(10),
+          radius: const Radius.circular(90),
           padding: const EdgeInsets.all(14),
           dashPattern: const [3, 3, 3, 3],
           color: Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
-              Icon(CupertinoIcons.photo),
-              SizedBox(width: 10),
-              Text(
-                'Select photo',
-                style: TextStyle(fontSize: 16),
-              ),
+              Center(
+                  child: Icon(
+                CupertinoIcons.photo,
+                size: 40,
+              )),
+              // SizedBox(width: 10),
+              // Text(
+              // '',
+              // style: TextStyle(fontSize: 16),
+              // ),
             ],
           ),
         ),
@@ -453,7 +464,7 @@ class _BrandNameWidget extends StatelessWidget {
     return TextFormField(
       controller: controller,
       decoration: const InputDecoration(
-        hintText: 'Brand name',
+        hintText: 'Бренд',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),

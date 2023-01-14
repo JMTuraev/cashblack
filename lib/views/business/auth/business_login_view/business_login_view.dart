@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../../view_models/business_login_view_model.dart';
 import '../../../../widgets/hero_title_widget.dart';
@@ -99,6 +100,7 @@ class BusinessLoginView extends StatelessWidget {
                   : submit,
             ),
             const SizedBox(height: 20),
+            _PublicOfferWidget(),
             // _NumbersWidget(phoneController: phoneController),
           ],
         ),
@@ -107,58 +109,58 @@ class BusinessLoginView extends StatelessWidget {
   }
 }
 
-class _NumbersWidget extends StatelessWidget {
-  const _NumbersWidget({
+class _PublicOfferWidget extends StatelessWidget {
+  const _PublicOfferWidget({
     Key? key,
-    required this.phoneController,
   }) : super(key: key);
-
-  final TextEditingController phoneController;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(
-              child: const Text('1'),
-              onPressed: () {
-                phoneController.text += '1';
-                print(phoneController.value);
-              },
-            ),
-            ElevatedButton(onPressed: () {}, child: const Text('2')),
-            ElevatedButton(onPressed: () {}, child: const Text('3')),
-          ],
+    return Center(
+      child: TextButton(
+        onPressed: () {
+          showModalBottomSheet(
+            // enableDrag: true,
+            context: context,
+            builder: (context) {
+              return Container(
+                margin: EdgeInsets.symmetric(
+                  vertical: 20,
+                  horizontal: 16,
+                ),
+                height: double.infinity,
+                width: double.infinity,
+                child: ListView(
+                  children: [
+                    SizedBox(height: 6),
+                    Text(
+                      'Public offer',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      'Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: Text(
+          'Публичная оферта',
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(onPressed: () {}, child: const Text('4')),
-            ElevatedButton(onPressed: () {}, child: const Text('5')),
-            ElevatedButton(onPressed: () {}, child: const Text('6')),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(onPressed: () {}, child: const Text('7')),
-            ElevatedButton(onPressed: () {}, child: const Text('8')),
-            ElevatedButton(onPressed: () {}, child: const Text('9')),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(onPressed: () {}, child: const Text('+')),
-            ElevatedButton(onPressed: () {}, child: const Text('0')),
-            ElevatedButton(
-                onPressed: () {}, child: const Icon(CupertinoIcons.back)),
-          ],
-        ),
-      ],
+      ),
     );
   }
 }

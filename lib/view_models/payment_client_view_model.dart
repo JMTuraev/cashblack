@@ -10,4 +10,8 @@ class PaymentClientViewModel extends ChangeNotifier {
   Future<void> sendCashback(String price, String barcodeId) async {
     await _client.payCashback(price, barcodeId);
   }
+
+  Future<void> payForGoods(String price, String barcodeId) async {
+    await _client.payForGoods(price, barcodeId);
+  }
 }

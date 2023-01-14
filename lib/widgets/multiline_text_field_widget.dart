@@ -2,12 +2,14 @@
 import 'package:flutter/material.dart';
 
 class MultilineTextFieldWidget extends StatelessWidget {
-  const MultilineTextFieldWidget({
+  MultilineTextFieldWidget({
     Key? key,
     required this.hintText,
+    this.controller,
   }) : super(key: key);
 
   final String hintText;
+  TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class MultilineTextFieldWidget extends StatelessWidget {
       showCursor: true,
       keyboardType: TextInputType.multiline,
       maxLines: null,
+      controller: controller,
     );
   }
 }

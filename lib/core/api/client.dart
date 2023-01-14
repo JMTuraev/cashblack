@@ -6,10 +6,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../domain/models/client_statistics.dart';
 import '../../domain/models/balance.dart';
 import '../../domain/models/category.dart';
 import '../../domain/models/city.dart';
 import '../../domain/models/one_month_statistic.dart';
+import '../../domain/models/payment.dart';
+import '../../domain/models/sum_cashback.dart';
 import '../../domain/models/sum_stat.dart';
 import '../../domain/models/user.dart';
 import '../../domain/models/user_category.dart';
@@ -37,6 +40,10 @@ class Client {
       'promo_code': promoCode,
       // 'groups': [1],
     };
+
+    if (appSignature.contains('/')) {
+      appSignature = '9er8fjshds';
+    }
 
     Uri url = Uri.parse('$path/user_sigin_up_views/$appSignature/');
     http.Request req = http.Request('POST', url);
@@ -88,6 +95,10 @@ class Client {
       'password': '1',
     };
 
+    if (appSignature.contains('/')) {
+      appSignature = '9er8fjshds';
+    }
+
     Uri url = Uri.parse('$path/create_client_view/$appSignature/');
     http.Request req = http.Request('POST', url);
     req.body = json.encode(body);
@@ -120,6 +131,10 @@ class Client {
       'Content-Type': ' application/json; charset=utf-8',
       'Authorization': value!
     };
+
+    if (appSignature.contains('/')) {
+      appSignature = '9er8fjshds';
+    }
 
     Uri url = Uri.parse('$path/user_sigin_up_views/$appSignature/');
     http.Request req = http.Request('PUT', url);
@@ -159,7 +174,7 @@ class Client {
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       print(json.decode(resBody));
-      if (json.decode(resBody)[0] == "Tizimga xush kelibsiz") {
+      if (json.decode(resBody)[0] == 'Tizimga xush kelibsiz') {
         await prefs.setBool('isLogged', true);
         await prefs.setBool(type, true);
         return true;
@@ -213,6 +228,7 @@ class Client {
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       print('user' + json.decode(resBody).toString());
+      print('user token: $value');
       User user;
       var decode = (json.decode(resBody));
       user = User.fromJson(decode);
@@ -330,7 +346,10 @@ class Client {
     }
   }
 
-  Future<List<SumStat>> getSumStatistics() async {
+  Future<List<SumStat>> getSumStatistics({
+    String start = '2022-01-01',
+    String end = '2066-12-12',
+  }) async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
       'Content-Type': ' application/json; charset=utf-8',
@@ -338,8 +357,7 @@ class Client {
     };
 
 //todo start end
-    Uri url =
-        Uri.parse('$path/cashbacks_filter_statistics/2022-01-01/2023-12-12/');
+    Uri url = Uri.parse('$path/cashbacks_filter_statistics/$start/$end/');
     http.Request req = http.Request('GET', url);
     req.headers.addAll(headers);
 
@@ -352,6 +370,34 @@ class Client {
       var decode = (json.decode(resBody)['list'] as List);
       sumStat = decode.map((e) => SumStat.fromJson(e)).toList();
       return sumStat;
+    } else {
+      print(res.reasonPhrase);
+      return [];
+    }
+  }
+
+  Future<List<SumCashback>> getCashbackStatistics() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/statistika_summa_view/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('klientlar summasi ' + json.decode(resBody).toString());
+      List<SumCashback> sumCashback;
+      var decode = (json.decode(resBody) as List);
+      sumCashback = decode.map((e) => SumCashback.fromJson(e)).toList();
+      print(sumCashback);
+
+      return sumCashback;
     } else {
       print(res.reasonPhrase);
       return [];
@@ -376,11 +422,7 @@ class Client {
       print('biroylik' + json.decode(resBody).toString());
       List<OneMonthStatistic> sumStat;
       var decode = (json.decode(resBody)['list'] as List);
-      sumStat = decode
-          .map((e) => OneMonthStatistic.fromJson(e))
-          .toList()
-          .reversed
-          .toList();
+      sumStat = decode.map((e) => OneMonthStatistic.fromJson(e)).toList();
       print(sumStat);
 
       return sumStat;
@@ -391,10 +433,9 @@ class Client {
   }
 
   Future<void> createStore(
-    // int userId,
     int category,
     String name,
-    double cashback,
+    int cashback,
     int province,
     int city,
     File file,
@@ -404,39 +445,102 @@ class Client {
       'Content-Type': ' application/json; charset=utf-8',
       'Authorization': value!
     };
-    Map<String, dynamic> body = {
-      'name_shops': name,
-      'cashback': cashback,
-      'categor_id': category,
-      'provinse_id': province,
-      'distrik_id': city,
-      // 'user_id': userId,
-      'brand_img': file,
-    };
+    // Map<String, dynamic> body = {
+    //   'name_shops': name,
+    //   'cashback': cashback,
+    //   'categor_id': category,
+    //   'provinse_id': province,
+    //   'distrik_id': city,
+    //   'brand_img': file,
+    // };
 
-    Uri url = Uri.parse('$path/shops_views/');
-    http.MultipartRequest req = http.MultipartRequest('POST', url);
-    // req.body = json.encode(body);
-    // req.headers.addAll(headers);
-    req.fields['name_shops'] = name;
-    req.fields['cashback'] = cashback.toString();
-    req.fields['categor_id'] = category.toString();
-    req.fields['provinse_id'] = province.toString();
-    req.fields['distrik_id'] = city.toString();
-    // req.fields['user_id'] = userId.toString();
-    req.fields['distrik_id'] = city.toString();
+    final prefs = await SharedPreferences.getInstance();
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$path/shops_views/'),
+    );
+    request.fields.addAll({
+      'name_shops': name,
+      'cashback': cashback.toString(),
+      'categor_id': category.toString(),
+      'provinse_id': province.toString(),
+      'distrik_id': city.toString(),
+    });
 
     var picture = await http.MultipartFile.fromPath('brand_img', file.path);
 
-    req.files.add(picture);
+    request.files.add(picture);
 
-    var res = await req.send();
-    final resBody = await res.stream.bytesToString();
+    request.headers.addAll(headers);
 
-    if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print('crated store');
+      print(await response.stream.bytesToString());
+      // await prefs.setBool('isBusiness', true);
     } else {
-      print(res.reasonPhrase);
+      print(response.reasonPhrase);
+    }
+
+    // Uri url = Uri.parse('$path/shops_views/');
+    // http.MultipartRequest req = http.MultipartRequest('POST', url);
+    // req.fields['name_shops'] = name;
+    // req.fields['cashback'] = cashback.toString();
+    // req.fields['categor_id'] = category.toString();
+    // req.fields['provinse_id'] = province.toString();
+    // req.fields['distrik_id'] = city.toString();
+
+    // var picture = await http.MultipartFile.fromPath('brand_img', file.path);
+
+    // req.files.add(picture);
+
+    // var res = await req.send();
+    // final resBody = await res.stream.bytesToString();
+
+    // if (res.statusCode >= 200 && res.statusCode < 300) {
+    //   print(json.decode(resBody));
+    // } else {
+    //   print(res.reasonPhrase);
+    // }
+  }
+
+  Future<void> sendNotification(
+    String title,
+    String content,
+    File img,
+  ) async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    final prefs = await SharedPreferences.getInstance();
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$path/all_notification_views/'),
+    );
+    request.fields.addAll({
+      'title': title,
+      'content': content,
+    });
+
+    var picture = await http.MultipartFile.fromPath('img', img.path);
+
+    request.files.add(picture);
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print('sent notification');
+      print(await response.stream.bytesToString());
+    } else {
+      print(response.reasonPhrase);
     }
   }
 
@@ -471,7 +575,6 @@ class Client {
     req.fields['cashback'] = cashback.toString();
     req.fields['categor_id'] = category.toString();
     req.fields['provinse_id'] = province.toString();
-    req.fields['distrik_id'] = city.toString();
     req.fields['distrik_id'] = city.toString();
 
     var picture = await http.MultipartFile.fromPath('brand_img', file.path);
@@ -521,13 +624,14 @@ class Client {
     }
   }
 
-  Future<Balance> getBalance() async {
+  Future<List<Balance>> getBalance() async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
       'Content-Type': ' application/json; charset=utf-8',
       'Authorization': value!
     };
 
+    // Uri url = Uri.parse('$path/shop_client_views/');
     Uri url = Uri.parse('$path/my_blance/');
     http.Request req = http.Request('GET', url);
     req.headers.addAll(headers);
@@ -536,14 +640,43 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
-      var decode = (json.decode(resBody));
-      var decoded = Balance.fromJson(decode);
-      print(decoded);
-      return decoded;
+      print('workers' + json.decode(resBody).toString());
+      List<Balance> worker;
+      var decode = (json.decode(resBody) as List);
+      worker =
+          decode.map((e) => Balance.fromJson(e)).toList().reversed.toList();
+      return worker;
     } else {
       print(res.reasonPhrase);
-      throw Exception();
+      return [];
+    }
+  }
+
+  Future<List<Payment>> getPaymentHistory() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    // Uri url = Uri.parse('$path/shop_client_views/');
+    Uri url = Uri.parse('$path/history_payment/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('workers' + json.decode(resBody).toString());
+      List<Payment> worker;
+      var decode = (json.decode(resBody) as List);
+      worker =
+          decode.map((e) => Payment.fromJson(e)).toList().reversed.toList();
+      return worker;
+    } else {
+      print(res.reasonPhrase);
+      return [];
     }
   }
 
@@ -611,6 +744,34 @@ class Client {
     }
   }
 
+  Future<ClientStatistics> getShopStatistics(int id) async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    // Uri url = Uri.parse('$path/shop_client_views/');
+    Uri url = Uri.parse('$path/client_shops_statistics/$id');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('user' + json.decode(resBody).toString());
+      print('user token: $value');
+      ClientStatistics user;
+      var decode = (json.decode(resBody));
+      user = ClientStatistics.fromJson(decode);
+      return user;
+    } else {
+      print(res.reasonPhrase);
+      throw Exception();
+    }
+  }
+
   Future<void> payCashback(
     String price,
     String barcodeId,
@@ -624,7 +785,7 @@ class Client {
       'Authorization': value!
     };
 
-    barcodeId = '2724815414507';
+    barcodeId = '9755342135590';
 
 //todo batcode get
     Uri url = Uri.parse('$path/cashbak_create/$barcodeId/False/');
@@ -637,6 +798,113 @@ class Client {
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       print(json.decode(resBody));
+    } else {
+      print(res.reasonPhrase);
+    }
+  }
+
+  Future<void> payForGoods(
+    String price,
+    String barcodeId,
+  ) async {
+    Map<String, String> body = {
+      'price': price,
+    };
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    barcodeId = '9755342135590';
+
+//todo batcode get
+    Uri url = Uri.parse('$path/cashbak_create/$barcodeId/True/');
+    http.Request req = http.Request('POST', url);
+    req.body = json.encode(body);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(json.decode(resBody));
+    } else {
+      print(res.reasonPhrase);
+    }
+  }
+
+  Future<List<dynamic>> enterCardDetails(
+    String cardNumber,
+    String expireDate,
+    String amount,
+  ) async {
+    Map<String, String> body = {
+      'card_number': cardNumber,
+      'expire_date': expireDate,
+      'amount': amount
+    };
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/payment_send_card/');
+    http.Request req = http.Request('POST', url);
+    req.body = json.encode(body);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      List<dynamic> result = [
+        cardNumber,
+        expireDate,
+        amount,
+        json.decode(resBody)['msg']['result']['session'],
+        json.decode(resBody)['msg']['result']['otpSentPhone']
+      ];
+      print(result);
+      return result;
+    } else {
+      print(res.reasonPhrase);
+      return ['xato'];
+    }
+  }
+
+  Future<void> paymentConfirm(
+    String cardNumber,
+    String expireDate,
+    String amount,
+    int session,
+    String otp,
+  ) async {
+    Map<String, dynamic> body = {
+      'card_number': cardNumber,
+      'expire_date': expireDate,
+      'amount': amount,
+      'session': session,
+      'otp': otp,
+    };
+
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/payment_confirm_card/');
+    http.Request req = http.Request('POST', url);
+    req.body = json.encode(body);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('tolandi------ ' + json.decode(resBody));
     } else {
       print(res.reasonPhrase);
     }

@@ -52,7 +52,7 @@ class CreateStoreViewViewModel extends ChangeNotifier {
     // int userId,
     int category,
     String name,
-    double cashback,
+    int cashback,
     int province,
     int city,
     File file,

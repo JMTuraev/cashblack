@@ -19,7 +19,7 @@ class ClientNotificationsView extends StatelessWidget {
               Center(child: MediumTitleWidget(text: 'Уведомления')),
               Expanded(
                 child: ListView.separated(
-                  itemCount: 20,
+                  itemCount: 0,
                   separatorBuilder: (context, index) {
                     return Divider(
                       height: 1,
