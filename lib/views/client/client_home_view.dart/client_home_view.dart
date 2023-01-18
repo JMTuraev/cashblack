@@ -56,6 +56,7 @@ class _ClientHomeViewState extends State<ClientHomeView> {
         items: items,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.black54,
       ),
       // body: IndexedStack(
       //   index: currentIndex,

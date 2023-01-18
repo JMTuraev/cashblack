@@ -71,14 +71,14 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const HeroTitleWidget(
-                text: 'Verification Code',
+                text: 'Верификационный код',
               ),
               const SizedBox(height: 20),
               const SmallTitleWidget(
-                text: 'Please type the verification code sent to',
+                text: 'СМС код отпавлен на номер',
               ),
               const SizedBox(height: 5),
               SmallTitleWidget(
@@ -108,7 +108,7 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
               ),
               const SizedBox(height: 20),
               TextButtonWidget(
-                text: 'Didn\'t receive the code. Resend code',
+                text: 'Не получили код. Отправить код еще раз',
                 method: () {
                   print(_animationController!.isCompleted.toString());
                   _animationController!.reset();
@@ -124,7 +124,7 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
               ),
               const SizedBox(height: 20),
               MainButtonWidget(
-                text: 'Verify',
+                text: 'Подтвердить',
                 method: () async {
                   print(otpCode);
                   await context.read<ClientHomeViewModel>().getProfile();

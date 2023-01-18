@@ -2,25 +2,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../../domain/models/received_notification.dart';
+import '../../../domain/models/sent_notification.dart';
 import '../../../utils/constants.dart';
 import '../../../widgets/medium_title_widget.dart';
 import '../../../widgets/screen_wrapper.dart';
 
-class ClientNotificationInfoView extends StatelessWidget {
-  const ClientNotificationInfoView({
+class NotificationInfoView extends StatelessWidget {
+  const NotificationInfoView({
     Key? key,
-    required this.receivedNotification,
+    required this.sentNotification,
   }) : super(key: key);
 
-  final ReceivedNotification receivedNotification;
+  final SentNotification sentNotification;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(receivedNotification.name),
+          title: Text(sentNotification.shop.name),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -28,7 +28,7 @@ class ClientNotificationInfoView extends StatelessWidget {
             children: [
               Center(
                 child: MediumTitleWidget(
-                  text: receivedNotification.title,
+                  text: sentNotification.title,
                 ),
               ),
               SizedBox(height: 20),
@@ -39,12 +39,12 @@ class ClientNotificationInfoView extends StatelessWidget {
                 child: CachedNetworkImage(
                   // height: MediaQuery.of(context).size.width,
                   fit: BoxFit.cover,
-                  imageUrl: Constants.media + receivedNotification.image,
+                  imageUrl: Constants.media + sentNotification.image,
                 ),
               ),
               SizedBox(height: 10),
               Text(
-                receivedNotification.content,
+                sentNotification.content,
                 textAlign: TextAlign.justify,
                 style: TextStyle(
                   fontSize: 18,

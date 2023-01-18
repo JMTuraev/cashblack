@@ -13,6 +13,7 @@ SumStat _$SumStatFromJson(Map<String, dynamic> json) => SumStat(
       fullName: json['full_name'] as String?,
       salesman: json['salesman'] as String?,
       date: json['date'] as String?,
+      isWithdraw: json['true_false'] as bool,
     );
 
 Map<String, dynamic> _$SumStatToJson(SumStat instance) => <String, dynamic>{
@@ -22,4 +23,5 @@ Map<String, dynamic> _$SumStatToJson(SumStat instance) => <String, dynamic>{
       'cashback': instance.cashback,
       'salesman': instance.salesman,
       'date': instance.date,
+      'true_false': instance.isWithdraw,
     };

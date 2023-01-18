@@ -4,28 +4,41 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/received_notification.dart';
 import '../../../domain/models/sent_notification.dart';
 import '../../../utils/constants.dart';
-import '../../../view_models/client_home_view_model.dart';
 import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 
 import 'package:cashblack/extensions.dart';
 
-import '../../business/send_notification_view/notification_info_view.dart';
-import 'client_notification_info_view.dart';
+import 'notification_info_view.dart';
+import 'send_notification_view.dart';
 
-class ClientNotificationsView extends StatelessWidget {
-  const ClientNotificationsView({super.key});
+class ServicesView extends StatelessWidget {
+  const ServicesView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+              tooltip: 'Отправка уведомлений',
+              onPressed: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => SendNotificationView(),
+                  ),
+                );
+              },
+              icon: Icon(
+                Icons.send_rounded,
+              ),
+            ),
+          ],
           title: const Text(
-            'Уведомления',
+            'Сервисы',
             style: TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -34,12 +47,20 @@ class ClientNotificationsView extends StatelessWidget {
         body: Container(
           child: Column(
             children: [
+              Text(
+                'Отправленные уведомления',
+                style: TextStyle(
+                  fontSize: 22,
+                ),
+              ),
+              SizedBox(height: 20),
               FutureBuilder(
-                future: context.watch<ClientHomeViewModel>().getNotifications(),
+                future: context
+                    .watch<SendNotificationViewModel>()
+                    .getNotifications(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    var notifications =
-                        snapshot.data as List<ReceivedNotification>;
+                    var notifications = snapshot.data as List<SentNotification>;
                     return Expanded(
                       child: ListView.separated(
                         itemCount: notifications.length,
@@ -48,9 +69,8 @@ class ClientNotificationsView extends StatelessWidget {
                             onTap: () {
                               Navigator.of(context).push(
                                 CupertinoPageRoute(
-                                  builder: (context) =>
-                                      ClientNotificationInfoView(
-                                    receivedNotification: notifications[index],
+                                  builder: (context) => NotificationInfoView(
+                                    sentNotification: notifications[index],
                                   ),
                                 ),
                               );
@@ -73,6 +93,7 @@ class ClientNotificationsView extends StatelessWidget {
                                         height:
                                             MediaQuery.of(context).size.width /
                                                 4,
+                                        //todo width
                                         width:
                                             MediaQuery.of(context).size.width /
                                                 3,
@@ -93,7 +114,7 @@ class ClientNotificationsView extends StatelessWidget {
                                             Text(
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
-                                              notifications[index].name,
+                                              notifications[index].shop.name,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -107,14 +128,14 @@ class ClientNotificationsView extends StatelessWidget {
                                                 fontSize: 18,
                                               ),
                                             ),
-                                            // SizedBox(height: 4),
-                                            // Text(
-                                            //   notifications[index]
-                                            //       .date
-                                            //       .getLocaleDateTime(),
-                                            //   maxLines: 2,
-                                            //   overflow: TextOverflow.ellipsis,
-                                            // ),
+                                            SizedBox(height: 4),
+                                            Text(
+                                              notifications[index]
+                                                  .date
+                                                  .getLocaleDateTime(),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -139,7 +160,7 @@ class ClientNotificationsView extends StatelessWidget {
                       ),
                     );
                   } else
-                    return Text('no');
+                    return Center(child: CircularProgressIndicator());
                 },
               ),
             ],

@@ -106,11 +106,12 @@ class _ScannerViewState extends State<ScannerView> {
             child: MainButtonWidget(
               text: 'Далее',
               method: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => PaymentClientView(),
-                  ),
-                );
+                //todo deliberately
+                // Navigator.of(context).push(
+                //   CupertinoPageRoute(
+                //     builder: (context) => PaymentClientView(),
+                //   ),
+                // );
               },
             ),
           ),

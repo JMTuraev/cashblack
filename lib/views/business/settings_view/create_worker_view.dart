@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/medium_title_widget.dart';
 import '../../../widgets/screen_wrapper.dart';
 import '../../../widgets/text_field_widget.dart';
+import '../business_home_view/business_home_view.dart';
 
 class CreateWorkerView extends StatelessWidget {
   const CreateWorkerView({super.key});
@@ -65,7 +67,12 @@ class CreateWorkerView extends StatelessWidget {
                       fistNameController.text,
                       ' ',
                     );
-                Navigator.pop(context);
+                Navigator.of(context).pushAndRemoveUntil(
+                  CupertinoPageRoute(
+                    builder: (context) => const BusinessHomeView(),
+                  ),
+                  (route) => false,
+                );
               },
             ),
           ],

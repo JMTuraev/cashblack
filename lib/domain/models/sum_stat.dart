@@ -12,6 +12,8 @@ class SumStat {
   final double cashback;
   final String? salesman;
   final String? date;
+  @JsonKey(name: 'true_false')
+  final bool isWithdraw;
 
   SumStat({
     required this.userName,
@@ -20,6 +22,7 @@ class SumStat {
     this.fullName,
     this.salesman,
     this.date,
+    required this.isWithdraw,
   });
 
   factory SumStat.fromJson(Map<String, Object?> json) =>

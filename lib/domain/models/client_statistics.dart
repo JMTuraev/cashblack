@@ -11,7 +11,7 @@ class ClientStatistics {
   @JsonKey(name: 'all_cashback')
   final double allCashback;
   @JsonKey(name: 'all_true_cashback')
-  final int allTrueCashback;
+  final double allTrueCashback;
   @JsonKey(name: 'all_seperate_cashback')
   final double allSeperateCashback;
 

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -8,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/sum_cashback.dart';
 import '../../../domain/models/sum_stat.dart';
+import '../../../extensions.dart';
 import '../../../view_models/statistics_view_model.dart';
 
 class StatisticsView extends StatefulWidget {
@@ -47,17 +46,28 @@ class _StatisticsViewState extends State<StatisticsView> {
     final String formatted = formatter.format(now);
     // print('bugun ' + formatted);
 
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Статистика',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          // centerTitle: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 10,
+          ),
           child: Column(
             children: [
               Row(
                 children: [
                   Expanded(
                     child: summa
-                        ? ElevatedButton(
+                        ? OutlinedButton(
                             onPressed: () {},
                             child: const Text(
                               'Сумма',
@@ -66,7 +76,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                               ),
                             ),
                           )
-                        : OutlinedButton(
+                        : ElevatedButton(
                             onPressed: () {
                               setState(() {
                                 summa = true;
@@ -84,7 +94,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: cashback
-                        ? ElevatedButton(
+                        ? OutlinedButton(
                             onPressed: () {},
                             child: const Text(
                               'Кэшбэк',
@@ -93,7 +103,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                               ),
                             ),
                           )
-                        : OutlinedButton(
+                        : ElevatedButton(
                             onPressed: () {
                               setState(() {
                                 summa = false;
@@ -213,7 +223,9 @@ class _SumWidget extends StatelessWidget {
       future: stats,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List<SumStat> sumStat = snapshot.data as List<SumStat>;
+          List<SumStat> sumStat = (snapshot.data as List<SumStat>)
+              .where((element) => element.isWithdraw == false)
+              .toList();
           // return Text('data');
           final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
           final DateFormat sorter = DateFormat('dd MMMM yyyy');
@@ -366,12 +378,18 @@ class _CardStat extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.arrow_drop_up,
-                          color: Colors.green[300],
-                        ),
+                        // Icon(
+                        //   Icons.attach_money_rounded,
+                        //   color: Colors.green[300],
+                        // ),
+                        SizedBox(width: 8),
                         Text(
-                          sumStat.price.toString(),
+                          NumberFormat.simpleCurrency(
+                                name: '',
+                                locale: 'ru_RU',
+                                decimalDigits: 0,
+                              ).format(sumStat.price) +
+                              'UZS',
                           style: const TextStyle(
                             fontSize: 18,
                           ),
@@ -379,14 +397,21 @@ class _CardStat extends StatelessWidget {
                       ],
                     ),
                     // Spacer(),
+                    SizedBox(width: 20),
                     Row(
                       children: [
                         Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.red[300],
+                          CupertinoIcons.money_dollar_circle,
+                          color: Colors.green[300],
                         ),
+                        SizedBox(width: 4),
                         Text(
-                          sumStat.cashback.toString(),
+                          NumberFormat.simpleCurrency(
+                                name: '',
+                                locale: 'ru_RU',
+                                decimalDigits: 0,
+                              ).format(sumStat.cashback) +
+                              'UZS',
                           style: const TextStyle(
                             fontSize: 18,
                           ),
@@ -395,11 +420,8 @@ class _CardStat extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      Intl.withLocale(
-                        'ru_RU',
-                        () => timeFormatter
-                            .format(DateTime.parse(sumStat.date.toString())),
-                      ),
+                      timeFormatter
+                          .format(DateTime.parse(sumStat.date.toString())),
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey[400],
@@ -425,7 +447,11 @@ class _CardStat extends StatelessWidget {
                     SizedBox(width: 16),
                     Expanded(
                       child: Text(
-                        sumStat.userName,
+                        // sumStat.userName.replaceAllMapped(
+                        //     RegExp(r'(\d{3})(\d{2})(\d{3})(\d{2})(\d+)'),
+                        //     (m) =>
+                        //         '+(${m[1]}) ${m[2]} ${m[3]} ${m[4]} ${m[5]}'),
+                        sumStat.userName.phoneFormatter(),
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[200],
@@ -457,6 +483,8 @@ class _CardCashback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final oCcy = NumberFormat('# ##0', 'ru_RU');
+
     return Card(
       color: Colors.white30,
       child: Card(
@@ -490,10 +518,7 @@ class _CardCashback extends StatelessWidget {
                     SizedBox(width: 16),
                     Expanded(
                       child: Text(
-                        sumCashback.phone.replaceAllMapped(
-                          RegExp(r'(\d{3})(\d{2})(\d{3})(\d{2})(\d+)'),
-                          (m) => '+(${m[1]}) ${m[2]} ${m[3]} ${m[4]} ${m[5]}',
-                        ),
+                        sumCashback.phone.phoneFormatter(),
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[200],
@@ -510,12 +535,18 @@ class _CardCashback extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.arrow_drop_up,
-                          color: Colors.green[300],
-                        ),
+                        // Icon(
+                        //   Icons.arrow_drop_up,
+                        //   color: Colors.green[300],
+                        // ),
+                        SizedBox(width: 8),
                         Text(
-                          sumCashback.sum.toString(),
+                          NumberFormat.simpleCurrency(
+                                name: '',
+                                locale: 'ru_RU',
+                                decimalDigits: 0,
+                              ).format(sumCashback.sum) +
+                              'UZS',
                           style: const TextStyle(
                             fontSize: 18,
                           ),
@@ -525,12 +556,18 @@ class _CardCashback extends StatelessWidget {
                     // Spacer(),
                     Row(
                       children: [
+                        SizedBox(width: 20),
                         Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.red[300],
+                          CupertinoIcons.money_dollar_circle,
+                          color: Colors.green[300],
                         ),
+                        SizedBox(width: 4),
                         Text(
-                          sumCashback.cashback.toStringAsFixed(2),
+                          NumberFormat.simpleCurrency(
+                            name: '',
+                            locale: 'ru_RU',
+                            decimalDigits: 0,
+                          ).format(sumCashback.cashback),
                           style: const TextStyle(
                             fontSize: 18,
                           ),

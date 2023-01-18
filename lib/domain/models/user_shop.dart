@@ -8,6 +8,7 @@ class UserShop {
     required this.id,
     required this.name,
     required this.logo,
+    required this.cashbackPercentage,
   });
 
   final int id;
@@ -15,6 +16,8 @@ class UserShop {
   final String name;
   @JsonKey(name: 'brand_img')
   final String logo;
+  @JsonKey(name: 'cashback_persent')
+  final int cashbackPercentage;
 
   factory UserShop.fromJson(Map<String, Object?> json) =>
       _$UserShopFromJson(json);

@@ -30,50 +30,21 @@ class _MainViewState extends State<MainView> {
     // var userCategoryList = context.watch<ClientHomeViewModel>().userCategory;
     // var userShops = context.watch<ClientHomeViewModel>().userShop;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Cashback',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        // centerTitle: true,
+      ),
       body: SafeArea(
         child: Container(
           child: Padding(
             padding: const EdgeInsets.all(20),
-            child: ListView(
+            child: Column(
               children: [
-                Column(
-                  children: [
-                    const Center(
-                      child: Text(
-                        'Cashback баланс',
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      '0 UZS',
-                      style: TextStyle(
-                        fontSize: 28,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     Navigator.of(context).push(
-                    //       CupertinoPageRoute(
-                    //         builder: (context) => PaymentsHistoryView(),
-                    //       ),
-                    //     );
-                    //   },
-                    //   child: Column(
-                    //     children: const [
-                    //       Icon(
-                    //         CupertinoIcons.arrow_right_arrow_left_circle,
-                    //         size: 30,
-                    //       ),
-                    //       Text('История'),
-                    //     ],
-                    //   ),
-                    // )
-                  ],
-                ),
                 Center(child: MediumTitleWidget(text: 'Категории')),
                 SizedBox(height: 20),
                 FutureBuilder(
@@ -87,8 +58,8 @@ class _MainViewState extends State<MainView> {
 
                       return Expanded(
                         child: GridView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
+                          // physics: NeverScrollableScrollPhysics(),
+                          // shrinkWrap: true,
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -103,29 +74,60 @@ class _MainViewState extends State<MainView> {
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
                                     builder: (context) => BusinessListView(
-                                      shopId: userCategoryList[index].id,
-                                      name: userCategoryList[index].name,
-                                    ),
+                                        userCategory: userCategoryList[index]),
                                   ),
                                 );
                               }),
                               child: Card(
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
-                                child: Column(
+                                child: Stack(
+                                  alignment: Alignment.center,
                                   children: [
-                                    Spacer(),
+                                    // Spacer(),
                                     CachedNetworkImage(
-                                      width: 120,
+                                      // width: 120,
+                                      width: double.infinity,
                                       imageUrl: Constants.media +
                                           userCategoryList[index].logo,
                                     ),
+                                    Positioned(
+                                      left: 0,
+                                      right: 0,
+                                      bottom: 10,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        child: Text(
+                                          userCategoryList[index].name,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(4, 4),
+                                                blurRadius: 11,
+                                                color: Colors.black54,
+                                              ),
+                                              Shadow(
+                                                offset: Offset(4, 4),
+                                                blurRadius: 11,
+                                                color: Colors.white54,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
                                     // Placeholder(
                                     //   // fallbackWidth: 100,
                                     //   fallbackHeight: 140,
                                     // ),
-                                    Spacer(),
-                                    Text(userCategoryList[index].name),
-                                    Spacer(),
+                                    // Spacer(),
+                                    // Text(userCategoryList[index].name),
+                                    // Spacer(),
                                   ],
                                 ),
                               ),

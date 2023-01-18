@@ -73,14 +73,14 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const HeroTitleWidget(
-                text: 'Verification Code',
+                text: 'Верификационный код',
               ),
               const SizedBox(height: 20),
               const SmallTitleWidget(
-                text: 'Please type the verification code sent to',
+                text: 'СМС код отпавлен на номер',
               ),
               const SizedBox(height: 5),
               SmallTitleWidget(

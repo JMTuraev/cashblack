@@ -12,6 +12,7 @@ class HeroTitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
+      textAlign: TextAlign.center,
       style: const TextStyle(
         fontSize: 34,
       ),

@@ -5,11 +5,11 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/user.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../view_models/settings_view_model.dart';
-import '../../../widgets/screen_wrapper.dart';
 import '../../../widgets/text_button_widget.dart';
-import '../../business/settings_view/edit_name_view.dart';
-import '../../business/settings_view/payments_history_view.dart';
 import '../../select_type_view/select_type_view.dart';
+import 'edit_name_view.dart';
+
+import 'package:cashblack/extensions.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -18,97 +18,53 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     User user = context.watch<ClientHomeViewModel>().user;
 
-    return ScreenWrapper(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // const MediumTitleWidget(text: 'Settings'),
-          // const SizedBox(height: 15),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(10),
-            child: Stack(
-              children: [
-                Column(
-                  children: [
-                    // const Center(
-                    //   child: Text(
-                    //     'Cashback баланс',
-                    //     style: TextStyle(
-                    //       fontSize: 16,
-                    //     ),
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 4),
-                    // const Text(
-                    //   '0 UZS',
-                    //   style: TextStyle(
-                    //     fontSize: 28,
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 10),
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     Navigator.of(context).push(
-                    //       CupertinoPageRoute(
-                    //         builder: (context) => PaymentsHistoryView(),
-                    //       ),
-                    //     );
-                    //   },
-                    //   child: Column(
-                    //     children: const [
-                    //       Icon(
-                    //         CupertinoIcons.arrow_right_arrow_left_circle,
-                    //         size: 30,
-                    //       ),
-                    //       Text('История'),
-                    //     ],
-                    //   ),
-                    // )
-                    const Center(
-                      child: Text(
-                        'Настройки',
-                        style: TextStyle(
-                          fontSize: 22,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Positioned(
-                  right: 0,
-                  child: GestureDetector(
-                    child: const Icon(Icons.logout),
-                    onTap: () async {
-                      await context.read<SettingsViewModel>().logout();
-                      Navigator.of(context).pushAndRemoveUntil(
-                        CupertinoPageRoute(
-                          builder: (context) => const SelectTypeView(),
-                        ),
-                        (route) => false,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 15),
-          _ProfileCardWidget(
-            user: user,
-          ),
-          const SizedBox(height: 15),
-          const Text(
-            'Магазины',
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Настройки',
             style: TextStyle(
-              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 15),
-          // const _BrandCardWidget(),
-          // const SizedBox(height: 10),
-          // const _BrandCardWidget(),
-        ],
+          actions: [
+            IconButton(
+              onPressed: () async {
+                await context.read<SettingsViewModel>().logout();
+                Navigator.of(context).pushAndRemoveUntil(
+                  CupertinoPageRoute(
+                    builder: (context) => const SelectTypeView(),
+                  ),
+                  (route) => false,
+                );
+              },
+              icon: const Icon(Icons.logout),
+            )
+          ],
+          // centerTitle: true,
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            children: [
+              const SizedBox(height: 15),
+              _ProfileCardWidget(
+                user: user,
+              ),
+              const SizedBox(height: 15),
+              // const Text(
+              //   'Магазины',
+              //   style: TextStyle(
+              //     fontSize: 18,
+              //   ),
+              // ),
+              const SizedBox(height: 15),
+              // const _BrandCardWidget(),
+              // const SizedBox(height: 10),
+              // const _BrandCardWidget(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -179,7 +135,7 @@ class _ProfileCardWidget extends StatelessWidget {
                       title: '${user!.firstName} ${user!.lastName}',
                     ),
               const SizedBox(height: 10),
-              Text(user!.userName),
+              Text(user!.userName.phoneFormatter()),
             ],
           ),
           Positioned(

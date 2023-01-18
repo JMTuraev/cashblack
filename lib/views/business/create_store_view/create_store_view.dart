@@ -27,7 +27,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
   String? _selectedProvince;
   String? _selectedCity;
 
-  User? user;
+  // User? user;
 
   bool _isChecked = false;
 
@@ -110,8 +110,8 @@ class _CreateStoreViewState extends State<CreateStoreView> {
   }
 
   void loadUser() async {
-    user = await context.read<CreateStoreViewViewModel>().getProfile();
-    print(user?.id.toString());
+    // user = await context.read<CreateStoreViewViewModel>().getProfile();
+    // print(user?.id.toString());
   }
 
   TextEditingController _brandName = TextEditingController();
@@ -230,7 +230,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                         );
                       } else {
                         return const _DefaultSelectCategoryWidget(
-                          hint: 'Категория',
+                          hint: 'Область',
                         );
                       }
                     },
@@ -260,7 +260,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                         );
                       } else {
                         return const _DefaultSelectCategoryWidget(
-                          hint: 'Категория',
+                          hint: 'Город',
                         );
                       }
                     },
@@ -290,7 +290,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                   MainButtonWidget(
                       text: 'OK',
                       method: () async {
-                        print(user!.id);
+                        // print(user!.id);
 
                         // if (1 == 2) {
                         if (_isChecked) {

@@ -10,7 +10,7 @@ ClientStatistics _$ClientStatisticsFromJson(Map<String, dynamic> json) =>
     ClientStatistics(
       allSum: json['all_sum'] as int,
       allCashback: (json['all_cashback'] as num).toDouble(),
-      allTrueCashback: json['all_true_cashback'] as int,
+      allTrueCashback: (json['all_true_cashback'] as num).toDouble(),
       allSeperateCashback: (json['all_seperate_cashback'] as num).toDouble(),
       clientInfo: (json['client_info'] as List<dynamic>)
           .map((e) => ClientInfo.fromJson(e as Map<String, dynamic>))

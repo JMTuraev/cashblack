@@ -14,4 +14,8 @@ class PaymentClientViewModel extends ChangeNotifier {
   Future<void> payForGoods(String price, String barcodeId) async {
     await _client.payForGoods(price, barcodeId);
   }
+
+  Future<dynamic> getUserFromBarcode(String barcodeId) async {
+    return _client.getUserFromBarcode(barcodeId);
+  }
 }

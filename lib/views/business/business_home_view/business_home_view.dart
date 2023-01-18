@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 
 import '../../../view_models/business_home_view_model.dart';
 import '../main_view/main_view.dart';
+import '../scanner_view/barcode_scanner_view.dart';
 import '../scanner_view/scanner_view.dart';
 import '../send_notification_view/send_notification_view.dart';
+import '../send_notification_view/services_view.dart';
 import '../settings_view/settings_view.dart';
 import '../statistics_view/statistics_view.dart';
 
@@ -29,8 +31,9 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
     List<Widget> body = const [
       MainView(),
       StatisticsView(),
-      ScannerView(),
-      SendNotificationView(),
+      // ScannerView(),
+      BarcodeScannerView(),
+      ServicesView(),
       SettingsView(),
     ];
 
@@ -50,8 +53,8 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
         label: 'Сканер',
       ),
       BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.chat_bubble),
-        label: 'Отправка',
+        icon: Icon(CupertinoIcons.square_grid_2x2),
+        label: 'Сервисы',
       ),
       BottomNavigationBarItem(
         icon: Icon(CupertinoIcons.settings),
@@ -67,6 +70,7 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
         items: items,
+        backgroundColor: Colors.black54,
       ),
       // body: IndexedStack(
       //   index: currentIndex,

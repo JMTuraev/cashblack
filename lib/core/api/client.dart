@@ -10,6 +10,8 @@ import '../../domain/models/client_statistics.dart';
 import '../../domain/models/balance.dart';
 import '../../domain/models/category.dart';
 import '../../domain/models/city.dart';
+import '../../domain/models/received_notification.dart';
+import '../../domain/models/sent_notification.dart';
 import '../../domain/models/one_month_statistic.dart';
 import '../../domain/models/payment.dart';
 import '../../domain/models/sum_cashback.dart';
@@ -544,6 +546,68 @@ class Client {
     }
   }
 
+  Future<List<SentNotification>> getSentNotifications() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    // Uri url = Uri.parse('$path/shop_client_views/');
+    Uri url = Uri.parse('$path/all_notification_views/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('notifs ' + json.decode(resBody).toString());
+      List<SentNotification> worker;
+      var decode = (json.decode(resBody) as List);
+      worker = decode
+          .map((e) => SentNotification.fromJson(e))
+          .toList()
+          .reversed
+          .toList();
+      return worker;
+    } else {
+      print(res.reasonPhrase);
+      return [];
+    }
+  }
+
+  Future<List<ReceivedNotification>> getReceivedNotifications() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    // Uri url = Uri.parse('$path/shop_client_views/');
+    Uri url = Uri.parse('$path/allClient_notification_view/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('notifs ' + json.decode(resBody).toString());
+      List<ReceivedNotification> worker;
+      var decode = (json.decode(resBody) as List);
+      worker = decode
+          .map((e) => ReceivedNotification.fromJson(e))
+          .toList()
+          .reversed
+          .toList();
+      return worker;
+    } else {
+      print(res.reasonPhrase);
+      return [];
+    }
+  }
+
   Future<void> editStore(
     int shopId,
     int category,
@@ -646,6 +710,32 @@ class Client {
       worker =
           decode.map((e) => Balance.fromJson(e)).toList().reversed.toList();
       return worker;
+    } else {
+      print(res.reasonPhrase);
+      return [];
+    }
+  }
+
+  Future<dynamic> getUserFromBarcode(String barcode) async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    // Uri url = Uri.parse('$path/shop_client_views/');
+    Uri url = Uri.parse('$path/cashbak_create/$barcode/False/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('workers' + json.decode(resBody).toString());
+      var decode = (json.decode(resBody)['data'] as List);
+
+      return decode[0];
     } else {
       print(res.reasonPhrase);
       return [];
@@ -785,7 +875,7 @@ class Client {
       'Authorization': value!
     };
 
-    barcodeId = '9755342135590';
+    // barcodeId = '9755342135590';
 
 //todo batcode get
     Uri url = Uri.parse('$path/cashbak_create/$barcodeId/False/');
@@ -816,7 +906,7 @@ class Client {
       'Authorization': value!
     };
 
-    barcodeId = '9755342135590';
+    // barcodeId = '9755342135590';
 
 //todo batcode get
     Uri url = Uri.parse('$path/cashbak_create/$barcodeId/True/');

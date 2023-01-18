@@ -9,11 +9,15 @@ class ClientInfo {
   final int price;
   final double cashback;
   final String date;
+  @JsonKey(name: 'cashback_True_False')
+  final bool isWithdraw;
+
   ClientInfo({
     required this.fullName,
     required this.price,
     required this.cashback,
     required this.date,
+    required this.isWithdraw,
   });
 
   /// Generate Class from Map<String, Object?>

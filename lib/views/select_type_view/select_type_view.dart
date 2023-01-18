@@ -56,6 +56,7 @@ class SelectTypeView extends StatelessWidget {
 
               Text(
                 'Бизнес - владелец или сотрудник магазина',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
                 ),
@@ -63,6 +64,7 @@ class SelectTypeView extends StatelessWidget {
               SizedBox(height: 8),
               Text(
                 'Клиент - клиент магазина',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
                 ),

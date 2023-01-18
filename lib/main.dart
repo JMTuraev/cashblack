@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'theme/app_bar_style.dart';
 import 'view_models/balance_view_model.dart';
 import 'view_models/business_home_view_model.dart';
 import 'view_models/business_login_view_model.dart';
@@ -22,10 +25,13 @@ import 'views/select_type_view/select_type_view.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Future<bool> runner() async {
+
   final prefs = await SharedPreferences.getInstance();
   // return
   // prefs.getBool('isLogged') ?? false;
   // }
+  Intl.defaultLocale = "ru_RU";
+  await initializeDateFormatting("ru_RU", null);
 
   runApp(
     MyApp(
@@ -88,7 +94,44 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           brightness: Brightness.dark,
-          // colorSchemeSeed: Colors.grey[800],
+          // colorSchemeSeed: Colors.black,
+          // primarySwatch: Colors.black,
+          // backgroundColor: Colors.black54,
+          scaffoldBackgroundColor: Colors.black54,
+          // bottomAppBarColor: Colors.black54,
+          // bottomAppBarTheme: BottomAppBarTheme(
+          //   color: Colors.black54,
+          // ),
+          appBarTheme: AppBarTheme(
+            // backgroundColor: Colors.black54,
+            color: Colors.black54,
+            systemOverlayStyle: AppBarStyle.appBarStyle,
+            elevation: 0,
+            centerTitle: true,
+            scrolledUnderElevation: 0,
+            titleTextStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+            //       color: AppColors.flexSchemeLight.primary,
+            // scrolledUnderElevation: 0,
+            // titleTextStyle: const TextStyle(
+            //   color: Colors.white,
+            //   fontSize: 22,
+            // ),
+            // actionsIconTheme: const IconThemeData(
+            //   color: Colors.white,
+            //   size: 24,
+            // ),
+            // iconTheme: const IconThemeData(
+            //   color: Colors.white,
+            //   size: 24,
+            // ),
+          ),
+          cardTheme: CardTheme(
+            color: Colors.grey.shade900,
+            elevation: 0,
+          ),
           useMaterial3: true,
         ),
         // locale: Locale('ru', 'RU'),

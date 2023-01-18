@@ -25,7 +25,7 @@ class PaymentSuccessView extends StatelessWidget {
                   text: 'OK',
                   method: () {
                     context.read<BusinessHomeViewModel>().onChange(0);
-                    Navigator.of(context).push(
+                    Navigator.of(context).pushReplacement(
                       CupertinoPageRoute(
                         builder: (context) => BusinessHomeView(),
                       ),

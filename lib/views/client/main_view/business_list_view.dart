@@ -1,8 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/user_category.dart';
 import '../../../domain/models/user_shop.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
@@ -10,95 +12,138 @@ import '../../../widgets/medium_title_widget.dart';
 import 'business_details_view.dart';
 
 class BusinessListView extends StatelessWidget {
-  const BusinessListView({super.key, required this.shopId, required this.name});
-
-  final int shopId;
-  final String name;
+  final UserCategory userCategory;
+  const BusinessListView({
+    Key? key,
+    required this.userCategory,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: Text(userCategory.name),
+        ),
         body: Padding(
-      padding: const EdgeInsets.all(10),
-      child: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Center(
-              child: MediumTitleWidget(text: name),
-            ),
-            FutureBuilder(
-              future:
-                  context.watch<ClientHomeViewModel>().getJoinedShops(shopId),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<UserShop> shops = snapshot.data as List<UserShop>;
-                  return Expanded(
-                    child: ListView.separated(
-                      itemCount: shops.length,
-                      separatorBuilder: (context, index) {
-                        return const Divider(
-                          height: 1,
-                        );
-                      },
-                      itemBuilder: (context, index) {
-                        // return _BrandCardWidget();
-                        return ListTile(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                builder: (context) => BusinessDetailsView(
-                                  id: shops[index].id,
-                                  name: shops[index].name,
+          padding: const EdgeInsets.all(0),
+          child: SafeArea(
+            child: Column(
+              children: [
+                FutureBuilder(
+                  future: context
+                      .watch<ClientHomeViewModel>()
+                      .getJoinedShops(userCategory.id),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<UserShop> shops = snapshot.data as List<UserShop>;
+                      return Expanded(
+                        child: ListView.separated(
+                          itemCount: shops.length,
+                          separatorBuilder: (context, index) {
+                            return const Divider(
+                              height: 1,
+                            );
+                          },
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                    builder: (context) => BusinessDetailsView(
+                                      userShop: shops[index],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Card(
+                                child: Container(
+                                  // height: MediaQuery.of(context).size.width / 4,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      ClipRRect(
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10),
+                                        ),
+                                        child: CachedNetworkImage(
+                                          fit: BoxFit.fitHeight,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4,
+                                          // width: MediaQuery.of(context)
+                                          //         .size
+                                          //         .width /
+                                          //     3,
+                                          imageUrl: Constants.media +
+                                              shops[index].logo,
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        child: Container(
+                                          // color: Colors.red,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                shops[index].name,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                              SizedBox(height: 4),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    CupertinoIcons
+                                                        .money_dollar_circle,
+                                                    size: 16,
+                                                    color: Colors.green[300],
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    shops[index]
+                                                        .cashbackPercentage
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
                           },
-                          title: Row(
-                            children: [
-                              SizedBox(
-                                width: 100,
-                                height: 100,
-                                child: CachedNetworkImage(
-                                    imageUrl:
-                                        Constants.media + shops[index].logo),
-                              ),
-                              const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  _SimpleTextWidget(
-                                    title: shops[index].name,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  // Row(
-                                  //   children: [
-                                  //     const Icon(
-                                  //       CupertinoIcons.money_dollar_circle,
-                                  //       size: 16,
-                                  //     ),
-                                  //     const SizedBox(width: 4),
-                                  //     Text(shops[index].id.toString()),
-                                  //   ],
-                                  // ),
-                                ],
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  return const Text('...');
-                }
-              },
+                        ),
+                      );
+                    } else {
+                      return const Text('...');
+                    }
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    ));
+          ),
+        ));
   }
 }
 
