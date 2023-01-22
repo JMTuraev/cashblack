@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sent_notification.dart';
+import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
@@ -19,41 +20,44 @@ class ServicesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            IconButton(
-              tooltip: 'Отправка уведомлений',
-              onPressed: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => SendNotificationView(),
-                  ),
-                );
-              },
-              icon: Icon(
-                Icons.send_rounded,
-              ),
-            ),
-          ],
-          title: const Text(
-            'Сервисы',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            tooltip: 'Отправка уведомлений',
+            onPressed: () {
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => const SendNotificationView(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.send_rounded,
             ),
           ),
+        ],
+        title: const Text(
+          'Сервисы',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        body: Container(
+        bottom: ThemeDetails.appBarDivider,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'Отправленные уведомления',
                 style: TextStyle(
                   fontSize: 22,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               FutureBuilder(
                 future: context
                     .watch<SendNotificationViewModel>()
@@ -76,81 +80,91 @@ class ServicesView extends StatelessWidget {
                               );
                             },
                             child: Card(
-                              child: Container(
-                                // height: MediaQuery.of(context).size.width / 4,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ClipRRect(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        bottomLeft: Radius.circular(10),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.fitHeight,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4,
-                                        //todo width
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        imageUrl: Constants.media +
-                                            notifications[index].image,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  ClipRRect(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      bottomLeft: Radius.circular(10),
+                                    ),
+                                    child: CachedNetworkImage(
+                                      fit: BoxFit.fitWidth,
+                                      height:
+                                          MediaQuery.of(context).size.width / 4,
+                                      //todo width
+                                      width:
+                                          MediaQuery.of(context).size.width / 3,
+                                      imageUrl: Constants.media +
+                                          notifications[index].image,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Container(
+                                      // color: Colors.red,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                notifications[index].shop.name,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              if (notifications[index].status ==
+                                                  1)
+                                                const Icon(
+                                                  Icons.watch_later,
+                                                  color: Color.fromRGBO(
+                                                      100, 181, 246, 1),
+                                                )
+                                              else if (notifications[index]
+                                                      .status ==
+                                                  3)
+                                                const Icon(
+                                                  Icons.check_circle_sharp,
+                                                  color: Color.fromRGBO(
+                                                      129, 199, 132, 1),
+                                                )
+                                              else
+                                                const Icon(Icons.clear),
+                                              const SizedBox(width: 6),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            notifications[index].title,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            notifications[index]
+                                                .date
+                                                .getLocaleDateTime(),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    SizedBox(width: 10),
-                                    Expanded(
-                                      child: Container(
-                                        // color: Colors.red,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              notifications[index].shop.name,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(height: 4),
-                                            Text(
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              notifications[index].title,
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            SizedBox(height: 4),
-                                            Text(
-                                              notifications[index]
-                                                  .date
-                                                  .getLocaleDateTime(),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
-                            ),
-                          );
-                          return ListTile(
-                            title: Text(
-                              notifications[index].title,
-                            ),
-                            subtitle: Text(
-                              notifications[index].content,
                             ),
                           );
                         },
@@ -160,7 +174,7 @@ class ServicesView extends StatelessWidget {
                       ),
                     );
                   } else
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                 },
               ),
             ],

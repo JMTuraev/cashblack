@@ -44,7 +44,6 @@ class CreateStoreViewViewModel extends ChangeNotifier {
   }
 
   Future<User> getProfile() async {
-    print('user laod');
     return _client.getProfile();
   }
 

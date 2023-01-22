@@ -20,6 +20,10 @@ extension StringExtensions on String {
     );
   }
 
+  String removeWhitespaces() {
+    return replaceAll(RegExp(r'\s+'), '');
+  }
+
   String cardHiddenFormatter() {
     return replaceAllMapped(
       RegExp(r'(\d{4})(\d{2})(\d{2})(\d{4})(\d{4})'),

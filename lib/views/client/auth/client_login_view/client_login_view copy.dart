@@ -4,19 +4,18 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
-import '../../../../view_models/business_login_view_model.dart';
+import '../../../../view_models/client_login_view_model.dart';
 import '../../../../widgets/hero_title_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
-import '../business_login_verify_view/business_login_verify_view.dart';
+import '../client_login_verify_view/client_login_verify_view.dart';
 
-class BusinessLoginView extends StatelessWidget {
-  const BusinessLoginView({super.key});
+class ClientLoginView extends StatelessWidget {
+  const ClientLoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
     TextEditingController phoneController = TextEditingController(text: '');
-    TextEditingController promoCodeController = TextEditingController(text: '');
-    var provider = context.read<BusinessLoginViewModel>();
+    var provider = context.read<ClientLoginViewModel>();
     MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
         mask: '+### ## ### ## ##',
         filter: {"#": RegExp(r'[0-9]')},
@@ -30,75 +29,96 @@ class BusinessLoginView extends StatelessWidget {
           provider.appSignature = await SmsAutoFill().getAppSignature,
           // TODO appsign
           // provider.appSignature = 'tempapp1',
-          promoCodeController.text,
         );
         Navigator.of(context).push(
           CupertinoPageRoute(
-            builder: (context) => const BusinessLoginVerifyView(),
+            builder: (context) => const ClientLoginVerifyView(),
           ),
         );
       }
     }
 
-    // TODO promo kerak
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const HeroTitleWidget(text: 'Введите номер телефона'),
+            const SizedBox(height: 20),
+            const SmallTitleWidget(text: 'Мы отправим вам код подтверждения'),
+            const SizedBox(height: 20),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: false,
+                // hintStyle: TextStyle(color: Colors.grey[800]),
+                hintText: "Телефон",
 
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SmallTitleWidget(
-            text: 'Мы отправим вам код подтверждения',
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                // fillColor: Colors.white70,
               ),
-              filled: false,
-              // hintStyle: TextStyle(color: Colors.grey[800]),
-              hintText: "Телефон",
-              // fillColor: Colors.white70,
+              inputFormatters: [maskFormatter],
+              controller: phoneController,
+              autocorrect: false,
+              autofocus: true,
+              enableSuggestions: false,
+              keyboardAppearance: Brightness.dark,
+              showCursor: true,
+              keyboardType: TextInputType.phone,
             ),
-            inputFormatters: [maskFormatter],
-            controller: phoneController,
-            autocorrect: false,
-            autofocus: true,
-            enableSuggestions: false,
-            keyboardAppearance: Brightness.dark,
-            showCursor: true,
-            keyboardType: TextInputType.phone,
-          ),
-          const SizedBox(height: 20),
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              filled: false,
-              // hintStyle: TextStyle(color: Colors.grey[800]),
-              hintText: "Промокод",
-              // fillColor: Colors.white70,
+            const SizedBox(height: 20),
+            _MainButtonWidget(
+              text: 'Вход',
+              method: context.watch<ClientLoginViewModel>().isLoading
+                  ? null
+                  : submit,
             ),
-            controller: promoCodeController,
-            autocorrect: false,
-            autofocus: true,
-            enableSuggestions: false,
-            keyboardAppearance: Brightness.dark,
-            showCursor: true,
+            const SizedBox(height: 20),
+            _PublicOfferWidget(),
+            // _NumbersWidget(phoneController: phoneController),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MainButtonWidget extends StatelessWidget {
+  const _MainButtonWidget({
+    Key? key,
+    required this.text,
+    required this.method,
+  }) : super(key: key);
+
+  final String text;
+  final VoidCallback? method;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton(
+        onPressed: method,
+        style: ButtonStyle(
+          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+            const EdgeInsets.all(16),
           ),
-          const SizedBox(height: 20),
-          _MainButtonWidget(
-            text: 'Вход',
-            method: context.watch<BusinessLoginViewModel>().isLoading
-                ? null
-                : submit,
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-          const SizedBox(height: 20),
-          _PublicOfferWidget(),
-          // _NumbersWidget(phoneController: phoneController),
-        ],
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+          ),
+        ),
       ),
     );
   }
@@ -154,44 +174,6 @@ class _PublicOfferWidget extends StatelessWidget {
         },
         child: Text(
           'Публичная оферта',
-        ),
-      ),
-    );
-  }
-}
-
-class _MainButtonWidget extends StatelessWidget {
-  const _MainButtonWidget({
-    Key? key,
-    required this.text,
-    required this.method,
-  }) : super(key: key);
-
-  final String text;
-  final VoidCallback? method;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: method,
-        style: ButtonStyle(
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-            const EdgeInsets.all(16),
-          ),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-          ),
         ),
       ),
     );

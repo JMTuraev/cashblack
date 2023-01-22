@@ -13,6 +13,10 @@ import '../../../../widgets/text_button_widget.dart';
 import '../../../view_models/balance_view_model.dart';
 import '../../client/client_home_view.dart/client_home_view.dart';
 
+import 'package:cashblack/extensions.dart';
+
+import '../scanner_view/payment_success_view.dart';
+
 class PaymentVerifyView extends StatefulWidget {
   PaymentVerifyView({
     Key? key,
@@ -45,11 +49,8 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
 
   @override
   void codeUpdated() {
-    print('update');
     setState(() {
       otpCode = code!;
-      print(code);
-      print(otpCode);
     });
   }
 
@@ -86,22 +87,18 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const HeroTitleWidget(
-                text: 'Verification Code',
+                text: 'Верификационный код',
               ),
               const SizedBox(height: 20),
               const SmallTitleWidget(
-                text: 'Please type the verification code sent to',
+                text: 'СМС код отпавлен на номер',
               ),
               const SizedBox(height: 5),
               SmallTitleWidget(
-                text: widget.phone,
-              ),
-              const SizedBox(height: 5),
-              SmallTitleWidget(
-                text: widget.session.toString(),
+                text: widget.phone.phoneFormatter(),
               ),
               const SizedBox(height: 40),
               PinFieldAutoFill(
@@ -135,7 +132,7 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
               ),
               const SizedBox(height: 20),
               MainButtonWidget(
-                text: 'Verify',
+                text: 'Подтвердить',
                 method: () async {
                   // print(hasShop);
                   await context
@@ -150,7 +147,9 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
                       .then(
                         (value) => Navigator.of(context).pushAndRemoveUntil(
                           CupertinoPageRoute(
-                            builder: (context) => const ClientHomeView(),
+                            builder: (context) => const PaymentSuccessView(
+                              title: 'Счет пополнено',
+                            ),
                           ),
                           (route) => false,
                         ),

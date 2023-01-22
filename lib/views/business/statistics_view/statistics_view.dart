@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/sum_cashback.dart';
 import '../../../domain/models/sum_stat.dart';
 import '../../../extensions.dart';
+import '../../../theme/theme_details.dart';
 import '../../../view_models/statistics_view_model.dart';
 
 class StatisticsView extends StatefulWidget {
@@ -41,28 +42,44 @@ class _StatisticsViewState extends State<StatisticsView> {
     //           end: end,
     //         );
 
+    var body = IndexedStack(
+      index: summa ? 0 : 1,
+      children: [
+        // Text('data'),
+        // Text('data2'),
+        _SumWidget(
+          stats: stats,
+        ),
+        _CashbackWidget(),
+      ],
+    );
+
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-YYYY');
     final String formatted = formatter.format(now);
     // print('bugun ' + formatted);
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Статистика',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          // centerTitle: true,
-        ),
-        body: Padding(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Статистика'),
+        bottom: ThemeDetails.appBarDivider,
+      ),
+      body: SafeArea(
+        child: Padding(
           padding: const EdgeInsets.symmetric(
-            vertical: 10,
+            horizontal: 10,
           ),
           child: Column(
             children: [
+              SizedBox(height: 10),
+              Text(
+                'Фильтр по',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
@@ -182,17 +199,14 @@ class _StatisticsViewState extends State<StatisticsView> {
                     )
                   : SizedBox(),
               const SizedBox(height: 20),
-              Container(
-                child: Container(
-                  child: Container(
-                    // scrollDirection: Axis.horizontal,
-                    child: summa
-                        ? _SumWidget(
-                            stats: stats,
-                          )
-                        : _CashbackWidget(),
-                  ),
-                ),
+              Expanded(
+                // scrollDirection: Axis.horizontal,
+                // child: summa
+                //     ? _SumWidget(
+                //         stats: stats,
+                //       )
+                //     : _CashbackWidget(),
+                child: body,
               ),
               // Expanded(
               //   child: _SumWidget(),
@@ -219,46 +233,50 @@ class _SumWidget extends StatelessWidget {
       fontWeight: FontWeight.bold,
       fontSize: 15,
     );
-    return FutureBuilder(
-      future: stats,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<SumStat> sumStat = (snapshot.data as List<SumStat>)
-              .where((element) => element.isWithdraw == false)
-              .toList();
-          // return Text('data');
-          final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
-          final DateFormat sorter = DateFormat('dd MMMM yyyy');
-          return Expanded(
-            child: GroupedListView<SumStat, String>(
-              elements: sumStat,
-              groupBy: (element) {
-                DateTime dates = DateTime.parse(element.date!);
-                return DateUtils.dateOnly(dates).toString();
+    return Column(
+      children: [
+        FutureBuilder(
+          future: stats,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<SumStat> sumStat = (snapshot.data as List<SumStat>)
+                  .where((element) => element.isWithdraw == false)
+                  .toList();
+              // return Text('data');
+              final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
+              final DateFormat sorter = DateFormat('dd MMMM yyyy');
+              return Expanded(
+                child: GroupedListView<SumStat, String>(
+                  elements: sumStat,
+                  groupBy: (element) {
+                    DateTime dates = DateTime.parse(element.date!);
+                    return DateUtils.dateOnly(dates).toString();
 
-                // return DateTime(dates.year, dates.month, dates.day).toString();
-              },
-              groupSeparatorBuilder: (String groupByValue) =>
-                  Text(groupByValue),
-              itemBuilder: (context, SumStat element) =>
-                  _CardStat(sumStat: element),
-              groupHeaderBuilder: (SumStat element) => Center(
-                child: Text(
-                  formatter.format(DateTime.parse(element.date!)),
-                  style: const TextStyle(
-                    fontSize: 20,
+                    // return DateTime(dates.year, dates.month, dates.day).toString();
+                  },
+                  groupSeparatorBuilder: (String groupByValue) =>
+                      Text(groupByValue),
+                  itemBuilder: (context, SumStat element) =>
+                      _CardStat(sumStat: element),
+                  groupHeaderBuilder: (SumStat element) => Center(
+                    child: Text(
+                      formatter.format(DateTime.parse(element.date!)),
+                      style: const TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
                   ),
+                  // useStickyGroupSeparators: true,
+                  // floatingHeader: true,
+                  order: GroupedListOrder.DESC,
                 ),
-              ),
-              // useStickyGroupSeparators: true,
-              // floatingHeader: true,
-              order: GroupedListOrder.DESC,
-            ),
-          );
-        } else {
-          return const Text('Нет данных');
-        }
-      },
+              );
+            } else {
+              return const Text('Нет данных');
+            }
+          },
+        ),
+      ],
     );
   }
 }
@@ -274,25 +292,30 @@ class _CashbackWidget extends StatelessWidget {
       fontWeight: FontWeight.bold,
       fontSize: 15,
     );
-    return FutureBuilder(
-      future: context.watch<StatisticsViewModel>().getCashbackStats(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<SumCashback> sumCashback = snapshot.data as List<SumCashback>;
-          // return Text('data');
+    return Column(
+      children: [
+        FutureBuilder(
+          future: context.watch<StatisticsViewModel>().getCashbackStats(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<SumCashback> sumCashback =
+                  snapshot.data as List<SumCashback>;
+              // return Text('data');
 
-          return Expanded(
-            child: ListView.builder(
-              itemCount: sumCashback.length,
-              itemBuilder: (context, index) => _CardCashback(
-                sumCashback: sumCashback[index],
-              ),
-            ),
-          );
-        } else {
-          return const Text('Нет данных');
-        }
-      },
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: sumCashback.length,
+                  itemBuilder: (context, index) => _CardCashback(
+                    sumCashback: sumCashback[index],
+                  ),
+                ),
+              );
+            } else {
+              return const Text('Нет данных');
+            }
+          },
+        ),
+      ],
     );
   }
 }
@@ -369,27 +392,38 @@ class _CardStat extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 10,
-              horizontal: 6,
+              horizontal: 10,
             ),
             child: Column(
               children: [
                 const SizedBox(height: 6),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Row(
+                    Column(
                       children: [
+                        const SizedBox(width: 8),
+
                         // Icon(
                         //   Icons.attach_money_rounded,
                         //   color: Colors.green[300],
                         // ),
-                        SizedBox(width: 8),
+                        // SizedBox(width: 8),
+                        const Text(
+                          'сумма',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
                         Text(
                           NumberFormat.simpleCurrency(
                                 name: '',
                                 locale: 'ru_RU',
                                 decimalDigits: 0,
                               ).format(sumStat.price) +
-                              'UZS',
+                              'сум',
                           style: const TextStyle(
                             fontSize: 18,
                           ),
@@ -398,20 +432,27 @@ class _CardStat extends StatelessWidget {
                     ),
                     // Spacer(),
                     SizedBox(width: 20),
-                    Row(
+                    Column(
                       children: [
-                        Icon(
-                          CupertinoIcons.money_dollar_circle,
-                          color: Colors.green[300],
+                        // Icon(
+                        //   CupertinoIcons.money_dollar_circle,
+                        //   color: Colors.green[300],
+                        // ),
+                        // SizedBox(width: 4),
+                        const Text(
+                          'кэшбек',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
                         ),
-                        SizedBox(width: 4),
                         Text(
                           NumberFormat.simpleCurrency(
                                 name: '',
                                 locale: 'ru_RU',
                                 decimalDigits: 0,
                               ).format(sumStat.cashback) +
-                              'UZS',
+                              'сум',
                           style: const TextStyle(
                             fontSize: 18,
                           ),
@@ -432,9 +473,9 @@ class _CardStat extends StatelessWidget {
                 const SizedBox(height: 6),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(width: 8),
+                    // SizedBox(width: 8),
                     Text(
                       sumStat.fullName.toString(),
                       style: TextStyle(
@@ -496,7 +537,7 @@ class _CardCashback extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 10,
-              horizontal: 6,
+              horizontal: 10,
             ),
             child: Column(
               children: [
@@ -505,7 +546,7 @@ class _CardCashback extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(width: 8),
+                    // SizedBox(width: 8),
                     Text(
                       sumCashback.name,
                       style: TextStyle(
@@ -533,20 +574,28 @@ class _CardCashback extends StatelessWidget {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    Row(
+                    // SizedBox(width: 8),
+                    Column(
                       children: [
                         // Icon(
                         //   Icons.arrow_drop_up,
                         //   color: Colors.green[300],
                         // ),
-                        SizedBox(width: 8),
+                        // SizedBox(width: 8),
+                        const Text(
+                          'сумма',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
                         Text(
                           NumberFormat.simpleCurrency(
                                 name: '',
                                 locale: 'ru_RU',
                                 decimalDigits: 0,
                               ).format(sumCashback.sum) +
-                              'UZS',
+                              'сум',
                           style: const TextStyle(
                             fontSize: 18,
                           ),
@@ -554,14 +603,22 @@ class _CardCashback extends StatelessWidget {
                       ],
                     ),
                     // Spacer(),
-                    Row(
+                    SizedBox(width: 20),
+                    Column(
                       children: [
-                        SizedBox(width: 20),
-                        Icon(
-                          CupertinoIcons.money_dollar_circle,
-                          color: Colors.green[300],
+                        // SizedBox(width: 20),
+                        // Icon(
+                        //   CupertinoIcons.money_dollar_circle,
+                        //   color: Colors.green[300],
+                        // ),
+                        // SizedBox(width: 4),
+                        const Text(
+                          'сумма',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
                         ),
-                        SizedBox(width: 4),
                         Text(
                           NumberFormat.simpleCurrency(
                             name: '',

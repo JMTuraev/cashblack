@@ -23,21 +23,32 @@ class _ClientHomeViewState extends State<ClientHomeView> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> body = [
-      const MainView(),
-      const BarcodeView(),
-      const ClientNotificationsView(),
-      const SettingsView(),
-    ];
+    // List<Widget> _body = [
+    //   const MainView(),
+    //   // const BarcodeView(),
+    //   const ClientNotificationsView(),
+    //   const SettingsView(),
+    // ];
+
+    var body = IndexedStack(
+      index: currentIndex,
+      children: const [
+        MainView(),
+        //  BarcodeView(),
+        ClientNotificationsView(),
+        SettingsView(),
+      ],
+    );
+
     List<BottomNavigationBarItem> items = [
       const BottomNavigationBarItem(
         icon: Icon(CupertinoIcons.home),
         label: 'Главная',
       ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.credit_card),
-        label: 'Баркод',
-      ),
+      // const BottomNavigationBarItem(
+      //   icon: Icon(Icons.credit_card),
+      //   label: 'Баркод',
+      // ),
       const BottomNavigationBarItem(
         icon: Icon(CupertinoIcons.chat_bubble),
         label: 'Уведомления',
@@ -66,8 +77,23 @@ class _ClientHomeViewState extends State<ClientHomeView> {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            body.elementAt(currentIndex),
-            const Divider(height: 1),
+            // Container(
+            //   decoration: const BoxDecoration(
+            //     gradient: LinearGradient(
+            //       colors: [Color(0xff000000), Color(0xff464646)],
+            //       begin: Alignment.topCenter,
+            //       end: Alignment.bottomCenter,
+            //     ),
+            //   ),
+            //   child: body.elementAt(currentIndex),
+
+            // ),
+            // body.elementAt(currentIndex),
+            body,
+            const Divider(
+              height: 1,
+              color: Colors.white,
+            ),
           ],
         ),
       ),

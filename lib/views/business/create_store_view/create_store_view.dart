@@ -275,7 +275,6 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                           setState(() {
                             _isChecked = value!;
                           });
-                          print(value);
                         }),
                       ),
                       const Text(

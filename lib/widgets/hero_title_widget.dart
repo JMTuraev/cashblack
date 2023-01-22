@@ -14,7 +14,7 @@ class HeroTitleWidget extends StatelessWidget {
       text,
       textAlign: TextAlign.center,
       style: const TextStyle(
-        fontSize: 34,
+        fontSize: 30,
       ),
     );
   }

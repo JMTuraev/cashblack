@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/payment.dart';
+import '../../../theme/theme_details.dart';
 import '../../../view_models/balance_view_model.dart';
 import '../../../widgets/helpers.dart';
 import '../../../widgets/hero_title_widget.dart';
-import '../../../widgets/screen_wrapper.dart';
 
 import 'package:cashblack/extensions.dart';
 
@@ -20,13 +20,8 @@ class PaymentsHistoryView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'История платежей',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          // centerTitle: true,
+          title: const Text('История платежей'),
+          bottom: ThemeDetails.appBarDivider,
         ),
         body: Padding(
           padding: const EdgeInsets.all(10),

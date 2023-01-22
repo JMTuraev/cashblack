@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 
+import '../../../theme/theme_details.dart';
 import '../../../view_models/payment_client_view_model.dart';
 import 'payment_client_view.dart';
 
@@ -12,7 +13,10 @@ class BarcodeScannerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Сканер')),
+      appBar: AppBar(
+        title: const Text('Сканер'),
+        bottom: ThemeDetails.appBarDivider,
+      ),
       body: MobileScanner(
         allowDuplicates: false,
         onDetect: (barcode, args) {

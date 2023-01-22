@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/user_category.dart';
+import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/medium_title_widget.dart';
@@ -31,12 +32,9 @@ class _MainViewState extends State<MainView> {
     // var userShops = context.watch<ClientHomeViewModel>().userShop;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Cashback',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const Text('Cashback'),
+        bottom: ThemeDetails.appBarDivider,
+        // elevation: 1,
         // centerTitle: true,
       ),
       body: SafeArea(
@@ -45,6 +43,14 @@ class _MainViewState extends State<MainView> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
+                Text(
+                  //TODO
+                  '100 000 сум',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                SizedBox(height: 6),
                 Center(child: MediumTitleWidget(text: 'Категории')),
                 SizedBox(height: 20),
                 FutureBuilder(
@@ -120,7 +126,28 @@ class _MainViewState extends State<MainView> {
                                           ),
                                         ),
                                       ),
-                                    )
+                                    ),
+                                    Positioned(
+                                      top: 6,
+                                      right: 6,
+                                      child: Container(
+                                        padding: EdgeInsets.all(1),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white70,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(90),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          userCategoryList[index]
+                                              .count
+                                              .toString(),
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     // Placeholder(
                                     //   // fallbackWidth: 100,
                                     //   fallbackHeight: 140,

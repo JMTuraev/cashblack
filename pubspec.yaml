@@ -40,7 +40,7 @@ dependencies:
   provider: ^6.0.3
   font_awesome_flutter: ^10.2.1
   flutter_svg: ^1.1.5
-  qr_code_scanner: ^1.0.1
+  # qr_code_scanner: ^1.0.1
   image_picker: ^0.8.5+3
   dotted_border: ^2.0.0+2
   http: ^0.13.5
@@ -55,6 +55,7 @@ dependencies:
   image_cropper: ^3.0.1
   grouped_list: ^5.1.2
   mobile_scanner: ^2.1.0
+  google_fonts: ^3.0.1
 
 dev_dependencies:
   flutter_test:

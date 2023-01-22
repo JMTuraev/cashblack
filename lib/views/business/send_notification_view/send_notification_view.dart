@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../../../theme/theme_details.dart';
 import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/helpers.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/medium_title_widget.dart';
 import '../../../widgets/multiline_text_field_widget.dart';
-import '../../../widgets/screen_wrapper.dart';
 import '../../../widgets/text_field_widget.dart';
 import '../business_home_view/business_home_view.dart';
 
@@ -50,17 +50,12 @@ class _SendNotificationViewState extends State<SendNotificationView> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Отправка уведомлений',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        // centerTitle: true,
+        title: const Text('Отправка уведомлений'),
+        bottom: ThemeDetails.appBarDivider,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Form(
             child: Column(
               children: [

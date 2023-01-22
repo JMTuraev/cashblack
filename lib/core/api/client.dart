@@ -56,7 +56,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(resBody);
       if (resBody.contains('Bunday foydalanuvchi mavjud')) {
         return false;
       }
@@ -110,7 +109,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(resBody);
       if (resBody.contains('Bunday foydalanuvchi mavjud')) {
         return false;
       }
@@ -134,7 +132,7 @@ class Client {
       'Authorization': value!
     };
 
-    if (appSignature.contains('/')) {
+    if (appSignature.contains('/') || appSignature.isEmpty) {
       appSignature = '9er8fjshds';
     }
 
@@ -147,7 +145,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
     } else {
       print(res.reasonPhrase);
     }
@@ -175,7 +172,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
       if (json.decode(resBody)[0] == 'Tizimga xush kelibsiz') {
         await prefs.setBool('isLogged', true);
         await prefs.setBool(type, true);
@@ -203,7 +199,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
       List<Category> category;
       var decode = (json.decode(resBody) as List);
       category = decode.map((e) => Category.fromJson(e)).toList();
@@ -229,8 +224,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('user' + json.decode(resBody).toString());
-      print('user token: $value');
       User user;
       var decode = (json.decode(resBody));
       user = User.fromJson(decode);
@@ -242,13 +235,11 @@ class Client {
   }
 
   Future<void> changeName(int userId, String firstName, String lastName) async {
-    print(token);
     Map<String, String> body = {
       'first_name': firstName,
       'last_name': lastName,
     };
     String? value = await storage.read(key: 'bearer');
-    print(value);
     Map<String, String> headers = {
       'Content-Type': ' application/json; charset=utf-8',
       'Authorization': value!
@@ -263,7 +254,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
     } else {
       print(res.reasonPhrase);
     }
@@ -284,7 +274,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
       List<Province> province;
       var decode = (json.decode(resBody) as List);
       province = decode.map((e) => Province.fromJson(e)).toList();
@@ -310,7 +299,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('statbiroy' + json.decode(resBody).toString());
       List<City> city;
       var decode = (json.decode(resBody) as List);
       city = decode.map((e) => City.fromJson(e)).toList();
@@ -337,7 +325,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('workers' + json.decode(resBody).toString());
       List<Worker> worker;
       var decode = (json.decode(resBody) as List);
       worker = decode.map((e) => Worker.fromJson(e)).toList().reversed.toList();
@@ -367,7 +354,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('stats' + json.decode(resBody).toString());
       List<SumStat> sumStat;
       var decode = (json.decode(resBody)['list'] as List);
       sumStat = decode.map((e) => SumStat.fromJson(e)).toList();
@@ -393,11 +379,9 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('klientlar summasi ' + json.decode(resBody).toString());
       List<SumCashback> sumCashback;
       var decode = (json.decode(resBody) as List);
       sumCashback = decode.map((e) => SumCashback.fromJson(e)).toList();
-      print(sumCashback);
 
       return sumCashback;
     } else {
@@ -421,11 +405,9 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('biroylik' + json.decode(resBody).toString());
       List<OneMonthStatistic> sumStat;
       var decode = (json.decode(resBody)['list'] as List);
       sumStat = decode.map((e) => OneMonthStatistic.fromJson(e)).toList();
-      print(sumStat);
 
       return sumStat;
     } else {
@@ -479,7 +461,6 @@ class Client {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print('crated store');
       print(await response.stream.bytesToString());
       // await prefs.setBool('isBusiness', true);
     } else {
@@ -502,7 +483,7 @@ class Client {
     // final resBody = await res.stream.bytesToString();
 
     // if (res.statusCode >= 200 && res.statusCode < 300) {
-    //   print(json.decode(resBody));
+    //
     // } else {
     //   print(res.reasonPhrase);
     // }
@@ -539,7 +520,6 @@ class Client {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print('sent notification');
       print(await response.stream.bytesToString());
     } else {
       print(response.reasonPhrase);
@@ -562,7 +542,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('notifs ' + json.decode(resBody).toString());
       List<SentNotification> worker;
       var decode = (json.decode(resBody) as List);
       worker = decode
@@ -593,7 +572,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('notifs ' + json.decode(resBody).toString());
       List<ReceivedNotification> worker;
       var decode = (json.decode(resBody) as List);
       worker = decode
@@ -649,7 +627,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
     } else {
       print(res.reasonPhrase);
     }
@@ -682,7 +659,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
     } else {
       print(res.reasonPhrase);
     }
@@ -704,7 +680,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('workers' + json.decode(resBody).toString());
       List<Balance> worker;
       var decode = (json.decode(resBody) as List);
       worker =
@@ -732,7 +707,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('workers' + json.decode(resBody).toString());
       var decode = (json.decode(resBody)['data'] as List);
 
       return decode[0];
@@ -758,7 +732,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('workers' + json.decode(resBody).toString());
       List<Payment> worker;
       var decode = (json.decode(resBody) as List);
       worker =
@@ -785,7 +758,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
       List<UserCategory> userCategory;
 
       // var decode = (json.decode(resBody));
@@ -794,7 +766,6 @@ class Client {
       var decode = (json.decode(resBody) as List);
       userCategory = decode.map((e) => UserCategory.fromJson(e)).toList();
 
-      print(userCategory.first.name);
       return userCategory;
     } else {
       print(res.reasonPhrase);
@@ -817,7 +788,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
       List<UserShop> userShop;
 
       // var decode = (json.decode(resBody));
@@ -826,7 +796,6 @@ class Client {
       var decode = (json.decode(resBody) as List);
       userShop = decode.map((e) => UserShop.fromJson(e)).toList();
 
-      print(userShop.first.name);
       return userShop;
     } else {
       print(res.reasonPhrase);
@@ -850,8 +819,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('user' + json.decode(resBody).toString());
-      print('user token: $value');
       ClientStatistics user;
       var decode = (json.decode(resBody));
       user = ClientStatistics.fromJson(decode);
@@ -887,7 +854,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
     } else {
       print(res.reasonPhrase);
     }
@@ -918,7 +884,6 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(json.decode(resBody));
     } else {
       print(res.reasonPhrase);
     }
@@ -956,7 +921,6 @@ class Client {
         json.decode(resBody)['msg']['result']['session'],
         json.decode(resBody)['msg']['result']['otpSentPhone']
       ];
-      print(result);
       return result;
     } else {
       print(res.reasonPhrase);

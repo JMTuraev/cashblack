@@ -35,8 +35,6 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
     print('update');
     setState(() {
       otpCode = code!;
-      print(code);
-      print(otpCode);
     });
   }
 
@@ -91,14 +89,14 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                 controller: textController,
                 autoFocus: true,
                 codeLength: 5,
-                decoration: BoxLooseDecoration(
+                decoration: UnderlineDecoration(
                   gapSpace: 40,
                   textStyle: const TextStyle(
                     fontSize: 20,
                     // color: Colors.white,
                   ),
-                  strokeColorBuilder:
-                      FixedColorBuilder(Colors.black.withOpacity(0.3)),
+                  colorBuilder:
+                      FixedColorBuilder(Colors.white.withOpacity(0.3)),
                 ),
                 currentCode: otpCode,
                 onCodeSubmitted: (code) {},
@@ -112,7 +110,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               TextButtonWidget(
                 text: 'Не получили код. Отправить код еще раз',
                 method: () {
-                  print(_animationController!.isCompleted.toString());
+                  // print(_animationController!.isCompleted.toString());
                   _animationController!.reset();
                   _animationController!.forward();
                 },
@@ -128,7 +126,6 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               MainButtonWidget(
                 text: 'Подтвердить',
                 method: () async {
-                  print(otpCode);
                   await context.read<BusinessHomeViewModel>().getProfile();
                   bool checked = await context
                       .read<BusinessLoginViewModel>()
@@ -139,7 +136,6 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                       .shops
                       .isNotEmpty;
 
-                  print(hasShop);
                   // TODO has SHop kerak
 
                   checked

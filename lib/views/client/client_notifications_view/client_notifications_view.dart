@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/received_notification.dart';
 import '../../../domain/models/sent_notification.dart';
+import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../view_models/send_notification_view_model.dart';
@@ -24,12 +25,8 @@ class ClientNotificationsView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Уведомления',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          title: const Text('Уведомления'),
+          bottom: ThemeDetails.appBarDivider,
         ),
         body: Container(
           child: Column(
@@ -69,7 +66,7 @@ class ClientNotificationsView extends StatelessWidget {
                                         bottomLeft: Radius.circular(10),
                                       ),
                                       child: CachedNetworkImage(
-                                        fit: BoxFit.fitHeight,
+                                        fit: BoxFit.fitWidth,
                                         height:
                                             MediaQuery.of(context).size.width /
                                                 4,

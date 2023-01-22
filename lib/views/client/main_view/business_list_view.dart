@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/user_category.dart';
 import '../../../domain/models/user_shop.dart';
+import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/medium_title_widget.dart';
@@ -23,6 +24,7 @@ class BusinessListView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(userCategory.name),
+          bottom: ThemeDetails.appBarDivider,
         ),
         body: Padding(
           padding: const EdgeInsets.all(0),

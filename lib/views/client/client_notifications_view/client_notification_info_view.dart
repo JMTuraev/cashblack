@@ -3,9 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/models/received_notification.dart';
+import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../widgets/medium_title_widget.dart';
-import '../../../widgets/screen_wrapper.dart';
 
 class ClientNotificationInfoView extends StatelessWidget {
   const ClientNotificationInfoView({
@@ -17,12 +17,13 @@ class ClientNotificationInfoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(receivedNotification.name),
-        ),
-        body: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(receivedNotification.name),
+        bottom: ThemeDetails.appBarDivider,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

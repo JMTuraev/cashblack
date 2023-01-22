@@ -10,11 +10,10 @@ import '../../../domain/models/balance.dart';
 import '../../../domain/models/shop.dart';
 import '../../../domain/models/user.dart';
 import '../../../domain/models/worker.dart';
+import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/business_home_view_model.dart';
-import '../../../view_models/settings_view_model.dart';
 import '../../../widgets/helpers.dart';
-import '../../../widgets/screen_wrapper.dart';
 import '../../../widgets/text_button_widget.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'create_worker_view.dart';
@@ -28,155 +27,56 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User user = context.read<BusinessHomeViewModel>().user;
-    Shop shop = user.shops.last;
+    // User user = context.watch<BusinessHomeViewModel>().user;
+    // Shop shop = user.shops.last;
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Настройки',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () async {
-                await context.read<SettingsViewModel>().logout();
-                Navigator.of(context).pushAndRemoveUntil(
-                  CupertinoPageRoute(
-                    builder: (context) => const SelectTypeView(),
-                  ),
-                  (route) => false,
-                );
-              },
-              icon: const Icon(Icons.logout),
-            )
-          ],
-          // centerTitle: true,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(10),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Настройки'),
+        bottom: ThemeDetails.appBarDivider,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await context.read<BusinessHomeViewModel>().logout();
+              Navigator.of(context).pushAndRemoveUntil(
+                CupertinoPageRoute(
+                  builder: (context) => const SelectTypeView(),
+                ),
+                (route) => false,
+              );
+            },
+            icon: const Icon(Icons.logout),
+          )
+        ],
+        // centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // const MediumTitleWidget(text: 'Settings'),
-              // const SizedBox(height: 15),
-              // Container(
-              //   width: double.infinity,
-              //   padding: const EdgeInsets.all(10),
-              //   child: Stack(
-              //     children: [
-              //       Column(
-              //         children: [
-              //           const Text(
-              //             'Ваш баланс',
-              //             style: TextStyle(
-              //               fontSize: 16,
-              //             ),
-              //           ),
-              //           const SizedBox(height: 4),
-              //           FutureBuilder(
-              //             future:
-              //                 context.read<SettingsViewModel>().getBalance(),
-              //             builder: (context, snapshot) {
-              //               if (snapshot.hasData) {
-              //                 print('sn   ' + snapshot.data.toString());
-              //                 var balance = snapshot.data as List<Balance>;
-              //                 return Text(
-              //                   // balance.first.amount + ' UZS',
-
-              //                   NumberFormat.simpleCurrency(
-              //                         name: '',
-              //                         locale: 'ru_RU',
-              //                         decimalDigits: 0,
-              //                       ).format(int.parse(balance.first.amount)) +
-              //                       'UZS',
-              //                   style: TextStyle(fontSize: 28),
-              //                 );
-              //               } else
-              //                 return Text(
-              //                   '',
-              //                   style: TextStyle(fontSize: 28),
-              //                 );
-              //             },
-              //           ),
-              //           const SizedBox(height: 10),
-              //           Row(
-              //             mainAxisAlignment: MainAxisAlignment.center,
-              //             children: [
-              //               GestureDetector(
-              //                 onTap: () {
-              //                   Navigator.of(context).push(
-              //                     CupertinoPageRoute(
-              //                       builder: (context) => const PaymentView(),
-              //                     ),
-              //                   );
-              //                 },
-              //                 child: Column(
-              //                   children: const [
-              //                     Icon(
-              //                       CupertinoIcons.add_circled,
-              //                       size: 30,
-              //                     ),
-              //                     Text('Пополнить'),
-              //                   ],
-              //                 ),
-              //               ),
-              //               const SizedBox(width: 20),
-              //               GestureDetector(
-              //                 onTap: () {
-              //                   Navigator.of(context).push(
-              //                     CupertinoPageRoute(
-              //                       builder: (context) =>
-              //                           const PaymentsHistoryView(),
-              //                     ),
-              //                   );
-              //                 },
-              //                 child: Column(
-              //                   children: const [
-              //                     Icon(
-              //                       CupertinoIcons
-              //                           .arrow_right_arrow_left_circle,
-              //                       size: 30,
-              //                     ),
-              //                     Text('История'),
-              //                   ],
-              //                 ),
-              //               ),
-              //             ],
-              //           )
-              //         ],
-              //       ),
-              //       Positioned(
-              //         right: 0,
-              //         child: GestureDetector(
-              //           child: const Icon(Icons.logout),
-              //           onTap: () async {
-              //             await context.read<SettingsViewModel>().logout();
-              //             Navigator.of(context).pushAndRemoveUntil(
-              //               CupertinoPageRoute(
-              //                 builder: (context) => const SelectTypeView(),
-              //               ),
-              //               (route) => false,
-              //             );
-              //             // ScaffoldMessenger.of(context).showSnackBar(
-              //             //   Helpers.customSnackBar('Logout'),
-              //             // );
-              //           },
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
               const SizedBox(height: 15),
-              _ProfileCardWidget(
-                user: user,
-              ),
-              const SizedBox(height: 15),
-              _BrandCardWidget(
-                shop: shop,
+              FutureBuilder(
+                future: context.watch<BusinessHomeViewModel>().getProfile(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    var user = snapshot.data as User;
+                    return Column(
+                      children: [
+                        _ProfileCardWidget(
+                          user: user,
+                        ),
+                        const SizedBox(height: 15),
+                        _BrandCardWidget(
+                          shop: user.shops.last,
+                        ),
+                      ],
+                    );
+                  } else {
+                    return SizedBox();
+                  }
+                },
               ),
               const SizedBox(height: 15),
               Row(
@@ -207,7 +107,7 @@ class SettingsView extends StatelessWidget {
               ),
               Expanded(
                 child: FutureBuilder(
-                  future: context.read<SettingsViewModel>().getWorkers(),
+                  future: context.watch<BusinessHomeViewModel>().getWorkers(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Worker> workers = snapshot.data as List<Worker>;

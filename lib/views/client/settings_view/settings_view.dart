@@ -1,10 +1,15 @@
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/user.dart';
+import '../../../theme/theme_details.dart';
 import '../../../view_models/client_home_view_model.dart';
-import '../../../view_models/settings_view_model.dart';
+import '../../../widgets/hero_title_widget.dart';
+import '../../../widgets/medium_title_widget.dart';
+import '../../../widgets/small_title_widget.dart';
 import '../../../widgets/text_button_widget.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'edit_name_view.dart';
@@ -16,96 +21,98 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User user = context.watch<ClientHomeViewModel>().user;
+    // User user = context.watch<ClientHomeViewModel>().user;
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Настройки',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () async {
-                await context.read<SettingsViewModel>().logout();
-                Navigator.of(context).pushAndRemoveUntil(
-                  CupertinoPageRoute(
-                    builder: (context) => const SelectTypeView(),
-                  ),
-                  (route) => false,
-                );
-              },
-              icon: const Icon(Icons.logout),
-            )
-          ],
-          // centerTitle: true,
-        ),
-        body: Padding(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            children: [
-              const SizedBox(height: 15),
-              _ProfileCardWidget(
-                user: user,
-              ),
-              const SizedBox(height: 15),
-              // const Text(
-              //   'Магазины',
-              //   style: TextStyle(
-              //     fontSize: 18,
-              //   ),
-              // ),
-              const SizedBox(height: 15),
-              // const _BrandCardWidget(),
-              // const SizedBox(height: 10),
-              // const _BrandCardWidget(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _BrandCardWidget extends StatelessWidget {
-  const _BrandCardWidget({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return _BorderContainerWidget(
-      child: Row(
-        children: [
-          const SizedBox(
-            width: 60,
-            height: 60,
-            child: FlutterLogo(),
-          ),
-          const SizedBox(width: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const _SimpleTextWidget(
-                title: 'Brand name',
-              ),
-              const Text('Category name'),
-              Row(
-                children: const [
-                  Icon(
-                    CupertinoIcons.money_dollar_circle,
-                    size: 16,
-                  ),
-                  SizedBox(width: 4),
-                  Text('0.3'),
-                ],
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Настройки'),
+        bottom: ThemeDetails.appBarDivider,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await context.read<ClientHomeViewModel>().logout();
+              Navigator.of(context).pushAndRemoveUntil(
+                CupertinoPageRoute(
+                  builder: (context) => const SelectTypeView(),
+                ),
+                (route) => false,
+              );
+            },
+            icon: const Icon(Icons.logout),
           )
         ],
+        // centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Container(
+          // decoration: const BoxDecoration(
+          //   gradient: LinearGradient(
+          //     colors: [Color(0xff000000), Color(0xff464646)],
+          //     begin: Alignment.topCenter,
+          //     end: Alignment.bottomCenter,
+          //   ),
+          // ),
+          // padding: const EdgeInsets.all(10),
+          child: Center(
+            child: FutureBuilder(
+              future: context.watch<ClientHomeViewModel>().getProfile(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  var user = snapshot.data as User;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 15),
+                      BarcodeWidget(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        height: MediaQuery.of(context).size.width / 1.5,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          color: Colors.white,
+                        ),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                        ),
+                        // color: Colors.white,
+                        padding: const EdgeInsets.all(10),
+                        // data: user.barcode ?? '978020137962',
+                        data: user.barcode!,
+                        barcode: Barcode.qrCode(),
+                      ),
+                      SizedBox(height: 60),
+                      GestureDetector(
+                        // child: HeroTitleWidget(
+                        //     text: '${user.firstName} ${user.lastName}'),
+                        child: Text(
+                          '${user.firstName} ${user.lastName}',
+                          style: GoogleFonts.abrilFatface(
+                            fontSize: 30,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            CupertinoPageRoute(
+                              builder: (context) => EditNameView(
+                                user: user!,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      SizedBox(height: 30),
+                      SmallTitleWidget(text: user!.userName.phoneFormatter()),
+                    ],
+                  );
+                } else {
+                  return SizedBox();
+                }
+              },
+            ),
+          ),
+        ),
       ),
     );
   }

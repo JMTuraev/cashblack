@@ -3,10 +3,11 @@ import 'package:flutter/services.dart';
 
 class AppBarStyle {
   static const appBarStyle = SystemUiOverlayStyle(
-    statusBarColor: Colors.black54,
-    statusBarBrightness: Brightness.dark,
-    statusBarIconBrightness: Brightness.light,
-    systemNavigationBarColor: Colors.black54,
+    statusBarColor: Colors.black, //android
+    statusBarIconBrightness: Brightness.light, //android
+    statusBarBrightness: Brightness.dark, //ios dark icons
+
+    systemNavigationBarColor: Colors.black,
     systemNavigationBarDividerColor: Colors.black,
     systemNavigationBarIconBrightness: Brightness.light,
   );

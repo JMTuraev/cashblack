@@ -38,50 +38,42 @@ class ClientLoginView extends StatelessWidget {
       }
     }
 
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const HeroTitleWidget(text: 'Введите номер телефона'),
-            const SizedBox(height: 20),
-            const SmallTitleWidget(text: 'Мы отправим вам код подтверждения'),
-            const SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                filled: false,
-                // hintStyle: TextStyle(color: Colors.grey[800]),
-                hintText: "Телефон",
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SmallTitleWidget(text: 'Мы отправим вам код подтверждения'),
+        const SizedBox(height: 10),
+        TextField(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            filled: false,
+            // hintStyle: TextStyle(color: Colors.grey[800]),
+            hintText: "Телефон",
 
-                // fillColor: Colors.white70,
-              ),
-              inputFormatters: [maskFormatter],
-              controller: phoneController,
-              autocorrect: false,
-              autofocus: true,
-              enableSuggestions: false,
-              keyboardAppearance: Brightness.dark,
-              showCursor: true,
-              keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: 20),
-            _MainButtonWidget(
-              text: 'Вход',
-              method: context.watch<ClientLoginViewModel>().isLoading
-                  ? null
-                  : submit,
-            ),
-            const SizedBox(height: 20),
-            _PublicOfferWidget(),
-            // _NumbersWidget(phoneController: phoneController),
-          ],
+            // fillColor: Colors.white70,
+          ),
+          inputFormatters: [maskFormatter],
+          controller: phoneController,
+          autocorrect: false,
+          autofocus: true,
+          enableSuggestions: false,
+          keyboardAppearance: Brightness.dark,
+          showCursor: true,
+          keyboardType: TextInputType.phone,
         ),
-      ),
+        const SizedBox(height: 20),
+        _MainButtonWidget(
+          text: 'Вход',
+          method:
+              context.watch<ClientLoginViewModel>().isLoading ? null : submit,
+        ),
+        const SizedBox(height: 20),
+        _PublicOfferWidget(),
+        // _NumbersWidget(phoneController: phoneController),
+      ],
     );
   }
 }

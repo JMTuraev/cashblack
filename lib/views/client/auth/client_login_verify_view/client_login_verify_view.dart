@@ -30,11 +30,8 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
 
   @override
   void codeUpdated() {
-    print('update');
     setState(() {
       otpCode = code!;
-      print(code);
-      print(otpCode);
     });
   }
 
@@ -89,14 +86,14 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                 controller: textController,
                 autoFocus: true,
                 codeLength: 5,
-                decoration: BoxLooseDecoration(
+                decoration: UnderlineDecoration(
                   gapSpace: 40,
                   textStyle: const TextStyle(
                     fontSize: 20,
                     // color: Colors.white,
                   ),
-                  strokeColorBuilder:
-                      FixedColorBuilder(Colors.black.withOpacity(0.3)),
+                  colorBuilder:
+                      FixedColorBuilder(Colors.white.withOpacity(0.3)),
                 ),
                 currentCode: otpCode,
                 onCodeSubmitted: (code) {},
@@ -126,7 +123,6 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
               MainButtonWidget(
                 text: 'Подтвердить',
                 method: () async {
-                  print(otpCode);
                   await context.read<ClientHomeViewModel>().getProfile();
                   bool checked = await context
                       .read<ClientLoginViewModel>()

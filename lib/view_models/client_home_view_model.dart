@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/api/client.dart';
 import '../domain/models/client_statistics.dart';
@@ -16,8 +18,8 @@ class ClientHomeViewModel extends ChangeNotifier {
   late List<UserCategory> userCategory;
   late List<UserShop> userShop;
 
-  Future<void> getProfile() async {
-    user = await _client.getProfile();
+  Future<User> getProfile() async {
+    return user = await _client.getProfile();
   }
 
   // Future<void> getCategories() async {
@@ -43,5 +45,23 @@ class ClientHomeViewModel extends ChangeNotifier {
   void onChange(int index) {
     currentIndex = index;
     notifyListeners();
+  }
+
+  Future<void> changeName(int userId, String firstName, String lastName) async {
+    await _client.changeName(userId, firstName, lastName);
+    await getProfile();
+    notifyListeners();
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final storage = FlutterSecureStorage();
+
+    // await prefs.remove('isLogged');
+    // await storage.delete(key: 'bearer');
+    await prefs.clear();
+    await storage.deleteAll();
+    currentIndex = 0;
+    // notifyListeners();
   }
 }

@@ -217,8 +217,8 @@ class _EditStoreViewState extends State<EditStoreView> {
                   MainButtonWidget(
                       text: 'OK',
                       method: () {
-                        print(
-                            '$_selectedCategory  $_selectedProvince $_selectedProvince');
+                        // print(
+                        //     '$_selectedCategory  $_selectedProvince $_selectedProvince');
                         // context.read<CreateStoreViewViewModel>().createstore(
                         //     29,
                         //     int.parse(_selectedCategory!),

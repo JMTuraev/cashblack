@@ -13,7 +13,6 @@ import 'view_models/client_login_view_model.dart';
 import 'view_models/create_store_view_view_model.dart';
 import 'view_models/payment_client_view_model.dart';
 import 'view_models/send_notification_view_model.dart';
-import 'view_models/settings_view_model.dart';
 import 'view_models/statistics_view_model.dart';
 import 'views/business/auth/business_login_view/business_login_view.dart';
 import 'views/business/business_home_view/business_home_view.dart';
@@ -66,9 +65,6 @@ class MyApp extends StatelessWidget {
           create: (ctx) => CreateStoreViewViewModel(),
           child: const CreateStoreView(),
         ),
-        ChangeNotifierProvider<SettingsViewModel>(
-          create: (ctx) => SettingsViewModel(),
-        ),
         ChangeNotifierProvider<StatisticsViewModel>(
           create: (ctx) => StatisticsViewModel(),
         ),
@@ -96,15 +92,16 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
           // colorSchemeSeed: Colors.black,
           // primarySwatch: Colors.black,
-          // backgroundColor: Colors.black54,
-          scaffoldBackgroundColor: Colors.black54,
+          backgroundColor: Colors.black,
+          scaffoldBackgroundColor: Colors.black,
           // bottomAppBarColor: Colors.black54,
           // bottomAppBarTheme: BottomAppBarTheme(
           //   color: Colors.black54,
           // ),
-          appBarTheme: AppBarTheme(
-            // backgroundColor: Colors.black54,
-            color: Colors.black54,
+          appBarTheme: const AppBarTheme(
+            // color: Colors.transparent,
+            // color: Colors.black,
+            backgroundColor: Colors.black,
             systemOverlayStyle: AppBarStyle.appBarStyle,
             elevation: 0,
             centerTitle: true,
@@ -113,20 +110,6 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: 22,
             ),
-            //       color: AppColors.flexSchemeLight.primary,
-            // scrolledUnderElevation: 0,
-            // titleTextStyle: const TextStyle(
-            //   color: Colors.white,
-            //   fontSize: 22,
-            // ),
-            // actionsIconTheme: const IconThemeData(
-            //   color: Colors.white,
-            //   size: 24,
-            // ),
-            // iconTheme: const IconThemeData(
-            //   color: Colors.white,
-            //   size: 24,
-            // ),
           ),
           cardTheme: CardTheme(
             color: Colors.grey.shade900,
@@ -138,7 +121,7 @@ class MyApp extends StatelessWidget {
         // supportedLocales: [
         //   Locale('ru', 'RU'),
         // ],
-        // home: const CreateStoreView(),
+        // home: const SelectTypeView(),
         home: isLogged
             ? (isBusiness ? const BusinessHomeView() : const ClientHomeView())
             : const SelectTypeView(),
