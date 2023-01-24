@@ -36,17 +36,10 @@ class _StatisticsViewState extends State<StatisticsView> {
   Widget build(BuildContext context) {
     Future<List<SumStat>> stats =
         context.watch<StatisticsViewModel>().getSumStats();
-    // Future<List<SumStat>> stats =
-    //     context.watch<StatisticsViewModel>().getSumStats(
-    //           start: start,
-    //           end: end,
-    //         );
 
     var body = IndexedStack(
       index: summa ? 0 : 1,
       children: [
-        // Text('data'),
-        // Text('data2'),
         _SumWidget(
           stats: stats,
         ),
@@ -57,7 +50,6 @@ class _StatisticsViewState extends State<StatisticsView> {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-YYYY');
     final String formatted = formatter.format(now);
-    // print('bugun ' + formatted);
 
     return Scaffold(
       appBar: AppBar(
@@ -200,17 +192,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                   : SizedBox(),
               const SizedBox(height: 20),
               Expanded(
-                // scrollDirection: Axis.horizontal,
-                // child: summa
-                //     ? _SumWidget(
-                //         stats: stats,
-                //       )
-                //     : _CashbackWidget(),
                 child: body,
               ),
-              // Expanded(
-              //   child: _SumWidget(),
-              // ),
             ],
           ),
         ),
@@ -242,7 +225,7 @@ class _SumWidget extends StatelessWidget {
               List<SumStat> sumStat = (snapshot.data as List<SumStat>)
                   .where((element) => element.isWithdraw == false)
                   .toList();
-              // return Text('data');
+
               final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
               final DateFormat sorter = DateFormat('dd MMMM yyyy');
               return Expanded(
@@ -251,8 +234,6 @@ class _SumWidget extends StatelessWidget {
                   groupBy: (element) {
                     DateTime dates = DateTime.parse(element.date!);
                     return DateUtils.dateOnly(dates).toString();
-
-                    // return DateTime(dates.year, dates.month, dates.day).toString();
                   },
                   groupSeparatorBuilder: (String groupByValue) =>
                       Text(groupByValue),
@@ -266,8 +247,6 @@ class _SumWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // useStickyGroupSeparators: true,
-                  // floatingHeader: true,
                   order: GroupedListOrder.DESC,
                 ),
               );
@@ -300,7 +279,6 @@ class _CashbackWidget extends StatelessWidget {
             if (snapshot.hasData) {
               List<SumCashback> sumCashback =
                   snapshot.data as List<SumCashback>;
-              // return Text('data');
 
               return Expanded(
                 child: ListView.builder(
@@ -355,6 +333,15 @@ class _FilterWidget extends StatelessWidget {
           items: categoryItems,
           onChanged: (value) => onChanged(value),
           decoration: const InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
             isDense: true,
             prefixIcon: Icon(CupertinoIcons.calendar),
             border: OutlineInputBorder(
@@ -404,12 +391,6 @@ class _CardStat extends StatelessWidget {
                     Column(
                       children: [
                         const SizedBox(width: 8),
-
-                        // Icon(
-                        //   Icons.attach_money_rounded,
-                        //   color: Colors.green[300],
-                        // ),
-                        // SizedBox(width: 8),
                         const Text(
                           'сумма',
                           style: TextStyle(
@@ -430,15 +411,9 @@ class _CardStat extends StatelessWidget {
                         ),
                       ],
                     ),
-                    // Spacer(),
                     SizedBox(width: 20),
                     Column(
                       children: [
-                        // Icon(
-                        //   CupertinoIcons.money_dollar_circle,
-                        //   color: Colors.green[300],
-                        // ),
-                        // SizedBox(width: 4),
                         const Text(
                           'кэшбек',
                           style: TextStyle(
@@ -475,7 +450,6 @@ class _CardStat extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // SizedBox(width: 8),
                     Text(
                       sumStat.fullName.toString(),
                       style: TextStyle(
@@ -488,10 +462,6 @@ class _CardStat extends StatelessWidget {
                     SizedBox(width: 16),
                     Expanded(
                       child: Text(
-                        // sumStat.userName.replaceAllMapped(
-                        //     RegExp(r'(\d{3})(\d{2})(\d{3})(\d{2})(\d+)'),
-                        //     (m) =>
-                        //         '+(${m[1]}) ${m[2]} ${m[3]} ${m[4]} ${m[5]}'),
                         sumStat.userName.phoneFormatter(),
                         style: TextStyle(
                           fontSize: 14,
@@ -546,7 +516,6 @@ class _CardCashback extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // SizedBox(width: 8),
                     Text(
                       sumCashback.name,
                       style: TextStyle(
@@ -574,14 +543,8 @@ class _CardCashback extends StatelessWidget {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    // SizedBox(width: 8),
                     Column(
                       children: [
-                        // Icon(
-                        //   Icons.arrow_drop_up,
-                        //   color: Colors.green[300],
-                        // ),
-                        // SizedBox(width: 8),
                         const Text(
                           'сумма',
                           style: TextStyle(
@@ -602,18 +565,11 @@ class _CardCashback extends StatelessWidget {
                         ),
                       ],
                     ),
-                    // Spacer(),
                     SizedBox(width: 20),
                     Column(
                       children: [
-                        // SizedBox(width: 20),
-                        // Icon(
-                        //   CupertinoIcons.money_dollar_circle,
-                        //   color: Colors.green[300],
-                        // ),
-                        // SizedBox(width: 4),
                         const Text(
-                          'сумма',
+                          'кэшбек',
                           style: TextStyle(
                             fontSize: 10,
                             color: Colors.grey,

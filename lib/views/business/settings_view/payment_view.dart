@@ -4,8 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cashblack/extensions.dart';
-
+import '../../../extensions.dart';
 import '../../../theme/theme_details.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/balance_view_model.dart';
@@ -43,8 +42,6 @@ class PaymentView extends StatelessWidget {
               alignment: Alignment.center,
               child: Column(
                 children: [
-                  // MediumTitleWidget(text: 'Пополнить баланс'),
-                  // const SizedBox(height: 20),
                   Image.asset(
                     'assets/images/credit-card.png',
                     fit: BoxFit.contain,
@@ -54,6 +51,15 @@ class PaymentView extends StatelessWidget {
                   TextField(
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.grey,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
                       prefixIcon: Icon(Icons.credit_card),
                       hintText: '0000 0000 0000 0000',
                       border: const OutlineInputBorder(
@@ -63,7 +69,6 @@ class PaymentView extends StatelessWidget {
                       ),
                     ),
                     inputFormatters: [maskFormatterCardName],
-                    // controller: phoneController,
                     autocorrect: false,
                     enableSuggestions: false,
                     keyboardAppearance: Brightness.dark,
@@ -71,14 +76,21 @@ class PaymentView extends StatelessWidget {
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 20),
-
                   Row(
                     children: [
                       Expanded(
                         child: TextField(
                           textAlign: TextAlign.center,
                           decoration: InputDecoration(
-                            // prefixIcon: Icon(Icons.calendar_month_outlined),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
                             hintText: 'ММ/ГГ',
                             border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
@@ -87,7 +99,6 @@ class PaymentView extends StatelessWidget {
                             ),
                           ),
                           inputFormatters: [maskFormatterCardDate],
-                          // controller: phoneController,
                           autocorrect: false,
                           enableSuggestions: false,
                           keyboardAppearance: Brightness.dark,
@@ -102,6 +113,15 @@ class PaymentView extends StatelessWidget {
                           inputFormatters: [numericTextFormatter],
                           textAlign: TextAlign.center,
                           decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
                             hintText: 'Сумма',
                             border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
@@ -109,7 +129,6 @@ class PaymentView extends StatelessWidget {
                               ),
                             ),
                           ),
-                          // inputFormatters: [],
                           controller: amountController,
                           autocorrect: false,
                           enableSuggestions: false,
@@ -131,9 +150,7 @@ class PaymentView extends StatelessWidget {
                           .read<BalanceViewModel>()
                           .enterCardDetails(
                             maskFormatterCardName.getUnmaskedText(),
-                            // '8600492931784702',
                             fixedDate,
-                            // '2608',
                             amountController.text.removeWhitespaces(),
                           )
                           .then(

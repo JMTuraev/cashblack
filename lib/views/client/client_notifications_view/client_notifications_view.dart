@@ -1,20 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/received_notification.dart';
-import '../../../domain/models/sent_notification.dart';
 import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
-import '../../../view_models/send_notification_view_model.dart';
-import '../../../widgets/main_button_widget.dart';
-
-import 'package:cashblack/extensions.dart';
-
-import '../../business/send_notification_view/notification_info_view.dart';
 import 'client_notification_info_view.dart';
 
 class ClientNotificationsView extends StatelessWidget {
@@ -54,7 +46,6 @@ class ClientNotificationsView extends StatelessWidget {
                             },
                             child: Card(
                               child: Container(
-                                // height: MediaQuery.of(context).size.width / 4,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,7 +71,6 @@ class ClientNotificationsView extends StatelessWidget {
                                     SizedBox(width: 10),
                                     Expanded(
                                       child: Container(
-                                        // color: Colors.red,
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -104,14 +94,6 @@ class ClientNotificationsView extends StatelessWidget {
                                                 fontSize: 18,
                                               ),
                                             ),
-                                            // SizedBox(height: 4),
-                                            // Text(
-                                            //   notifications[index]
-                                            //       .date
-                                            //       .getLocaleDateTime(),
-                                            //   maxLines: 2,
-                                            //   overflow: TextOverflow.ellipsis,
-                                            // ),
                                           ],
                                         ),
                                       ),

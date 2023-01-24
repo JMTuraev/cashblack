@@ -1,15 +1,13 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cashblack/extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/payment_client_view_model.dart';
-import '../../../widgets/helpers.dart';
+import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/main_button_widget.dart';
-import '../../../widgets/medium_title_widget.dart';
 import 'payment_success_view.dart';
-
-import 'package:cashblack/extensions.dart';
 
 class PaymentClientView extends StatelessWidget {
   const PaymentClientView({
@@ -22,12 +20,15 @@ class PaymentClientView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController priceController = TextEditingController();
-    TextEditingController cashBackController = TextEditingController();
+
+    NumericTextFormatter numericTextFormatter = NumericTextFormatter();
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
               FutureBuilder(
@@ -35,117 +36,129 @@ class PaymentClientView extends StatelessWidget {
                     .read<PaymentClientViewModel>()
                     .getUserFromBarcode(code),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
+                  // if (snapshot.hasData) {
+                  if (true) {
                     var user = snapshot.data;
                     return Column(
                       children: [
                         Text(
-                          user['full_name'],
-                          style: TextStyle(
+                          'asd',
+                          // user['full_name'],
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          user['username'].toString().phoneFormatter(),
-                          style: TextStyle(fontSize: 18),
+                          'asd',
+                          // user['username'].toString().phoneFormatter(),
+                          style: const TextStyle(fontSize: 18),
                         ),
+                        const SizedBox(height: 30),
+                        Center(
+                          child: Form(
+                            child: Column(
+                              children: [
+                                TextField(
+                                  inputFormatters: [numericTextFormatter],
+                                  decoration: const InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                                    hintText: 'Сумма покупки',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                                  ),
+                                  controller: priceController,
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  keyboardAppearance: Brightness.dark,
+                                  showCursor: true,
+                                  keyboardType: TextInputType.number,
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: MainButtonWidget(
+                                        text: 'Кэшбек',
+                                        method: () async {
+                                          await context
+                                              .read<PaymentClientViewModel>()
+                                              .sendCashback(
+                                                  priceController.text
+                                                      .removeWhitespaces(),
+                                                  code)
+                                              .then(
+                                                (value) => Navigator.of(context)
+                                                    .pushAndRemoveUntil(
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        const PaymentSuccessView(
+                                                      title: 'Кэшбек выплачено',
+                                                    ),
+                                                  ),
+                                                  (route) => false,
+                                                ),
+                                              );
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      flex: 1,
+                                      child: MainButtonWidget(
+                                        text: 'Оплата',
+                                        method: () async {
+                                          await context
+                                              .read<PaymentClientViewModel>()
+                                              .payForGoods(
+                                                  priceController.text
+                                                      .removeWhitespaces(),
+                                                  code)
+                                              .then(
+                                                (value) => Navigator.of(context)
+                                                    .pushAndRemoveUntil(
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        const PaymentSuccessView(
+                                                      title: 'Оплачено',
+                                                    ),
+                                                  ),
+                                                  (route) => false,
+                                                ),
+                                              );
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
                       ],
                     );
                   } else {
-                    return CircularProgressIndicator();
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.width,
+                      child: const LogoAnimatedWidget(),
+                    );
                   }
                 },
               ),
-              Form(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 100),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Сумма покупки',
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                      ),
-                      controller: priceController,
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      keyboardAppearance: Brightness.dark,
-                      showCursor: true,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
-                    MainButtonWidget(
-                      text: 'Начисление',
-                      method: () async {
-                        await context
-                            .read<PaymentClientViewModel>()
-                            .sendCashback(priceController.text, code)
-                            .then(
-                              (value) =>
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                CupertinoPageRoute(
-                                  builder: (context) =>
-                                      const PaymentSuccessView(
-                                    title: 'Счет пополнено',
-                                  ),
-                                ),
-                                (route) => false,
-                              ),
-                            );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 100),
-              Form(
-                child: Column(
-                  children: [
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Сумма товаров',
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                      ),
-                      controller: cashBackController,
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      keyboardAppearance: Brightness.dark,
-                      showCursor: true,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
-                    MainButtonWidget(
-                      text: 'Оплата для товара',
-                      method: () async {
-                        await context
-                            .read<PaymentClientViewModel>()
-                            .payForGoods(cashBackController.text, code)
-                            .then(
-                              (value) =>
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                CupertinoPageRoute(
-                                  builder: (context) =>
-                                      const PaymentSuccessView(
-                                    title: 'Счет пополнено',
-                                  ),
-                                ),
-                                (route) => false,
-                              ),
-                            );
-                      },
-                    ),
-                  ],
-                ),
-              )
             ],
           ),
         ),

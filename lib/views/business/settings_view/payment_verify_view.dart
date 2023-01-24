@@ -1,20 +1,13 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cashblack/extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
-import '../../../../view_models/client_home_view_model.dart';
-import '../../../../view_models/client_login_view_model.dart';
 import '../../../../widgets/hero_title_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
-import '../../../../widgets/text_button_widget.dart';
 import '../../../view_models/balance_view_model.dart';
-import '../../client/client_home_view.dart/client_home_view.dart';
-
-import 'package:cashblack/extensions.dart';
-
 import '../scanner_view/payment_success_view.dart';
 
 class PaymentVerifyView extends StatefulWidget {
@@ -109,7 +102,6 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
                   gapSpace: 40,
                   textStyle: const TextStyle(
                     fontSize: 20,
-                    // color: Colors.white,
                   ),
                   colorBuilder:
                       FixedColorBuilder(Colors.white.withOpacity(0.3)),
@@ -123,10 +115,9 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
                 },
               ),
               const SizedBox(height: 20),
-
               _Countdown(
                 animation: StepTween(
-                  begin: levelClock, // THIS IS A USER ENTERED NUMBER
+                  begin: levelClock,
                   end: 0,
                 ).animate(_animationController!),
               ),
@@ -134,7 +125,6 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
               MainButtonWidget(
                 text: 'Подтвердить',
                 method: () async {
-                  // print(hasShop);
                   await context
                       .read<BalanceViewModel>()
                       .paymentConfirm(
@@ -156,31 +146,6 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
                       );
                 },
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 32),
-              //   child: Builder(
-              //     builder: (_) {
-              //       if (otpCode == null) {
-              //         return _Countdown(
-              //           animation: StepTween(
-              //             begin: levelClock, // THIS IS A USER ENTERED NUMBER
-              //             end: 0,
-              //           ).animate(_animationController!),
-              //         );
-              //       }
-              // return MainButtonWidget(
-              //   text: 'Verify',
-              //   method: () {
-              //     Navigator.of(context).pushAndRemoveUntil(
-              //         CupertinoPageRoute(
-              //           builder: (context) => CreateStoreView(),
-              //         ),
-              //         (route) => false);
-              //   },
-              // );
-              //     },
-              //   ),
-              // ),
             ],
           ),
         ),

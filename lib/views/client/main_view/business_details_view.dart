@@ -9,7 +9,6 @@ import '../../../domain/models/client_statistics.dart';
 import '../../../domain/models/user_shop.dart';
 import '../../../theme/theme_details.dart';
 import '../../../view_models/client_home_view_model.dart';
-import '../../../widgets/medium_title_widget.dart';
 
 class BusinessDetailsView extends StatefulWidget {
   @override
@@ -108,7 +107,6 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                                 ],
                               ),
                             ),
-                            // const SizedBox(width: 10),
                             const Icon(Icons.circle, size: 6),
                             const SizedBox(width: 10),
                             Expanded(
@@ -150,7 +148,6 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                     );
                 },
               ),
-
               const SizedBox(height: 20),
               FutureBuilder(
                 future: stats,
@@ -158,19 +155,15 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                   if (snapshot.hasData) {
                     var stat = snapshot.data!.clientInfo as List<ClientInfo>;
 
-                    // return Text('data');
                     final DateFormat formatter =
                         DateFormat('dd MMMM yyyy, EEEE');
                     final DateFormat sorter = DateFormat('dd MMMM yyyy');
                     return Expanded(
                       child: GroupedListView<ClientInfo, String>(
                         elements: stat,
-                        // padding: EdgeInsets.only(top: 6),
                         groupBy: (element) {
                           DateTime dates = DateTime.parse(element.date);
                           return DateUtils.dateOnly(dates).toString();
-
-                          // return DateTime(dates.year, dates.month, dates.day).toString();
                         },
                         groupSeparatorBuilder: (String groupByValue) =>
                             Text(groupByValue),
@@ -189,8 +182,6 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                             ),
                           ),
                         ),
-                        // useStickyGroupSeparators: true,
-                        // floatingHeader: true,
                         order: GroupedListOrder.DESC,
                       ),
                     );
@@ -199,17 +190,6 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                   }
                 },
               ),
-              // Expanded(
-              //   child: SingleChildScrollView(
-              //     child: SingleChildScrollView(
-              //       scrollDirection: Axis.horizontal,
-              //       child: _SumWidget(rows: sumRows),
-              //     ),
-              //   ),
-              // ),
-              // Expanded(
-              //   child: _SumWidget(),
-              // ),
             ],
           ),
         ),
@@ -247,11 +227,9 @@ class _CardCashback extends StatelessWidget {
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         'сумма',
@@ -276,8 +254,6 @@ class _CardCashback extends StatelessWidget {
                   const SizedBox(width: 20),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-
-                    // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         'кэшбек',
@@ -348,11 +324,9 @@ class _CardWithdraw extends StatelessWidget {
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         'покупка',
@@ -378,7 +352,6 @@ class _CardWithdraw extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
                           'имя сотрудника',

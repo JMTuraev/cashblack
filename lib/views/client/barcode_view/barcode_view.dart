@@ -1,19 +1,14 @@
 import 'package:barcode_widget/barcode_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/user.dart';
+import '../../../extensions.dart';
 import '../../../theme/theme_details.dart';
-import '../../../utils/color_filter.dart';
-import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/small_title_widget.dart';
-
-import 'package:cashblack/extensions.dart';
-
 import '../../business/settings_view/edit_name_view.dart';
 import '../../select_type_view/select_type_view.dart';
 
@@ -31,29 +26,21 @@ class BarcodeView extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              await context.read<ClientHomeViewModel>().logout();
-              Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(
-                  builder: (context) => const SelectTypeView(),
-                ),
-                (route) => false,
-              );
+              await context.read<ClientHomeViewModel>().logout().then(
+                    (value) => Navigator.of(context).pushAndRemoveUntil(
+                      CupertinoPageRoute(
+                        builder: (context) => const SelectTypeView(),
+                      ),
+                      (route) => false,
+                    ),
+                  );
             },
             icon: const Icon(Icons.logout),
           )
         ],
-        // centerTitle: true,
       ),
       body: SafeArea(
         child: Container(
-          // decoration: const BoxDecoration(
-          //   gradient: LinearGradient(
-          //     colors: [Color(0xff000000), Color(0xff464646)],
-          //     begin: Alignment.topCenter,
-          //     end: Alignment.bottomCenter,
-          //   ),
-          // ),
-          // padding: const EdgeInsets.all(10),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -72,14 +59,11 @@ class BarcodeView extends StatelessWidget {
                     color: Colors.black,
                     fontSize: 18,
                   ),
-                  // color: Colors.white,
                   padding: const EdgeInsets.all(10),
-                  // data: user.barcode ?? '978020137962',
                   data: user.barcode!,
                   barcode: Barcode.qrCode(),
                 ),
                 SizedBox(height: 60),
-
                 GestureDetector(
                   child: HeroTitleWidget(
                       text: '${user.firstName} ${user.lastName}'),
@@ -95,20 +79,8 @@ class BarcodeView extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 SmallTitleWidget(text: user!.userName.phoneFormatter()),
-                // _ProfileCardWidget(
-                //   user: user,
-                // ),
                 const SizedBox(height: 15),
-                // const Text(
-                //   'Магазины',
-                //   style: TextStyle(
-                //     fontSize: 18,
-                //   ),
-                // ),
                 const SizedBox(height: 15),
-                // const _BrandCardWidget(),
-                // const SizedBox(height: 10),
-                // const _BrandCardWidget(),
               ],
             ),
           ),

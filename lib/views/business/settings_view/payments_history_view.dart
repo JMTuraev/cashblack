@@ -3,12 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/payment.dart';
+import '../../../extensions.dart';
 import '../../../theme/theme_details.dart';
 import '../../../view_models/balance_view_model.dart';
-import '../../../widgets/helpers.dart';
-import '../../../widgets/hero_title_widget.dart';
-
-import 'package:cashblack/extensions.dart';
 
 class PaymentsHistoryView extends StatelessWidget {
   const PaymentsHistoryView({super.key});
@@ -35,8 +32,6 @@ class PaymentsHistoryView extends StatelessWidget {
                       List<Payment> payments = snapshot.data as List<Payment>;
 
                       return ListView.separated(
-                        // shrinkWrap: true,
-                        // physics: const NeverScrollableScrollPhysics(),
                         itemCount: payments.length,
                         separatorBuilder: (context, index) {
                           return const Divider(
@@ -90,36 +85,6 @@ class PaymentsHistoryView extends StatelessWidget {
                                     color: Colors.green[400],
                                   ),
                                 ),
-
-                                // ListTile(
-                                //   title: Row(
-                                //     children: [
-                                //       Text(
-                                //         payments[index].cardNumber.cardHiddenFormatter(),
-                                //         style: TextStyle(
-                                //           fontSize: 18,
-                                //         ),
-                                //       ),
-                                //       Spacer(),
-                                //       Text(
-                                //         // payments[index].amount,
-                                //         NumberFormat.simpleCurrency(
-                                //           name: '',
-                                //           locale: 'ru_RU',
-                                //           decimalDigits: 0,
-                                //         ).format(int.parse(payments[index].amount)),
-                                //         style: TextStyle(
-                                //           fontSize: 18,
-                                //           color: Colors.green[400],
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                //   subtitle: Text(formatter
-                                //       .format(DateTime.parse(payments[index].date))),
-                                //   contentPadding: const EdgeInsets.all(0),
-                                //   // onTap: () {},
-                                // ),
                               ],
                             ),
                           );

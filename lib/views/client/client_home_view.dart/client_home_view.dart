@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../barcode_view/barcode_view.dart';
 import '../client_notifications_view/client_notifications_view.dart';
 import '../main_view/main_view.dart';
 import '../settings_view/settings_view.dart';
@@ -23,18 +22,10 @@ class _ClientHomeViewState extends State<ClientHomeView> {
 
   @override
   Widget build(BuildContext context) {
-    // List<Widget> _body = [
-    //   const MainView(),
-    //   // const BarcodeView(),
-    //   const ClientNotificationsView(),
-    //   const SettingsView(),
-    // ];
-
     var body = IndexedStack(
       index: currentIndex,
       children: const [
         MainView(),
-        //  BarcodeView(),
         ClientNotificationsView(),
         SettingsView(),
       ],
@@ -45,10 +36,6 @@ class _ClientHomeViewState extends State<ClientHomeView> {
         icon: Icon(CupertinoIcons.home),
         label: 'Главная',
       ),
-      // const BottomNavigationBarItem(
-      //   icon: Icon(Icons.credit_card),
-      //   label: 'Баркод',
-      // ),
       const BottomNavigationBarItem(
         icon: Icon(CupertinoIcons.chat_bubble),
         label: 'Уведомления',
@@ -69,26 +56,10 @@ class _ClientHomeViewState extends State<ClientHomeView> {
         unselectedItemColor: Colors.grey,
         backgroundColor: Colors.black54,
       ),
-      // body: IndexedStack(
-      //   index: currentIndex,
-      //   children: body,
-      // ),
       body: SafeArea(
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            // Container(
-            //   decoration: const BoxDecoration(
-            //     gradient: LinearGradient(
-            //       colors: [Color(0xff000000), Color(0xff464646)],
-            //       begin: Alignment.topCenter,
-            //       end: Alignment.bottomCenter,
-            //     ),
-            //   ),
-            //   child: body.elementAt(currentIndex),
-
-            // ),
-            // body.elementAt(currentIndex),
             body,
             const Divider(
               height: 1,

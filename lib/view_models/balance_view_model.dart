@@ -1,12 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import '../core/api/client.dart';
 import '../domain/models/payment.dart';
-import '../domain/models/user.dart';
-import '../domain/models/user_category.dart';
-import '../domain/models/user_shop.dart';
 
 class BalanceViewModel extends ChangeNotifier {
   final Client _client = Client();

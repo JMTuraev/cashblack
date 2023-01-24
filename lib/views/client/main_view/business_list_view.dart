@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import '../../../domain/models/user_shop.dart';
 import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
-import '../../../widgets/medium_title_widget.dart';
 import 'business_details_view.dart';
 
 class BusinessListView extends StatelessWidget {
@@ -59,7 +57,6 @@ class BusinessListView extends StatelessWidget {
                               },
                               child: Card(
                                 child: Container(
-                                  // height: MediaQuery.of(context).size.width / 4,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
@@ -78,10 +75,6 @@ class BusinessListView extends StatelessWidget {
                                                   .size
                                                   .width /
                                               4,
-                                          // width: MediaQuery.of(context)
-                                          //         .size
-                                          //         .width /
-                                          //     3,
                                           imageUrl: Constants.media +
                                               shops[index].logo,
                                         ),
@@ -89,7 +82,6 @@ class BusinessListView extends StatelessWidget {
                                       SizedBox(width: 10),
                                       Expanded(
                                         child: Container(
-                                          // color: Colors.red,
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,

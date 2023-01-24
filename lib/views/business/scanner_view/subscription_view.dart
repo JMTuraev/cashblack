@@ -7,13 +7,13 @@ import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/medium_title_widget.dart';
 import '../business_home_view/business_home_view.dart';
 
-class PaymentSuccessView extends StatelessWidget {
-  const PaymentSuccessView({
+class SubscriptionView extends StatelessWidget {
+  const SubscriptionView({
     Key? key,
-    required this.title,
+    // required this.title,
   }) : super(key: key);
 
-  final String title;
+  // final String title;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -25,7 +25,11 @@ class PaymentSuccessView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Center(child: MediumTitleWidget(text: title)),
+                  const Center(
+                    child: MediumTitleWidget(
+                      text: 'Оплатите абонентскую плату',
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   MainButtonWidget(
                     text: 'OK',
@@ -33,7 +37,7 @@ class PaymentSuccessView extends StatelessWidget {
                       context.read<BusinessHomeViewModel>().onChange(0);
                       Navigator.of(context).pushReplacement(
                         CupertinoPageRoute(
-                          builder: (context) => BusinessHomeView(),
+                          builder: (context) => const BusinessHomeView(),
                         ),
                       );
                     },

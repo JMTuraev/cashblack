@@ -1,19 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../domain/models/client_statistics.dart';
 import '../../domain/models/balance.dart';
 import '../../domain/models/category.dart';
 import '../../domain/models/city.dart';
-import '../../domain/models/received_notification.dart';
-import '../../domain/models/sent_notification.dart';
+import '../../domain/models/client_statistics.dart';
 import '../../domain/models/one_month_statistic.dart';
 import '../../domain/models/payment.dart';
+import '../../domain/models/received_notification.dart';
+import '../../domain/models/sent_notification.dart';
 import '../../domain/models/sum_cashback.dart';
 import '../../domain/models/sum_stat.dart';
 import '../../domain/models/user.dart';
@@ -284,14 +283,14 @@ class Client {
     }
   }
 
-  Future<List<City>> getCities() async {
+  Future<List<City>> getCities(String id) async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
       'Content-Type': ' application/json; charset=utf-8',
       'Authorization': value!
     };
 
-    Uri url = Uri.parse('$path/all_distrik_view/');
+    Uri url = Uri.parse('$path/all_distrik_view/$id/');
     http.Request req = http.Request('GET', url);
     req.headers.addAll(headers);
 
@@ -437,8 +436,6 @@ class Client {
     //   'distrik_id': city,
     //   'brand_img': file,
     // };
-
-    final prefs = await SharedPreferences.getInstance();
 
     var request = http.MultipartRequest(
       'POST',
@@ -590,7 +587,7 @@ class Client {
     int shopId,
     int category,
     String name,
-    double cashback,
+    int cashback,
     int province,
     int city,
     File file,
@@ -610,7 +607,7 @@ class Client {
     };
 
     Uri url = Uri.parse('$path/shops_update_view/$shopId/');
-    http.MultipartRequest req = http.MultipartRequest('POST', url);
+    http.MultipartRequest req = http.MultipartRequest('PUT', url);
     // req.body = json.encode(body);
     // req.headers.addAll(headers);
     req.fields['name_shops'] = name;
@@ -664,6 +661,30 @@ class Client {
     }
   }
 
+  Future<void> switchWorker(int id, bool type) async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+    Map<String, dynamic> body = {
+      'is_switcher': type == true ? 'True' : 'False',
+    };
+
+    Uri url = Uri.parse('$path/sotrutnik_switcher/${id.toString()}/');
+    http.Request req = http.Request('PUT', url);
+    req.body = json.encode(body);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+    } else {
+      print(res.reasonPhrase);
+    }
+  }
+
   Future<List<Balance>> getBalance() async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
@@ -688,6 +709,31 @@ class Client {
     } else {
       print(res.reasonPhrase);
       return [];
+    }
+  }
+
+  Future<String> getNotificationPrice() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/notification_summ/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      List<Balance> worker;
+      var decode = (json.decode(resBody)['msg'] as List);
+
+      return decode[0]['name'] ?? '0';
+    } else {
+      print(res.reasonPhrase);
+      return '0';
     }
   }
 

@@ -10,10 +10,13 @@ Balance _$BalanceFromJson(Map<String, dynamic> json) => Balance(
       id: json['id'] as int,
       amount: json['amunt'] as String,
       date: json['date'] as String,
+      balanceShop:
+          BalanceShop.fromJson(json['shop_id'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$BalanceToJson(Balance instance) => <String, dynamic>{
       'id': instance.id,
       'amunt': instance.amount,
       'date': instance.date,
+      'shop_id': instance.balanceShop,
     };

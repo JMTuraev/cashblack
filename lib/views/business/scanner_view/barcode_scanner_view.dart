@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:provider/provider.dart';
 
 import '../../../theme/theme_details.dart';
-import '../../../view_models/payment_client_view_model.dart';
 import 'payment_client_view.dart';
 
 class BarcodeScannerView extends StatelessWidget {

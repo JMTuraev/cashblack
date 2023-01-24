@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/category.dart';
 import '../../../domain/models/city.dart';
-import '../../../domain/models/user.dart';
+import '../../../extensions.dart';
+import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/create_store_view_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
@@ -27,13 +28,14 @@ class _CreateStoreViewState extends State<CreateStoreView> {
   String? _selectedProvince;
   String? _selectedCity;
 
-  // User? user;
+  Future<List<Category>>? categoryItems;
+  Future<List<Province>>? provinceItems;
+  Future<List<City>>? cityItems;
 
   bool _isChecked = false;
 
   final ImagePicker _picker = ImagePicker();
-  List<File?> _fileList = [];
-  // File? _imageFile;
+  final List<File?> _fileList = [];
 
   void getFromGallery() async {
     PickedFile? pickedFile = await ImagePicker().getImage(
@@ -42,7 +44,6 @@ class _CreateStoreViewState extends State<CreateStoreView> {
       maxWidth: 1080,
     );
     _cropImage(pickedFile!.path);
-    // Navigator.pop(context);
   }
 
   void _cropImage(filepath) async {
@@ -65,7 +66,6 @@ class _CreateStoreViewState extends State<CreateStoreView> {
   void dltImages(data) {
     setState(() {
       _fileList.remove(data);
-      //   dltImages(_fileList.first);
     });
   }
 
@@ -93,7 +93,11 @@ class _CreateStoreViewState extends State<CreateStoreView> {
 
   onProvinceChanged(value) {
     setState(() {
+      _selectedCity = null;
       _selectedProvince = value;
+      cityItems = context
+          .read<CreateStoreViewViewModel>()
+          .getCities(_selectedProvince!);
     });
   }
 
@@ -107,47 +111,32 @@ class _CreateStoreViewState extends State<CreateStoreView> {
   void initState() {
     super.initState();
     loadUser();
+    setState(() {});
   }
 
-  void loadUser() async {
-    // user = await context.read<CreateStoreViewViewModel>().getProfile();
-    // print(user?.id.toString());
+  Future<void> loadUser() async {
+    categoryItems = context.read<CreateStoreViewViewModel>().getCategories();
+    provinceItems = context.read<CreateStoreViewViewModel>().getProvincies();
+    // cityItems = context.read<CreateStoreViewViewModel>().getCities('1');
   }
 
-  TextEditingController _brandName = TextEditingController();
-  TextEditingController _cashback = TextEditingController();
+  final TextEditingController _brandName = TextEditingController();
+  final TextEditingController _cashback = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    // context.read<CreateStoreViewViewModel>().getCategoryProperties();
-    // List<Category> categories =
-    //     context.watch<CreateStoreViewViewModel>().categories;
-    // List<Province> provincies =
-    //     context.watch<CreateStoreViewViewModel>().provincies;
-    // List<City> cities = context.watch<CreateStoreViewViewModel>().cities;
-
-    // var categoryItems = categories
-    //     .map(
-    //       (e) => DropdownMenuItem<String>(
-    //         value: e.id.toString(),
-    //         child: Text(e.title),
-    //       ),
-    //     )
-    //     .toList();
-
-    Future<List<Category>> categoryItems =
-        context.read<CreateStoreViewViewModel>().getCategories();
-    Future<List<Province>> provinceItems =
-        context.read<CreateStoreViewViewModel>().getProvincies();
-    Future<List<City>> cityItems =
-        context.read<CreateStoreViewViewModel>().getCities();
+    // Future<List<Category>> categoryItems =
+    //     context.read<CreateStoreViewViewModel>().getCategories();
+    // Future<List<Province>> provinceItems =
+    //     context.read<CreateStoreViewViewModel>().getProvincies();
+    // Future<List<City>> cityItems =
+    //     context.read<CreateStoreViewViewModel>().getCities('1');
 
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
           child: Align(
-            alignment: Alignment.center,
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -159,7 +148,6 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                       : _ImageViewWidget(
                           fileList: _fileList,
                           onDelete: () {
-                            // dltImages(_fileList.first);
                             clearImages();
                           },
                           onEdit: () {
@@ -167,11 +155,6 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                           },
                         ),
                   const SizedBox(height: 20),
-                  // _SelectCategoryWidget(
-                  //   selectedOption: _selectedCategory,
-                  //   categoryItems: categoryItems,
-                  //   onChanged: onCategoryChanged,
-                  // ),
                   FutureBuilder(
                     future: categoryItems,
                     builder: (context, snapshot) {
@@ -199,17 +182,11 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                   ),
                   const SizedBox(height: 20),
                   _BrandNameWidget(controller: _brandName),
-
                   const SizedBox(height: 20),
                   _CashbackWidget(
                     controller: _cashback,
                   ),
                   const SizedBox(height: 20),
-                  // _SelectCategoryWidget(
-                  //   selectedOption: _selectedProvince,
-                  //   categoryItems: provinceItems,
-                  //   onChanged: onProvinceChanged,
-                  // ),
                   FutureBuilder(
                     future: provinceItems,
                     builder: (context, snapshot) {
@@ -236,10 +213,6 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  // _SelectCategoryWidget(
-                  //     selectedOption: _selectedCity,
-                  //     categoryItems: cityItems,
-                  //     onChanged: onCityChanged),
                   FutureBuilder(
                     future: cityItems,
                     builder: (context, snapshot) {
@@ -289,17 +262,13 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                   MainButtonWidget(
                       text: 'OK',
                       method: () async {
-                        // print(user!.id);
-
-                        // if (1 == 2) {
-                        if (_isChecked) {
+                        if (_isChecked && _fileList.isNotEmpty) {
                           context
                               .read<CreateStoreViewViewModel>()
                               .createstore(
-                                // user!.id,
                                 int.parse(_selectedCategory!),
                                 _brandName.text,
-                                int.parse(_cashback.text),
+                                int.parse(_cashback.text.removeWhitespaces()),
                                 int.parse(_selectedProvince!),
                                 int.parse(_selectedCity!),
                                 _fileList[0]!,
@@ -337,9 +306,21 @@ class _CashbackWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    NumericTextFormatter numericTextFormatter = NumericTextFormatter();
+
     return TextFormField(
         controller: controller,
+        inputFormatters: [numericTextFormatter],
         decoration: const InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.grey,
+              width: 2,
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+          ),
           hintText: 'Кэшбек',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(
@@ -437,11 +418,6 @@ class _FilePickerWidget extends StatelessWidget {
                 CupertinoIcons.photo,
                 size: 40,
               )),
-              // SizedBox(width: 10),
-              // Text(
-              // '',
-              // style: TextStyle(fontSize: 16),
-              // ),
             ],
           ),
         ),
@@ -463,6 +439,15 @@ class _BrandNameWidget extends StatelessWidget {
     return TextFormField(
       controller: controller,
       decoration: const InputDecoration(
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.grey,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
         hintText: 'Бренд',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
@@ -515,6 +500,15 @@ class _SelectCategoryWidget extends StatelessWidget {
           items: categoryItems,
           onChanged: (value) => onChanged(value),
           decoration: const InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
@@ -555,6 +549,15 @@ class _DefaultSelectCategoryWidget extends StatelessWidget {
           items: const [],
           onChanged: (_) => {},
           decoration: const InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(10),

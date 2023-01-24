@@ -4,32 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cashblack/extensions.dart';
-
 import '../../../domain/models/balance.dart';
 import '../../../domain/models/shop.dart';
 import '../../../domain/models/user.dart';
 import '../../../domain/models/worker.dart';
+import '../../../extensions.dart';
 import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/business_home_view_model.dart';
-import '../../../widgets/helpers.dart';
 import '../../../widgets/text_button_widget.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'create_worker_view.dart';
 import 'edit_name_view.dart';
 import 'edit_store_view.dart';
-import 'payment_view.dart';
-import 'payments_history_view.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // User user = context.watch<BusinessHomeViewModel>().user;
-    // Shop shop = user.shops.last;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Настройки'),
@@ -37,18 +30,18 @@ class SettingsView extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              await context.read<BusinessHomeViewModel>().logout();
-              Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(
-                  builder: (context) => const SelectTypeView(),
-                ),
-                (route) => false,
-              );
+              await context.read<BusinessHomeViewModel>().logout().then(
+                    (value) => Navigator.of(context).pushAndRemoveUntil(
+                      CupertinoPageRoute(
+                        builder: (context) => const SelectTypeView(),
+                      ),
+                      (route) => false,
+                    ),
+                  );
             },
             icon: const Icon(Icons.logout),
           )
         ],
-        // centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
@@ -74,11 +67,23 @@ class SettingsView extends StatelessWidget {
                       ],
                     );
                   } else {
-                    return SizedBox();
+                    return const SizedBox();
                   }
                 },
               ),
               const SizedBox(height: 15),
+              FutureBuilder(
+                future: context.watch<BusinessHomeViewModel>().getBalance(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    var balance = snapshot.data!.first as Balance;
+                    return _SubscriptionCardWidget(
+                      balance: balance,
+                    );
+                  } else
+                    return const SizedBox();
+                },
+              ),
               Row(
                 children: [
                   const Text(
@@ -113,7 +118,6 @@ class SettingsView extends StatelessWidget {
                       List<Worker> workers = snapshot.data as List<Worker>;
                       return ListView.separated(
                         shrinkWrap: true,
-                        // physics: const NeverScrollableScrollPhysics(),
                         itemCount: workers.length,
                         separatorBuilder: (context, index) {
                           return const Divider(
@@ -131,38 +135,26 @@ class SettingsView extends StatelessWidget {
                             subtitle: Text(
                               workers[index].userName.phoneFormatter(),
                             ),
-                            // trailing: IconButton(
-                            //   //TODO delete
-                            //   onPressed: () {
-                            //     ScaffoldMessenger.of(context).showSnackBar(
-                            //         Helpers.customSnackBar(
-                            //             'Sotrudnikni o`chirish'));
-                            //   },
-                            //   icon: const Icon(
-                            //     CupertinoIcons.clear_circled,
-                            //   ),
-                            // ),
                             trailing: CupertinoSwitch(
                               activeColor: Colors.grey[100],
                               thumbColor: Colors.black,
                               trackColor: Colors.grey,
-                              // value: false,
-                              value: true,
-                              onChanged: (value) {
-                                print(value);
+                              value: !workers[index].isFreezed,
+                              onChanged: (value) async {
+                                await context
+                                    .read<BusinessHomeViewModel>()
+                                    .switchWorker(
+                                      workers[index].id,
+                                      !value,
+                                    );
                               },
                             ),
                             contentPadding: const EdgeInsets.all(0),
-                            // onTap: () {
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //       Helpers.customSnackBar(
-                            //           'Ichida info bo`lish-bo`lmasligini aniqlash kerak'));
-                            // },
                           );
                         },
                       );
                     } else {
-                      return Text('');
+                      return const Text('');
                     }
                   },
                 ),
@@ -196,7 +188,7 @@ class _BrandCardWidget extends StatelessWidget {
                 height: 60,
                 child: CachedNetworkImage(
                   imageUrl: imageUrl,
-                  errorWidget: (context, url, error) => Icon(Icons.clear),
+                  errorWidget: (context, url, error) => const Icon(Icons.clear),
                 ),
               ),
               const SizedBox(width: 20),
@@ -225,16 +217,88 @@ class _BrandCardWidget extends StatelessWidget {
             top: 5,
             right: 5,
             child: TextButtonWidget(
-              //todo deliberately
               method: () {
-                // Navigator.of(context).push(
-                //   CupertinoPageRoute(
-                //     builder: (context) => const EditStoreView(),
-                //   ),
-                // );
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => EditStoreView(
+                      shop: shop,
+                    ),
+                  ),
+                );
               },
               text: 'Изменить',
             ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _SubscriptionCardWidget extends StatelessWidget {
+  const _SubscriptionCardWidget({
+    Key? key,
+    required this.balance,
+  }) : super(key: key);
+
+  final Balance balance;
+
+  @override
+  Widget build(BuildContext context) {
+    return _BorderContainerWidget(
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const _SimpleTextWidget(
+                    title: 'Абонентская плата',
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    NumberFormat.simpleCurrency(
+                          name: '',
+                          locale: 'ru_RU',
+                          decimalDigits: 0,
+                        ).format(double.parse(
+                            balance.balanceShop.subscriptionPrice)) +
+                        'сум',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  const Text('Создано в'),
+                  const SizedBox(width: 8),
+                  Text(balance.balanceShop.createdDate.getLocaleDateTime()),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  // const Text('Следующий платеж'),
+                  const Text('Статус'),
+                  const SizedBox(width: 8),
+                  // Text(balance.balanceShop.createdDate.getLocaleDateTime()),
+                  Text(
+                    balance.balanceShop.isSubscribed ? 'Активен' : 'Не оплачен',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              balance.balanceShop.paymentDate != null
+                  ? Row(
+                      children: [
+                        const Text('Следующий платеж'),
+                        const SizedBox(width: 8),
+                        Text(balance.balanceShop.paymentDate ?? 'Не оплачен')
+                      ],
+                    )
+                  : const SizedBox(),
+            ],
           )
         ],
       ),

@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/balance.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../main_view/main_view.dart';
 import '../scanner_view/barcode_scanner_view.dart';
-import '../send_notification_view/send_notification_view.dart';
+import '../scanner_view/subscription_view.dart';
 import '../send_notification_view/services_view.dart';
 import '../settings_view/settings_view.dart';
 import '../statistics_view/statistics_view.dart';
@@ -18,39 +19,28 @@ class BusinessHomeView extends StatefulWidget {
 }
 
 class _BusinessHomeViewState extends State<BusinessHomeView> {
-  // int currentIndex = 0;
-  // void onChange(index) {
-  //   setState(() {
-  //     currentIndex = index;
-  //   });
-  // }
   @override
   void initState() {
-    context.read<BusinessHomeViewModel>().getProfile();
-    // context.read<BusinessHomeViewModel>().getStatistics();
+    context.read<BusinessHomeViewModel>().getBalance();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _body = const [
-      MainView(),
-      StatisticsView(),
-      // ScannerView(),
-      BarcodeScannerView(),
-      ServicesView(),
-      SettingsView(),
-    ];
-
     int currentIndex = context.watch<BusinessHomeViewModel>().currentIndex;
+
+    late List<Balance> balance = context.watch<BusinessHomeViewModel>().balance;
 
     var body = IndexedStack(
       index: currentIndex,
       children: [
         const MainView(),
         const StatisticsView(),
-        // ScannerView(),
-        currentIndex == 2 ? const BarcodeScannerView() : Container(),
+        //todo change
+        // currentIndex == 2 && balance.first.balanceShop.isSubscribed
+        currentIndex == 2
+            ? const BarcodeScannerView()
+            : const SubscriptionView(),
         const ServicesView(),
         const SettingsView(),
       ],
@@ -89,25 +79,10 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
         items: items,
         backgroundColor: Colors.black,
       ),
-      // body: IndexedStack(
-      //   index: currentIndex,
-      //   children: body,
-      // ),
       body: SafeArea(
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            // Container(
-            //   decoration: const BoxDecoration(
-            //     gradient: LinearGradient(
-            //       colors: [Color(0xff000000), Color(0xff464646)],
-            //       begin: Alignment.topCenter,
-            //       end: Alignment.bottomCenter,
-            //     ),
-            //   ),
-            //   child: body.elementAt(currentIndex),
-            // ),
-            // body.elementAt(currentIndex),
             body,
             const Divider(
               height: 1,

@@ -8,7 +8,6 @@ import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/medium_title_widget.dart';
-import '../../business/settings_view/payments_history_view.dart';
 import 'business_list_view.dart';
 
 class MainView extends StatefulWidget {
@@ -22,20 +21,16 @@ class _MainViewState extends State<MainView> {
   @override
   void initState() {
     context.read<ClientHomeViewModel>().getProfile();
-    // context.read<ClientHomeViewModel>().getCategories();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // var userCategoryList = context.watch<ClientHomeViewModel>().userCategory;
-    // var userShops = context.watch<ClientHomeViewModel>().userShop;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cashback'),
         bottom: ThemeDetails.appBarDivider,
-        // elevation: 1,
-        // centerTitle: true,
       ),
       body: SafeArea(
         child: Container(
@@ -44,7 +39,6 @@ class _MainViewState extends State<MainView> {
             child: Column(
               children: [
                 Text(
-                  //TODO
                   '100 000 сум',
                   style: TextStyle(
                     fontSize: 20,
@@ -64,8 +58,6 @@ class _MainViewState extends State<MainView> {
 
                       return Expanded(
                         child: GridView.builder(
-                          // physics: NeverScrollableScrollPhysics(),
-                          // shrinkWrap: true,
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -75,7 +67,6 @@ class _MainViewState extends State<MainView> {
                           itemCount: userCategoryList.length,
                           itemBuilder: (BuildContext context, int index) {
                             return GestureDetector(
-                              // ignore: unnecessary_parenthesis
                               onTap: (() {
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
@@ -89,9 +80,7 @@ class _MainViewState extends State<MainView> {
                                 child: Stack(
                                   alignment: Alignment.center,
                                   children: [
-                                    // Spacer(),
                                     CachedNetworkImage(
-                                      // width: 120,
                                       width: double.infinity,
                                       imageUrl: Constants.media +
                                           userCategoryList[index].logo,
@@ -148,13 +137,6 @@ class _MainViewState extends State<MainView> {
                                         ),
                                       ),
                                     ),
-                                    // Placeholder(
-                                    //   // fallbackWidth: 100,
-                                    //   fallbackHeight: 140,
-                                    // ),
-                                    // Spacer(),
-                                    // Text(userCategoryList[index].name),
-                                    // Spacer(),
                                   ],
                                 ),
                               ),

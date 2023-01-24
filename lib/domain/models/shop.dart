@@ -21,6 +21,9 @@ class Shop {
   final Province province;
   @JsonKey(name: 'distrik_id')
   final City city;
+  @JsonKey(name: 'payment_summ')
+  final String subscriptionPrice;
+
   Shop({
     required this.id,
     required this.userId,
@@ -30,6 +33,7 @@ class Shop {
     required this.province,
     required this.city,
     this.image,
+    required this.subscriptionPrice,
   });
 
   factory Shop.fromJson(Map<String, Object?> json) => _$ShopFromJson(json);

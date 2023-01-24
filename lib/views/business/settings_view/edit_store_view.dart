@@ -1,21 +1,28 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/category.dart';
 import '../../../domain/models/city.dart';
+import '../../../domain/models/shop.dart';
+import '../../../extensions.dart';
+import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/create_store_view_view_model.dart';
-import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../business_home_view/business_home_view.dart';
 
 class EditStoreView extends StatefulWidget {
-  const EditStoreView({super.key});
+  const EditStoreView({
+    Key? key,
+    required this.shop,
+  }) : super(key: key);
+
+  final Shop shop;
 
   @override
   State<EditStoreView> createState() => _EditStoreViewState();
@@ -26,15 +33,48 @@ class _EditStoreViewState extends State<EditStoreView> {
   String? _selectedProvince;
   String? _selectedCity;
 
-  bool _isChecked = false;
+  Future<List<Category>>? categoryItems;
+  Future<List<Province>>? provinceItems;
+  Future<List<City>>? cityItems;
 
   final ImagePicker _picker = ImagePicker();
-  List<File?> _fileList = [];
+  final List<File?> _fileList = [];
+
+  void getFromGallery() async {
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxHeight: 1080,
+      maxWidth: 1080,
+    );
+    _cropImage(pickedFile!.path);
+  }
+
+  void _cropImage(filepath) async {
+    clearImages();
+    var croppedImage = await ImageCropper.platform.cropImage(
+      sourcePath: filepath,
+      maxHeight: 1080,
+      maxWidth: 1080,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      cropStyle: CropStyle.circle,
+      uiSettings: <PlatformUiSettings>[],
+    );
+    if (croppedImage != null) {
+      setState(() {
+        _fileList.add(File(croppedImage.path));
+      });
+    }
+  }
 
   void dltImages(data) {
     setState(() {
       _fileList.remove(data);
-      //   dltImages(_fileList.first);
+    });
+  }
+
+  void clearImages() {
+    setState(() {
+      _fileList.clear();
     });
   }
 
@@ -56,7 +96,11 @@ class _EditStoreViewState extends State<EditStoreView> {
 
   onProvinceChanged(value) {
     setState(() {
+      _selectedCity = null;
       _selectedProvince = value;
+      cityItems = context
+          .read<CreateStoreViewViewModel>()
+          .getCities(_selectedProvince!);
     });
   }
 
@@ -66,59 +110,69 @@ class _EditStoreViewState extends State<EditStoreView> {
     });
   }
 
-  TextEditingController _brandName = TextEditingController();
-  TextEditingController _cashback = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+    _selectedCity = widget.shop.city.id.toString();
+    _selectedProvince = widget.shop.province.id.toString();
+    _selectedCategory = widget.shop.category.id.toString();
+    setState(() {});
+  }
+
+  Future<void> loadUser() async {
+    categoryItems = context.read<CreateStoreViewViewModel>().getCategories();
+    provinceItems = context.read<CreateStoreViewViewModel>().getProvincies();
+    cityItems = context
+        .read<CreateStoreViewViewModel>()
+        .getCities(widget.shop.province.id.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
-    // context.read<CreateStoreViewViewModel>().getCategoryProperties();
-    // List<Category> categories =
-    //     context.watch<CreateStoreViewViewModel>().categories;
-    // List<Province> provincies =
-    //     context.watch<CreateStoreViewViewModel>().provincies;
-    // List<City> cities = context.watch<CreateStoreViewViewModel>().cities;
-
-    // var categoryItems = categories
-    //     .map(
-    //       (e) => DropdownMenuItem<String>(
-    //         value: e.id.toString(),
-    //         child: Text(e.title),
-    //       ),
-    //     )
-    //     .toList();
-
-    Future<List<Category>> categoryItems =
-        context.read<CreateStoreViewViewModel>().getCategories();
-    Future<List<Province>> provinceItems =
-        context.read<CreateStoreViewViewModel>().getProvincies();
-    Future<List<City>> cityItems =
-        context.read<CreateStoreViewViewModel>().getCities();
+    final TextEditingController _brandName =
+        TextEditingController(text: widget.shop.name);
+    final TextEditingController _cashback =
+        TextEditingController(text: widget.shop.cashback.toString());
+    // Future<List<Category>> categoryItems =
+    //     context.read<CreateStoreViewViewModel>().getCategories();
+    // Future<List<Province>> provinceItems =
+    //     context.read<CreateStoreViewViewModel>().getProvincies();
+    // Future<List<City>> cityItems =
+    //     context.read<CreateStoreViewViewModel>().getCities('1');
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Изменить'),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
           child: Align(
-            alignment: Alignment.center,
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(height: 40),
-                  HeroTitleWidget(text: 'Edit'),
                   const SizedBox(height: 20),
-                  // _SelectCategoryWidget(
-                  //   selectedOption: _selectedCategory,
-                  //   categoryItems: categoryItems,
-                  //   onChanged: onCategoryChanged,
-                  // ),
+                  _fileList.isEmpty
+                      ? _FilePickerWidget(onTap: getFromGallery)
+                      : _ImageViewWidget(
+                          fileList: _fileList,
+                          onDelete: () {
+                            clearImages();
+                          },
+                          onEdit: () {
+                            getFromGallery();
+                          },
+                        ),
+                  const SizedBox(height: 20),
                   FutureBuilder(
                     future: categoryItems,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         var category = snapshot.data as List<Category>;
                         return _SelectCategoryWidget(
-                          hint: 'Select Category',
-                          selectedOption: _selectedCategory,
+                          hint: 'Категория',
+                          selectedOption: widget.shop.category.id.toString(),
                           categoryItems: category
                               .map(
                                 (e) => DropdownMenuItem<String>(
@@ -131,7 +185,7 @@ class _EditStoreViewState extends State<EditStoreView> {
                         );
                       } else {
                         return const _DefaultSelectCategoryWidget(
-                          hint: 'Select Category',
+                          hint: 'Категория',
                         );
                       }
                     },
@@ -139,32 +193,26 @@ class _EditStoreViewState extends State<EditStoreView> {
                   const SizedBox(height: 20),
                   _BrandNameWidget(controller: _brandName),
                   const SizedBox(height: 20),
-                  _fileList.isEmpty
-                      ? _FilePickerWidget(onTap: selectImage)
-                      : _ImageViewWidget(
-                          fileList: _fileList,
-                          onTap: () {
-                            dltImages(_fileList.first);
-                          },
-                        ),
-                  const SizedBox(height: 20),
                   _CashbackWidget(
                     controller: _cashback,
                   ),
                   const SizedBox(height: 20),
-                  // _SelectCategoryWidget(
-                  //   selectedOption: _selectedProvince,
-                  //   categoryItems: provinceItems,
-                  //   onChanged: onProvinceChanged,
-                  // ),
                   FutureBuilder(
                     future: provinceItems,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         var provincy = snapshot.data as List<Province>;
                         return _SelectCategoryWidget(
-                          hint: 'Select province',
-                          selectedOption: _selectedProvince,
+                          hint: 'Область',
+                          // selectedOption: _selectedProvince,
+                          selectedOption: provincy
+                              .where(
+                                (element) =>
+                                    element.id == widget.shop.province.id,
+                              )
+                              .first
+                              .id
+                              .toString(),
                           categoryItems: provincy
                               .map(
                                 (e) => DropdownMenuItem<String>(
@@ -177,24 +225,27 @@ class _EditStoreViewState extends State<EditStoreView> {
                         );
                       } else {
                         return const _DefaultSelectCategoryWidget(
-                          hint: 'Select Category',
+                          hint: 'Область',
                         );
                       }
                     },
                   ),
                   const SizedBox(height: 20),
-                  // _SelectCategoryWidget(
-                  //     selectedOption: _selectedCity,
-                  //     categoryItems: cityItems,
-                  //     onChanged: onCityChanged),
                   FutureBuilder(
                     future: cityItems,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         var city = snapshot.data as List<City>;
                         return _SelectCategoryWidget(
-                          hint: 'Select City',
-                          selectedOption: _selectedCity,
+                          hint: 'Город',
+                          // selectedOption: _selectedCity,
+                          selectedOption: city
+                              .where(
+                                (element) => element.id == widget.shop.city.id,
+                              )
+                              .first
+                              .id
+                              .toString(),
                           categoryItems: city
                               .map(
                                 (e) => DropdownMenuItem<String>(
@@ -207,31 +258,41 @@ class _EditStoreViewState extends State<EditStoreView> {
                         );
                       } else {
                         return const _DefaultSelectCategoryWidget(
-                          hint: 'Select Category',
+                          hint: 'Город',
                         );
                       }
                     },
                   ),
                   const SizedBox(height: 20),
-
                   MainButtonWidget(
-                      text: 'OK',
-                      method: () {
-                        // print(
-                        //     '$_selectedCategory  $_selectedProvince $_selectedProvince');
-                        // context.read<CreateStoreViewViewModel>().createstore(
-                        //     29,
-                        //     int.parse(_selectedCategory!),
-                        //     _brandName.text,
-                        //     double.parse(_cashback.text),
-                        //     int.parse(_selectedProvince!),
-                        //     int.parse(_selectedCity!));
-                        Navigator.of(context).pushAndRemoveUntil(
-                            CupertinoPageRoute(
-                              builder: (context) => BusinessHomeView(),
-                            ),
-                            (route) => false);
-                      }),
+                    text: 'OK',
+                    method: () async {
+                      if (_fileList.isNotEmpty) {
+                        context
+                            .read<CreateStoreViewViewModel>()
+                            .editstore(
+                              widget.shop.id,
+                              int.parse(_selectedCategory!),
+                              _brandName.text,
+                              int.parse(_cashback.text.removeWhitespaces()),
+                              int.parse(_selectedProvince!),
+                              int.parse(_selectedCity!),
+                              _fileList[0]!,
+                            )
+                            .then(
+                              (value) =>
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                CupertinoPageRoute(
+                                  builder: (context) =>
+                                      const BusinessHomeView(),
+                                ),
+                                (route) => false,
+                              ),
+                            );
+                      } else
+                        print('check');
+                    },
+                  ),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -253,21 +314,34 @@ class _CashbackWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    NumericTextFormatter numericTextFormatter = NumericTextFormatter();
+
     return TextFormField(
-        controller: controller,
-        decoration: const InputDecoration(
-          hintText: 'Cashback',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ),
+      controller: controller,
+      inputFormatters: [numericTextFormatter],
+      decoration: const InputDecoration(
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.grey,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
           ),
         ),
-        autocorrect: false,
-        enableSuggestions: false,
-        keyboardAppearance: Brightness.dark,
-        showCursor: true,
-        keyboardType: TextInputType.number);
+        hintText: 'Кэшбек',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+      ),
+      autocorrect: false,
+      enableSuggestions: false,
+      keyboardAppearance: Brightness.dark,
+      showCursor: true,
+      keyboardType: TextInputType.number,
+    );
   }
 }
 
@@ -275,12 +349,14 @@ class _ImageViewWidget extends StatelessWidget {
   const _ImageViewWidget({
     Key? key,
     required List<File?> fileList,
-    required this.onTap,
+    required this.onDelete,
+    required this.onEdit,
   })  : _fileList = fileList,
         super(key: key);
 
   final List<File?> _fileList;
-  final Function onTap;
+  final Function onDelete;
+  final Function onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -289,19 +365,27 @@ class _ImageViewWidget extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           SizedBox(
-            height: 100,
-            width: 100,
-            child: Image.file(
-              File(_fileList.first!.path),
-              fit: BoxFit.cover,
+            child: GestureDetector(
+              onTap: () => onEdit(),
+              child: ClipRRect(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                borderRadius: BorderRadius.circular(100),
+                child: Image.file(
+                  File(_fileList.first!.path),
+                  fit: BoxFit.cover,
+                  height: 150,
+                  width: 150,
+                ),
+              ),
             ),
           ),
           Positioned(
-              right: 1,
-              child: GestureDetector(
-                onTap: () => onTap(),
-                child: const Icon(Icons.cancel, color: Colors.redAccent),
-              ))
+            right: 1,
+            child: GestureDetector(
+              onTap: () => onDelete(),
+              child: const Icon(Icons.cancel, color: Colors.redAccent),
+            ),
+          ),
         ],
       ),
     );
@@ -323,25 +407,26 @@ class _FilePickerWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(
-            const Radius.circular(10),
+            const Radius.circular(90),
           ),
           color: Colors.grey[800],
         ),
-        width: double.infinity,
+        width: 150,
+        height: 150,
         child: DottedBorder(
           borderType: BorderType.RRect,
-          radius: const Radius.circular(10),
+          radius: const Radius.circular(90),
           padding: const EdgeInsets.all(14),
           dashPattern: const [3, 3, 3, 3],
           color: Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
-              Icon(CupertinoIcons.photo),
-              SizedBox(width: 10),
-              Text(
-                'Select photo',
-                style: TextStyle(fontSize: 16),
+              Center(
+                child: Icon(
+                  CupertinoIcons.photo,
+                  size: 40,
+                ),
               ),
             ],
           ),
@@ -364,7 +449,16 @@ class _BrandNameWidget extends StatelessWidget {
     return TextFormField(
       controller: controller,
       decoration: const InputDecoration(
-        hintText: 'Brand name',
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.grey,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+        hintText: 'Бренд',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),
@@ -416,6 +510,15 @@ class _SelectCategoryWidget extends StatelessWidget {
           items: categoryItems,
           onChanged: (value) => onChanged(value),
           decoration: const InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
@@ -456,6 +559,15 @@ class _DefaultSelectCategoryWidget extends StatelessWidget {
           items: const [],
           onChanged: (_) => {},
           decoration: const InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(10),

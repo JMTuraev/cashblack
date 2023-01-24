@@ -9,10 +9,7 @@ import '../../../domain/models/one_month_statistic.dart';
 import '../../../theme/theme_details.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../widgets/empty_widget.dart';
-
-import 'package:cashblack/extensions.dart';
-
-import '../../select_type_view/select_type_view.dart';
+import '../../../widgets/logo_animated_widget.dart';
 import '../settings_view/payment_view.dart';
 import '../settings_view/payments_history_view.dart';
 
@@ -120,7 +117,7 @@ class _CashbackWidget extends StatelessWidget {
                     future: context.read<BusinessHomeViewModel>().getBalance(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        var balance = snapshot.data as List<Balance>;
+                        List<Balance> balance = snapshot.data as List<Balance>;
                         return Text(
                           NumberFormat.simpleCurrency(
                                 name: '',
@@ -198,7 +195,7 @@ class _CashbackWidget extends StatelessWidget {
                 List<OneMonthStatistic> stats =
                     snapshot.data as List<OneMonthStatistic>;
 
-                if (stats.isNotEmpty) {
+                if (stats.length > 0) {
                   stats.forEach(
                     (e) {
                       var dif = e.date?.difference(
@@ -225,7 +222,7 @@ class _CashbackWidget extends StatelessWidget {
                   return const EmptyWidget();
                 }
               } else {
-                return const EmptyWidget();
+                return const LogoAnimatedWidget();
               }
             },
           ),
@@ -358,43 +355,35 @@ class _ChartCashbackWidget extends StatelessWidget {
             lineTouchData: LineTouchData(
               touchTooltipData: LineTouchTooltipData(
                 tooltipBgColor: Colors.grey[900],
-                // tooltipPadding: const EdgeInsets.symmetric(
-                //   horizontal: 8,
-                //   vertical: 4,
-                // ),
-                // showOnTopOfTheChartBoxArea: true,
+                showOnTopOfTheChartBoxArea: true,
                 fitInsideHorizontally: true,
                 fitInsideVertically: true,
                 getTooltipItems: (touchedBarSpots) {
                   return touchedBarSpots.map((barSpot) {
-                    final flSpot = barSpot;
-
-                    TextAlign textAlign;
-                    switch (flSpot.x.toInt()) {
-                      // case 0:
-                      //   textAlign = TextAlign.right;
-                      //   break;
-                      case 6:
-                        textAlign = TextAlign.left;
-                        break;
-                      default:
-                        textAlign = TextAlign.center;
-                    }
-
                     return LineTooltipItem(
                       NumberFormat.simpleCurrency(
                         name: '',
                         locale: 'ru_RU',
                         decimalDigits: 0,
                       ).format(barSpot.y),
-                      const TextStyle(
-                        color: Colors.white,
+                      TextStyle(
+                        color: barSpot.bar.color,
                         fontWeight: FontWeight.bold,
-                        // fontSize: 10,
                       ),
-                      textAlign: textAlign,
-
-                      // textAlign: textAlign,
+                      // children: [
+                      //   TextSpan(
+                      //     text: barSpot.y.toString(),
+                      //     style: TextStyle(
+                      //       color: Colors.blue[300],
+                      //     ),
+                      //   ),
+                      //   TextSpan(
+                      //     text: barSpot.y.toString(),
+                      //     style: TextStyle(
+                      //       color: Colors.red[300],
+                      //     ),
+                      //   ),
+                      // ],
                     );
                   }).toList();
                 },

@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'group.dart';
 import 'shop.dart';
 
 part 'user.g.dart';
@@ -17,6 +18,8 @@ class User {
   @JsonKey(name: 'shops_id')
   final List<Shop> shops;
 
+  final List<Group> groups;
+
   @JsonKey(name: 'barcode_id')
   final String? barcode;
   @JsonKey(name: 'barcode')
@@ -30,6 +33,7 @@ class User {
     required this.shops,
     this.barcode,
     this.barcodeImage,
+    required this.groups,
   });
 
   factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);

@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 class NumericTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     if (newValue.text.isEmpty) {
       return newValue.copyWith(text: '');
     } else if (newValue.text.compareTo(oldValue.text) != 0) {
@@ -17,7 +19,8 @@ class NumericTextFormatter extends TextInputFormatter {
       return TextEditingValue(
         text: newString,
         selection: TextSelection.collapsed(
-            offset: newString.length - selectionIndexFromTheRight),
+          offset: newString.length - selectionIndexFromTheRight,
+        ),
       );
     } else {
       return newValue;

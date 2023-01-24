@@ -4,13 +4,12 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../theme/theme_details.dart';
 import '../../../view_models/send_notification_view_model.dart';
-import '../../../widgets/helpers.dart';
 import '../../../widgets/main_button_widget.dart';
-import '../../../widgets/medium_title_widget.dart';
 import '../../../widgets/multiline_text_field_widget.dart';
 import '../../../widgets/text_field_widget.dart';
 import '../business_home_view/business_home_view.dart';
@@ -48,94 +47,87 @@ class _SendNotificationViewState extends State<SendNotificationView> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        title: const Text('Отправка уведомлений'),
-        bottom: ThemeDetails.appBarDivider,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Form(
-            child: Column(
-              children: [
-                // MediumTitleWidget(text: 'Отправка уведомлений'),
-                // const SizedBox(height: 20),
-                Image.asset(
-                  'assets/images/discussion.png',
-                  fit: BoxFit.contain,
-                  height: MediaQuery.of(context).size.width / 2.5,
-                ),
-                _fileList.isEmpty
-                    ? _FilePickerWidget(onTap: selectImage)
-                    : _ImageViewWidget(
-                        fileList: _fileList,
-                        onTap: () {
-                          dltImages(_fileList.first);
-                        },
-                      ),
-                const SizedBox(height: 20),
-                TextFieldWidget(
-                    hintText: 'Заголовок', controller: _titleController),
-                const SizedBox(height: 20),
-                MultilineTextFieldWidget(
-                  hintText: 'Текст',
-                  controller: _contentController,
-                ),
-
-                // const SizedBox(height: 20),
-                // TextFormField(
-                //   controller: _dateController,
-                //   decoration: InputDecoration(
-                //     prefixIcon: Icon(CupertinoIcons.calendar),
-                //     hintText: 'Дата',
-                //     border: const OutlineInputBorder(
-                //       borderRadius: BorderRadius.all(
-                //         Radius.circular(10),
-                //       ),
-                //     ),
-                //   ),
-                //   readOnly: true,
-                //   onTap: () async {
-                //     DateTime? pickedDate = await showDatePicker(
-                //       context: context,
-                //       initialDate: _dateController.text.isNotEmpty
-                //           ? DateTime.parse(_dateController.text)
-                //           : DateTime.now(),
-                //       firstDate: DateTime(2022),
-                //       lastDate: DateTime(2100),
-                //     );
-                //     if (pickedDate == null) return;
-                //     setState(
-                //       () {
-                //         _dateController.text = pickedDate.toString();
-                //       },
-                //     );
-                //   },
-                // ),
-                const SizedBox(height: 20),
-                MainButtonWidget(
-                  text: 'Отправить',
-                  method: () async {
-                    await context
-                        .read<SendNotificationViewModel>()
-                        .send(_fileList[0]!, _titleController.text,
-                            _contentController.text)
-                        .then(
-                          (value) => Navigator.of(context).pushAndRemoveUntil(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Отправка уведомлений'),
+          bottom: ThemeDetails.appBarDivider,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Form(
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/images/discussion.png',
+                    fit: BoxFit.contain,
+                    height: MediaQuery.of(context).size.width / 2.5,
+                  ),
+                  _fileList.isEmpty
+                      ? _FilePickerWidget(onTap: selectImage)
+                      : _ImageViewWidget(
+                          fileList: _fileList,
+                          onTap: () {
+                            dltImages(_fileList.first);
+                          },
+                        ),
+                  const SizedBox(height: 20),
+                  TextFieldWidget(
+                    hintText: 'Заголовок',
+                    controller: _titleController,
+                  ),
+                  const SizedBox(height: 20),
+                  MultilineTextFieldWidget(
+                    hintText: 'Текст',
+                    controller: _contentController,
+                  ),
+                  const SizedBox(height: 20),
+                  MainButtonWidget(
+                    text: 'Отправить',
+                    method: () async {
+                      await context
+                          .read<SendNotificationViewModel>()
+                          .send(
+                            _fileList[0]!,
+                            _titleController.text,
+                            _contentController.text,
+                          )
+                          .then(
+                            (value) => Navigator.of(context).pushAndRemoveUntil(
                               CupertinoPageRoute(
                                 builder: (context) => const BusinessHomeView(),
                               ),
-                              (route) => false),
+                              (route) => false,
+                            ),
+                          );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  FutureBuilder(
+                    future: context
+                        .watch<SendNotificationViewModel>()
+                        .getNotificationPrice(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(
+                          'Цена ${NumberFormat.simpleCurrency(
+                            name: '',
+                            locale: 'ru_RU',
+                            decimalDigits: 0,
+                          ).format(int.parse(snapshot.data.toString()))}сумов',
                         );
-                  },
-                ),
-              ],
+                      } else {
+                        return const Text('');
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -166,11 +158,12 @@ class _ImageViewWidget extends StatelessWidget {
               ),
             ),
             Positioned(
-                right: 1,
-                child: GestureDetector(
-                  onTap: () => onTap(),
-                  child: const Icon(Icons.cancel, color: Colors.redAccent),
-                ))
+              right: 1,
+              child: GestureDetector(
+                onTap: () => onTap(),
+                child: const Icon(Icons.cancel, color: Colors.redAccent),
+              ),
+            )
           ],
         ),
       ),

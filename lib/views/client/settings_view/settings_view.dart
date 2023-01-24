@@ -5,24 +5,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/user.dart';
+import '../../../extensions.dart';
 import '../../../theme/theme_details.dart';
 import '../../../view_models/client_home_view_model.dart';
-import '../../../widgets/hero_title_widget.dart';
-import '../../../widgets/medium_title_widget.dart';
 import '../../../widgets/small_title_widget.dart';
 import '../../../widgets/text_button_widget.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'edit_name_view.dart';
-
-import 'package:cashblack/extensions.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // User user = context.watch<ClientHomeViewModel>().user;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Настройки'),
@@ -30,29 +25,21 @@ class SettingsView extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              await context.read<ClientHomeViewModel>().logout();
-              Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(
-                  builder: (context) => const SelectTypeView(),
-                ),
-                (route) => false,
-              );
+              await context.read<ClientHomeViewModel>().logout().then(
+                    (value) => Navigator.of(context).pushAndRemoveUntil(
+                      CupertinoPageRoute(
+                        builder: (context) => const SelectTypeView(),
+                      ),
+                      (route) => false,
+                    ),
+                  );
             },
             icon: const Icon(Icons.logout),
           )
         ],
-        // centerTitle: true,
       ),
       body: SafeArea(
         child: Container(
-          // decoration: const BoxDecoration(
-          //   gradient: LinearGradient(
-          //     colors: [Color(0xff000000), Color(0xff464646)],
-          //     begin: Alignment.topCenter,
-          //     end: Alignment.bottomCenter,
-          //   ),
-          // ),
-          // padding: const EdgeInsets.all(10),
           child: Center(
             child: FutureBuilder(
               future: context.watch<ClientHomeViewModel>().getProfile(),
@@ -76,16 +63,12 @@ class SettingsView extends StatelessWidget {
                           color: Colors.black,
                           fontSize: 18,
                         ),
-                        // color: Colors.white,
                         padding: const EdgeInsets.all(10),
-                        // data: user.barcode ?? '978020137962',
                         data: user.barcode!,
                         barcode: Barcode.qrCode(),
                       ),
                       SizedBox(height: 60),
                       GestureDetector(
-                        // child: HeroTitleWidget(
-                        //     text: '${user.firstName} ${user.lastName}'),
                         child: Text(
                           '${user.firstName} ${user.lastName}',
                           style: GoogleFonts.abrilFatface(

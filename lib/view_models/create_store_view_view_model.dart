@@ -39,8 +39,8 @@ class CreateStoreViewViewModel extends ChangeNotifier {
     return _client.getProvincies();
   }
 
-  Future<List<City>> getCities() async {
-    return _client.getCities();
+  Future<List<City>> getCities(String id) async {
+    return _client.getCities(id);
   }
 
   Future<User> getProfile() async {
@@ -58,6 +58,26 @@ class CreateStoreViewViewModel extends ChangeNotifier {
   ) async {
     return _client.createStore(
       // userId,
+      category,
+      name,
+      cashback,
+      province,
+      city,
+      file,
+    );
+  }
+
+  Future<void> editstore(
+    int id,
+    int category,
+    String name,
+    int cashback,
+    int province,
+    int city,
+    File file,
+  ) async {
+    return _client.editStore(
+      id,
       category,
       name,
       cashback,

@@ -1,17 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sent_notification.dart';
+import '../../../extensions.dart';
 import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/send_notification_view_model.dart';
-import '../../../widgets/main_button_widget.dart';
-
-import 'package:cashblack/extensions.dart';
-
 import 'notification_info_view.dart';
 import 'send_notification_view.dart';
 
@@ -94,7 +90,6 @@ class ServicesView extends StatelessWidget {
                                       fit: BoxFit.fitWidth,
                                       height:
                                           MediaQuery.of(context).size.width / 4,
-                                      //todo width
                                       width:
                                           MediaQuery.of(context).size.width / 3,
                                       imageUrl: Constants.media +
@@ -104,7 +99,6 @@ class ServicesView extends StatelessWidget {
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Container(
-                                      // color: Colors.red,
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,

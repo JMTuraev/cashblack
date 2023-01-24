@@ -93,7 +93,6 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                   gapSpace: 40,
                   textStyle: const TextStyle(
                     fontSize: 20,
-                    // color: Colors.white,
                   ),
                   colorBuilder:
                       FixedColorBuilder(Colors.white.withOpacity(0.3)),
@@ -110,7 +109,6 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               TextButtonWidget(
                 text: 'Не получили код. Отправить код еще раз',
                 method: () {
-                  // print(_animationController!.isCompleted.toString());
                   _animationController!.reset();
                   _animationController!.forward();
                 },
@@ -118,7 +116,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               const SizedBox(height: 20),
               _Countdown(
                 animation: StepTween(
-                  begin: levelClock, // THIS IS A USER ENTERED NUMBER
+                  begin: levelClock,
                   end: 0,
                 ).animate(_animationController!),
               ),
@@ -136,8 +134,6 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                       .shops
                       .isNotEmpty;
 
-                  // TODO has SHop kerak
-
                   checked
                       ? (hasShop
                           ? Navigator.of(context).pushAndRemoveUntil(
@@ -153,31 +149,6 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                       : null;
                 },
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 32),
-              //   child: Builder(
-              //     builder: (_) {
-              //       if (otpCode == null) {
-              //         return _Countdown(
-              //           animation: StepTween(
-              //             begin: levelClock, // THIS IS A USER ENTERED NUMBER
-              //             end: 0,
-              //           ).animate(_animationController!),
-              //         );
-              //       }
-              // return MainButtonWidget(
-              //   text: 'Verify',
-              //   method: () {
-              //     Navigator.of(context).pushAndRemoveUntil(
-              //         CupertinoPageRoute(
-              //           builder: (context) => CreateStoreView(),
-              //         ),
-              //         (route) => false);
-              //   },
-              // );
-              //     },
-              //   ),
-              // ),
             ],
           ),
         ),

@@ -11,12 +11,15 @@ class Worker {
   final String firstName;
   @JsonKey(name: 'last_name')
   final String lastName;
+  @JsonKey(name: 'is_switcher')
+  final bool isFreezed;
 
   Worker({
     required this.id,
     required this.userName,
     required this.firstName,
     required this.lastName,
+    required this.isFreezed,
   });
 
   factory Worker.fromJson(Map<String, Object?> json) => _$WorkerFromJson(json);

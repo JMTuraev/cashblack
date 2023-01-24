@@ -1,6 +1,6 @@
-import '../core/api/client.dart';
-import '../domain/models/user.dart';
 import 'package:flutter/material.dart';
+
+import '../core/api/client.dart';
 
 class BusinessLoginViewModel extends ChangeNotifier {
   final Client _client = Client();

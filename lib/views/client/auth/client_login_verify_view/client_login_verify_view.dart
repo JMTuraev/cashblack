@@ -90,7 +90,6 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                   gapSpace: 40,
                   textStyle: const TextStyle(
                     fontSize: 20,
-                    // color: Colors.white,
                   ),
                   colorBuilder:
                       FixedColorBuilder(Colors.white.withOpacity(0.3)),
@@ -115,7 +114,7 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
               const SizedBox(height: 20),
               _Countdown(
                 animation: StepTween(
-                  begin: levelClock, // THIS IS A USER ENTERED NUMBER
+                  begin: levelClock,
                   end: 0,
                 ).animate(_animationController!),
               ),
@@ -127,10 +126,6 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                   bool checked = await context
                       .read<ClientLoginViewModel>()
                       .onVerifyButtonPressed(otpCode ?? textController.text);
-                  // bool hasShop =
-                  //     context.read<ClientHomeViewModel>().user.shops.isNotEmpty;
-
-                  // print(hasShop);
 
                   checked
                       ? Navigator.of(context).pushAndRemoveUntil(
@@ -141,31 +136,6 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                       : null;
                 },
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 32),
-              //   child: Builder(
-              //     builder: (_) {
-              //       if (otpCode == null) {
-              //         return _Countdown(
-              //           animation: StepTween(
-              //             begin: levelClock, // THIS IS A USER ENTERED NUMBER
-              //             end: 0,
-              //           ).animate(_animationController!),
-              //         );
-              //       }
-              // return MainButtonWidget(
-              //   text: 'Verify',
-              //   method: () {
-              //     Navigator.of(context).pushAndRemoveUntil(
-              //         CupertinoPageRoute(
-              //           builder: (context) => CreateStoreView(),
-              //         ),
-              //         (route) => false);
-              //   },
-              // );
-              //     },
-              //   ),
-              // ),
             ],
           ),
         ),

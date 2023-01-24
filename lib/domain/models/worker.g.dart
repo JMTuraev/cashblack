@@ -11,6 +11,7 @@ Worker _$WorkerFromJson(Map<String, dynamic> json) => Worker(
       userName: json['username'] as String,
       firstName: json['first_name'] as String,
       lastName: json['last_name'] as String,
+      isFreezed: json['is_switcher'] as bool,
     );
 
 Map<String, dynamic> _$WorkerToJson(Worker instance) => <String, dynamic>{
@@ -18,4 +19,5 @@ Map<String, dynamic> _$WorkerToJson(Worker instance) => <String, dynamic>{
       'username': instance.userName,
       'first_name': instance.firstName,
       'last_name': instance.lastName,
+      'is_switcher': instance.isFreezed,
     };

@@ -1,8 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../widgets/main_button_widget.dart';
 import '../business/auth/business_login_view/business_login_view.dart';
 import '../client/auth/client_login_view/client_login_view.dart';
 
@@ -27,7 +25,6 @@ class _SelectTypeViewState extends State<SelectTypeView> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // const Spacer(),
                 SizedBox(height: MediaQuery.of(context).size.width / 4),
                 const Text(
                   'Кто вы?',
@@ -83,8 +80,6 @@ class _SelectTypeViewState extends State<SelectTypeView> {
                       Radius.circular(10),
                     ),
                     selectedBorderColor: Colors.grey[800],
-                    // focusColor: Colors.gren,
-                    // hoverColor: Colors.blue,
                     splashColor: Colors.grey[700],
                     children: const [
                       _ButtonWidget(
@@ -94,41 +89,12 @@ class _SelectTypeViewState extends State<SelectTypeView> {
                         title: 'Клиент',
                       ),
                     ],
-                    // color: Colors.red,
                   ),
                 ),
                 const SizedBox(height: 10),
                 selections[0] == true
                     ? const BusinessLoginView()
                     : const ClientLoginView(),
-                // MainButtonWidget(
-                //   text: 'Бизнес',
-                //   method: () {
-                //     Navigator.of(context).push(
-                //       CupertinoPageRoute(
-                //         builder: (context) => const BusinessLoginView(),
-                //       ),
-                //       // CupertinoPageRoute(
-                //       //   builder: (context) => const BusinessHomeView(),
-                //       // ),
-                //     );
-                //   },
-                // ),
-                // const SizedBox(height: 20),
-                // MainButtonWidget(
-                //   text: 'Клиент',
-                //   method: () {
-                //     Navigator.of(context).push(
-                //       CupertinoPageRoute(
-                //         builder: (context) => const ClientLoginView(),
-                //       ),
-                //     );
-                //   },
-                // ),
-                // const SizedBox(height: 60),
-
-                // TODO help buttonlar kerak
-                // const Spacer(),
               ],
             ),
           ),

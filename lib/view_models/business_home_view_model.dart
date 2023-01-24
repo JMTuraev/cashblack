@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -5,8 +6,6 @@ import '../core/api/client.dart';
 import '../domain/models/balance.dart';
 import '../domain/models/one_month_statistic.dart';
 import '../domain/models/user.dart';
-import 'package:flutter/material.dart';
-
 import '../domain/models/worker.dart';
 
 class BusinessHomeViewModel extends ChangeNotifier {
@@ -15,6 +14,7 @@ class BusinessHomeViewModel extends ChangeNotifier {
   int currentIndex = 0;
 
   late User user;
+  List<Balance> balance = [];
   // List<OneMonthStatistic> oneWeekStatistics = [];
 
   Future<User> getProfile() async {
@@ -50,8 +50,13 @@ class BusinessHomeViewModel extends ChangeNotifier {
     return _client.getWorkers();
   }
 
+  Future<void> switchWorker(int id, bool type) async {
+    await _client.switchWorker(id, type);
+    notifyListeners();
+  }
+
   Future<List<Balance>> getBalance() async {
-    return _client.getBalance();
+    return balance = await _client.getBalance();
   }
 
   Future<void> logout() async {

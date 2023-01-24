@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../../view_models/client_login_view_model.dart';
-import '../../../../widgets/hero_title_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../client_login_verify_view/client_login_verify_view.dart';
 
@@ -23,12 +22,9 @@ class ClientLoginView extends StatelessWidget {
 
     void submit() async {
       if (maskFormatter.isFill()) {
-        // await
         provider.sendSms(
           maskFormatter.unmaskText(phoneController.text),
           provider.appSignature = await SmsAutoFill().getAppSignature,
-          // TODO appsign
-          // provider.appSignature = 'tempapp1',
         );
         Navigator.of(context).push(
           CupertinoPageRoute(
@@ -46,14 +42,20 @@ class ClientLoginView extends StatelessWidget {
         const SizedBox(height: 10),
         TextField(
           decoration: InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
             ),
             filled: false,
-            // hintStyle: TextStyle(color: Colors.grey[800]),
             hintText: "Телефон",
-
-            // fillColor: Colors.white70,
           ),
           inputFormatters: [maskFormatter],
           controller: phoneController,
@@ -72,7 +74,6 @@ class ClientLoginView extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         _PublicOfferWidget(),
-        // _NumbersWidget(phoneController: phoneController),
       ],
     );
   }
@@ -127,7 +128,6 @@ class _PublicOfferWidget extends StatelessWidget {
       child: TextButton(
         onPressed: () {
           showModalBottomSheet(
-            // enableDrag: true,
             context: context,
             builder: (context) {
               return Container(

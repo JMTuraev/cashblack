@@ -5,9 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../theme/theme_details.dart';
 import '../../../view_models/business_home_view_model.dart';
-import '../../../widgets/helpers.dart';
 import '../../../widgets/main_button_widget.dart';
-import '../../../widgets/medium_title_widget.dart';
 import '../../../widgets/text_field_widget.dart';
 import '../business_home_view/business_home_view.dart';
 
@@ -40,6 +38,15 @@ class CreateWorkerView extends StatelessWidget {
                 const SizedBox(height: 20),
                 TextField(
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
                     hintText: 'Телефон',
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(
@@ -48,7 +55,6 @@ class CreateWorkerView extends StatelessWidget {
                     ),
                   ),
                   inputFormatters: [maskFormatter],
-                  // controller: phoneController,
                   autocorrect: false,
                   enableSuggestions: false,
                   keyboardAppearance: Brightness.dark,
@@ -68,23 +74,23 @@ class CreateWorkerView extends StatelessWidget {
                 const SizedBox(height: 20),
                 MainButtonWidget(
                   text: 'OK',
-                  method: () {
-                    // ScaffoldMessenger.of(context).showSnackBar(
-                    //     Helpers.customSnackBar(
-                    //         'Sotrudnik qo`shiladi, klient emas bu'));
-
-                    context.read<BusinessHomeViewModel>().createWorker(
+                  method: () async {
+                    context
+                        .read<BusinessHomeViewModel>()
+                        .createWorker(
                           maskFormatter.getUnmaskedText(),
                           '1',
                           fistNameController.text,
                           lastNameController.text,
+                        )
+                        .then(
+                          (value) => Navigator.of(context).pushAndRemoveUntil(
+                            CupertinoPageRoute(
+                              builder: (context) => const BusinessHomeView(),
+                            ),
+                            (route) => false,
+                          ),
                         );
-                    Navigator.of(context).pushAndRemoveUntil(
-                      CupertinoPageRoute(
-                        builder: (context) => const BusinessHomeView(),
-                      ),
-                      (route) => false,
-                    );
                   },
                 ),
               ],

@@ -15,6 +15,7 @@ Shop _$ShopFromJson(Map<String, dynamic> json) => Shop(
       province: Province.fromJson(json['provinse_id'] as Map<String, dynamic>),
       city: City.fromJson(json['distrik_id'] as Map<String, dynamic>),
       image: json['brand_img'] as String?,
+      subscriptionPrice: json['payment_summ'] as String,
     );
 
 Map<String, dynamic> _$ShopToJson(Shop instance) => <String, dynamic>{
@@ -26,4 +27,5 @@ Map<String, dynamic> _$ShopToJson(Shop instance) => <String, dynamic>{
       'categor_id': instance.category,
       'provinse_id': instance.province,
       'distrik_id': instance.city,
+      'payment_summ': instance.subscriptionPrice,
     };
