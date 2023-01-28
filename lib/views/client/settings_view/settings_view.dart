@@ -20,7 +20,7 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Настройки'),
+        title: const Text('Профиль'),
         bottom: ThemeDetails.appBarDivider,
         actions: [
           IconButton(
@@ -46,6 +46,10 @@ class SettingsView extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var user = snapshot.data as User;
+                  var userName =
+                      (user.firstName.length > 1 ? user.firstName : 'Нет') +
+                          ' ' +
+                          (user.lastName.length > 1 ? user.lastName : 'имя');
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -69,11 +73,21 @@ class SettingsView extends StatelessWidget {
                       ),
                       SizedBox(height: 60),
                       GestureDetector(
-                        child: Text(
-                          '${user.firstName} ${user.lastName}',
-                          style: GoogleFonts.abrilFatface(
-                            fontSize: 30,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              userName,
+                              style: GoogleFonts.abrilFatface(
+                                fontSize: 26,
+                              ),
+                            ),
+                            SizedBox(width: 6),
+                            Icon(
+                              Icons.edit,
+                              size: 14,
+                            ),
+                          ],
                         ),
                         onTap: () {
                           Navigator.of(context).push(

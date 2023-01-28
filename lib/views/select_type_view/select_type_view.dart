@@ -18,84 +18,87 @@ class _SelectTypeViewState extends State<SelectTypeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.width / 4),
-                const Text(
-                  'Кто вы?',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Бизнес - владелец или сотрудник магазина',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Клиент - клиент магазина',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[900],
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(10),
+        child: Align(
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // SizedBox(height: MediaQuery.of(context).size.width / 4),
+                  const Text(
+                    'Кто вы?',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
                     ),
                   ),
-                  padding: const EdgeInsets.all(6),
-                  child: ToggleButtons(
-                    isSelected: selections,
-                    onPressed: (index) {
-                      setState(() {
-                        switch (index) {
-                          case 0:
-                            selections = [true, false];
-                            break;
-                          case 1:
-                            selections = [false, true];
-                            break;
-                          default:
-                        }
-                      });
-                    },
-                    selectedColor: Colors.white,
-                    fillColor: Colors.grey[800],
-                    renderBorder: false,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(10),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Бизнес - владелец или сотрудник магазина',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontSize: 14,
                     ),
-                    selectedBorderColor: Colors.grey[800],
-                    splashColor: Colors.grey[700],
-                    children: const [
-                      _ButtonWidget(
-                        title: 'Бизнес',
-                      ),
-                      _ButtonWidget(
-                        title: 'Клиент',
-                      ),
-                    ],
                   ),
-                ),
-                const SizedBox(height: 10),
-                selections[0] == true
-                    ? const BusinessLoginView()
-                    : const ClientLoginView(),
-              ],
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Клиент - клиент магазина',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[900],
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(6),
+                    child: ToggleButtons(
+                      isSelected: selections,
+                      onPressed: (index) {
+                        setState(() {
+                          switch (index) {
+                            case 0:
+                              selections = [true, false];
+                              break;
+                            case 1:
+                              selections = [false, true];
+                              break;
+                            default:
+                          }
+                        });
+                      },
+                      selectedColor: Colors.white,
+                      fillColor: Colors.grey[800],
+                      renderBorder: false,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      selectedBorderColor: Colors.grey[800],
+                      splashColor: Colors.grey[700],
+                      children: const [
+                        _ButtonWidget(
+                          title: 'Бизнес',
+                        ),
+                        _ButtonWidget(
+                          title: 'Клиент',
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  selections[0] == true
+                      ? const BusinessLoginView()
+                      : const ClientLoginView(),
+                ],
+              ),
             ),
           ),
         ),

@@ -9,6 +9,7 @@ import '../../../domain/models/client_statistics.dart';
 import '../../../domain/models/user_shop.dart';
 import '../../../theme/theme_details.dart';
 import '../../../view_models/client_home_view_model.dart';
+import '../../../widgets/logo_animated_widget.dart';
 
 class BusinessDetailsView extends StatefulWidget {
   @override
@@ -186,7 +187,7 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                       ),
                     );
                   } else {
-                    return const Text('Нет данных');
+                    return const LogoAnimatedWidget(size: 1.5);
                   }
                 },
               ),
@@ -244,7 +245,7 @@ class _CardCashback extends StatelessWidget {
                               locale: 'ru_RU',
                               decimalDigits: 0,
                             ).format(sumStat.price) +
-                            'UZS',
+                            'сум',
                         style: const TextStyle(
                           fontSize: 18,
                         ),
@@ -268,7 +269,7 @@ class _CardCashback extends StatelessWidget {
                               locale: 'ru_RU',
                               decimalDigits: 0,
                             ).format(sumStat.cashback) +
-                            'UZS',
+                            'сум',
                         style: const TextStyle(
                           fontSize: 18,
                         ),
@@ -341,39 +342,40 @@ class _CardWithdraw extends StatelessWidget {
                               locale: 'ru_RU',
                               decimalDigits: 0,
                             ).format(sumStat.cashback) +
-                            'UZS',
+                            'сум',
                         style: const TextStyle(
                           fontSize: 18,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'имя сотрудника',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                        Text(
-                          sumStat.fullName,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 4),
+                  // const SizedBox(width: 20),
+                  // Expanded(
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       const Text(
+                  //         'имя сотрудника',
+                  //         style: TextStyle(
+                  //           fontSize: 10,
+                  //           color: Colors.grey,
+                  //         ),
+                  //         overflow: TextOverflow.ellipsis,
+                  //         maxLines: 1,
+                  //       ),
+                  //       Text(
+                  //         sumStat.fullName,
+                  //         style: const TextStyle(
+                  //           fontSize: 16,
+                  //         ),
+                  //         overflow: TextOverflow.ellipsis,
+                  //         maxLines: 1,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // const SizedBox(width: 4),
+                  const Spacer(),
                   Text(
                     timeFormatter.format(
                       DateTime.parse(sumStat.date.toString()),

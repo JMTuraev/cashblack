@@ -124,29 +124,34 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               MainButtonWidget(
                 text: 'Подтвердить',
                 method: () async {
-                  await context.read<BusinessHomeViewModel>().getProfile();
-                  bool checked = await context
-                      .read<BusinessLoginViewModel>()
-                      .onVerifyButtonPressed(otpCode ?? textController.text);
-                  bool hasShop = context
+                  await context
                       .read<BusinessHomeViewModel>()
-                      .user
-                      .shops
-                      .isNotEmpty;
+                      .getProfile()
+                      .then((value) async {
+                    bool checked = await context
+                        .read<BusinessLoginViewModel>()
+                        .onVerifyButtonPressed(otpCode ?? textController.text);
+                    bool hasShop = context
+                        .read<BusinessHomeViewModel>()
+                        .user!
+                        .shops
+                        .isNotEmpty;
 
-                  checked
-                      ? (hasShop
-                          ? Navigator.of(context).pushAndRemoveUntil(
-                              CupertinoPageRoute(
-                                builder: (context) => const BusinessHomeView(),
-                              ),
-                              (route) => false)
-                          : Navigator.of(context).pushAndRemoveUntil(
-                              CupertinoPageRoute(
-                                builder: (context) => const CreateStoreView(),
-                              ),
-                              (route) => false))
-                      : null;
+                    checked
+                        ? (hasShop
+                            ? Navigator.of(context).pushAndRemoveUntil(
+                                CupertinoPageRoute(
+                                  builder: (context) =>
+                                      const BusinessHomeView(),
+                                ),
+                                (route) => false)
+                            : Navigator.of(context).pushAndRemoveUntil(
+                                CupertinoPageRoute(
+                                  builder: (context) => const CreateStoreView(),
+                                ),
+                                (route) => false))
+                        : null;
+                  });
                 },
               ),
             ],

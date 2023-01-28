@@ -45,6 +45,7 @@ class _EditStoreViewState extends State<EditStoreView> {
       source: ImageSource.gallery,
       maxHeight: 1080,
       maxWidth: 1080,
+      // imageQuality: 75,
     );
     _cropImage(pickedFile!.path);
   }
@@ -94,6 +95,7 @@ class _EditStoreViewState extends State<EditStoreView> {
     });
   }
 
+//todo
   onProvinceChanged(value) {
     setState(() {
       _selectedCity = null;
@@ -240,9 +242,9 @@ class _EditStoreViewState extends State<EditStoreView> {
                           hint: 'Город',
                           // selectedOption: _selectedCity,
                           selectedOption: city
-                              .where(
-                                (element) => element.id == widget.shop.city.id,
-                              )
+                              // .where(
+                              //   (element) => element.id == widget.shop.city.id,
+                              // )
                               .first
                               .id
                               .toString(),

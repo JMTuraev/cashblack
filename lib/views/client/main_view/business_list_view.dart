@@ -77,6 +77,18 @@ class BusinessListView extends StatelessWidget {
                                               4,
                                           imageUrl: Constants.media +
                                               shops[index].logo,
+                                          placeholder: (context, url) =>
+                                              Container(
+                                            color: Colors.transparent,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                4,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                4,
+                                          ),
                                         ),
                                       ),
                                       SizedBox(width: 10),

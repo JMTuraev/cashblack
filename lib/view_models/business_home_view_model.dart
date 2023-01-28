@@ -14,11 +14,15 @@ class BusinessHomeViewModel extends ChangeNotifier {
   int currentIndex = 0;
 
   late User user;
+  // User?   user;
   List<Balance> balance = [];
+  List<Worker> workers = [];
   // List<OneMonthStatistic> oneWeekStatistics = [];
 
   Future<User> getProfile() async {
-    return user = await _client.getProfile();
+    user = await _client.getProfile();
+    notifyListeners();
+    return user;
   }
 
   Future<List<OneMonthStatistic>> getStatistics() async {
@@ -47,16 +51,20 @@ class BusinessHomeViewModel extends ChangeNotifier {
   }
 
   Future<List<Worker>> getWorkers() async {
-    return _client.getWorkers();
+    return workers = await _client.getWorkers();
   }
 
   Future<void> switchWorker(int id, bool type) async {
     await _client.switchWorker(id, type);
+    print('wor changed to $type');
+    await getWorkers();
     notifyListeners();
   }
 
   Future<List<Balance>> getBalance() async {
-    return balance = await _client.getBalance();
+    var balance = await _client.getBalance();
+    notifyListeners();
+    return balance;
   }
 
   Future<void> logout() async {

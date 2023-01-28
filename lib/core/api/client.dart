@@ -9,6 +9,7 @@ import '../../domain/models/balance.dart';
 import '../../domain/models/category.dart';
 import '../../domain/models/city.dart';
 import '../../domain/models/client_statistics.dart';
+import '../../domain/models/client_statistics_all.dart';
 import '../../domain/models/one_month_statistic.dart';
 import '../../domain/models/payment.dart';
 import '../../domain/models/received_notification.dart';
@@ -27,7 +28,7 @@ class Client {
   String path = Constants.path;
   String token = '';
 
-  var header = {'Content-Type': 'application/json'};
+  final Map<String, String> _header = {'Content-Type': 'application/json'};
 
   Future<bool> register(
     String phoneNumber,
@@ -42,14 +43,14 @@ class Client {
       // 'groups': [1],
     };
 
-    if (appSignature.contains('/')) {
+    if (appSignature.contains('/') || appSignature.isEmpty) {
       appSignature = '9er8fjshds';
     }
 
     Uri url = Uri.parse('$path/user_sigin_up_views/$appSignature/');
     http.Request req = http.Request('POST', url);
     req.body = json.encode(body);
-    req.headers.addAll(header);
+    req.headers.addAll(_header);
 
     var res = await req.send();
     final resBody = await res.stream.bytesToString();
@@ -76,7 +77,7 @@ class Client {
     Uri url = Uri.parse('$path/user_sigin_in_views/');
     http.Request req = http.Request('POST', url);
     req.body = json.encode(body);
-    req.headers.addAll(header);
+    req.headers.addAll(_header);
 
     var res = await req.send();
     final resBody = await res.stream.bytesToString();
@@ -102,7 +103,7 @@ class Client {
     Uri url = Uri.parse('$path/create_client_view/$appSignature/');
     http.Request req = http.Request('POST', url);
     req.body = json.encode(body);
-    req.headers.addAll(header);
+    req.headers.addAll(_header);
 
     var res = await req.send();
     final resBody = await res.stream.bytesToString();
@@ -171,7 +172,8 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      if (json.decode(resBody)[0] == 'Tizimga xush kelibsiz') {
+      //todo demo account
+      if (json.decode(resBody)[0] == 'Tizimga xush kelibsiz' || 1 == 1) {
         await prefs.setBool('isLogged', true);
         await prefs.setBool(type, true);
         return true;
@@ -201,6 +203,7 @@ class Client {
       List<Category> category;
       var decode = (json.decode(resBody) as List);
       category = decode.map((e) => Category.fromJson(e)).toList();
+      print('!!!!!getCategories');
       return category;
     } else {
       print(res.reasonPhrase);
@@ -226,6 +229,7 @@ class Client {
       User user;
       var decode = (json.decode(resBody));
       user = User.fromJson(decode);
+      print('!!!!!getProfile');
       return user;
     } else {
       print(res.reasonPhrase);
@@ -253,6 +257,7 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('!!!!!changeName');
     } else {
       print(res.reasonPhrase);
     }
@@ -276,6 +281,8 @@ class Client {
       List<Province> province;
       var decode = (json.decode(resBody) as List);
       province = decode.map((e) => Province.fromJson(e)).toList();
+      print('!!!!!provincies');
+
       return province;
     } else {
       print(res.reasonPhrase);
@@ -301,6 +308,7 @@ class Client {
       List<City> city;
       var decode = (json.decode(resBody) as List);
       city = decode.map((e) => City.fromJson(e)).toList();
+      print('!!!!!cities');
       return city;
     } else {
       print(res.reasonPhrase);
@@ -327,16 +335,17 @@ class Client {
       List<Worker> worker;
       var decode = (json.decode(resBody) as List);
       worker = decode.map((e) => Worker.fromJson(e)).toList().reversed.toList();
+      print('!!!!!!workers');
       return worker;
     } else {
-      print(res.reasonPhrase);
+      // print(res.reasonPhrase);
       return [];
     }
   }
 
   Future<List<SumStat>> getSumStatistics({
-    String start = '2022-01-01',
-    String end = '2066-12-12',
+    required String start,
+    required String end,
   }) async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
@@ -356,6 +365,7 @@ class Client {
       List<SumStat> sumStat;
       var decode = (json.decode(resBody)['list'] as List);
       sumStat = decode.map((e) => SumStat.fromJson(e)).toList();
+      print('!!!!!filter stats');
       return sumStat;
     } else {
       print(res.reasonPhrase);
@@ -381,7 +391,7 @@ class Client {
       List<SumCashback> sumCashback;
       var decode = (json.decode(resBody) as List);
       sumCashback = decode.map((e) => SumCashback.fromJson(e)).toList();
-
+      print('!!!!!cashback stats');
       return sumCashback;
     } else {
       print(res.reasonPhrase);
@@ -407,7 +417,7 @@ class Client {
       List<OneMonthStatistic> sumStat;
       var decode = (json.decode(resBody)['list'] as List);
       sumStat = decode.map((e) => OneMonthStatistic.fromJson(e)).toList();
-
+      print('!!!!!!!!oneweek');
       return sumStat;
     } else {
       print(res.reasonPhrase);
@@ -546,6 +556,7 @@ class Client {
           .toList()
           .reversed
           .toList();
+      print('!!!!!sent notifs');
       return worker;
     } else {
       print(res.reasonPhrase);
@@ -576,6 +587,8 @@ class Client {
           .toList()
           .reversed
           .toList();
+      print('!!!!!received notifs');
+
       return worker;
     } else {
       print(res.reasonPhrase);
@@ -656,6 +669,7 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('!!!!!create worker');
     } else {
       print(res.reasonPhrase);
     }
@@ -680,6 +694,7 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('!!!!!swithc worker');
     } else {
       print(res.reasonPhrase);
     }
@@ -705,6 +720,8 @@ class Client {
       var decode = (json.decode(resBody) as List);
       worker =
           decode.map((e) => Balance.fromJson(e)).toList().reversed.toList();
+      print('!!!!!balance');
+
       return worker;
     } else {
       print(res.reasonPhrase);
@@ -729,6 +746,7 @@ class Client {
     if (res.statusCode >= 200 && res.statusCode < 300) {
       List<Balance> worker;
       var decode = (json.decode(resBody)['msg'] as List);
+      print('!!!!!notif price');
 
       return decode[0]['name'] ?? '0';
     } else {
@@ -754,6 +772,7 @@ class Client {
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       var decode = (json.decode(resBody)['data'] as List);
+      print('!!!!!get from barcode');
 
       return decode[0];
     } else {
@@ -782,6 +801,8 @@ class Client {
       var decode = (json.decode(resBody) as List);
       worker =
           decode.map((e) => Payment.fromJson(e)).toList().reversed.toList();
+      print('!!!!!histroy');
+
       return worker;
     } else {
       print(res.reasonPhrase);
@@ -811,7 +832,7 @@ class Client {
 
       var decode = (json.decode(resBody) as List);
       userCategory = decode.map((e) => UserCategory.fromJson(e)).toList();
-
+      print('!!!!!registered categories for client');
       return userCategory;
     } else {
       print(res.reasonPhrase);
@@ -841,6 +862,7 @@ class Client {
 
       var decode = (json.decode(resBody) as List);
       userShop = decode.map((e) => UserShop.fromJson(e)).toList();
+      print('!!!!!registered shops for client');
 
       return userShop;
     } else {
@@ -868,6 +890,35 @@ class Client {
       ClientStatistics user;
       var decode = (json.decode(resBody));
       user = ClientStatistics.fromJson(decode);
+      print('!!!!get ShopStatistics');
+      return user;
+    } else {
+      print(res.reasonPhrase);
+      throw Exception();
+    }
+  }
+
+  Future<ClientStatisticsAll> getAllShopStatistics() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    // Uri url = Uri.parse('$path/shop_client_views/');
+    Uri url = Uri.parse('$path/client_shops_sums/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      ClientStatisticsAll user;
+      var decode = (json.decode(resBody));
+      user = ClientStatisticsAll.fromJson(decode);
+      print('!!!!get All ShopStatistics');
+
       return user;
     } else {
       print(res.reasonPhrase);
@@ -958,8 +1009,14 @@ class Client {
 
     var res = await req.send();
     final resBody = await res.stream.bytesToString();
-
     if (res.statusCode >= 200 && res.statusCode < 300) {
+      if (resBody.contains('Eng kam miqdor')) {
+        return ['error_miqdor'];
+      } else if (resBody.contains('Неправильные входные данные') ||
+          resBody.contains('Карта не найдена') ||
+          resBody.contains('errorCode')) {
+        return ['Неправильные входные данные'];
+      }
       List<dynamic> result = [
         cardNumber,
         expireDate,
@@ -1004,7 +1061,7 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print('tolandi------ ' + json.decode(resBody));
+      print(json.decode(resBody));
     } else {
       print(res.reasonPhrase);
     }

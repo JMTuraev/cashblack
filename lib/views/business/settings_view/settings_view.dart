@@ -18,11 +18,36 @@ import 'create_worker_view.dart';
 import 'edit_name_view.dart';
 import 'edit_store_view.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
 
   @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  late User user;
+  late final Future<User> userFuture;
+  late final Future<List<Balance>> balanceFuture;
+  late final Future<List<Worker>> workersFuture;
+
+  @override
+  void initState() {
+    user = context.read<BusinessHomeViewModel>().user;
+    userFuture = context.read<BusinessHomeViewModel>().getProfile();
+    balanceFuture = context.read<BusinessHomeViewModel>().getBalance();
+    workersFuture = context.read<BusinessHomeViewModel>().getWorkers();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // var user = context.watch<BusinessHomeViewModel>().user;
+    var isBusiness = user!.groups.first.name == 'Biznes';
+
+    List<Worker> workersList = context.watch<BusinessHomeViewModel>().workers;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Настройки'),
@@ -51,7 +76,7 @@ class SettingsView extends StatelessWidget {
             children: [
               const SizedBox(height: 15),
               FutureBuilder(
-                future: context.watch<BusinessHomeViewModel>().getProfile(),
+                future: userFuture,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var user = snapshot.data as User;
@@ -62,6 +87,7 @@ class SettingsView extends StatelessWidget {
                         ),
                         const SizedBox(height: 15),
                         _BrandCardWidget(
+                          isBusiness: isBusiness,
                           shop: user.shops.last,
                         ),
                       ],
@@ -73,7 +99,7 @@ class SettingsView extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               FutureBuilder(
-                future: context.watch<BusinessHomeViewModel>().getBalance(),
+                future: balanceFuture,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var balance = snapshot.data!.first as Balance;
@@ -84,41 +110,39 @@ class SettingsView extends StatelessWidget {
                     return const SizedBox();
                 },
               ),
-              Row(
-                children: [
-                  const Text(
-                    'Сотрудники',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    child: const Text(
-                      'Добавить',
-                      style: TextStyle(
-                        color: Colors.white70,
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        CupertinoPageRoute(
-                          builder: (context) => const CreateWorkerView(),
+              isBusiness
+                  ? Row(
+                      children: [
+                        const Text(
+                          'Сотрудники',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-              Expanded(
-                child: FutureBuilder(
-                  future: context.watch<BusinessHomeViewModel>().getWorkers(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<Worker> workers = snapshot.data as List<Worker>;
-                      return ListView.separated(
+                        const Spacer(),
+                        TextButton(
+                          child: const Text(
+                            'Добавить',
+                            style: TextStyle(
+                              color: Colors.white70,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => const CreateWorkerView(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
+              isBusiness
+                  ? Expanded(
+                      child: ListView.separated(
                         shrinkWrap: true,
-                        itemCount: workers.length,
+                        itemCount: workersList.length,
                         separatorBuilder: (context, index) {
                           return const Divider(
                             height: 1,
@@ -127,38 +151,41 @@ class SettingsView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return ListTile(
                             title: Text(
-                              '${workers[index].firstName} ${workers[index].lastName}',
+                              '${workersList[index].firstName} ${workersList[index].lastName}',
                               style: const TextStyle(
                                 fontSize: 14,
                               ),
                             ),
                             subtitle: Text(
-                              workers[index].userName.phoneFormatter(),
+                              workersList[index].userName.phoneFormatter(),
                             ),
                             trailing: CupertinoSwitch(
                               activeColor: Colors.grey[100],
                               thumbColor: Colors.black,
                               trackColor: Colors.grey,
-                              value: !workers[index].isFreezed,
+                              value: !workersList[index].isFreezed,
                               onChanged: (value) async {
                                 await context
                                     .read<BusinessHomeViewModel>()
                                     .switchWorker(
-                                      workers[index].id,
+                                      workersList[index].id,
                                       !value,
                                     );
+                                print(context
+                                    .read<BusinessHomeViewModel>()
+                                    .workers
+                                    .first
+                                    .isFreezed);
+                                setState(() {});
+                                print('object');
                               },
                             ),
                             contentPadding: const EdgeInsets.all(0),
                           );
                         },
-                      );
-                    } else {
-                      return const Text('');
-                    }
-                  },
-                ),
-              ),
+                      ),
+                    )
+                  : const SizedBox(),
             ],
           ),
         ),
@@ -171,9 +198,11 @@ class _BrandCardWidget extends StatelessWidget {
   const _BrandCardWidget({
     Key? key,
     required this.shop,
+    required this.isBusiness,
   }) : super(key: key);
 
   final Shop shop;
+  final bool isBusiness;
 
   @override
   Widget build(BuildContext context) {
@@ -213,22 +242,24 @@ class _BrandCardWidget extends StatelessWidget {
               )
             ],
           ),
-          Positioned(
-            top: 5,
-            right: 5,
-            child: TextButtonWidget(
-              method: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => EditStoreView(
-                      shop: shop,
-                    ),
+          isBusiness
+              ? Positioned(
+                  top: 5,
+                  right: 5,
+                  child: TextButtonWidget(
+                    method: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => EditStoreView(
+                            shop: shop,
+                          ),
+                        ),
+                      );
+                    },
+                    text: 'Изменить',
                   ),
-                );
-              },
-              text: 'Изменить',
-            ),
-          )
+                )
+              : const SizedBox()
         ],
       ),
     );
@@ -284,7 +315,7 @@ class _SubscriptionCardWidget extends StatelessWidget {
                   const SizedBox(width: 8),
                   // Text(balance.balanceShop.createdDate.getLocaleDateTime()),
                   Text(
-                    balance.balanceShop.isSubscribed ? 'Активен' : 'Не оплачен',
+                    balance.isSubscribedOne ? 'Активен' : 'Не оплачен',
                   ),
                 ],
               ),

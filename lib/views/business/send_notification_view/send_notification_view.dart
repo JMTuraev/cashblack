@@ -34,6 +34,9 @@ class _SendNotificationViewState extends State<SendNotificationView> {
   void selectImage() async {
     final XFile? image = await _picker.pickImage(
       source: ImageSource.gallery,
+      maxHeight: 1080,
+      maxWidth: 1080,
+      // imageQuality: 75,
     );
     setState(() {
       File? file = File(image!.path);
@@ -105,7 +108,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                   const SizedBox(height: 10),
                   FutureBuilder(
                     future: context
-                        .watch<SendNotificationViewModel>()
+                        .read<SendNotificationViewModel>()
                         .getNotificationPrice(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {

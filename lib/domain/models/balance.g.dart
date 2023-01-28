@@ -12,6 +12,7 @@ Balance _$BalanceFromJson(Map<String, dynamic> json) => Balance(
       date: json['date'] as String,
       balanceShop:
           BalanceShop.fromJson(json['shop_id'] as Map<String, dynamic>),
+      isSubscribedOne: json['is_date'] as bool,
     );
 
 Map<String, dynamic> _$BalanceToJson(Balance instance) => <String, dynamic>{
@@ -19,4 +20,5 @@ Map<String, dynamic> _$BalanceToJson(Balance instance) => <String, dynamic>{
       'amunt': instance.amount,
       'date': instance.date,
       'shop_id': instance.balanceShop,
+      'is_date': instance.isSubscribedOne,
     };

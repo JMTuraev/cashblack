@@ -9,7 +9,7 @@ import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 import 'payment_success_view.dart';
 
-class PaymentClientView extends StatelessWidget {
+class PaymentClientView extends StatefulWidget {
   const PaymentClientView({
     Key? key,
     required this.code,
@@ -18,7 +18,22 @@ class PaymentClientView extends StatelessWidget {
   final String code;
 
   @override
+  State<PaymentClientView> createState() => _PaymentClientViewState();
+}
+
+class _PaymentClientViewState extends State<PaymentClientView> {
+  late final Future profile;
+  @override
+  void initState() {
+    profile =
+        context.read<PaymentClientViewModel>().getUserFromBarcode(widget.code);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+
     TextEditingController priceController = TextEditingController();
 
     NumericTextFormatter numericTextFormatter = NumericTextFormatter();
@@ -32,18 +47,18 @@ class PaymentClientView extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
               FutureBuilder(
-                future: context
-                    .read<PaymentClientViewModel>()
-                    .getUserFromBarcode(code),
+                future: profile,
+                // future: context
+                //     .read<PaymentClientViewModel>()
+                //     .getUserFromBarcode(widget.code),
                 builder: (context, snapshot) {
-                  // if (snapshot.hasData) {
-                  if (true) {
+                  if (snapshot.hasData) {
                     var user = snapshot.data;
                     return Column(
                       children: [
                         Text(
-                          'asd',
-                          // user['full_name'],
+                          // 'asd',
+                          user['full_name'],
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -51,16 +66,23 @@ class PaymentClientView extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'asd',
-                          // user['username'].toString().phoneFormatter(),
+                          // 'asd',
+                          user['username'].toString().phoneFormatter(),
                           style: const TextStyle(fontSize: 18),
                         ),
                         const SizedBox(height: 30),
                         Center(
                           child: Form(
+                            key: _formKey,
                             child: Column(
                               children: [
-                                TextField(
+                                TextFormField(
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Введите сумму';
+                                    }
+                                    return null;
+                                  },
                                   inputFormatters: [numericTextFormatter],
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(
@@ -94,24 +116,29 @@ class PaymentClientView extends StatelessWidget {
                                       child: MainButtonWidget(
                                         text: 'Кэшбек',
                                         method: () async {
-                                          await context
-                                              .read<PaymentClientViewModel>()
-                                              .sendCashback(
-                                                  priceController.text
-                                                      .removeWhitespaces(),
-                                                  code)
-                                              .then(
-                                                (value) => Navigator.of(context)
-                                                    .pushAndRemoveUntil(
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        const PaymentSuccessView(
-                                                      title: 'Кэшбек выплачено',
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            await context
+                                                .read<PaymentClientViewModel>()
+                                                .sendCashback(
+                                                    priceController.text
+                                                        .removeWhitespaces(),
+                                                    widget.code)
+                                                .then(
+                                                  (value) =>
+                                                      Navigator.of(context)
+                                                          .pushAndRemoveUntil(
+                                                    CupertinoPageRoute(
+                                                      builder: (context) =>
+                                                          const PaymentSuccessView(
+                                                        title:
+                                                            'Кэшбек выплачено',
+                                                      ),
                                                     ),
+                                                    (route) => false,
                                                   ),
-                                                  (route) => false,
-                                                ),
-                                              );
+                                                );
+                                          }
                                         },
                                       ),
                                     ),
@@ -121,24 +148,28 @@ class PaymentClientView extends StatelessWidget {
                                       child: MainButtonWidget(
                                         text: 'Оплата',
                                         method: () async {
-                                          await context
-                                              .read<PaymentClientViewModel>()
-                                              .payForGoods(
-                                                  priceController.text
-                                                      .removeWhitespaces(),
-                                                  code)
-                                              .then(
-                                                (value) => Navigator.of(context)
-                                                    .pushAndRemoveUntil(
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        const PaymentSuccessView(
-                                                      title: 'Оплачено',
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            await context
+                                                .read<PaymentClientViewModel>()
+                                                .payForGoods(
+                                                    priceController.text
+                                                        .removeWhitespaces(),
+                                                    widget.code)
+                                                .then(
+                                                  (value) =>
+                                                      Navigator.of(context)
+                                                          .pushAndRemoveUntil(
+                                                    CupertinoPageRoute(
+                                                      builder: (context) =>
+                                                          const PaymentSuccessView(
+                                                        title: 'Оплачено',
+                                                      ),
                                                     ),
+                                                    (route) => false,
                                                   ),
-                                                  (route) => false,
-                                                ),
-                                              );
+                                                );
+                                          }
                                         },
                                       ),
                                     )
@@ -154,7 +185,9 @@ class PaymentClientView extends StatelessWidget {
                   } else {
                     return SizedBox(
                       height: MediaQuery.of(context).size.width,
-                      child: const LogoAnimatedWidget(),
+                      child: const LogoAnimatedWidget(
+                        size: 1.5,
+                      ),
                     );
                   }
                 },

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import '../client_notifications_view/client_notifications_view.dart';
 import '../main_view/main_view.dart';
@@ -41,10 +42,13 @@ class _ClientHomeViewState extends State<ClientHomeView> {
         label: 'Уведомления',
       ),
       const BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.settings),
-        label: 'Настройки',
+        icon: Icon(CupertinoIcons.creditcard_fill),
+        label: 'Профиль',
       ),
     ];
+
+    // FlutterNativeSplash.remove();
+
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: false,

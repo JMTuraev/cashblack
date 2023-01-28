@@ -19,6 +19,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       groups: (json['groups'] as List<dynamic>)
           .map((e) => Group.fromJson(e as Map<String, dynamic>))
           .toList(),
+      isFreezed: json['is_switcher'] as bool,
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -30,4 +31,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'groups': instance.groups,
       'barcode_id': instance.barcode,
       'barcode': instance.barcodeImage,
+      'is_switcher': instance.isFreezed,
     };

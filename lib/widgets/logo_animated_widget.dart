@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class LogoAnimatedWidget extends StatefulWidget {
-  const LogoAnimatedWidget({super.key});
+  const LogoAnimatedWidget({super.key, required this.size});
+
+  final double size;
 
   @override
   State<LogoAnimatedWidget> createState() => _LogoAnimatedWidgetState();
@@ -28,21 +30,19 @@ class _LogoAnimatedWidgetState extends State<LogoAnimatedWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ScaleTransition(
-          scale: _animation,
-          child: Padding(
-            padding: EdgeInsets.all(0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(
-                Radius.circular(999),
-              ),
-              child: Image.asset(
-                'assets/images/icon_no_alpha.png',
-                fit: BoxFit.cover,
-                height: MediaQuery.of(context).size.width / 1.5,
-              ),
+    return Center(
+      child: ScaleTransition(
+        scale: _animation,
+        child: Padding(
+          padding: EdgeInsets.all(0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(999),
+            ),
+            child: Image.asset(
+              'assets/images/icon_no_alpha.png',
+              fit: BoxFit.cover,
+              height: MediaQuery.of(context).size.width / widget.size,
             ),
           ),
         ),

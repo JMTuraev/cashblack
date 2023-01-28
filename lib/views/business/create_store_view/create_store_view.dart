@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
       source: ImageSource.gallery,
       maxHeight: 1080,
       maxWidth: 1080,
+      // imageQuality: 75,
     );
     _cropImage(pickedFile!.path);
   }
@@ -131,6 +133,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
     //     context.read<CreateStoreViewViewModel>().getProvincies();
     // Future<List<City>> cityItems =
     //     context.read<CreateStoreViewViewModel>().getCities('1');
+    // FlutterNativeSplash.remove();
 
     return Scaffold(
       body: Padding(

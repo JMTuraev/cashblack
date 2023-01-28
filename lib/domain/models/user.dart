@@ -24,6 +24,8 @@ class User {
   final String? barcode;
   @JsonKey(name: 'barcode')
   final String? barcodeImage;
+  @JsonKey(name: 'is_switcher')
+  final bool isFreezed;
 
   User({
     required this.id,
@@ -34,6 +36,7 @@ class User {
     this.barcode,
     this.barcodeImage,
     required this.groups,
+    required this.isFreezed,
   });
 
   factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);

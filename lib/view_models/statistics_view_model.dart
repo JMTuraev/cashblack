@@ -7,14 +7,13 @@ import '../domain/models/sum_stat.dart';
 class StatisticsViewModel extends ChangeNotifier {
   final Client _client = Client();
 
-  List<SumStat> sumStats = [];
+  late Future<List<SumStat>> sumStats;
 
   Future<List<SumStat>> getSumStats({
-    String start = '2022-01-01',
-    String end = '2024-12-12',
+    required String start,
+    required String end,
   }) async {
-    sumStats = await _client.getSumStatistics(start: start, end: end);
-    return sumStats;
+    return sumStats = _client.getSumStatistics(start: start, end: end);
   }
 
   Future<List<SumCashback>> getCashbackStats() async {

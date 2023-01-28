@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -22,15 +24,19 @@ import 'views/client/client_home_view.dart/client_home_view.dart';
 import 'views/select_type_view/select_type_view.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // Future<bool> runner() async {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   final prefs = await SharedPreferences.getInstance();
-  // return
-  // prefs.getBool('isLogged') ?? false;
-  // }
-  Intl.defaultLocale = "ru_RU";
-  await initializeDateFormatting("ru_RU", null);
+
+  Intl.defaultLocale = 'ru_RU';
+  await initializeDateFormatting('ru_RU', null);
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    // DeviceOrientation.portraitDown,
+  ]);
+
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   runApp(
     MyApp(
@@ -90,17 +96,9 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           brightness: Brightness.dark,
-          // colorSchemeSeed: Colors.black,
-          // primarySwatch: Colors.black,
           backgroundColor: Colors.black,
           scaffoldBackgroundColor: Colors.black,
-          // bottomAppBarColor: Colors.black54,
-          // bottomAppBarTheme: BottomAppBarTheme(
-          //   color: Colors.black54,
-          // ),
           appBarTheme: const AppBarTheme(
-            // color: Colors.transparent,
-            // color: Colors.black,
             backgroundColor: Colors.black,
             systemOverlayStyle: AppBarStyle.appBarStyle,
             elevation: 0,
@@ -117,11 +115,6 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        // locale: Locale('ru', 'RU'),
-        // supportedLocales: [
-        //   Locale('ru', 'RU'),
-        // ],
-        // home: const SelectTypeView(),
         home: isLogged
             ? (isBusiness ? const BusinessHomeView() : const ClientHomeView())
             : const SelectTypeView(),

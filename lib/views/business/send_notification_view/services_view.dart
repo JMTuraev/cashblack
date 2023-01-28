@@ -11,8 +11,20 @@ import '../../../view_models/send_notification_view_model.dart';
 import 'notification_info_view.dart';
 import 'send_notification_view.dart';
 
-class ServicesView extends StatelessWidget {
+class ServicesView extends StatefulWidget {
   const ServicesView({super.key});
+
+  @override
+  State<ServicesView> createState() => _ServicesViewState();
+}
+
+class _ServicesViewState extends State<ServicesView> {
+  late final Future sentFuture;
+  @override
+  void initState() {
+    sentFuture = context.read<SendNotificationViewModel>().getNotifications();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +67,7 @@ class ServicesView extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               FutureBuilder(
-                future: context
-                    .watch<SendNotificationViewModel>()
-                    .getNotifications(),
+                future: sentFuture,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var notifications = snapshot.data as List<SentNotification>;

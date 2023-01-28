@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/balance.dart';
 import '../../../domain/models/one_month_statistic.dart';
+import '../../../domain/models/user.dart';
 import '../../../theme/theme_details.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../widgets/empty_widget.dart';
@@ -42,7 +43,7 @@ class _MainViewState extends State<MainView> {
       body: Container(
         child: Column(
           children: [
-            const _CashbackWidget(),
+            _CashbackWidget(),
           ],
         ),
       ),
@@ -50,52 +51,76 @@ class _MainViewState extends State<MainView> {
   }
 }
 
-class _CashbackWidget extends StatelessWidget {
+class _CashbackWidget extends StatefulWidget {
   const _CashbackWidget({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    double maxSum = 0;
+  State<_CashbackWidget> createState() => _CashbackWidgetState();
+}
 
-    List<OneMonthStatistic> aWeekStatistics = [
-      OneMonthStatistic(
-        cashback: 0,
-        price: 0,
-        date: DateTime.now().subtract(const Duration(days: 6)),
-      ),
-      OneMonthStatistic(
-        cashback: 0,
-        price: 0,
-        date: DateTime.now().subtract(const Duration(days: 5)),
-      ),
-      OneMonthStatistic(
-        cashback: 0,
-        price: 0,
-        date: DateTime.now().subtract(const Duration(days: 4)),
-      ),
-      OneMonthStatistic(
-        cashback: 0,
-        price: 0,
-        date: DateTime.now().subtract(const Duration(days: 3)),
-      ),
-      OneMonthStatistic(
-        cashback: 0,
-        price: 0,
-        date: DateTime.now().subtract(const Duration(days: 2)),
-      ),
-      OneMonthStatistic(
-        cashback: 0,
-        price: 0,
-        date: DateTime.now().subtract(const Duration(days: 1)),
-      ),
-      OneMonthStatistic(
-        cashback: 0,
-        price: 0,
-        date: DateTime.now(),
-      ),
-    ];
+class _CashbackWidgetState extends State<_CashbackWidget> {
+  late final Future myBalance;
+  late final Future aWeekStats;
+  late User user;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    myBalance = context.read<BusinessHomeViewModel>().getBalance();
+    aWeekStats = context.read<BusinessHomeViewModel>().getStatistics();
+
+    user = context.read<BusinessHomeViewModel>().user;
+
+    super.initState();
+  }
+
+  double maxSum = 0;
+
+  List<OneMonthStatistic> aWeekStatistics = [
+    OneMonthStatistic(
+      cashback: 0,
+      price: 0,
+      date: DateTime.now().subtract(const Duration(days: 6)),
+    ),
+    OneMonthStatistic(
+      cashback: 0,
+      price: 0,
+      date: DateTime.now().subtract(const Duration(days: 5)),
+    ),
+    OneMonthStatistic(
+      cashback: 0,
+      price: 0,
+      date: DateTime.now().subtract(const Duration(days: 4)),
+    ),
+    OneMonthStatistic(
+      cashback: 0,
+      price: 0,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+    OneMonthStatistic(
+      cashback: 0,
+      price: 0,
+      date: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+    OneMonthStatistic(
+      cashback: 0,
+      price: 0,
+      date: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+    OneMonthStatistic(
+      cashback: 0,
+      price: 0,
+      date: DateTime.now(),
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    // var user = context.watch<BusinessHomeViewModel>().user;
+    // user = context.watch<BusinessHomeViewModel>().user;
+    var isBusiness = user!.groups.first.name == 'Biznes';
 
     return Column(
       children: [
@@ -114,7 +139,7 @@ class _CashbackWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   FutureBuilder(
-                    future: context.read<BusinessHomeViewModel>().getBalance(),
+                    future: myBalance,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         List<Balance> balance = snapshot.data as List<Balance>;
@@ -135,48 +160,52 @@ class _CashbackWidget extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              builder: (context) => const PaymentView(),
+                  isBusiness
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                    builder: (context) => const PaymentView(),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: const [
+                                  Icon(
+                                    CupertinoIcons.add_circled,
+                                    size: 30,
+                                  ),
+                                  Text('Пополнить'),
+                                ],
+                              ),
                             ),
-                          );
-                        },
-                        child: Column(
-                          children: const [
-                            Icon(
-                              CupertinoIcons.add_circled,
-                              size: 30,
+                            const SizedBox(width: 20),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                    builder: (context) =>
+                                        const PaymentsHistoryView(),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: const [
+                                  Icon(
+                                    CupertinoIcons
+                                        .arrow_right_arrow_left_circle,
+                                    size: 30,
+                                  ),
+                                  Text('История'),
+                                ],
+                              ),
                             ),
-                            Text('Пополнить'),
                           ],
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              builder: (context) => const PaymentsHistoryView(),
-                            ),
-                          );
-                        },
-                        child: Column(
-                          children: const [
-                            Icon(
-                              CupertinoIcons.arrow_right_arrow_left_circle,
-                              size: 30,
-                            ),
-                            Text('История'),
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
+                        )
+                      : Center(child: SizedBox())
                 ],
               ),
             ],
@@ -189,7 +218,7 @@ class _CashbackWidget extends StatelessWidget {
           height: MediaQuery.of(context).size.height / 3.5,
           width: double.infinity,
           child: FutureBuilder(
-            future: context.watch<BusinessHomeViewModel>().getStatistics(),
+            future: aWeekStats,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List<OneMonthStatistic> stats =
@@ -222,7 +251,9 @@ class _CashbackWidget extends StatelessWidget {
                   return const EmptyWidget();
                 }
               } else {
-                return const LogoAnimatedWidget();
+                return const LogoAnimatedWidget(
+                  size: 1.5,
+                );
               }
             },
           ),

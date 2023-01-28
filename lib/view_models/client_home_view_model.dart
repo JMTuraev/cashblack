@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/api/client.dart';
 import '../domain/models/client_statistics.dart';
+import '../domain/models/client_statistics_all.dart';
 import '../domain/models/received_notification.dart';
 import '../domain/models/user.dart';
 import '../domain/models/user_category.dart';
@@ -36,6 +37,10 @@ class ClientHomeViewModel extends ChangeNotifier {
 
   Future<ClientStatistics> getShopStatistics(int id) async {
     return _client.getShopStatistics(id);
+  }
+
+  Future<ClientStatisticsAll> getAllShopStatistics() async {
+    return _client.getAllShopStatistics();
   }
 
   Future<List<ReceivedNotification>> getNotifications() async {

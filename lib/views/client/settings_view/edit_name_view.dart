@@ -49,7 +49,7 @@ class EditNameView extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextFieldWidget(
-                    hintText: ' Фамилия',
+                    hintText: 'Фамилия',
                     controller: lastNameController,
                   ),
                   const SizedBox(height: 20),

@@ -53,17 +53,24 @@ class EditNameView extends StatelessWidget {
                   const SizedBox(height: 20),
                   MainButtonWidget(
                     text: 'OK',
-                    method: () {
-                      context.read<BusinessHomeViewModel>().changeName(
+                    method: () async {
+                      await context
+                          .read<BusinessHomeViewModel>()
+                          .changeName(
                             user.id,
                             firstNameController.text,
                             lastNameController.text,
+                          )
+                          .then(
+                        (value) {
+                          // Navigator.pop(context);
+                          return Navigator.of(context).pushAndRemoveUntil(
+                            CupertinoPageRoute(
+                              builder: (context) => const BusinessHomeView(),
+                            ),
+                            (route) => false,
                           );
-                      Navigator.of(context).pushAndRemoveUntil(
-                        CupertinoPageRoute(
-                          builder: (context) => const BusinessHomeView(),
-                        ),
-                        (route) => false,
+                        },
                       );
                     },
                   ),

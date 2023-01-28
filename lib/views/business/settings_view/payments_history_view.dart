@@ -7,12 +7,25 @@ import '../../../extensions.dart';
 import '../../../theme/theme_details.dart';
 import '../../../view_models/balance_view_model.dart';
 
-class PaymentsHistoryView extends StatelessWidget {
+class PaymentsHistoryView extends StatefulWidget {
   const PaymentsHistoryView({super.key});
 
   @override
+  State<PaymentsHistoryView> createState() => _PaymentsHistoryViewState();
+}
+
+class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
+  late final Future historyFuture;
+
+  @override
+  void initState() {
+    historyFuture = context.read<BalanceViewModel>().getPayments();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final DateFormat formatter = DateFormat('dd MMMM yyyy, hh:mm');
+    final DateFormat formatter = DateFormat('dd MMMM yyyy').add_Hm();
 
     return SafeArea(
       child: Scaffold(
@@ -26,7 +39,7 @@ class PaymentsHistoryView extends StatelessWidget {
             children: [
               Expanded(
                 child: FutureBuilder(
-                  future: context.watch<BalanceViewModel>().getPayments(),
+                  future: historyFuture,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Payment> payments = snapshot.data as List<Payment>;
@@ -68,9 +81,7 @@ class PaymentsHistoryView extends StatelessWidget {
                                     ),
                                     SizedBox(height: 6),
                                     Text(
-                                      formatter.format(
-                                        DateTime.parse(payments[index].date),
-                                      ),
+                                      payments[index].date.getLocaleDateTime(),
                                     ),
                                   ],
                                 ),

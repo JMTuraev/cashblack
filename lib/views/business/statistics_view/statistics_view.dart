@@ -9,6 +9,8 @@ import '../../../domain/models/sum_stat.dart';
 import '../../../extensions.dart';
 import '../../../theme/theme_details.dart';
 import '../../../view_models/statistics_view_model.dart';
+import '../../../widgets/empty_widget.dart';
+import '../../../widgets/logo_animated_widget.dart';
 
 class StatisticsView extends StatefulWidget {
   const StatisticsView({super.key});
@@ -23,33 +25,51 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   String? _filter;
 
+  late Future<List<SumStat>> statsSumFuture;
+  late Future<List<SumCashback>> statsCashbackFuture;
+
   onFilterChanged(value) {
     setState(() {
       _filter = value;
     });
   }
 
-  String start = '2022-01-01';
-  String end = '2069-12-12';
+  @override
+  void initState() {
+    super.initState();
+    statsSumFuture =
+        context.read<StatisticsViewModel>().getSumStats(start: start, end: end);
+    // stats = context.watch<StatisticsViewModel>().sumStats;
+    statsCashbackFuture =
+        context.read<StatisticsViewModel>().getCashbackStats();
+  }
+
+  String start = '2023-01-01';
+  String end = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   @override
   Widget build(BuildContext context) {
-    Future<List<SumStat>> stats =
-        context.watch<StatisticsViewModel>().getSumStats();
-
     var body = IndexedStack(
       index: summa ? 0 : 1,
       children: [
         _SumWidget(
-          stats: stats,
+          stats: statsSumFuture,
         ),
-        _CashbackWidget(),
+        _CashbackWidget(
+          stats: statsCashbackFuture,
+        ),
       ],
     );
 
     final DateTime now = DateTime.now();
-    final DateFormat formatter = DateFormat('dd-MM-YYYY');
-    final String formatted = formatter.format(now);
+    final DateFormat dateFormatter = DateFormat('yyyy-MM-dd');
+    final String today = dateFormatter.format(now);
+
+    String returnDateInString(int days) {
+      return dateFormatter.format(
+        now.subtract(Duration(days: days)),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -63,15 +83,15 @@ class _StatisticsViewState extends State<StatisticsView> {
           ),
           child: Column(
             children: [
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 'Фильтр по',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
@@ -130,66 +150,77 @@ class _StatisticsViewState extends State<StatisticsView> {
                 ],
               ),
               const SizedBox(height: 20),
-              summa
-                  ? _FilterWidget(
-                      categoryItems: [
-                        const DropdownMenuItem<String>(
-                          enabled: false,
-                          value: '0',
-                          child: Text(
-                            'Выберите',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+              Container(
+                child: summa
+                    ? _FilterWidget(
+                        categoryItems: [
+                          _menuItem(context, 'Выберите', start, end, '0'),
+                          _menuItem(context, 'Сегодня', today, today, '1'),
+                          _menuItem(
+                            context,
+                            'Вчера',
+                            returnDateInString(1),
+                            returnDateInString(1),
+                            '2',
                           ),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: '1',
-                          child: const Text('Сегодня'),
-                          onTap: () => stats =
-                              context.read<StatisticsViewModel>().getSumStats(
-                                    start: formatted,
-                                    end: formatted,
-                                  ),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '2',
-                          child: Text('Вчера'),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '3',
-                          child: Text('Позавчера'),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '4',
-                          child: Text('Эта неделя'),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '5',
-                          child: Text('Прошлая неделя'),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '6',
-                          child: Text('Этот месяц'),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '7',
-                          child: Text('Прошлый месяц'),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '8',
-                          child: Text('Последные три месяца'),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '9',
-                          child: Text('Этот год'),
-                        ),
-                      ],
-                      hint: 'Выберите',
-                      onChanged: onFilterChanged,
-                      selectedOption: _filter,
-                    )
-                  : SizedBox(),
+                          _menuItem(
+                            context,
+                            'Позавчера',
+                            returnDateInString(2),
+                            returnDateInString(2),
+                            '3',
+                          ),
+                          _menuItem(
+                            context,
+                            'Эта неделя',
+                            returnDateInString(6),
+                            today,
+                            '4',
+                          ),
+                          _menuItem(
+                            context,
+                            'Прошлая неделя',
+                            returnDateInString(13),
+                            returnDateInString(7),
+                            '5',
+                          ),
+                          _menuItem(
+                            context,
+                            'Этот месяц',
+                            returnDateInString(30),
+                            today,
+                            '6',
+                          ),
+                          _menuItem(
+                            context,
+                            'Прошлый месяц',
+                            returnDateInString(60),
+                            returnDateInString(30),
+                            '7',
+                          ),
+                          _menuItem(
+                            context,
+                            'Этот месяц',
+                            returnDateInString(90),
+                            today,
+                            '8',
+                          ),
+                          _menuItem(
+                            context,
+                            'Этот год',
+                            dateFormatter.format(
+                              DateTime(DateTime.now().year),
+                            ),
+                            today,
+                            '9',
+                          ),
+                        ],
+                        hint: 'Выберите',
+                        onChanged: onFilterChanged,
+                        selectedOption: _filter,
+                      )
+                    : const SizedBox(),
+              ),
               const SizedBox(height: 20),
               Expanded(
                 child: body,
@@ -198,6 +229,28 @@ class _StatisticsViewState extends State<StatisticsView> {
           ),
         ),
       ),
+    );
+  }
+
+  DropdownMenuItem<String> _menuItem(
+    BuildContext context,
+    String title,
+    String today,
+    String end,
+    String value,
+  ) {
+    return DropdownMenuItem(
+      value: value,
+      child: Text(
+        title,
+        style: TextStyle(
+          fontWeight: value == '0' ? FontWeight.bold : null,
+        ),
+      ),
+      onTap: () async => context.read<StatisticsViewModel>().getSumStats(
+            start: today,
+            end: end,
+          ),
     );
   }
 }
@@ -226,32 +279,42 @@ class _SumWidget extends StatelessWidget {
                   .where((element) => element.isWithdraw == false)
                   .toList();
 
-              final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
-              final DateFormat sorter = DateFormat('dd MMMM yyyy');
-              return Expanded(
-                child: GroupedListView<SumStat, String>(
-                  elements: sumStat,
-                  groupBy: (element) {
-                    DateTime dates = DateTime.parse(element.date!);
-                    return DateUtils.dateOnly(dates).toString();
-                  },
-                  groupSeparatorBuilder: (String groupByValue) =>
-                      Text(groupByValue),
-                  itemBuilder: (context, SumStat element) =>
-                      _CardStat(sumStat: element),
-                  groupHeaderBuilder: (SumStat element) => Center(
-                    child: Text(
-                      formatter.format(DateTime.parse(element.date!)),
-                      style: const TextStyle(
-                        fontSize: 20,
+              if (sumStat.length > 0) {
+                final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
+                final DateFormat sorter = DateFormat('dd MMMM yyyy');
+                return Expanded(
+                  child: GroupedListView<SumStat, String>(
+                    elements: sumStat,
+                    groupBy: (element) {
+                      DateTime dates = DateTime.parse(element.date!);
+                      return DateUtils.dateOnly(dates).toString();
+                    },
+                    groupSeparatorBuilder: (String groupByValue) =>
+                        Text(groupByValue),
+                    itemBuilder: (context, SumStat element) =>
+                        _CardStat(sumStat: element),
+                    groupHeaderBuilder: (SumStat element) => Center(
+                      child: Text(
+                        formatter.format(DateTime.parse(element.date!)),
+                        style: const TextStyle(
+                          fontSize: 20,
+                        ),
                       ),
                     ),
+                    order: GroupedListOrder.DESC,
                   ),
-                  order: GroupedListOrder.DESC,
-                ),
-              );
+                );
+              } else {
+                return const EmptyWidget();
+              }
             } else {
-              return const Text('Нет данных');
+              return Column(
+                children: [
+                  const LogoAnimatedWidget(
+                    size: 1.5,
+                  ),
+                ],
+              );
             }
           },
         ),
@@ -263,7 +326,10 @@ class _SumWidget extends StatelessWidget {
 class _CashbackWidget extends StatelessWidget {
   const _CashbackWidget({
     Key? key,
+    required this.stats,
   }) : super(key: key);
+
+  final Future<List<SumCashback>> stats;
 
   @override
   Widget build(BuildContext context) {
@@ -274,22 +340,31 @@ class _CashbackWidget extends StatelessWidget {
     return Column(
       children: [
         FutureBuilder(
-          future: context.watch<StatisticsViewModel>().getCashbackStats(),
+          future: stats,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               List<SumCashback> sumCashback =
                   snapshot.data as List<SumCashback>;
-
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: sumCashback.length,
-                  itemBuilder: (context, index) => _CardCashback(
-                    sumCashback: sumCashback[index],
+              if (sumCashback.length > 0) {
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: sumCashback.length,
+                    itemBuilder: (context, index) => _CardCashback(
+                      sumCashback: sumCashback[index],
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                return const EmptyWidget();
+              }
             } else {
-              return const Text('Нет данных');
+              return Column(
+                children: [
+                  const LogoAnimatedWidget(
+                    size: 1.5,
+                  ),
+                ],
+              );
             }
           },
         ),
@@ -343,7 +418,10 @@ class _FilterWidget extends StatelessWidget {
               ),
             ),
             isDense: true,
-            prefixIcon: Icon(CupertinoIcons.calendar),
+            prefixIcon: Icon(
+              CupertinoIcons.calendar,
+              color: Colors.white70,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
@@ -411,7 +489,7 @@ class _CardStat extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Column(
                       children: [
                         const Text(
@@ -459,7 +537,7 @@ class _CardStat extends StatelessWidget {
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Text(
                         sumStat.userName.phoneFormatter(),
@@ -471,7 +549,7 @@ class _CardStat extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                   ],
                 ),
                 const SizedBox(height: 6),
@@ -525,7 +603,7 @@ class _CardCashback extends StatelessWidget {
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Text(
                         sumCashback.phone.phoneFormatter(),
@@ -537,7 +615,7 @@ class _CardCashback extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                   ],
                 ),
                 const SizedBox(height: 6),
@@ -565,7 +643,7 @@ class _CardCashback extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Column(
                       children: [
                         const Text(
