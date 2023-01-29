@@ -67,23 +67,23 @@ class CreateStoreViewViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> editstore(
-    int id,
-    int category,
-    String name,
-    int cashback,
-    int province,
-    int city,
-    File file,
-  ) async {
-    return _client.editStore(
-      id,
-      category,
-      name,
-      cashback,
-      province,
-      city,
-      file,
-    );
-  }
+  // Future<void> editstore(
+  //   int id,
+  //   int category,
+  //   String name,
+  //   int cashback,
+  //   int province,
+  //   int city,
+  //   File file,
+  // ) async {
+  //   return _client.editStore(
+  //     id,
+  //     category,
+  //     name,
+  //     cashback,
+  //     province,
+  //     city,
+  //     file,
+  //   );
+  // }
 }

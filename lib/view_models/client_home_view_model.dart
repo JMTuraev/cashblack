@@ -28,23 +28,36 @@ class ClientHomeViewModel extends ChangeNotifier {
   // }
 
   Future<List<UserCategory>> getJoinedCategories() async {
-    return _client.getRegisteredCategoriesForClient();
+    var registeredCategoriesForClient =
+        _client.getRegisteredCategoriesForClient();
+    // notifyListeners();
+
+    return registeredCategoriesForClient;
   }
 
   Future<List<UserShop>> getJoinedShops(int id) async {
-    return _client.getRegisteredMarketsForClient(id);
+    var registeredMarketsForClient = _client.getRegisteredMarketsForClient(id);
+    // notifyListeners();
+
+    return registeredMarketsForClient;
   }
 
   Future<ClientStatistics> getShopStatistics(int id) async {
-    return _client.getShopStatistics(id);
+    var shopStatistics = _client.getShopStatistics(id);
+    // notifyListeners();
+    return shopStatistics;
   }
 
   Future<ClientStatisticsAll> getAllShopStatistics() async {
-    return _client.getAllShopStatistics();
+    var allShopStatistics = _client.getAllShopStatistics();
+    // notifyListeners();
+    return allShopStatistics;
   }
 
   Future<List<ReceivedNotification>> getNotifications() async {
-    return _client.getReceivedNotifications();
+    var receivedNotifications = _client.getReceivedNotifications();
+    // notifyListeners();
+    return receivedNotifications;
   }
 
   void onChange(int index) {

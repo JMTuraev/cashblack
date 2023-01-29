@@ -63,13 +63,13 @@ class EditNameView extends StatelessWidget {
                           )
                           .then(
                         (value) {
-                          // Navigator.pop(context);
-                          return Navigator.of(context).pushAndRemoveUntil(
-                            CupertinoPageRoute(
-                              builder: (context) => const BusinessHomeView(),
-                            ),
-                            (route) => false,
-                          );
+                          return Navigator.pop(context);
+                          // return Navigator.of(context).pushAndRemoveUntil(
+                          //   CupertinoPageRoute(
+                          //     builder: (context) => const BusinessHomeView(),
+                          //   ),
+                          //   (route) => false,
+                          // );
                         },
                       );
                     },

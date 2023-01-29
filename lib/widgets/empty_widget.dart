@@ -7,7 +7,7 @@ class EmptyWidget extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         children: [
           Image.asset(
-            'assets/images/empty.png',
+            'assets/images/empty_box.png',
             fit: BoxFit.contain,
             height: MediaQuery.of(context).size.width / 2,
           ),

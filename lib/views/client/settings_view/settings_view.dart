@@ -13,8 +13,21 @@ import '../../../widgets/text_button_widget.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'edit_name_view.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  late Future userFuture;
+
+  @override
+  void initState() {
+    userFuture = context.read<ClientHomeViewModel>().getProfile();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +55,7 @@ class SettingsView extends StatelessWidget {
         child: Container(
           child: Center(
             child: FutureBuilder(
-              future: context.watch<ClientHomeViewModel>().getProfile(),
+              future: userFuture,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var user = snapshot.data as User;

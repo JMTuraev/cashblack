@@ -55,7 +55,7 @@ class _PaymentViewState extends State<PaymentView> {
                 child: Column(
                   children: [
                     Image.asset(
-                      'assets/images/credit-card.png',
+                      'assets/images/cc.png',
                       fit: BoxFit.contain,
                       height: MediaQuery.of(context).size.width / 1.5,
                     ),
@@ -199,7 +199,7 @@ class _PaymentViewState extends State<PaymentView> {
                                   builder: (context) {
                                     return InfoAlertWidget(
                                       title:
-                                          'Сумма должен быт больше ${context.watch<BusinessHomeViewModel>().balance.first.balanceShop.subscriptionPrice}',
+                                          'Сумма должен быт больше ${context.read<BusinessHomeViewModel>().balance.first.balanceShop.subscriptionPrice}',
                                     );
                                   },
                                 );

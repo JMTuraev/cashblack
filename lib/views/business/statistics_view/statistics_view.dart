@@ -99,7 +99,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                         ? OutlinedButton(
                             onPressed: () {},
                             child: const Text(
-                              'Сумма',
+                              // 'Сумма',
+                              'Кэшбэк',
+
                               style: TextStyle(
                                 color: Colors.white,
                               ),
@@ -113,7 +115,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                               });
                             },
                             child: const Text(
-                              'Сумма',
+                              // 'Сумма',
+                              'Кэшбэк',
                               style: TextStyle(
                                 color: Colors.white,
                               ),
@@ -126,7 +129,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                         ? OutlinedButton(
                             onPressed: () {},
                             child: const Text(
-                              'Кэшбэк',
+                              // 'Кэшбэк',
+                              'Сумма',
+
                               style: TextStyle(
                                 color: Colors.white,
                               ),
@@ -140,7 +145,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                               });
                             },
                             child: const Text(
-                              'Кэшбэк',
+                              // 'Кэшбэк',
+                              'Сумма',
                               style: TextStyle(
                                 color: Colors.white,
                               ),

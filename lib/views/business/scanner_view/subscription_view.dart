@@ -38,6 +38,14 @@ class SubscriptionView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  // Text(
+                  //   context
+                  //       .read<BusinessHomeViewModel>()
+                  //       .balance
+                  //       .first
+                  //       .balanceShop
+                  //       .subscriptionPrice,
+                  // ),
                   isBusiness
                       ? MainButtonWidget(
                           text: 'Пополнение баланса',

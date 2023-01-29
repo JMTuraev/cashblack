@@ -83,14 +83,14 @@ class CreateWorkerView extends StatelessWidget {
                           fistNameController.text,
                           lastNameController.text,
                         )
-                        .then(
-                          (value) => Navigator.of(context).pushAndRemoveUntil(
-                            CupertinoPageRoute(
-                              builder: (context) => const BusinessHomeView(),
-                            ),
-                            (route) => false,
-                          ),
-                        );
+                        .then(((value) => Navigator.pop(context)));
+                    // (value) => Navigator.of(context).pushAndRemoveUntil(
+                    //   CupertinoPageRoute(
+                    //     builder: (context) => const BusinessHomeView(),
+                    //   ),
+                    //   (route) => false,
+                    // ),
+                    // );
                   },
                 ),
               ],

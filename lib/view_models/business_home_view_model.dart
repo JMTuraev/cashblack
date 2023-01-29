@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,9 +17,17 @@ class BusinessHomeViewModel extends ChangeNotifier {
 
   late User user;
   // User?   user;
-  List<Balance> balance = [];
+  // List<Balance> balance = [];
+  late List<Balance> balance;
   List<Worker> workers = [];
   // List<OneMonthStatistic> oneWeekStatistics = [];
+
+  Future<List<Object>> getFuture() async {
+    user = await getProfile();
+    balance = await getBalance();
+
+    return [user, balance];
+  }
 
   Future<User> getProfile() async {
     user = await _client.getProfile();
@@ -40,13 +50,10 @@ class BusinessHomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createWorker(
-    String userName,
-    String password,
-    String firstName,
-    String lastName,
-  ) async {
+  Future<void> createWorker(String userName, String password, String firstName,
+      String lastName) async {
     await _client.createWorker(userName, password, firstName, lastName);
+    await getWorkers();
     notifyListeners();
   }
 
@@ -77,5 +84,12 @@ class BusinessHomeViewModel extends ChangeNotifier {
     await storage.deleteAll();
     currentIndex = 0;
     // notifyListeners();
+  }
+
+  Future<void> editstore(int id, int category, String name, int cashback,
+      int province, int city, File file) async {
+    await _client.editStore(id, category, name, cashback, province, city, file);
+    await getProfile();
+    notifyListeners();
   }
 }

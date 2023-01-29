@@ -11,8 +11,22 @@ import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import 'client_notification_info_view.dart';
 
-class ClientNotificationsView extends StatelessWidget {
+class ClientNotificationsView extends StatefulWidget {
   const ClientNotificationsView({super.key});
+
+  @override
+  State<ClientNotificationsView> createState() =>
+      _ClientNotificationsViewState();
+}
+
+class _ClientNotificationsViewState extends State<ClientNotificationsView> {
+  late Future notifs;
+
+  @override
+  void initState() {
+    super.initState();
+    notifs = context.read<ClientHomeViewModel>().getNotifications();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +40,12 @@ class ClientNotificationsView extends StatelessWidget {
           child: Column(
             children: [
               FutureBuilder(
-                future: context.watch<ClientHomeViewModel>().getNotifications(),
+                future: notifs,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var notifications =
                         snapshot.data as List<ReceivedNotification>;
-                    if (notifications.length > 1) {
+                    if (notifications.length > 0) {
                       return Expanded(
                         child: ListView.separated(
                           itemCount: notifications.length,

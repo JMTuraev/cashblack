@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppBarStyle {
+  // static const appBarStyle = SystemUiOverlayStyle.light;
+
   static const appBarStyle = SystemUiOverlayStyle(
     statusBarColor: Colors.black, //android
     statusBarIconBrightness: Brightness.light, //android

@@ -12,6 +12,7 @@ import '../../../domain/models/city.dart';
 import '../../../domain/models/shop.dart';
 import '../../../extensions.dart';
 import '../../../utils/numberic_text_formatter.dart';
+import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/create_store_view_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../business_home_view/business_home_view.dart';
@@ -95,7 +96,7 @@ class _EditStoreViewState extends State<EditStoreView> {
     });
   }
 
-//todo
+//TODO
   onProvinceChanged(value) {
     setState(() {
       _selectedCity = null;
@@ -271,7 +272,7 @@ class _EditStoreViewState extends State<EditStoreView> {
                     method: () async {
                       if (_fileList.isNotEmpty) {
                         context
-                            .read<CreateStoreViewViewModel>()
+                            .read<BusinessHomeViewModel>()
                             .editstore(
                               widget.shop.id,
                               int.parse(_selectedCategory!),
@@ -281,16 +282,15 @@ class _EditStoreViewState extends State<EditStoreView> {
                               int.parse(_selectedCity!),
                               _fileList[0]!,
                             )
-                            .then(
-                              (value) =>
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                CupertinoPageRoute(
-                                  builder: (context) =>
-                                      const BusinessHomeView(),
-                                ),
-                                (route) => false,
-                              ),
-                            );
+                            .then((value) =>
+                                //     Navigator.of(context).pushAndRemoveUntil(
+                                //   CupertinoPageRoute(
+                                //     builder: (context) =>
+                                //         const BusinessHomeView(),
+                                //   ),
+                                //   (route) => false,
+                                // ));
+                                Navigator.pop(context));
                       } else
                         print('check');
                     },

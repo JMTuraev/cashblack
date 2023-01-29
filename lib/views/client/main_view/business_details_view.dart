@@ -341,7 +341,7 @@ class _CardWithdraw extends StatelessWidget {
                               name: '',
                               locale: 'ru_RU',
                               decimalDigits: 0,
-                            ).format(sumStat.cashback) +
+                            ).format(sumStat.price) +
                             'сум',
                         style: const TextStyle(
                           fontSize: 18,

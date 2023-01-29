@@ -26,6 +26,9 @@ import 'views/select_type_view/select_type_view.dart';
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
+  await SystemChrome.setEnabledSystemUIOverlays(
+      [SystemUiOverlay.bottom, SystemUiOverlay.top]);
+
   final prefs = await SharedPreferences.getInstance();
 
   Intl.defaultLocale = 'ru_RU';

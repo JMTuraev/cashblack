@@ -38,7 +38,7 @@ class Client {
     Map<String, dynamic> body = {
       'username': phoneNumber,
       'password': '1',
-      //todo promocode
+      //TODO promocode
       'promo_code': promoCode,
       // 'groups': [1],
     };
@@ -61,6 +61,7 @@ class Client {
       }
       token = 'Bearer ' + json.decode(resBody)['msg']['accsess'];
       await storage.write(key: 'bearer', value: token);
+      await storage.write(key: 'phone', value: phoneNumber);
       return true;
     } else {
       print(res.reasonPhrase);
@@ -85,6 +86,7 @@ class Client {
     if (res.statusCode >= 200 && res.statusCode < 300) {
       token = 'Bearer ' + json.decode(resBody)['token']['accsess'];
       await storage.write(key: 'bearer', value: token);
+      await storage.write(key: 'phone', value: phoneNumber);
     } else {
       print(res.reasonPhrase);
     }
@@ -114,6 +116,7 @@ class Client {
       }
       token = 'Bearer ' + json.decode(resBody)['msg']['accsess'];
       await storage.write(key: 'bearer', value: token);
+      await storage.write(key: 'phone', value: phoneNumber);
       return true;
     } else {
       print(res.reasonPhrase);
@@ -172,7 +175,7 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      //todo demo account
+      //TODO demo account
       if (json.decode(resBody)[0] == 'Tizimga xush kelibsiz' || 1 == 1) {
         await prefs.setBool('isLogged', true);
         await prefs.setBool(type, true);
@@ -233,6 +236,19 @@ class Client {
       return user;
     } else {
       print(res.reasonPhrase);
+      if (res.reasonPhrase!.contains('Unauthorized')) {
+        // final prefs = await SharedPreferences.getInstance();
+        // prefs.clear();
+        print('ununun');
+      }
+      if (res.statusCode == 401) {
+        //TODO
+        print('refresh token');
+        String? phone = await storage.read(key: 'phone');
+        await login(phone!);
+        await getProfile();
+      }
+
       throw Exception();
     }
   }
@@ -353,7 +369,7 @@ class Client {
       'Authorization': value!
     };
 
-//todo start end
+//TODO start end
     Uri url = Uri.parse('$path/cashbacks_filter_statistics/$start/$end/');
     http.Request req = http.Request('GET', url);
     req.headers.addAll(headers);
@@ -941,7 +957,7 @@ class Client {
 
     // barcodeId = '9755342135590';
 
-//todo batcode get
+//TODO batcode get
     Uri url = Uri.parse('$path/cashbak_create/$barcodeId/False/');
     http.Request req = http.Request('POST', url);
     req.body = json.encode(body);
@@ -971,7 +987,7 @@ class Client {
 
     // barcodeId = '9755342135590';
 
-//todo batcode get
+//TODO batcode get
     Uri url = Uri.parse('$path/cashbak_create/$barcodeId/True/');
     http.Request req = http.Request('POST', url);
     req.body = json.encode(body);

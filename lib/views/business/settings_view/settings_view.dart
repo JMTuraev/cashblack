@@ -27,14 +27,14 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   late User user;
-  late final Future<User> userFuture;
+  // late final Future<User> userFuture;
   late final Future<List<Balance>> balanceFuture;
   late final Future<List<Worker>> workersFuture;
 
   @override
   void initState() {
     user = context.read<BusinessHomeViewModel>().user;
-    userFuture = context.read<BusinessHomeViewModel>().getProfile();
+    // userFuture = context.read<BusinessHomeViewModel>().getProfile();
     balanceFuture = context.read<BusinessHomeViewModel>().getBalance();
     workersFuture = context.read<BusinessHomeViewModel>().getWorkers();
 
@@ -43,8 +43,9 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    // var user = context.watch<BusinessHomeViewModel>().user;
+    var user = context.watch<BusinessHomeViewModel>().user;
     var isBusiness = user!.groups.first.name == 'Biznes';
+    var balans = context.watch<BusinessHomeViewModel>().balance;
 
     List<Worker> workersList = context.watch<BusinessHomeViewModel>().workers;
 
@@ -75,28 +76,30 @@ class _SettingsViewState extends State<SettingsView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 15),
-              FutureBuilder(
-                future: userFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    var user = snapshot.data as User;
-                    return Column(
-                      children: [
-                        _ProfileCardWidget(
-                          user: user,
-                        ),
-                        const SizedBox(height: 15),
-                        _BrandCardWidget(
-                          isBusiness: isBusiness,
-                          shop: user.shops.last,
-                        ),
-                      ],
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
+              // FutureBuilder(
+              //   future: userFuture,
+              //   builder: (context, snapshot) {
+              //     if (snapshot.hasData) {
+              //       var user = snapshot.data as User;
+              //       return
+              Column(
+                children: [
+                  _ProfileCardWidget(
+                    user: user,
+                  ),
+                  const SizedBox(height: 15),
+                  _BrandCardWidget(
+                    isBusiness: isBusiness,
+                    shop: user.shops.last,
+                  ),
+                ],
               ),
+              // ;
+              //     } else {
+              //       return const SizedBox();
+              //     }
+              //   },
+              // ),
               const SizedBox(height: 15),
               FutureBuilder(
                 future: balanceFuture,
@@ -325,7 +328,12 @@ class _SubscriptionCardWidget extends StatelessWidget {
                       children: [
                         const Text('Следующий платеж'),
                         const SizedBox(width: 8),
-                        Text(balance.balanceShop.paymentDate ?? 'Не оплачен')
+                        Text(balance.balanceShop.paymentDate != null
+                            ? DateTime.parse(
+                                    balance.balanceShop.paymentDate!.toString())
+                                .toString()
+                                .getLocaleDateTime()
+                            : 'Не оплачен')
                       ],
                     )
                   : const SizedBox(),

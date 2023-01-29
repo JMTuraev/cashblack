@@ -8,9 +8,10 @@ import '../../../domain/models/user_shop.dart';
 import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
+import '../../../widgets/logo_animated_widget.dart';
 import 'business_details_view.dart';
 
-class BusinessListView extends StatelessWidget {
+class BusinessListView extends StatefulWidget {
   final UserCategory userCategory;
   const BusinessListView({
     Key? key,
@@ -18,10 +19,25 @@ class BusinessListView extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<BusinessListView> createState() => _BusinessListViewState();
+}
+
+class _BusinessListViewState extends State<BusinessListView> {
+  late Future joineds;
+
+  @override
+  void initState() {
+    super.initState();
+    joineds = context
+        .read<ClientHomeViewModel>()
+        .getJoinedShops(widget.userCategory.id);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(userCategory.name),
+          title: Text(widget.userCategory.name),
           bottom: ThemeDetails.appBarDivider,
         ),
         body: Padding(
@@ -30,9 +46,7 @@ class BusinessListView extends StatelessWidget {
             child: Column(
               children: [
                 FutureBuilder(
-                  future: context
-                      .watch<ClientHomeViewModel>()
-                      .getJoinedShops(userCategory.id),
+                  future: joineds,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<UserShop> shops = snapshot.data as List<UserShop>;
@@ -142,7 +156,7 @@ class BusinessListView extends StatelessWidget {
                         ),
                       );
                     } else {
-                      return const Text('...');
+                      return Center(child: const LogoAnimatedWidget(size: 1.5));
                     }
                   },
                 ),

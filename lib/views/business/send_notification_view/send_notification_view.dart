@@ -47,6 +47,15 @@ class _SendNotificationViewState extends State<SendNotificationView> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
+  late Future prices;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    prices = context.read<SendNotificationViewModel>().getNotificationPrice();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -62,7 +71,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
               child: Column(
                 children: [
                   Image.asset(
-                    'assets/images/discussion.png',
+                    'assets/images/email.png',
                     fit: BoxFit.contain,
                     height: MediaQuery.of(context).size.width / 2.5,
                   ),
@@ -107,9 +116,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                   ),
                   const SizedBox(height: 10),
                   FutureBuilder(
-                    future: context
-                        .read<SendNotificationViewModel>()
-                        .getNotificationPrice(),
+                    future: prices,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Text(

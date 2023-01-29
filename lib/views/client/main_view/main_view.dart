@@ -23,10 +23,13 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
+  late Future allshopstats;
+  late Future joindes;
   @override
   void initState() {
     context.read<ClientHomeViewModel>().getProfile();
-
+    allshopstats = context.read<ClientHomeViewModel>().getAllShopStatistics();
+    joindes = context.read<ClientHomeViewModel>().getJoinedCategories();
     super.initState();
   }
 
@@ -44,9 +47,7 @@ class _MainViewState extends State<MainView> {
             child: Column(
               children: [
                 FutureBuilder(
-                  future: context
-                      .watch<ClientHomeViewModel>()
-                      .getAllShopStatistics(),
+                  future: allshopstats,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var stat = snapshot.data as ClientStatisticsAll;
@@ -150,14 +151,12 @@ class _MainViewState extends State<MainView> {
                 const Center(child: MediumTitleWidget(text: 'Категории')),
                 const SizedBox(height: 20),
                 FutureBuilder(
-                  future: context
-                      .watch<ClientHomeViewModel>()
-                      .getJoinedCategories(),
+                  future: joindes,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<UserCategory> userCategoryList =
                           snapshot.data as List<UserCategory>;
-                      if (userCategoryList.length > 1) {
+                      if (userCategoryList.length > 0) {
                         return Expanded(
                           child: GridView.builder(
                             gridDelegate:
