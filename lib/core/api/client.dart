@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/models/balance.dart';
+import '../../domain/models/barcode_scan.dart';
 import '../../domain/models/category.dart';
 import '../../domain/models/city.dart';
 import '../../domain/models/client_statistics.dart';
@@ -38,7 +39,6 @@ class Client {
     Map<String, dynamic> body = {
       'username': phoneNumber,
       'password': '1',
-      //TODO promocode
       'promo_code': promoCode,
       // 'groups': [1],
     };
@@ -175,7 +175,7 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      //TODO demo account
+      //TODO demo account and fix any sms code to enter the app
       if (json.decode(resBody)[0] == 'Tizimga xush kelibsiz' || 1 == 1) {
         await prefs.setBool('isLogged', true);
         await prefs.setBool(type, true);
@@ -237,12 +237,12 @@ class Client {
     } else {
       print(res.reasonPhrase);
       if (res.reasonPhrase!.contains('Unauthorized')) {
-        // final prefs = await SharedPreferences.getInstance();
-        // prefs.clear();
+        final prefs = await SharedPreferences.getInstance();
+        prefs.clear();
         print('ununun');
       }
       if (res.statusCode == 401) {
-        //TODO
+        //TODO token is expired
         print('refresh token');
         String? phone = await storage.read(key: 'phone');
         await login(phone!);
@@ -369,7 +369,6 @@ class Client {
       'Authorization': value!
     };
 
-//TODO start end
     Uri url = Uri.parse('$path/cashbacks_filter_statistics/$start/$end/');
     http.Request req = http.Request('GET', url);
     req.headers.addAll(headers);
@@ -569,8 +568,8 @@ class Client {
       var decode = (json.decode(resBody) as List);
       worker = decode
           .map((e) => SentNotification.fromJson(e))
-          .toList()
-          .reversed
+          // .toList()
+          // .reversed
           .toList();
       print('!!!!!sent notifs');
       return worker;
@@ -716,6 +715,64 @@ class Client {
     }
   }
 
+  Future<String> paySubscription(bool type) async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+    Map<String, dynamic> body = {
+      'is_date': type,
+    };
+
+    Uri url = Uri.parse('$path/is_balans_view/');
+    http.Request req = http.Request('PUT', url);
+    req.body = json.encode(body);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('!!!!!subscribtion $type');
+      if (resBody.contains('Yechildi')) {
+        return 'OK';
+      } else {
+        return 'Xato';
+      }
+    } else {
+      print(res.reasonPhrase);
+      return 'Xato';
+    }
+  }
+
+  Future<String> cancelSubscription() async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse('$path/false_balans/');
+    http.Request req = http.Request('GET', url);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('!!!!!unscribe');
+      if (resBody.contains('access')) {
+        return 'OK';
+      } else {
+        return 'Xato';
+      }
+    } else {
+      print(res.reasonPhrase);
+      return 'Xato';
+    }
+  }
+
   Future<List<Balance>> getBalance() async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
@@ -771,7 +828,7 @@ class Client {
     }
   }
 
-  Future<dynamic> getUserFromBarcode(String barcode) async {
+  Future<dynamic> getUserFromBarcode(String barcode, int shopId) async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
       'Content-Type': ' application/json; charset=utf-8',
@@ -779,7 +836,7 @@ class Client {
     };
 
     // Uri url = Uri.parse('$path/shop_client_views/');
-    Uri url = Uri.parse('$path/cashbak_create/$barcode/False/');
+    Uri url = Uri.parse('$path/cashbak_create/$barcode/False/$shopId/');
     http.Request req = http.Request('GET', url);
     req.headers.addAll(headers);
 
@@ -787,10 +844,12 @@ class Client {
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      var decode = (json.decode(resBody)['data'] as List);
+      // var decode = (json.decode(resBody) as List);
+      BarcodeScan barcodeScan;
+      var decode = (json.decode(resBody));
+      barcodeScan = BarcodeScan.fromJson(decode);
       print('!!!!!get from barcode');
-
-      return decode[0];
+      return barcodeScan;
     } else {
       print(res.reasonPhrase);
       return [];
@@ -945,6 +1004,7 @@ class Client {
   Future<void> payCashback(
     String price,
     String barcodeId,
+    int shopId,
   ) async {
     Map<String, String> body = {
       'price': price,
@@ -955,10 +1015,7 @@ class Client {
       'Authorization': value!
     };
 
-    // barcodeId = '9755342135590';
-
-//TODO batcode get
-    Uri url = Uri.parse('$path/cashbak_create/$barcodeId/False/');
+    Uri url = Uri.parse('$path/cashbak_create/$barcodeId/False/$shopId/');
     http.Request req = http.Request('POST', url);
     req.body = json.encode(body);
     req.headers.addAll(headers);
@@ -975,6 +1032,7 @@ class Client {
   Future<void> payForGoods(
     String price,
     String barcodeId,
+    int shopId,
   ) async {
     Map<String, String> body = {
       'price': price,
@@ -985,10 +1043,36 @@ class Client {
       'Authorization': value!
     };
 
-    // barcodeId = '9755342135590';
+    Uri url = Uri.parse('$path/cashbak_create/$barcodeId/True/$shopId/');
+    http.Request req = http.Request('POST', url);
+    req.body = json.encode(body);
+    req.headers.addAll(headers);
 
-//TODO batcode get
-    Uri url = Uri.parse('$path/cashbak_create/$barcodeId/True/');
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+    } else {
+      print(res.reasonPhrase);
+    }
+  }
+
+  Future<void> payCashbackWithPhoneNumber(
+    String price,
+    String phoneNumber,
+    int shopId,
+  ) async {
+    Map<String, String> body = {
+      'price': price,
+    };
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Uri url = Uri.parse(
+        '$path/client_phone_cahsback_view/$phoneNumber/False/$shopId/');
     http.Request req = http.Request('POST', url);
     req.body = json.encode(body);
     req.headers.addAll(headers);

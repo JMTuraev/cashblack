@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/balance.dart';
 import '../../../domain/models/user.dart';
 import '../../../view_models/business_home_view_model.dart';
+import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import '../create_store_view/create_store_view.dart';
 import '../main_view/main_view.dart';
@@ -65,72 +66,14 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
     List<Balance> balance =
         await context.read<BusinessHomeViewModel>().getBalance();
 
+    await context.read<SendNotificationViewModel>().getNotificationPrice();
+
     return [user, balance];
   }
 
   @override
   Widget build(BuildContext context) {
     int currentIndex = context.watch<BusinessHomeViewModel>().currentIndex;
-
-    // List<Balance> balance = context.watch<BusinessHomeViewModel>().balance;
-    // User user = context.watch<BusinessHomeViewModel>().user!;
-    // var isBusiness = user.groups.first.name == 'Biznes';
-    // bool hasShop = user.shops.isNotEmpty;
-
-    // IndexedStack body = IndexedStack(
-    //   index: currentIndex,
-    //   children: const [
-    //     MainView(),
-    //     MainView(),
-    //     MainView(),
-    //     MainView(),
-    //     MainView(),
-    //   ],
-    // );
-    // IndexedStack bodyForWorker = IndexedStack(
-    //   index: currentIndex,
-    //   children: const [
-    //     MainView(),
-    //     MainView(),
-    //     MainView(),
-    //     MainView(),
-    //   ],
-    // );
-
-    // if (user != null && balance != null) {
-    //   body = IndexedStack(
-    //     index: currentIndex,
-    //     children: [
-    //       const MainView(),
-    //       const StatisticsView(),
-    //       //TODO change
-    //       //     // currentIndex == 2
-
-    //       currentIndex == 2 && !balance.first.isSubscribedOne
-    //           ? const BarcodeScannerView()
-    //           : SubscriptionView(isBusiness: isBusiness),
-    //       const ServicesView(),
-    //       const SettingsView(),
-    //     ],
-    //   );
-
-    //   bodyForWorker = IndexedStack(
-    //     index: currentIndex,
-    //     children: [
-    //       const MainView(),
-    //       const StatisticsView(),
-    //       //TODO change
-    //       // currentIndex == 2 && balance.first.balanceShop.isSubscribed
-    //       //  xato
-    //       currentIndex == 2 && balance.first.isSubscribedOne
-    //           ? const BarcodeScannerView()
-    //           : !user!.isFreezed
-    //               ? SubscriptionView(isBusiness: isBusiness)
-    //               : const FreezedView(),
-    //       const SettingsView(),
-    //     ],
-    //   );
-    // }
 
     const List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
@@ -181,12 +124,40 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
       // initialData: InitialData,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          var userr = snapshot.data![0] as User;
+          var profile = snapshot.data![0] as User;
           var balancess = snapshot.data![1] as List<Balance>;
 
-          var usBusinesss = userr.groups.first.name == 'Biznes';
-          var hasShopp = userr.shops.isNotEmpty;
-          var isSubscribed = balancess.first.isSubscribedOne;
+          var isBusiness = profile.groups.first.name == 'Biznes';
+          var hasShopp = profile.shops.isNotEmpty;
+          var isSubscribed =
+              balancess.isNotEmpty ? balancess.first.isSubscribedOne : false;
+          var shopId = profile.shops.isNotEmpty ? profile.shops.first.id : 0;
+
+          var _subscribtionStartDate = balancess.isNotEmpty
+              ? DateUtils.dateOnly(DateTime.parse(balancess.first.date))
+              : DateTime.now();
+          var _subscribtionEndDate = balancess.isNotEmpty
+              ? DateUtils.dateOnly(
+                  DateTime.parse(balancess.first.date)
+                      .add(const Duration(days: 30)),
+                )
+              : DateTime.now();
+
+          print(_subscribtionStartDate);
+          print(_subscribtionEndDate);
+
+          // print(subscribtionStartDate.compareTo(DateTime.now()));
+          var isSubscribedDateActive =
+              _subscribtionEndDate.compareTo(DateTime.now()) != -1;
+          print(isSubscribedDateActive);
+
+          if (isSubscribedDateActive == false && isSubscribed) {
+            print('cancel subs');
+            isSubscribed = false;
+            context.read<BusinessHomeViewModel>().cancelSubscription();
+            // futur = context.read<BusinessHomeViewModel>().getFuture();
+            // setState(() {});
+          }
 
           return !hasShopp
               ? const CreateStoreView()
@@ -198,28 +169,33 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
                     type: BottomNavigationBarType.fixed,
                     selectedItemColor: Colors.white,
                     unselectedItemColor: Colors.grey,
-                    items: usBusinesss ? items : itemsForWorkers,
+                    items: isBusiness ? items : itemsForWorkers,
                     backgroundColor: Colors.black,
                   ),
                   body: SafeArea(
                     child: Stack(
                       alignment: Alignment.bottomCenter,
                       children: [
-                        usBusinesss
+                        isBusiness
                             ? IndexedStack(
                                 index: currentIndex,
                                 children: [
                                   const MainView(),
                                   const StatisticsView(),
-                                  //TODO change
-                                  //     // currentIndex == 2
-
-                                  currentIndex == 2 && !isSubscribed
+                                  currentIndex == 2 &&
+                                          isSubscribed &&
+                                          isSubscribedDateActive
                                       //TODO xato
 
-                                      ? const BarcodeScannerView()
+                                      ? BarcodeScannerView(
+                                          shopId: shopId,
+                                        )
                                       : SubscriptionView(
-                                          isBusiness: usBusinesss),
+                                          isBusiness: isBusiness,
+                                          subscribtionPrice: balancess.first
+                                              .balanceShop.subscriptionPrice,
+                                          shopId: profile.shops.first.id,
+                                        ),
                                   const ServicesView(),
                                   const SettingsView(),
                                 ],
@@ -229,14 +205,22 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
                                 children: [
                                   const MainView(),
                                   const StatisticsView(),
-                                  //TODO change
-                                  // currentIndex == 2 && balance.first.balanceShop.isSubscribed
                                   //TODO xato
-                                  currentIndex == 2 && !isSubscribed
-                                      ? const BarcodeScannerView()
-                                      : !userr.isFreezed
+                                  currentIndex == 2 &&
+                                          isSubscribed &&
+                                          isSubscribedDateActive
+                                      ? BarcodeScannerView(
+                                          shopId: shopId,
+                                        )
+                                      : !profile.isFreezed
                                           ? SubscriptionView(
-                                              isBusiness: usBusinesss)
+                                              isBusiness: isBusiness,
+                                              subscribtionPrice: balancess
+                                                  .first
+                                                  .balanceShop
+                                                  .subscriptionPrice,
+                                              shopId: profile.shops.first.id,
+                                            )
                                           : const FreezedView(),
                                   const SettingsView(),
                                 ],

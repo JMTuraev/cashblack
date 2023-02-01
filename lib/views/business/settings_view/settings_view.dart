@@ -142,52 +142,54 @@ class _SettingsViewState extends State<SettingsView> {
                     )
                   : const SizedBox(),
               isBusiness
-                  ? Expanded(
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        itemCount: workersList.length,
-                        separatorBuilder: (context, index) {
-                          return const Divider(
-                            height: 1,
-                          );
-                        },
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(
-                              '${workersList[index].firstName} ${workersList[index].lastName}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                            subtitle: Text(
-                              workersList[index].userName.phoneFormatter(),
-                            ),
-                            trailing: CupertinoSwitch(
-                              activeColor: Colors.grey[100],
-                              thumbColor: Colors.black,
-                              trackColor: Colors.grey,
-                              value: !workersList[index].isFreezed,
-                              onChanged: (value) async {
-                                await context
-                                    .read<BusinessHomeViewModel>()
-                                    .switchWorker(
-                                      workersList[index].id,
-                                      !value,
-                                    );
-                                print(context
-                                    .read<BusinessHomeViewModel>()
-                                    .workers
-                                    .first
-                                    .isFreezed);
-                                setState(() {});
-                                print('object');
-                              },
-                            ),
-                            contentPadding: const EdgeInsets.all(0),
-                          );
-                        },
-                      ),
-                    )
+                  ? workersList.length > 1
+                      ? Expanded(
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            itemCount: workersList.length,
+                            separatorBuilder: (context, index) {
+                              return const Divider(
+                                height: 1,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  '${workersList[index].firstName} ${workersList[index].lastName}',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  workersList[index].userName.phoneFormatter(),
+                                ),
+                                trailing: CupertinoSwitch(
+                                  activeColor: Colors.grey[100],
+                                  thumbColor: Colors.black,
+                                  trackColor: Colors.grey,
+                                  value: !workersList[index].isFreezed,
+                                  onChanged: (value) async {
+                                    await context
+                                        .read<BusinessHomeViewModel>()
+                                        .switchWorker(
+                                          workersList[index].id,
+                                          !value,
+                                        );
+                                    print(context
+                                        .read<BusinessHomeViewModel>()
+                                        .workers
+                                        .first
+                                        .isFreezed);
+                                    setState(() {});
+                                    print('object');
+                                  },
+                                ),
+                                contentPadding: const EdgeInsets.all(0),
+                              );
+                            },
+                          ),
+                        )
+                      : Center(child: const Text('У вас нет сотрудников'))
                   : const SizedBox(),
             ],
           ),
@@ -302,14 +304,14 @@ class _SubscriptionCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  const Text('Создано в'),
-                  const SizedBox(width: 8),
-                  Text(balance.balanceShop.createdDate.getLocaleDateTime()),
-                ],
-              ),
+              // const SizedBox(height: 6),
+              // Row(
+              //   children: [
+              //     const Text('Создано в'),
+              //     const SizedBox(width: 8),
+              //     Text(balance.balanceShop.createdDate.getLocaleDateTime()),
+              //   ],
+              // ),
               const SizedBox(height: 6),
               Row(
                 children: [
@@ -323,16 +325,16 @@ class _SubscriptionCardWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 6),
-              balance.balanceShop.paymentDate != null
+              balance.date != null && balance.isSubscribedOne
                   ? Row(
                       children: [
                         const Text('Следующий платеж'),
                         const SizedBox(width: 8),
-                        Text(balance.balanceShop.paymentDate != null
-                            ? DateTime.parse(
-                                    balance.balanceShop.paymentDate!.toString())
+                        Text(balance.date != null
+                            ? DateTime.parse(balance.date)
+                                .add(Duration(days: 30))
                                 .toString()
-                                .getLocaleDateTime()
+                                .getLocaleDate()
                             : 'Не оплачен')
                       ],
                     )

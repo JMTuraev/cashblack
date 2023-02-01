@@ -13,10 +13,14 @@ class StatisticsViewModel extends ChangeNotifier {
     required String start,
     required String end,
   }) async {
-    return sumStats = _client.getSumStatistics(start: start, end: end);
+    var sumStats = _client.getSumStatistics(start: start, end: end);
+    // notifyListeners();
+    return sumStats;
   }
 
   Future<List<SumCashback>> getCashbackStats() async {
-    return _client.getCashbackStatistics();
+    var cashbackStatistics = _client.getCashbackStatistics();
+    // notifyListeners();
+    return cashbackStatistics;
   }
 }

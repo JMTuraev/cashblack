@@ -24,21 +24,21 @@ class PaymentView extends StatefulWidget {
 class _PaymentViewState extends State<PaymentView> {
   final _formKey = GlobalKey<FormState>();
 
+  NumericTextFormatter numericTextFormatter = NumericTextFormatter();
+  MaskTextInputFormatter maskFormatterCardName = MaskTextInputFormatter(
+      mask: '#### #### #### ####',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
+
+  MaskTextInputFormatter maskFormatterCardDate = MaskTextInputFormatter(
+      mask: '##/##',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
+
+  TextEditingController amountController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    NumericTextFormatter numericTextFormatter = NumericTextFormatter();
-    MaskTextInputFormatter maskFormatterCardName = MaskTextInputFormatter(
-        mask: '#### #### #### ####',
-        filter: {"#": RegExp(r'[0-9]')},
-        type: MaskAutoCompletionType.lazy);
-
-    MaskTextInputFormatter maskFormatterCardDate = MaskTextInputFormatter(
-        mask: '##/##',
-        filter: {"#": RegExp(r'[0-9]')},
-        type: MaskAutoCompletionType.lazy);
-
-    TextEditingController amountController = TextEditingController();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Пополнить баланс'),
@@ -141,7 +141,7 @@ class _PaymentViewState extends State<PaymentView> {
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
-                                  int.parse(value.removeWhitespaces()) < 100) {
+                                  int.parse(value.removeWhitespaces()) < 10) {
                                 return 'Сумма меньше 500';
                               }
                               return null;
@@ -194,7 +194,7 @@ class _PaymentViewState extends State<PaymentView> {
                               .then(
                             (value) {
                               if (value[0] == 'error_miqdor') {
-                                showDialog(
+                                showCupertinoDialog(
                                   context: context,
                                   builder: (context) {
                                     return InfoAlertWidget(
@@ -206,7 +206,7 @@ class _PaymentViewState extends State<PaymentView> {
                                 return true;
                               } else if (value[0] ==
                                   'Неправильные входные данные') {
-                                showDialog(
+                                showCupertinoDialog(
                                   context: context,
                                   builder: (context) {
                                     return const InfoAlertWidget(
@@ -216,7 +216,7 @@ class _PaymentViewState extends State<PaymentView> {
                                 );
                                 return true;
                               } else if (value[0] == 'xato') {
-                                showDialog(
+                                showCupertinoDialog(
                                   context: context,
                                   builder: (context) {
                                     return const InfoAlertWidget(

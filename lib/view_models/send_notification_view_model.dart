@@ -8,6 +8,8 @@ import '../domain/models/sent_notification.dart';
 class SendNotificationViewModel extends ChangeNotifier {
   final Client _client = Client();
 
+  String notificationPrice = '';
+
   Future<void> send(File file, String title, String content) async {
     await _client.sendNotification(title, content, file);
   }
@@ -17,6 +19,7 @@ class SendNotificationViewModel extends ChangeNotifier {
   }
 
   Future<String> getNotificationPrice() async {
-    return _client.getNotificationPrice();
+    notificationPrice = await _client.getNotificationPrice();
+    return notificationPrice;
   }
 }

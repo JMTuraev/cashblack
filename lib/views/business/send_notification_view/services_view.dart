@@ -100,7 +100,7 @@ class _ServicesViewState extends State<ServicesView> {
                                         bottomLeft: Radius.circular(10),
                                       ),
                                       child: CachedNetworkImage(
-                                        fit: BoxFit.fitWidth,
+                                        fit: BoxFit.fitHeight,
                                         height:
                                             MediaQuery.of(context).size.width /
                                                 4,

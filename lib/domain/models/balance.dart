@@ -9,6 +9,7 @@ class Balance {
   final int id;
   @JsonKey(name: 'amunt')
   final String amount;
+  @JsonKey(name: 'last_date')
   final String date;
   @JsonKey(name: 'shop_id')
   final BalanceShop balanceShop;

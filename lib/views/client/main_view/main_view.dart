@@ -222,7 +222,9 @@ class _MainViewState extends State<MainView> {
                                         top: 6,
                                         right: 6,
                                         child: Container(
-                                          padding: const EdgeInsets.all(1),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                          ),
                                           decoration: const BoxDecoration(
                                             color: Colors.white70,
                                             borderRadius: BorderRadius.all(

@@ -25,8 +25,8 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   String? _filter;
 
-  late Future<List<SumStat>> statsSumFuture;
-  late Future<List<SumCashback>> statsCashbackFuture;
+  late Future<List<SumStat>> statCashback;
+  late Future<List<SumCashback>> statssum;
 
   onFilterChanged(value) {
     setState(() {
@@ -37,11 +37,10 @@ class _StatisticsViewState extends State<StatisticsView> {
   @override
   void initState() {
     super.initState();
-    statsSumFuture =
+    statCashback =
         context.read<StatisticsViewModel>().getSumStats(start: start, end: end);
     // stats = context.watch<StatisticsViewModel>().sumStats;
-    statsCashbackFuture =
-        context.read<StatisticsViewModel>().getCashbackStats();
+    statssum = context.read<StatisticsViewModel>().getCashbackStats();
   }
 
   String start = '2023-01-01';
@@ -53,10 +52,10 @@ class _StatisticsViewState extends State<StatisticsView> {
       index: summa ? 0 : 1,
       children: [
         _SumWidget(
-          stats: statsSumFuture,
+          stats: statCashback,
         ),
         _CashbackWidget(
-          stats: statsCashbackFuture,
+          stats: statssum,
         ),
       ],
     );
@@ -253,10 +252,11 @@ class _StatisticsViewState extends State<StatisticsView> {
           fontWeight: value == '0' ? FontWeight.bold : null,
         ),
       ),
-      onTap: () async => context.read<StatisticsViewModel>().getSumStats(
-            start: today,
-            end: end,
-          ),
+      onTap: () async =>
+          statCashback = context.read<StatisticsViewModel>().getSumStats(
+                start: today,
+                end: end,
+              ),
     );
   }
 }
@@ -281,9 +281,9 @@ class _SumWidget extends StatelessWidget {
           future: stats,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              List<SumStat> sumStat = (snapshot.data as List<SumStat>)
-                  .where((element) => element.isWithdraw == false)
-                  .toList();
+              List<SumStat> sumStat = (snapshot.data as List<SumStat>);
+              // .where((element) => element.isWithdraw == false)
+              // .toList();
 
               if (sumStat.length > 0) {
                 final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
@@ -297,8 +297,13 @@ class _SumWidget extends StatelessWidget {
                     },
                     groupSeparatorBuilder: (String groupByValue) =>
                         Text(groupByValue),
-                    itemBuilder: (context, SumStat element) =>
-                        _CardStat(sumStat: element),
+                    itemBuilder: (context, SumStat element) {
+                      if (!element.isWithdraw) {
+                        return _CardCashback(sumStat: element);
+                      } else {
+                        return _CardWithdraw(sumStat: element);
+                      }
+                    },
                     groupHeaderBuilder: (SumStat element) => Center(
                       child: Text(
                         formatter.format(DateTime.parse(element.date!)),
@@ -311,7 +316,7 @@ class _SumWidget extends StatelessWidget {
                   ),
                 );
               } else {
-                return const EmptyWidget();
+                return const Center(child: EmptyWidget());
               }
             } else {
               return Column(
@@ -355,13 +360,13 @@ class _CashbackWidget extends StatelessWidget {
                 return Expanded(
                   child: ListView.builder(
                     itemCount: sumCashback.length,
-                    itemBuilder: (context, index) => _CardCashback(
+                    itemBuilder: (context, index) => _CardSum(
                       sumCashback: sumCashback[index],
                     ),
                   ),
                 );
               } else {
-                return const EmptyWidget();
+                return const Center(child: EmptyWidget());
               }
             } else {
               return Column(
@@ -440,8 +445,8 @@ class _FilterWidget extends StatelessWidget {
   }
 }
 
-class _CardStat extends StatelessWidget {
-  const _CardStat({
+class _CardCashback extends StatelessWidget {
+  const _CardCashback({
     Key? key,
     required this.sumStat,
   }) : super(key: key);
@@ -453,7 +458,7 @@ class _CardStat extends StatelessWidget {
     final DateFormat timeFormatter = DateFormat.Hm();
 
     return Card(
-      color: Colors.white30,
+      color: Colors.green[300],
       child: Card(
         margin: const EdgeInsets.symmetric(
           vertical: 1,
@@ -568,8 +573,8 @@ class _CardStat extends StatelessWidget {
   }
 }
 
-class _CardCashback extends StatelessWidget {
-  const _CardCashback({
+class _CardSum extends StatelessWidget {
+  const _CardSum({
     Key? key,
     required this.sumCashback,
   }) : super(key: key);
@@ -671,6 +676,112 @@ class _CardCashback extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CardWithdraw extends StatelessWidget {
+  const _CardWithdraw({
+    Key? key,
+    required this.sumStat,
+  }) : super(key: key);
+
+  final SumStat sumStat;
+
+  @override
+  Widget build(BuildContext context) {
+    final DateFormat timeFormatter = DateFormat.Hm();
+
+    return Card(
+      color: Colors.red[300],
+      child: Card(
+        margin: const EdgeInsets.symmetric(
+          vertical: 1,
+          horizontal: 1,
+        ),
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 10,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        const SizedBox(width: 8),
+                        const Text(
+                          'покупка',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          NumberFormat.simpleCurrency(
+                                name: '',
+                                locale: 'ru_RU',
+                                decimalDigits: 0,
+                              ).format(sumStat.price) +
+                              'сум',
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 20),
+                    const Spacer(),
+                    Text(
+                      timeFormatter
+                          .format(DateTime.parse(sumStat.date.toString())),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      sumStat.fullName.toString(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[200],
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        sumStat.userName.phoneFormatter(),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[200],
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                   ],
                 ),
                 const SizedBox(height: 6),

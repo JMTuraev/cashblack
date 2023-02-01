@@ -96,7 +96,6 @@ class _EditStoreViewState extends State<EditStoreView> {
     });
   }
 
-//TODO
   onProvinceChanged(value) {
     setState(() {
       _selectedCity = null;

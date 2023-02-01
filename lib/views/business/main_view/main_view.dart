@@ -67,7 +67,6 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     myBalance = context.read<BusinessHomeViewModel>().getBalance();
     aWeekStats = context.read<BusinessHomeViewModel>().getStatistics();
 
@@ -274,6 +273,7 @@ class _LineInfoWidget extends StatelessWidget {
       children: [
         Row(
           children: [
+            const SizedBox(width: 4),
             Container(
               decoration: BoxDecoration(
                 color: Colors.blue[300],
@@ -330,10 +330,28 @@ class _ChartCashbackWidget extends StatelessWidget {
       barWidth: 3,
       belowBarData: BarAreaData(
         show: true,
+        applyCutOffY: true,
+        cutOffY: 0,
+        spotsLine: BarAreaSpotsLine(
+          checkToShowSpotLine: (spot) {
+            return spot.y > 0 ? true : false;
+          },
+        ),
         color: Colors.blue.withOpacity(0.3),
       ),
       dotData: FlDotData(
-        show: false,
+        show: true,
+        checkToShowDot: (spot, barData) {
+          return spot.y <= 0 ? false : true;
+        },
+        getDotPainter: (p0, p1, p2, p3) {
+          return FlDotCirclePainter(
+            radius: 3,
+            color: Colors.white,
+            strokeWidth: 1,
+            strokeColor: Colors.blue.withOpacity(0.3),
+          );
+        },
       ),
       spots: [
         ...aWeekStatistics.map(
@@ -358,9 +376,27 @@ class _ChartCashbackWidget extends StatelessWidget {
       belowBarData: BarAreaData(
         show: true,
         color: Colors.red.withOpacity(0.3),
+        applyCutOffY: true,
+        cutOffY: 0,
+        spotsLine: BarAreaSpotsLine(
+          checkToShowSpotLine: (spot) {
+            return spot.y > 0 ? true : false;
+          },
+        ),
       ),
       dotData: FlDotData(
-        show: false,
+        show: true,
+        checkToShowDot: (spot, barData) {
+          return spot.y <= 0 ? false : true;
+        },
+        getDotPainter: (p0, p1, p2, p3) {
+          return FlDotCirclePainter(
+            radius: 3,
+            color: Colors.white,
+            strokeWidth: 1,
+            strokeColor: Colors.red.withOpacity(0.3),
+          );
+        },
       ),
       spots: [
         ...aWeekStatistics.map(
@@ -375,116 +411,126 @@ class _ChartCashbackWidget extends StatelessWidget {
       ],
     );
 
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 0,
-        right: 20,
-      ),
-      child: Container(
-        child: LineChart(
-          LineChartData(
-            lineTouchData: LineTouchData(
-              touchTooltipData: LineTouchTooltipData(
-                tooltipBgColor: Colors.grey[900],
-                showOnTopOfTheChartBoxArea: true,
-                fitInsideHorizontally: true,
-                fitInsideVertically: true,
-                getTooltipItems: (touchedBarSpots) {
-                  return touchedBarSpots.map((barSpot) {
-                    return LineTooltipItem(
-                      NumberFormat.simpleCurrency(
-                        name: '',
-                        locale: 'ru_RU',
-                        decimalDigits: 0,
-                      ).format(barSpot.y),
-                      TextStyle(
-                        color: barSpot.bar.color,
-                        fontWeight: FontWeight.bold,
+    return Column(
+      children: [
+        // const SizedBox(height: 10),
+        // const _LineInfoWidget(),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 0,
+              right: 20,
+            ),
+            child: Container(
+              child: LineChart(
+                LineChartData(
+                  maxY: maxSum,
+                  minY: -maxSum / 10,
+                  lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      tooltipBgColor: Colors.grey[900],
+                      showOnTopOfTheChartBoxArea: true,
+                      fitInsideHorizontally: true,
+                      fitInsideVertically: true,
+                      getTooltipItems: (touchedBarSpots) {
+                        return touchedBarSpots.map((barSpot) {
+                          return LineTooltipItem(
+                            NumberFormat.simpleCurrency(
+                              name: '',
+                              locale: 'ru_RU',
+                              decimalDigits: 0,
+                            ).format(barSpot.y),
+                            TextStyle(
+                              color: barSpot.bar.color,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            // children: [
+                            //   TextSpan(
+                            //     text: barSpot.y.toString(),
+                            //     style: TextStyle(
+                            //       color: Colors.blue[300],
+                            //     ),
+                            //   ),
+                            //   TextSpan(
+                            //     text: barSpot.y.toString(),
+                            //     style: TextStyle(
+                            //       color: Colors.red[300],
+                            //     ),
+                            //   ),
+                            // ],
+                          );
+                        }).toList();
+                      },
+                    ),
+                  ),
+                  titlesData: FlTitlesData(
+                      show: true,
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
                       ),
-                      // children: [
-                      //   TextSpan(
-                      //     text: barSpot.y.toString(),
-                      //     style: TextStyle(
-                      //       color: Colors.blue[300],
-                      //     ),
-                      //   ),
-                      //   TextSpan(
-                      //     text: barSpot.y.toString(),
-                      //     style: TextStyle(
-                      //       color: Colors.red[300],
-                      //     ),
-                      //   ),
-                      // ],
-                    );
-                  }).toList();
-                },
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          getTitlesWidget: (value, meta) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 2),
+                              child: Text(
+                                value.toInt() > 0
+                                    ? (value.toInt() / 1000)
+                                            .toStringAsFixed(0) +
+                                        ' тыс'
+                                    : '',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontSize: 10),
+                              ),
+                            );
+                          },
+                          showTitles: true,
+                          interval: maxSum != 0 ? (maxSum / 2) : 1,
+                          reservedSize: 30,
+                        ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          getTitlesWidget: (value, meta) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                top: 30,
+                              ),
+                              child: RotationTransition(
+                                turns: const AlwaysStoppedAnimation(-45 / 360),
+                                child: Text(
+                                  formatter.format(
+                                      aWeekStatistics[value.toInt()].date!),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          showTitles: true,
+                          interval: 1,
+                          reservedSize: 60,
+                        ),
+                      )),
+                  gridData: FlGridData(
+                    show: true,
+                    verticalInterval: 1,
+                  ),
+                  lineBarsData: [
+                    sumChartBarData,
+                    cashbackChartBarData,
+                  ],
+                ),
               ),
             ),
-            maxY: maxSum,
-            titlesData: FlTitlesData(
-                show: true,
-                rightTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                topTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    getTitlesWidget: (value, meta) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 2),
-                        child: Text(
-                          value.toInt() != 0
-                              ? (value.toInt() / 1000).toStringAsFixed(0) +
-                                  ' тыс'
-                              : '',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 10),
-                        ),
-                      );
-                    },
-                    showTitles: true,
-                    interval: maxSum != 0 ? (maxSum / 2) : 1,
-                    reservedSize: 30,
-                  ),
-                ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    getTitlesWidget: (value, meta) {
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                          top: 30,
-                        ),
-                        child: RotationTransition(
-                          turns: const AlwaysStoppedAnimation(-45 / 360),
-                          child: Text(
-                            formatter
-                                .format(aWeekStatistics[value.toInt()].date!),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    showTitles: true,
-                    interval: 1,
-                    reservedSize: 60,
-                  ),
-                )),
-            gridData: FlGridData(
-              show: true,
-              verticalInterval: 1,
-            ),
-            lineBarsData: [
-              sumChartBarData,
-              cashbackChartBarData,
-            ],
           ),
         ),
-      ),
+      ],
     );
   }
 }

@@ -8,7 +8,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../theme/theme_details.dart';
+import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/send_notification_view_model.dart';
+import '../../../widgets/info_alert_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/multiline_text_field_widget.dart';
 import '../../../widgets/text_field_widget.dart';
@@ -51,13 +53,15 @@ class _SendNotificationViewState extends State<SendNotificationView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     prices = context.read<SendNotificationViewModel>().getNotificationPrice();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    String balance = context.read<BusinessHomeViewModel>().balance.first.amount;
+    String price = context.read<SendNotificationViewModel>().notificationPrice;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -97,6 +101,21 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                   MainButtonWidget(
                     text: 'Отправить',
                     method: () async {
+                      if (int.parse(balance) < int.parse(price)) {
+                        // showCupertinoDialog(
+                        //   context: context,
+                        //   builder: (context) =>
+                        //       InfoAlertWidget(title: 'Пополните баланс'),
+                        await showCupertinoDialog(
+                          context: context,
+                          builder: (context) {
+                            return InfoAlertWidget(
+                              title: 'Пополните баланс',
+                            );
+                          },
+                        );
+                        // );
+                      }
                       await context
                           .read<SendNotificationViewModel>()
                           .send(

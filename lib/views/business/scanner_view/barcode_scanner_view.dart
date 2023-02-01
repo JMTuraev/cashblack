@@ -5,10 +5,16 @@ import 'package:provider/provider.dart';
 
 import '../../../theme/theme_details.dart';
 import '../../../view_models/business_home_view_model.dart';
+import '../../../widgets/main_button_widget.dart';
 import 'payment_client_view.dart';
+import 'payment_phone_view.dart';
 
 class BarcodeScannerView extends StatelessWidget {
-  const BarcodeScannerView({super.key});
+  BarcodeScannerView({super.key, required this.shopId});
+
+  final int shopId;
+
+  MobileScannerController controller = MobileScannerController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,27 +25,94 @@ class BarcodeScannerView extends StatelessWidget {
         title: const Text('Сканер'),
         bottom: ThemeDetails.appBarDivider,
       ),
-      body: MobileScanner(
-        allowDuplicates: false,
-        onDetect: (barcode, args) {
-          if (barcode.rawValue == null) {
-            debugPrint('Failed to scan Barcode');
-          } else {
-            final String code = barcode.rawValue!;
-            debugPrint('Barcode found! $code');
-            scannedTime += 1;
-            if (scannedTime == 1) {
-              context.read<BusinessHomeViewModel>().currentIndex = 0;
-              Navigator.of(context).push(
-                CupertinoPageRoute(
-                  builder: (context) => PaymentClientView(
-                    code: code,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Spacer(),
+          ClipRRect(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20),
+            ),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.width - 40,
+              width: MediaQuery.of(context).size.width - 40,
+              child: Stack(
+                children: [
+                  MobileScanner(
+                    controller: controller,
+                    allowDuplicates: false,
+                    onDetect: (barcode, args) {
+                      if (barcode.rawValue == null) {
+                        debugPrint('Failed to scan Barcode');
+                      } else {
+                        final String code = barcode.rawValue!;
+                        debugPrint('Barcode found! $code');
+                        scannedTime += 1;
+                        if (scannedTime == 1) {
+                          // context.read<BusinessHomeViewModel>().currentIndex = 0;
+                          context.read<BusinessHomeViewModel>().setindex(0);
+                          Navigator.of(context).push(
+                            CupertinoPageRoute(
+                              builder: (context) => PaymentClientView(
+                                code: code,
+                                shopId: shopId,
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                    },
                   ),
-                ),
-              );
-            }
-          }
-        },
+                  Positioned(
+                    top: 10,
+                    bottom: 10,
+                    left: 10,
+                    right: 10,
+                    child: Center(
+                      child: Image.asset(
+                        'assets/images/view_frame.png',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Center(
+              child: Column(
+                children: [
+                  const Text(
+                    'или',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const Divider(
+                    thickness: 2,
+                    color: Colors.grey,
+                    height: 30,
+                  ),
+                  MainButtonWidget(
+                    method: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => PaymentPhoneView(
+                            shopId: shopId,
+                          ),
+                        ),
+                      );
+                    },
+                    text: 'Оплата по номеру',
+                    color: Colors.black45,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
       ),
     );
   }

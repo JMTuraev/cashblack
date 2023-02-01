@@ -15,6 +15,11 @@ class BusinessHomeViewModel extends ChangeNotifier {
 
   int currentIndex = 0;
 
+  void setindex(int index) {
+    currentIndex = index;
+    notifyListeners();
+  }
+
   late User user;
   // User?   user;
   // List<Balance> balance = [];
@@ -72,6 +77,22 @@ class BusinessHomeViewModel extends ChangeNotifier {
     var balance = await _client.getBalance();
     notifyListeners();
     return balance;
+  }
+
+  Future<String> paySubscription(bool type) async {
+    var result = await _client.paySubscription(type);
+    user = await getProfile();
+    balance = await getBalance();
+    notifyListeners();
+    return result;
+  }
+
+  Future<String> cancelSubscription() async {
+    var result = await _client.cancelSubscription();
+    user = await getProfile();
+    balance = await getBalance();
+    notifyListeners();
+    return result;
   }
 
   Future<void> logout() async {

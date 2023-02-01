@@ -7,15 +7,20 @@ class PaymentClientViewModel extends ChangeNotifier {
 
   String price = '';
 
-  Future<void> sendCashback(String price, String barcodeId) async {
-    await _client.payCashback(price, barcodeId);
+  Future<void> sendCashback(String price, String barcodeId, int shopId) async {
+    await _client.payCashback(price, barcodeId, shopId);
   }
 
-  Future<void> payForGoods(String price, String barcodeId) async {
-    await _client.payForGoods(price, barcodeId);
+  Future<void> payForGoods(String price, String barcodeId, int shopId) async {
+    await _client.payForGoods(price, barcodeId, shopId);
   }
 
-  Future<dynamic> getUserFromBarcode(String barcodeId) async {
-    return _client.getUserFromBarcode(barcodeId);
+  Future<void> sendCashbackWithPhone(
+      String price, String phone, int shopId) async {
+    await _client.payCashbackWithPhoneNumber(price, phone, shopId);
+  }
+
+  Future<dynamic> getUserFromBarcode(String barcodeId, int shopId) async {
+    return _client.getUserFromBarcode(barcodeId, shopId);
   }
 }

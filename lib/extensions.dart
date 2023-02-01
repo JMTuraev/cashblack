@@ -37,4 +37,11 @@ extension StringExtensions on String {
 
     return formatter.format(DateTime.parse(this));
   }
+
+  String getLocaleDate() {
+    // final DateFormat formatter = DateFormat('dd MMMM yyyy, hh:mm');
+    final DateFormat formatter = DateFormat('dd MMMM yyyy');
+
+    return formatter.format(DateTime.parse(this));
+  }
 }

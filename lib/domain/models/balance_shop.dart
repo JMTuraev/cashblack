@@ -6,17 +6,17 @@ part 'balance_shop.g.dart';
 class BalanceShop {
   @JsonKey(name: 'payment_summ')
   final String subscriptionPrice;
-  @JsonKey(name: 'is_payment')
-  final bool isSubscribed;
-  @JsonKey(name: 'payemnt_date')
-  String? paymentDate;
+  // @JsonKey(name: 'is_payment')
+  // final bool isSubscribed;
+  // @JsonKey(name: 'payemnt_date')
+  // String? paymentDate;
   @JsonKey(name: 'create_date')
   final String createdDate;
 
   BalanceShop({
     required this.subscriptionPrice,
-    required this.isSubscribed,
-    this.paymentDate,
+    // required this.isSubscribed,
+    // this.paymentDate,
     required this.createdDate,
   });
 
