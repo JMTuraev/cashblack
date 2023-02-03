@@ -153,7 +153,7 @@ class Client {
     }
   }
 
-  Future<bool> checkSMS(String code, String type) async {
+  Future<bool> checkSMS(String code, String type, String phone) async {
 // Obtain shared preferences.
     final prefs = await SharedPreferences.getInstance();
 
@@ -176,7 +176,10 @@ class Client {
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       //TODO demo account and fix any sms code to enter the app
-      if (json.decode(resBody)[0] == 'Tizimga xush kelibsiz' || 1 == 1) {
+      if (json.decode(resBody)[0] == 'Tizimga xush kelibsiz' ||
+          phone == '998000000001' ||
+          phone == '998000000002' ||
+          phone == '998000000003') {
         await prefs.setBool('isLogged', true);
         await prefs.setBool(type, true);
         return true;

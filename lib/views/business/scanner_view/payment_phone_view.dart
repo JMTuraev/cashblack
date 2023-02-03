@@ -34,25 +34,36 @@ class PaymentPhoneView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isLoading = context.watch<PaymentClientViewModel>().isLoading;
+
     void submit() async {
       if (_formKey.currentState!.validate()) {
-        await context
-            .read<PaymentClientViewModel>()
-            .sendCashbackWithPhone(
-              priceController.text.removeWhitespaces(),
-              maskFormatter.getUnmaskedText(),
-              shopId,
-            )
-            .then(
-              (value) => Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(
-                  builder: (context) => const PaymentSuccessView(
-                    title: 'Оплачено',
-                  ),
-                ),
-                (route) => false,
-              ),
-            );
+        await context.read<PaymentClientViewModel>().payPhone(
+            context,
+            priceController.text.removeWhitespaces(),
+            maskFormatter.getUnmaskedText(),
+            shopId);
+        // isLoading = true;
+        // await context
+        //     .read<PaymentClientViewModel>()
+        //     .sendCashbackWithPhone(
+        //       priceController.text.removeWhitespaces(),
+        //       maskFormatter.getUnmaskedText(),
+        //       shopId,
+        //     )
+        //     .then(
+        //   (value) {
+        //     isLoading = false;
+        //     return Navigator.of(context).pushAndRemoveUntil(
+        //       CupertinoPageRoute(
+        //         builder: (context) => const PaymentSuccessView(
+        //           title: 'Оплачено',
+        //         ),
+        //       ),
+        //       (route) => false,
+        //     );
+        //   },
+        // );
       }
     }
 
@@ -81,7 +92,7 @@ class PaymentPhoneView extends StatelessWidget {
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
-                            int.parse(value) <= 0) {
+                            int.parse(value.removeWhitespaces()) <= 0) {
                           return 'Введите номер телефона';
                         }
                         return null;
@@ -116,7 +127,7 @@ class PaymentPhoneView extends StatelessWidget {
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
-                            int.parse(value) <= 0) {
+                            int.parse(value.removeWhitespaces()) <= 0) {
                           return 'Введите сумму';
                         }
                         return null;
@@ -148,6 +159,7 @@ class PaymentPhoneView extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     MainButtonWidget(
+                      isLoading: isLoading,
                       text: 'OK',
                       method: submit,
                     ),

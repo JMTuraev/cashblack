@@ -8,6 +8,7 @@ import '../../../../widgets/hero_title_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../../../view_models/balance_view_model.dart';
+import '../../../view_models/business_home_view_model.dart';
 import '../scanner_view/payment_success_view.dart';
 
 class PaymentVerifyView extends StatefulWidget {
@@ -74,6 +75,8 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
 
   @override
   Widget build(BuildContext context) {
+    bool isLoading = context.read<BusinessHomeViewModel>().isLoading;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -123,27 +126,27 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
               ),
               const SizedBox(height: 20),
               MainButtonWidget(
+                isLoading: isLoading,
                 text: 'Подтвердить',
                 method: () async {
-                  await context
-                      .read<BalanceViewModel>()
-                      .paymentConfirm(
+                  await context.read<BusinessHomeViewModel>().paymentConfirm(
+                        context,
                         widget.cardNumber,
                         widget.expireDate,
                         widget.amount,
                         widget.session,
                         otpCode ?? textController.text,
-                      )
-                      .then(
-                        (value) => Navigator.of(context).pushAndRemoveUntil(
-                          CupertinoPageRoute(
-                            builder: (context) => const PaymentSuccessView(
-                              title: 'Счет пополнено',
-                            ),
-                          ),
-                          (route) => false,
-                        ),
                       );
+                  // .then(
+                  //   (value) => Navigator.of(context).pushAndRemoveUntil(
+                  //     CupertinoPageRoute(
+                  //       builder: (context) => const PaymentSuccessView(
+                  //         title: 'Счет пополнено',
+                  //       ),
+                  //     ),
+                  //     (route) => false,
+                  //   ),
+                  // );
                 },
               ),
             ],

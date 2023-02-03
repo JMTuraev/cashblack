@@ -89,10 +89,65 @@ class BarcodeScannerView extends StatelessWidget {
                     'или',
                     style: TextStyle(fontSize: 16),
                   ),
-                  const Divider(
-                    thickness: 2,
-                    color: Colors.grey,
-                    height: 30,
+                  // const Divider(
+                  //   thickness: 2,
+                  //   color: Colors.grey,
+                  //   height: 30,
+                  // ),
+                  SizedBox(
+                    height: 40,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 1,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [Colors.white, Colors.black],
+                                      begin: Alignment.centerRight,
+                                      end: Alignment.centerLeft)),
+                            ),
+                          ),
+                        ),
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(horizontal: 2),
+                        //   child: Row(
+                        //     children: [
+                        //       Icon(
+                        //         Icons.star,
+                        //         size: 15,
+                        //       ),
+                        //       Icon(
+                        //         Icons.star,
+                        //         size: 30,
+                        //       ),
+                        //       Icon(
+                        //         Icons.star,
+                        //         size: 15,
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        Container(
+                          color: Colors.white,
+                          width: MediaQuery.of(context).size.width / 2,
+                          height: 1,
+                        ),
+                        Expanded(
+                          child: SizedBox(
+                            height: 1,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [Colors.white, Colors.black],
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   MainButtonWidget(
                     method: () {

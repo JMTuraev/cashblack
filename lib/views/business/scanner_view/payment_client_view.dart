@@ -51,6 +51,8 @@ class _PaymentClientViewState extends State<PaymentClientView> {
     int cashbackPercentage =
         context.read<BusinessHomeViewModel>().user.shops.first.cashback;
 
+    bool isLoading = context.watch<PaymentClientViewModel>().isLoading;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -113,6 +115,7 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                       } else {
                                         double a = double.parse(
                                                 value.removeWhitespaces()) /
+                                            100 *
                                             cashbackPercentage;
                                         percent = a.toStringAsFixed(0);
                                       }
@@ -167,6 +170,7 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                     Expanded(
                                       flex: 2,
                                       child: MainButtonWidget(
+                                        isLoading: isLoading,
                                         percent: percent.isEmpty
                                             ? null
                                             : int.parse(percent),
@@ -177,28 +181,14 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                               .validate()) {
                                             print('Кэшбек');
                                             print(isWithdraw);
-                                            // return true;
                                             await context
                                                 .read<PaymentClientViewModel>()
                                                 .sendCashback(
+                                                  context,
                                                   priceController.text
                                                       .removeWhitespaces(),
                                                   widget.code,
                                                   widget.shopId,
-                                                )
-                                                .then(
-                                                  (value) =>
-                                                      Navigator.of(context)
-                                                          .pushAndRemoveUntil(
-                                                    CupertinoPageRoute(
-                                                      builder: (context) =>
-                                                          const PaymentSuccessView(
-                                                        title:
-                                                            'Кэшбек выплачено',
-                                                      ),
-                                                    ),
-                                                    (route) => false,
-                                                  ),
                                                 );
                                           }
                                         },
@@ -208,6 +198,7 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                     Expanded(
                                       flex: 1,
                                       child: MainButtonWidget(
+                                        isLoading: isLoading,
                                         text: 'Оплата',
                                         method: () async {
                                           isWithdraw = true;
@@ -219,24 +210,25 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                             await context
                                                 .read<PaymentClientViewModel>()
                                                 .payForGoods(
+                                                  context,
                                                   priceController.text
                                                       .removeWhitespaces(),
                                                   widget.code,
                                                   widget.shopId,
-                                                )
-                                                .then(
-                                                  (value) =>
-                                                      Navigator.of(context)
-                                                          .pushAndRemoveUntil(
-                                                    CupertinoPageRoute(
-                                                      builder: (context) =>
-                                                          const PaymentSuccessView(
-                                                        title: 'Оплачено',
-                                                      ),
-                                                    ),
-                                                    (route) => false,
-                                                  ),
                                                 );
+                                            // .then(
+                                            //   (value) =>
+                                            //       Navigator.of(context)
+                                            //           .pushAndRemoveUntil(
+                                            //     CupertinoPageRoute(
+                                            //       builder: (context) =>
+                                            //           const PaymentSuccessView(
+                                            //         title: 'Оплачено',
+                                            //       ),
+                                            //     ),
+                                            //     (route) => false,
+                                            //   ),
+                                            // );
                                           }
                                         },
                                       ),

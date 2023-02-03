@@ -24,6 +24,7 @@ class SubscriptionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var balance = context.read<BusinessHomeViewModel>().balance.first.amount;
+    bool isLoading = context.watch<BusinessHomeViewModel>().isLoading;
 
     return Scaffold(
       body: Scaffold(
@@ -59,32 +60,12 @@ class SubscriptionView extends StatelessWidget {
                 isBusiness
                     ? int.parse(balance) > int.parse(subscribtionPrice)
                         ? MainButtonWidget(
+                            isLoading: isLoading,
                             text: 'Оплатить',
                             method: () async {
                               await context
                                   .read<BusinessHomeViewModel>()
-                                  .paySubscription(true)
-                                  .then((value) {
-                                if (value == 'Xato') {
-                                  showCupertinoDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return InfoAlertWidget(
-                                        title: 'Ошибка сервера',
-                                      );
-                                    },
-                                  );
-                                  return true;
-                                } else {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    CupertinoPageRoute(
-                                      builder: (context) =>
-                                          const BusinessHomeView(),
-                                    ),
-                                    (route) => false,
-                                  );
-                                }
-                              });
+                                  .paySubscription(context, true);
                             },
                           )
                         : MainButtonWidget(

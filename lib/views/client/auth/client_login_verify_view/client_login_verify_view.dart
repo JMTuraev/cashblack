@@ -12,7 +12,12 @@ import '../../../../widgets/text_button_widget.dart';
 import '../../client_home_view.dart/client_home_view.dart';
 
 class ClientLoginVerifyView extends StatefulWidget {
-  const ClientLoginVerifyView({Key? key}) : super(key: key);
+  const ClientLoginVerifyView(
+      {Key? key, required this.phone, required this.appsign})
+      : super(key: key);
+
+  final String phone;
+  final String appsign;
 
   @override
   State<ClientLoginVerifyView> createState() => _ClientLoginVerifyViewState();
@@ -105,8 +110,10 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
               const SizedBox(height: 20),
               TextButtonWidget(
                 text: 'Не получили код. Отправить код еще раз',
-                method: () {
-                  print(_animationController!.isCompleted.toString());
+                method: () async {
+                  await context
+                      .read<ClientLoginViewModel>()
+                      .sendSms(widget.phone, widget.appsign);
                   _animationController!.reset();
                   _animationController!.forward();
                 },
@@ -125,7 +132,8 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                   await context.read<ClientHomeViewModel>().getProfile();
                   bool checked = await context
                       .read<ClientLoginViewModel>()
-                      .onVerifyButtonPressed(otpCode ?? textController.text);
+                      .onVerifyButtonPressed(otpCode ?? textController.text,
+                          context.read<ClientLoginViewModel>().phone);
 
                   checked
                       ? Navigator.of(context).pushAndRemoveUntil(

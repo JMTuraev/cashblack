@@ -13,7 +13,16 @@ import '../../business_home_view/business_home_view.dart';
 import '../../create_store_view/create_store_view.dart';
 
 class BusinessLoginVerifyView extends StatefulWidget {
-  const BusinessLoginVerifyView({Key? key}) : super(key: key);
+  const BusinessLoginVerifyView(
+      {Key? key,
+      required this.phone,
+      required this.appsign,
+      required this.promo})
+      : super(key: key);
+
+  final String phone;
+  final String appsign;
+  final String promo;
 
   @override
   State<BusinessLoginVerifyView> createState() =>
@@ -108,7 +117,10 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               const SizedBox(height: 20),
               TextButtonWidget(
                 text: 'Не получили код. Отправить код еще раз',
-                method: () {
+                method: () async {
+                  await context
+                      .read<BusinessLoginViewModel>()
+                      .sendSms(widget.phone, widget.appsign, widget.promo);
                   _animationController!.reset();
                   _animationController!.forward();
                 },
@@ -130,7 +142,8 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                       .then((value) async {
                     bool checked = await context
                         .read<BusinessLoginViewModel>()
-                        .onVerifyButtonPressed(otpCode ?? textController.text);
+                        .onVerifyButtonPressed(otpCode ?? textController.text,
+                            context.read<BusinessLoginViewModel>().phone);
                     bool hasShop = context
                         .read<BusinessHomeViewModel>()
                         .user!

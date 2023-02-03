@@ -209,19 +209,17 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
                                   currentIndex == 2 &&
                                           isSubscribed &&
                                           isSubscribedDateActive
-                                      ? BarcodeScannerView(
-                                          shopId: shopId,
-                                        )
-                                      : !profile.isFreezed
-                                          ? SubscriptionView(
-                                              isBusiness: isBusiness,
-                                              subscribtionPrice: balancess
-                                                  .first
-                                                  .balanceShop
-                                                  .subscriptionPrice,
-                                              shopId: profile.shops.first.id,
+                                      ? profile.isFreezed
+                                          ? const FreezedView()
+                                          : BarcodeScannerView(
+                                              shopId: shopId,
                                             )
-                                          : const FreezedView(),
+                                      : SubscriptionView(
+                                          isBusiness: isBusiness,
+                                          subscribtionPrice: balancess.first
+                                              .balanceShop.subscriptionPrice,
+                                          shopId: profile.shops.first.id,
+                                        ),
                                   const SettingsView(),
                                 ],
                               ),

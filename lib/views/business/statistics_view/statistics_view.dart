@@ -282,21 +282,34 @@ class _SumWidget extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               List<SumStat> sumStat = (snapshot.data as List<SumStat>);
-              // .where((element) => element.isWithdraw == false)
-              // .toList();
+              // sumStat.sort((a, b) =>
+              //     DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
+              sumStat.sort((a, b) => a.date!.compareTo(b.date!));
 
               if (sumStat.length > 0) {
                 final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
-                final DateFormat sorter = DateFormat('dd MMMM yyyy');
+                // final DateFormat sorter = DateFormat('dd MMMM yyyy');
                 return Expanded(
                   child: GroupedListView<SumStat, String>(
                     elements: sumStat,
                     groupBy: (element) {
                       DateTime dates = DateTime.parse(element.date!);
                       return DateUtils.dateOnly(dates).toString();
+                      // return DateTime(dates.year, dates.month, dates.day,
+                      //         dates.hour, dates.minute)
+                      //     .toString();
                     },
-                    groupSeparatorBuilder: (String groupByValue) =>
-                        Text(groupByValue),
+                    groupSeparatorBuilder: (String groupByValue) {
+                      print(groupByValue);
+                      return Text(groupByValue);
+                    },
+                    // groupSeparatorBuilder: (String groupByValue) {
+                    //   print(groupByValue);
+                    //   DateTime dates = DateTime.parse(groupByValue);
+                    //   return Text(DateUtils.dateOnly(dates).toString());
+                    //   // return Text(
+                    //   //     formatter.format(DateTime.parse(groupByValue)));
+                    // },
                     itemBuilder: (context, SumStat element) {
                       if (!element.isWithdraw) {
                         return _CardCashback(sumStat: element);
@@ -312,7 +325,19 @@ class _SumWidget extends StatelessWidget {
                         ),
                       ),
                     ),
+                    // groupHeaderBuilder: (SumStat element) => Center(
+                    //   child: Text(
+                    //     formatter.format(DateTime.parse(element.date!)),
+                    //     style: const TextStyle(
+                    //       fontSize: 20,
+                    //     ),
+                    //   ),
+                    // ),
                     order: GroupedListOrder.DESC,
+                    groupComparator: (value1, value2) {
+                      // print(value1);
+                      return value1.compareTo(value2);
+                    },
                   ),
                 );
               } else {

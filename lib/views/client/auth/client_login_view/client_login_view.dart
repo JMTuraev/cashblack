@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../../view_models/client_login_view_model.dart';
+import '../../../../widgets/public_offer_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../client_login_verify_view/client_login_verify_view.dart';
 
@@ -22,13 +23,18 @@ class ClientLoginView extends StatelessWidget {
 
     void submit() async {
       if (maskFormatter.isFill()) {
+        var phone = maskFormatter.unmaskText(phoneController.text);
+
         provider.sendSms(
-          maskFormatter.unmaskText(phoneController.text),
+          phone,
           provider.appSignature = await SmsAutoFill().getAppSignature,
         );
         Navigator.of(context).push(
           CupertinoPageRoute(
-            builder: (context) => const ClientLoginVerifyView(),
+            builder: (context) => ClientLoginVerifyView(
+              phone: phone,
+              appsign: provider.appSignature,
+            ),
           ),
         );
       }
@@ -42,7 +48,7 @@ class ClientLoginView extends StatelessWidget {
         const SizedBox(height: 10),
         TextField(
           decoration: InputDecoration(
-            focusedBorder: OutlineInputBorder(
+            focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(
                 color: Colors.grey,
                 width: 2,
@@ -60,7 +66,7 @@ class ClientLoginView extends StatelessWidget {
           inputFormatters: [maskFormatter],
           controller: phoneController,
           autocorrect: false,
-          autofocus: true,
+          // autofocus: true,
           enableSuggestions: false,
           keyboardAppearance: Brightness.dark,
           showCursor: true,
@@ -73,7 +79,7 @@ class ClientLoginView extends StatelessWidget {
               context.watch<ClientLoginViewModel>().isLoading ? null : submit,
         ),
         const SizedBox(height: 20),
-        _PublicOfferWidget(),
+        const PublicOfferWidget(),
       ],
     );
   }
@@ -107,65 +113,10 @@ class _MainButtonWidget extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 16,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PublicOfferWidget extends StatelessWidget {
-  const _PublicOfferWidget({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: TextButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return Container(
-                margin: EdgeInsets.symmetric(
-                  vertical: 20,
-                  horizontal: 16,
-                ),
-                height: double.infinity,
-                width: double.infinity,
-                child: ListView(
-                  children: [
-                    SizedBox(height: 6),
-                    Text(
-                      'Public offer',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 6),
-                    Text(
-                      'Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an. Stet illum fabulas ad eos, et esse dignissim per. Partiendo principes referrentur et est, posse omnesque iudicabit est ut, per in principes delicatissimi. Quaerendum intellegebat qui ei, duo at odio error aliquam. Offendit appellantur disputationi vim ut, ad dolorem detraxit eos, at vim debet laoreet.',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('OK'),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-        child: Text(
-          'Публичная оферта',
         ),
       ),
     );

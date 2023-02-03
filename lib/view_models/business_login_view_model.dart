@@ -26,8 +26,8 @@ class BusinessLoginViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> onVerifyButtonPressed(String code) async {
-    return await _client.checkSMS(code, 'isBusiness');
+  Future<bool> onVerifyButtonPressed(String code, String phone) async {
+    return await _client.checkSMS(code, 'isBusiness', phone);
   }
 
   // Future<void> getProfile() async {

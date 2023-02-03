@@ -1,14 +1,17 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/balance.dart';
 import '../../../domain/models/one_month_statistic.dart';
+import '../../../domain/models/sum_cashback.dart';
 import '../../../domain/models/user.dart';
 import '../../../theme/theme_details.dart';
 import '../../../view_models/business_home_view_model.dart';
+import '../../../view_models/statistics_view_model.dart';
 import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import '../settings_view/payment_view.dart';
@@ -43,7 +46,7 @@ class _MainViewState extends State<MainView> {
       body: Container(
         child: Column(
           children: [
-            _CashbackWidget(),
+            const _CashbackWidget(),
           ],
         ),
       ),
@@ -64,11 +67,13 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
   late final Future myBalance;
   late final Future aWeekStats;
   late User user;
+  late Future<List<SumCashback>> statsFuture;
 
   @override
   void initState() {
     myBalance = context.read<BusinessHomeViewModel>().getBalance();
     aWeekStats = context.read<BusinessHomeViewModel>().getStatistics();
+    statsFuture = context.read<StatisticsViewModel>().getCashbackStats();
 
     user = context.read<BusinessHomeViewModel>().user;
 
@@ -204,17 +209,18 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                             ),
                           ],
                         )
-                      : Center(child: SizedBox())
+                      : const Center(child: SizedBox())
                 ],
               ),
             ],
           ),
         ),
-        const SizedBox(height: 10),
-        const _LineInfoWidget(),
+        // const SizedBox(height: 10),
+        // const _LineInfoWidget(),
         const SizedBox(height: 20),
         SizedBox(
-          height: MediaQuery.of(context).size.height / 3.5,
+          // height: MediaQuery.of(context).size.height / 3.5,
+          height: MediaQuery.of(context).size.height / 3,
           width: double.infinity,
           child: FutureBuilder(
             future: aWeekStats,
@@ -256,6 +262,50 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
               }
             },
           ),
+        ),
+        const SizedBox(height: 30),
+        Column(
+          children: [
+            FutureBuilder(
+              future: statsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<SumCashback> data = snapshot.data as List<SumCashback>;
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/svg/user-octagon.svg',
+                            semanticsLabel: 'user',
+                            color: Colors.white,
+                            height: 30,
+                            width: 30,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            data.length.toString(),
+                            style: const TextStyle(
+                              fontSize: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Text(
+                        'Количество клиентов',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),
+          ],
         ),
       ],
     );
@@ -310,8 +360,8 @@ class _LineInfoWidget extends StatelessWidget {
   }
 }
 
-class _ChartCashbackWidget extends StatelessWidget {
-  const _ChartCashbackWidget({
+class _ChartCashbackWidget extends StatefulWidget {
+  _ChartCashbackWidget({
     Key? key,
     required this.aWeekStatistics,
     required this.maxSum,
@@ -321,12 +371,22 @@ class _ChartCashbackWidget extends StatelessWidget {
   final double maxSum;
 
   @override
+  State<_ChartCashbackWidget> createState() => _ChartCashbackWidgetState();
+}
+
+class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
+  bool showSum = true;
+
+  bool showCashback = true;
+
+  @override
   Widget build(BuildContext context) {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
 
     LineChartBarData sumChartBarData = LineChartBarData(
       color: Colors.blue,
       isCurved: true,
+      curveSmoothness: 0.2,
       barWidth: 3,
       belowBarData: BarAreaData(
         show: true,
@@ -353,25 +413,29 @@ class _ChartCashbackWidget extends StatelessWidget {
           );
         },
       ),
-      spots: [
-        ...aWeekStatistics.map(
-          (e) {
-            return FlSpot(
-              double.parse(e.date!
-                  .difference(DateTime.now().subtract(const Duration(days: 7)))
-                  .inDays
-                  .abs()
-                  .toString()),
-              double.parse(e.price.toString()),
-            );
-          },
-        ),
-      ],
+      spots: showSum
+          ? [
+              ...widget.aWeekStatistics.map(
+                (e) {
+                  return FlSpot(
+                    double.parse(e.date!
+                        .difference(
+                            DateTime.now().subtract(const Duration(days: 7)))
+                        .inDays
+                        .abs()
+                        .toString()),
+                    double.parse(e.price.toString()),
+                  );
+                },
+              ),
+            ]
+          : [FlSpot.zero],
     );
 
     LineChartBarData cashbackChartBarData = LineChartBarData(
       color: Colors.red,
       isCurved: true,
+      curveSmoothness: 0.2,
       barWidth: 3,
       belowBarData: BarAreaData(
         show: true,
@@ -398,34 +462,99 @@ class _ChartCashbackWidget extends StatelessWidget {
           );
         },
       ),
-      spots: [
-        ...aWeekStatistics.map(
-          (e) => FlSpot(
-              double.parse(e.date!
-                  .difference(DateTime.now().subtract(const Duration(days: 7)))
-                  .inDays
-                  .abs()
-                  .toString()),
-              double.parse(e.cashback.toString())),
-        ),
-      ],
+      spots: showCashback
+          ? [
+              ...widget.aWeekStatistics.map(
+                (e) => FlSpot(
+                    double.parse(e.date!
+                        .difference(
+                            DateTime.now().subtract(const Duration(days: 7)))
+                        .inDays
+                        .abs()
+                        .toString()),
+                    double.parse(e.cashback.toString())),
+              ),
+            ]
+          : [FlSpot.zero],
     );
 
     return Column(
       children: [
-        // const SizedBox(height: 10),
         // const _LineInfoWidget(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  showSum = !showSum;
+                  if (showCashback == false) {
+                    showCashback = true;
+                    showSum = true;
+                  }
+                });
+              },
+              child: Row(
+                children: [
+                  const SizedBox(width: 4),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: showSum ? Colors.blue[400] : Colors.blue[200],
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(6),
+                      ),
+                    ),
+                    height: 14,
+                    width: 22,
+                  ),
+                  const SizedBox(width: 4),
+                  const Text('Сумма'),
+                ],
+              ),
+            ),
+            const SizedBox(width: 40),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  showCashback = !showCashback;
+                  if (showSum == false) {
+                    showSum = true;
+                    showCashback = true;
+                  }
+                });
+              },
+              child: Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: showCashback ? Colors.red[400] : Colors.red[200],
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(6),
+                      ),
+                    ),
+                    height: 14,
+                    width: 22,
+                  ),
+                  const SizedBox(width: 4),
+                  const Text('Кэшбек'),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(
-              left: 0,
+              top: 20,
+              left: 10,
               right: 20,
             ),
             child: Container(
               child: LineChart(
                 LineChartData(
-                  maxY: maxSum,
-                  minY: -maxSum / 10,
+                  maxY: widget.maxSum,
+                  minY: -widget.maxSum / 10,
                   lineTouchData: LineTouchData(
                     touchTooltipData: LineTouchTooltipData(
                       tooltipBgColor: Colors.grey[900],
@@ -488,7 +617,8 @@ class _ChartCashbackWidget extends StatelessWidget {
                             );
                           },
                           showTitles: true,
-                          interval: maxSum != 0 ? (maxSum / 2) : 1,
+                          interval:
+                              widget.maxSum != 0 ? (widget.maxSum / 2) : 1,
                           reservedSize: 30,
                         ),
                       ),
@@ -502,8 +632,8 @@ class _ChartCashbackWidget extends StatelessWidget {
                               child: RotationTransition(
                                 turns: const AlwaysStoppedAnimation(-45 / 360),
                                 child: Text(
-                                  formatter.format(
-                                      aWeekStatistics[value.toInt()].date!),
+                                  formatter.format(widget
+                                      .aWeekStatistics[value.toInt()].date!),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 10,

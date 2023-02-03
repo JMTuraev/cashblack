@@ -8,12 +8,14 @@ class MainButtonWidget extends StatelessWidget {
     required this.method,
     this.color,
     this.percent,
+    this.isLoading,
   }) : super(key: key);
 
   final String text;
-  final Function method;
+  final VoidCallback? method;
   final Color? color;
   final int? percent;
+  final bool? isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,8 @@ class MainButtonWidget extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
-            onPressed: () => method(),
+            onPressed:
+                (isLoading == null || isLoading == false) ? method : null,
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color?>(
                 color,

@@ -8,6 +8,7 @@ class StatisticsViewModel extends ChangeNotifier {
   final Client _client = Client();
 
   late Future<List<SumStat>> sumStats;
+  late var clients;
 
   Future<List<SumStat>> getSumStats({
     required String start,
@@ -21,6 +22,6 @@ class StatisticsViewModel extends ChangeNotifier {
   Future<List<SumCashback>> getCashbackStats() async {
     var cashbackStatistics = _client.getCashbackStatistics();
     // notifyListeners();
-    return cashbackStatistics;
+    return clients = await cashbackStatistics;
   }
 }

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,6 +38,8 @@ class _PaymentViewState extends State<PaymentView> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLoading = context.read<BusinessHomeViewModel>().isLoading;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Пополнить баланс'),
@@ -177,6 +178,7 @@ class _PaymentViewState extends State<PaymentView> {
                     ),
                     const SizedBox(height: 20),
                     MainButtonWidget(
+                      isLoading: isLoading,
                       text: 'Пополнить',
                       method: () async {
                         if (_formKey.currentState!.validate()) {
@@ -185,60 +187,61 @@ class _PaymentViewState extends State<PaymentView> {
                               eDate[2] + eDate[3] + eDate[0] + eDate[1];
 
                           await context
-                              .read<BalanceViewModel>()
+                              .read<BusinessHomeViewModel>()
                               .enterCardDetails(
+                                context,
                                 maskFormatterCardName.getUnmaskedText(),
                                 fixedDate,
                                 amountController.text.removeWhitespaces(),
-                              )
-                              .then(
-                            (value) {
-                              if (value[0] == 'error_miqdor') {
-                                showCupertinoDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return InfoAlertWidget(
-                                      title:
-                                          'Сумма должен быт больше ${context.read<BusinessHomeViewModel>().balance.first.balanceShop.subscriptionPrice}',
-                                    );
-                                  },
-                                );
-                                return true;
-                              } else if (value[0] ==
-                                  'Неправильные входные данные') {
-                                showCupertinoDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return const InfoAlertWidget(
-                                      title: 'Неправильные входные данные',
-                                    );
-                                  },
-                                );
-                                return true;
-                              } else if (value[0] == 'xato') {
-                                showCupertinoDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return const InfoAlertWidget(
-                                      title: 'Попробуйте позже',
-                                    );
-                                  },
-                                );
-                                return true;
-                              }
-                              return Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                  builder: (context) => PaymentVerifyView(
-                                    cardNumber: value[0],
-                                    expireDate: value[1],
-                                    amount: value[2],
-                                    session: value[3],
-                                    phone: value[4],
-                                  ),
-                                ),
                               );
-                            },
-                          );
+                          //     .then(
+                          //   (value) {
+                          //     if (value[0] == 'error_miqdor') {
+                          //       showCupertinoDialog(
+                          //         context: context,
+                          //         builder: (context) {
+                          //           return InfoAlertWidget(
+                          //             title:
+                          //                 'Сумма должен быт больше ${context.read<BusinessHomeViewModel>().balance.first.balanceShop.subscriptionPrice}',
+                          //           );
+                          //         },
+                          //       );
+                          //       return true;
+                          //     } else if (value[0] ==
+                          //         'Неправильные входные данные') {
+                          //       showCupertinoDialog(
+                          //         context: context,
+                          //         builder: (context) {
+                          //           return const InfoAlertWidget(
+                          //             title: 'Неправильные входные данные',
+                          //           );
+                          //         },
+                          //       );
+                          //       return true;
+                          //     } else if (value[0] == 'xato') {
+                          //       showCupertinoDialog(
+                          //         context: context,
+                          //         builder: (context) {
+                          //           return const InfoAlertWidget(
+                          //             title: 'Попробуйте позже',
+                          //           );
+                          //         },
+                          //       );
+                          //       return true;
+                          //     }
+                          //     return Navigator.of(context).push(
+                          //       CupertinoPageRoute(
+                          //         builder: (context) => PaymentVerifyView(
+                          //           cardNumber: value[0],
+                          //           expireDate: value[1],
+                          //           amount: value[2],
+                          //           session: value[3],
+                          //           phone: value[4],
+                          //         ),
+                          //       ),
+                          //     );
+                          //   },
+                          // );
                         }
                       },
                     ),
