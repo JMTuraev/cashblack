@@ -10,6 +10,7 @@ import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../../../../widgets/text_button_widget.dart';
 import '../../client_home_view.dart/client_home_view.dart';
+import 'package:cashblack/extensions.dart';
 
 class ClientLoginVerifyView extends StatefulWidget {
   const ClientLoginVerifyView(
@@ -84,7 +85,8 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
               ),
               const SizedBox(height: 5),
               SmallTitleWidget(
-                text: context.read<ClientLoginViewModel>().phone,
+                text:
+                    context.read<ClientLoginViewModel>().phone.phoneFormatter(),
               ),
               const SizedBox(height: 40),
               PinFieldAutoFill(

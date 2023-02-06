@@ -11,6 +11,11 @@ class EmptyWidget extends StatelessWidget {
             fit: BoxFit.contain,
             height: MediaQuery.of(context).size.width / 2,
           ),
+          // SvgPicture.asset(
+          //   'assets/svg/EmptyInbox.svg',
+          //   fit: BoxFit.contain,
+          //   height: MediaQuery.of(context).size.width / 2,
+          // )
         ],
       );
 }

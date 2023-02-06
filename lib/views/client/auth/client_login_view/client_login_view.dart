@@ -5,38 +5,51 @@ import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../../view_models/client_login_view_model.dart';
+import '../../../../widgets/info_alert_widget.dart';
 import '../../../../widgets/public_offer_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../client_login_verify_view/client_login_verify_view.dart';
 
 class ClientLoginView extends StatelessWidget {
-  const ClientLoginView({super.key});
+  ClientLoginView({super.key});
+
+  TextEditingController phoneController = TextEditingController(text: '');
+  MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
+      mask: '+### ## ### ## ##',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController phoneController = TextEditingController(text: '');
     var provider = context.read<ClientLoginViewModel>();
-    MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
-        mask: '+### ## ### ## ##',
-        filter: {"#": RegExp(r'[0-9]')},
-        type: MaskAutoCompletionType.lazy);
 
     void submit() async {
       if (maskFormatter.isFill()) {
         var phone = maskFormatter.unmaskText(phoneController.text);
 
-        provider.sendSms(
+        bool sendSMS = false;
+
+        sendSMS = await provider.sendSms(
           phone,
           provider.appSignature = await SmsAutoFill().getAppSignature,
         );
-        Navigator.of(context).push(
-          CupertinoPageRoute(
-            builder: (context) => ClientLoginVerifyView(
-              phone: phone,
-              appsign: provider.appSignature,
-            ),
-          ),
-        );
+        sendSMS
+            ? Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => ClientLoginVerifyView(
+                    phone: phone,
+                    appsign: provider.appSignature,
+                  ),
+                ),
+              )
+            : showCupertinoDialog(
+                context: context,
+                builder: (context) {
+                  return InfoAlertWidget(
+                      title:
+                          'Это аккаунт сотрудника, проверьте номер телефона');
+                },
+              );
       }
     }
 

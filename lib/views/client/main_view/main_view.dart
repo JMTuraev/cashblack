@@ -182,10 +182,15 @@ class _MainViewState extends State<MainView> {
                                   child: Stack(
                                     alignment: Alignment.center,
                                     children: [
-                                      CachedNetworkImage(
-                                        width: double.infinity,
-                                        imageUrl: Constants.media +
-                                            userCategoryList[index].logo,
+                                      Padding(
+                                        //TODO changes needed
+                                        padding:
+                                            const EdgeInsets.only(bottom: 16),
+                                        child: CachedNetworkImage(
+                                          width: double.infinity,
+                                          imageUrl: Constants.media +
+                                              userCategoryList[index].logo,
+                                        ),
                                       ),
                                       Positioned(
                                         left: 0,

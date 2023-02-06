@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import '../../../domain/models/category.dart';
 import '../../../domain/models/city.dart';
 import '../../../domain/models/shop.dart';
 import '../../../extensions.dart';
+import '../../../utils/constants.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/create_store_view_view_model.dart';
@@ -30,13 +32,13 @@ class EditStoreView extends StatefulWidget {
 }
 
 class _EditStoreViewState extends State<EditStoreView> {
-  String? _selectedCategory;
-  String? _selectedProvince;
-  String? _selectedCity;
+  // String? _selectedCategory;
+  // String? _selectedProvince;
+  // String? _selectedCity;
 
-  Future<List<Category>>? categoryItems;
-  Future<List<Province>>? provinceItems;
-  Future<List<City>>? cityItems;
+  // Future<List<Category>>? categoryItems;
+  // Future<List<Province>>? provinceItems;
+  // Future<List<City>>? cityItems;
 
   final ImagePicker _picker = ImagePicker();
   final List<File?> _fileList = [];
@@ -90,50 +92,50 @@ class _EditStoreViewState extends State<EditStoreView> {
     });
   }
 
-  onCategoryChanged(value) {
-    setState(() {
-      _selectedCategory = value;
-    });
-  }
+  // onCategoryChanged(value) {
+  //   setState(() {
+  //     _selectedCategory = value;
+  //   });
+  // }
 
-  onProvinceChanged(value) {
-    setState(() {
-      _selectedCity = null;
-      _selectedProvince = value;
-      cityItems = context
-          .read<CreateStoreViewViewModel>()
-          .getCities(_selectedProvince!);
-    });
-  }
+  // onProvinceChanged(value) {
+  //   setState(() {
+  //     _selectedCity = null;
+  //     _selectedProvince = value;
+  //     cityItems = context
+  //         .read<CreateStoreViewViewModel>()
+  //         .getCities(_selectedProvince!);
+  //   });
+  // }
 
-  onCityChanged(value) {
-    setState(() {
-      _selectedCity = value;
-    });
-  }
+  // onCityChanged(value) {
+  //   setState(() {
+  //     _selectedCity = value;
+  //   });
+  // }
 
-  @override
-  void initState() {
-    super.initState();
-    loadUser();
-    _selectedCity = widget.shop.city.id.toString();
-    _selectedProvince = widget.shop.province.id.toString();
-    _selectedCategory = widget.shop.category.id.toString();
-    setState(() {});
-  }
+  // @override
+  // void initState() {
+  // super.initState();
+  // loadUser();
+  // _selectedCity = widget.shop.city.id.toString();
+  // _selectedProvince = widget.shop.province.id.toString();
+  // _selectedCategory = widget.shop.category.id.toString();
+  // setState(() {});
+  // }
 
-  Future<void> loadUser() async {
-    categoryItems = context.read<CreateStoreViewViewModel>().getCategories();
-    provinceItems = context.read<CreateStoreViewViewModel>().getProvincies();
-    cityItems = context
-        .read<CreateStoreViewViewModel>()
-        .getCities(widget.shop.province.id.toString());
-  }
+  // Future<void> loadUser() async {
+  //   categoryItems = context.read<CreateStoreViewViewModel>().getCategories();
+  //   provinceItems = context.read<CreateStoreViewViewModel>().getProvincies();
+  //   cityItems = context
+  //       .read<CreateStoreViewViewModel>()
+  //       .getCities(widget.shop.province.id.toString());
+  // }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _brandName =
-        TextEditingController(text: widget.shop.name);
+    // final TextEditingController _brandName =
+    TextEditingController(text: widget.shop.name);
     final TextEditingController _cashback =
         TextEditingController(text: widget.shop.cashback.toString());
     // Future<List<Category>> categoryItems =
@@ -156,7 +158,10 @@ class _EditStoreViewState extends State<EditStoreView> {
                 children: [
                   const SizedBox(height: 20),
                   _fileList.isEmpty
-                      ? _FilePickerWidget(onTap: getFromGallery)
+                      ? _ImageWidget(
+                          onTap: getFromGallery,
+                          image: widget.shop.image!,
+                        )
                       : _ImageViewWidget(
                           fileList: _fileList,
                           onDelete: () {
@@ -167,131 +172,149 @@ class _EditStoreViewState extends State<EditStoreView> {
                           },
                         ),
                   const SizedBox(height: 20),
-                  FutureBuilder(
-                    future: categoryItems,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        var category = snapshot.data as List<Category>;
-                        return _SelectCategoryWidget(
-                          hint: 'Категория',
-                          selectedOption: widget.shop.category.id.toString(),
-                          categoryItems: category
-                              .map(
-                                (e) => DropdownMenuItem<String>(
-                                  value: e.id.toString(),
-                                  child: Text(e.title),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: onCategoryChanged,
-                        );
-                      } else {
-                        return const _DefaultSelectCategoryWidget(
-                          hint: 'Категория',
-                        );
-                      }
-                    },
+                  Text(
+                    widget.shop.name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
                   ),
                   const SizedBox(height: 20),
-                  _BrandNameWidget(controller: _brandName),
-                  const SizedBox(height: 20),
+
+                  // FutureBuilder(
+                  //   future: categoryItems,
+                  //   builder: (context, snapshot) {
+                  //     if (snapshot.hasData) {
+                  //       var category = snapshot.data as List<Category>;
+                  //       return _SelectCategoryWidget(
+                  //         hint: 'Категория',
+                  //         selectedOption: widget.shop.category.id.toString(),
+                  //         categoryItems: category
+                  //             .map(
+                  //               (e) => DropdownMenuItem<String>(
+                  //                 value: e.id.toString(),
+                  //                 child: Text(e.title),
+                  //               ),
+                  //             )
+                  //             .toList(),
+                  //         onChanged: onCategoryChanged,
+                  //       );
+                  //     } else {
+                  //       return const _DefaultSelectCategoryWidget(
+                  //         hint: 'Категория',
+                  //       );
+                  //     }
+                  //   },
+                  // ),
+                  // const SizedBox(height: 20),
+                  // _BrandNameWidget(controller: _brandName),
+                  // const SizedBox(height: 20),
                   _CashbackWidget(
                     controller: _cashback,
                   ),
                   const SizedBox(height: 20),
-                  FutureBuilder(
-                    future: provinceItems,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        var provincy = snapshot.data as List<Province>;
-                        return _SelectCategoryWidget(
-                          hint: 'Область',
-                          // selectedOption: _selectedProvince,
-                          selectedOption: provincy
-                              .where(
-                                (element) =>
-                                    element.id == widget.shop.province.id,
-                              )
-                              .first
-                              .id
-                              .toString(),
-                          categoryItems: provincy
-                              .map(
-                                (e) => DropdownMenuItem<String>(
-                                  value: e.id.toString(),
-                                  child: Text(e.name),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: onProvinceChanged,
-                        );
-                      } else {
-                        return const _DefaultSelectCategoryWidget(
-                          hint: 'Область',
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  FutureBuilder(
-                    future: cityItems,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        var city = snapshot.data as List<City>;
-                        return _SelectCategoryWidget(
-                          hint: 'Город',
-                          // selectedOption: _selectedCity,
-                          selectedOption: city
-                              // .where(
-                              //   (element) => element.id == widget.shop.city.id,
-                              // )
-                              .first
-                              .id
-                              .toString(),
-                          categoryItems: city
-                              .map(
-                                (e) => DropdownMenuItem<String>(
-                                  value: e.id.toString(),
-                                  child: Text(e.name),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: onCityChanged,
-                        );
-                      } else {
-                        return const _DefaultSelectCategoryWidget(
-                          hint: 'Город',
-                        );
-                      }
-                    },
-                  ),
+                  // FutureBuilder(
+                  //   future: provinceItems,
+                  //   builder: (context, snapshot) {
+                  //     if (snapshot.hasData) {
+                  //       var provincy = snapshot.data as List<Province>;
+                  //       return _SelectCategoryWidget(
+                  //         hint: 'Область',
+                  //         // selectedOption: _selectedProvince,
+                  //         selectedOption: provincy
+                  //             .where(
+                  //               (element) =>
+                  //                   element.id == widget.shop.province.id,
+                  //             )
+                  //             .first
+                  //             .id
+                  //             .toString(),
+                  //         categoryItems: provincy
+                  //             .map(
+                  //               (e) => DropdownMenuItem<String>(
+                  //                 value: e.id.toString(),
+                  //                 child: Text(e.name),
+                  //               ),
+                  //             )
+                  //             .toList(),
+                  //         onChanged: onProvinceChanged,
+                  //       );
+                  //     } else {
+                  //       return const _DefaultSelectCategoryWidget(
+                  //         hint: 'Область',
+                  //       );
+                  //     }
+                  //   },
+                  // ),
+                  // const SizedBox(height: 20),
+                  // FutureBuilder(
+                  //   future: cityItems,
+                  //   builder: (context, snapshot) {
+                  //     if (snapshot.hasData) {
+                  //       var city = snapshot.data as List<City>;
+                  //       return _SelectCategoryWidget(
+                  //         hint: 'Город',
+                  //         // selectedOption: _selectedCity,
+                  //         selectedOption: city
+                  //             // .where(
+                  //             //   (element) => element.id == widget.shop.city.id,
+                  //             // )
+                  //             .first
+                  //             .id
+                  //             .toString(),
+                  //         categoryItems: city
+                  //             .map(
+                  //               (e) => DropdownMenuItem<String>(
+                  //                 value: e.id.toString(),
+                  //                 child: Text(e.name),
+                  //               ),
+                  //             )
+                  //             .toList(),
+                  //         onChanged: onCityChanged,
+                  //       );
+                  //     } else {
+                  //       return const _DefaultSelectCategoryWidget(
+                  //         hint: 'Город',
+                  //       );
+                  //     }
+                  //   },
+                  // ),
                   const SizedBox(height: 20),
                   MainButtonWidget(
                     text: 'OK',
                     method: () async {
                       if (_fileList.isNotEmpty) {
-                        context
+                        await context
                             .read<BusinessHomeViewModel>()
-                            .editstore(
-                              widget.shop.id,
-                              int.parse(_selectedCategory!),
-                              _brandName.text,
-                              int.parse(_cashback.text.removeWhitespaces()),
-                              int.parse(_selectedProvince!),
-                              int.parse(_selectedCity!),
-                              _fileList[0]!,
-                            )
-                            .then((value) =>
-                                //     Navigator.of(context).pushAndRemoveUntil(
-                                //   CupertinoPageRoute(
-                                //     builder: (context) =>
-                                //         const BusinessHomeView(),
-                                //   ),
-                                //   (route) => false,
-                                // ));
-                                Navigator.pop(context));
-                      } else
-                        print('check');
+                            .editStoreImage(widget.shop.id, _fileList[0]!);
+                      }
+                      await context
+                          .read<BusinessHomeViewModel>()
+                          // .editstore(
+                          //   widget.shop.id,
+                          //   int.parse(_selectedCategory!),
+                          //   _brandName.text,
+                          //   int.parse(_cashback.text.removeWhitespaces()),
+                          //   int.parse(_selectedProvince!),
+                          //   int.parse(_selectedCity!),
+                          //   _fileList[0]!,
+                          // )
+                          .editStore(
+                            widget.shop.id,
+                            widget.shop.category.id,
+                            widget.shop.name,
+                            int.parse(_cashback.text.removeWhitespaces()),
+                            widget.shop.province.id,
+                            widget.shop.city.id,
+                          )
+                          .then((value) =>
+                              //     Navigator.of(context).pushAndRemoveUntil(
+                              //   CupertinoPageRoute(
+                              //     builder: (context) =>
+                              //         const BusinessHomeView(),
+                              //   ),
+                              //   (route) => false,
+                              // ));
+                              Navigator.pop(context));
                     },
                   ),
                   const SizedBox(height: 20),
@@ -319,8 +342,11 @@ class _CashbackWidget extends StatelessWidget {
 
     return TextFormField(
       controller: controller,
+      maxLength: 2,
       inputFormatters: [numericTextFormatter],
       decoration: const InputDecoration(
+        counterText: '',
+        labelText: 'Кэшбек',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
@@ -330,7 +356,7 @@ class _CashbackWidget extends StatelessWidget {
             Radius.circular(10),
           ),
         ),
-        hintText: 'Кэшбек',
+        // hintText: 'Кэшбек',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),
@@ -573,6 +599,59 @@ class _DefaultSelectCategoryWidget extends StatelessWidget {
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
               ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ImageWidget extends StatelessWidget {
+  const _ImageWidget({
+    Key? key,
+    required this.onTap,
+    required this.image,
+  }) : super(key: key);
+
+  final Function onTap;
+  final String image;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onTap(),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(
+            const Radius.circular(90),
+          ),
+          color: Colors.grey[800],
+        ),
+        width: 150,
+        height: 150,
+        child: DottedBorder(
+          borderType: BorderType.RRect,
+          radius: const Radius.circular(90),
+          // padding: const EdgeInsets.all(14),
+          dashPattern: const [3, 3, 3, 3],
+          color: Colors.white,
+          // child: Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     Center(
+          //       child: CachedNetworkImage(imageUrl: Constants.media + image),
+          //     ),
+          //   ],
+          // ),
+          child: ClipRRect(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            borderRadius: BorderRadius.circular(100),
+            child: CachedNetworkImage(
+              imageUrl: Constants.media + image,
+              fit: BoxFit.cover,
+              height: 150,
+              width: 150,
             ),
           ),
         ),

@@ -22,6 +22,7 @@ import 'views/business/create_store_view/create_store_view.dart';
 import 'views/client/auth/client_login_view/client_login_view.dart';
 import 'views/client/client_home_view.dart/client_home_view.dart';
 import 'views/select_type_view/select_type_view.dart';
+import 'widgets/dismiss_keyboard_widget.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<BusinessLoginViewModel>(
           create: (ctx) => BusinessLoginViewModel(),
-          child: const BusinessLoginView(),
+          child: BusinessLoginView(),
         ),
         ChangeNotifierProvider<BusinessHomeViewModel>(
           create: (ctx) => BusinessHomeViewModel(),
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<ClientLoginViewModel>(
           create: (ctx) => ClientLoginViewModel(),
-          child: const ClientLoginView(),
+          child: ClientLoginView(),
         ),
         ChangeNotifierProvider<ClientHomeViewModel>(
           create: (ctx) => ClientHomeViewModel(),
@@ -94,33 +95,35 @@ class MyApp extends StatelessWidget {
           create: (ctx) => BalanceViewModel(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Cashblack',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          backgroundColor: Colors.black,
-          scaffoldBackgroundColor: Colors.black,
-          appBarTheme: const AppBarTheme(
+      child: DismissKeyboardWidget(
+        child: MaterialApp(
+          title: 'Cashblack',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            brightness: Brightness.dark,
             backgroundColor: Colors.black,
-            systemOverlayStyle: AppBarStyle.appBarStyle,
-            elevation: 0,
-            centerTitle: true,
-            scrolledUnderElevation: 0,
-            titleTextStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
+            scaffoldBackgroundColor: Colors.black,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.black,
+              systemOverlayStyle: AppBarStyle.appBarStyle,
+              elevation: 0,
+              centerTitle: true,
+              scrolledUnderElevation: 0,
+              titleTextStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+              ),
             ),
+            cardTheme: CardTheme(
+              color: Colors.grey.shade900,
+              elevation: 0,
+            ),
+            useMaterial3: true,
           ),
-          cardTheme: CardTheme(
-            color: Colors.grey.shade900,
-            elevation: 0,
-          ),
-          useMaterial3: true,
+          home: isLogged
+              ? (isBusiness ? const BusinessHomeView() : const ClientHomeView())
+              : const SelectTypeView(),
         ),
-        home: isLogged
-            ? (isBusiness ? const BusinessHomeView() : const ClientHomeView())
-            : const SelectTypeView(),
       ),
     );
   }

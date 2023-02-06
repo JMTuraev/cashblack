@@ -142,7 +142,7 @@ class _SettingsViewState extends State<SettingsView> {
                     )
                   : const SizedBox(),
               isBusiness
-                  ? workersList.length > 1
+                  ? workersList.length > 0
                       ? Expanded(
                           child: ListView.separated(
                             shrinkWrap: true,

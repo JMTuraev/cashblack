@@ -144,9 +144,34 @@ class BusinessHomeViewModel extends ChangeNotifier {
     // notifyListeners();
   }
 
-  Future<void> editstore(int id, int category, String name, int cashback,
-      int province, int city, File file) async {
-    await _client.editStore(id, category, name, cashback, province, city, file);
+  Future<void> editStore(
+    int id,
+    int category,
+    String name,
+    int cashback,
+    int province,
+    int city,
+  ) async {
+    await _client.editStore(
+      id,
+      category,
+      name,
+      cashback,
+      province,
+      city,
+    );
+    await getProfile();
+    notifyListeners();
+  }
+
+  Future<void> editStoreImage(
+    int id,
+    File file,
+  ) async {
+    await _client.editStoreImage(
+      id,
+      file,
+    );
     await getProfile();
     notifyListeners();
   }
@@ -180,6 +205,18 @@ class BusinessHomeViewModel extends ChangeNotifier {
             builder: (context) {
               return const InfoAlertWidget(
                 title: 'Неправильные входные данные',
+              );
+            },
+          );
+          isLoading = false;
+          notifyListeners();
+          return true;
+        } else if (value[0] == 'Превышен лимит отправки одноразового пароля') {
+          showCupertinoDialog(
+            context: context,
+            builder: (context) {
+              return const InfoAlertWidget(
+                title: 'Превышен лимит отправки одноразового пароля',
               );
             },
           );
@@ -230,6 +267,19 @@ class BusinessHomeViewModel extends ChangeNotifier {
         .paymentConfirm(cardNumber, expireDate, amount, session, otp)
         .then(
       (value) {
+        if (value == 'xato') {
+          showCupertinoDialog(
+            context: context,
+            builder: (context) {
+              return const InfoAlertWidget(
+                title: 'Неправильные входные данные или попробуйте позже',
+              );
+            },
+          );
+          isLoading = false;
+          notifyListeners();
+          return true;
+        }
         isLoading = false;
         notifyListeners();
         return Navigator.of(context).pushAndRemoveUntil(

@@ -11,6 +11,7 @@ import '../../../../widgets/small_title_widget.dart';
 import '../../../../widgets/text_button_widget.dart';
 import '../../business_home_view/business_home_view.dart';
 import '../../create_store_view/create_store_view.dart';
+import 'package:cashblack/extensions.dart';
 
 class BusinessLoginVerifyView extends StatefulWidget {
   const BusinessLoginVerifyView(
@@ -91,7 +92,10 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               ),
               const SizedBox(height: 5),
               SmallTitleWidget(
-                text: context.read<BusinessLoginViewModel>().phone,
+                text: context
+                    .read<BusinessLoginViewModel>()
+                    .phone
+                    .phoneFormatter(),
               ),
               const SizedBox(height: 40),
               PinFieldAutoFill(
@@ -118,9 +122,11 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               TextButtonWidget(
                 text: 'Не получили код. Отправить код еще раз',
                 method: () async {
-                  await context
-                      .read<BusinessLoginViewModel>()
-                      .sendSms(widget.phone, widget.appsign, widget.promo);
+                  await context.read<BusinessLoginViewModel>().sendSms(
+                        widget.phone,
+                        widget.appsign,
+                        widget.promo,
+                      );
                   _animationController!.reset();
                   _animationController!.forward();
                 },

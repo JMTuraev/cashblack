@@ -124,8 +124,9 @@ class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
                             );
                           },
                         );
-                      } else
-                        return const EmptyWidget();
+                      } else {
+                        return const Center(child: EmptyWidget());
+                      }
                     } else {
                       return const Center(child: LogoAnimatedWidget(size: 1.5));
                     }

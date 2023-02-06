@@ -95,8 +95,8 @@ class _SelectTypeViewState extends State<SelectTypeView> {
                   ),
                   const SizedBox(height: 10),
                   selections[0] == true
-                      ? const BusinessLoginView()
-                      : const ClientLoginView(),
+                      ? BusinessLoginView()
+                      : ClientLoginView(),
                 ],
               ),
             ),

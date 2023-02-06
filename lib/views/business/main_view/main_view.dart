@@ -217,6 +217,49 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
         ),
         // const SizedBox(height: 10),
         // const _LineInfoWidget(),
+        Column(
+          children: [
+            FutureBuilder(
+              future: statsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<SumCashback> data = snapshot.data as List<SumCashback>;
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/svg/profile-2user.svg',
+                            semanticsLabel: 'user',
+                            color: Colors.white,
+                            height: 30,
+                            width: 30,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            data.length.toString(),
+                            style: const TextStyle(
+                              fontSize: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Text(
+                        'Количество клиентов',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),
+          ],
+        ),
         const SizedBox(height: 20),
         SizedBox(
           // height: MediaQuery.of(context).size.height / 3.5,
@@ -264,49 +307,49 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
           ),
         ),
         const SizedBox(height: 30),
-        Column(
-          children: [
-            FutureBuilder(
-              future: statsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<SumCashback> data = snapshot.data as List<SumCashback>;
-                  return Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/svg/user-octagon.svg',
-                            semanticsLabel: 'user',
-                            color: Colors.white,
-                            height: 30,
-                            width: 30,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            data.length.toString(),
-                            style: const TextStyle(
-                              fontSize: 30,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Text(
-                        'Количество клиентов',
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return const SizedBox();
-                }
-              },
-            ),
-          ],
-        ),
+        // Column(
+        //   children: [
+        //     FutureBuilder(
+        //       future: statsFuture,
+        //       builder: (context, snapshot) {
+        //         if (snapshot.hasData) {
+        //           List<SumCashback> data = snapshot.data as List<SumCashback>;
+        //           return Column(
+        //             children: [
+        //               Row(
+        //                 mainAxisAlignment: MainAxisAlignment.center,
+        //                 children: [
+        //                   SvgPicture.asset(
+        //                     'assets/svg/user-octagon.svg',
+        //                     semanticsLabel: 'user',
+        //                     color: Colors.white,
+        //                     height: 30,
+        //                     width: 30,
+        //                   ),
+        //                   const SizedBox(width: 10),
+        //                   Text(
+        //                     data.length.toString(),
+        //                     style: const TextStyle(
+        //                       fontSize: 30,
+        //                     ),
+        //                   ),
+        //                 ],
+        //               ),
+        //               const Text(
+        //                 'Количество клиентов',
+        //                 style: TextStyle(
+        //                   fontSize: 16,
+        //                 ),
+        //               ),
+        //             ],
+        //           );
+        //         } else {
+        //           return const SizedBox();
+        //         }
+        //       },
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }

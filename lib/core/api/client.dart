@@ -614,14 +614,14 @@ class Client {
     }
   }
 
-  Future<void> editStore(
+  Future<void> _editStoreOld(
     int shopId,
     int category,
     String name,
     int cashback,
     int province,
     int city,
-    File file,
+    File? file,
   ) async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
@@ -647,14 +647,85 @@ class Client {
     req.fields['provinse_id'] = province.toString();
     req.fields['distrik_id'] = city.toString();
 
-    var picture = await http.MultipartFile.fromPath('brand_img', file.path);
+    if (file != null) {
+      var picture = await http.MultipartFile.fromPath('brand_img', file.path);
 
-    req.files.add(picture);
+      req.files.add(picture);
+    }
 
     var res = await req.send();
     final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
+    } else {
+      print(res.reasonPhrase);
+    }
+  }
+
+  Future<void> editStoreImage(
+    int shopId,
+    File? file,
+  ) async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+    Map<String, dynamic> body = {
+      'brand_img': file,
+    };
+
+    Uri url = Uri.parse('$path/ShopsImgUpdateViews/$shopId/');
+    http.MultipartRequest req = http.MultipartRequest('PUT', url);
+
+    if (file != null) {
+      var picture = await http.MultipartFile.fromPath('brand_img', file.path);
+
+      req.files.add(picture);
+    }
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('!!!!!edit store aimge');
+    } else {
+      print(res.reasonPhrase);
+    }
+  }
+
+  Future<void> editStore(
+    int shopId,
+    int category,
+    String name,
+    int cashback,
+    int province,
+    int city,
+  ) async {
+    String? value = await storage.read(key: 'bearer');
+    Map<String, String> headers = {
+      'Content-Type': ' application/json; charset=utf-8',
+      'Authorization': value!
+    };
+
+    Map<String, dynamic> body = {
+      'name_shops': name,
+      'cashback': cashback,
+      'categor_id': category,
+      'provinse_id': province,
+      'distrik_id': city,
+    };
+
+    Uri url = Uri.parse('$path/shops_update_view/$shopId/');
+    http.Request req = http.Request('PUT', url);
+    req.body = json.encode(body);
+    req.headers.addAll(headers);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('!!!!!edit store');
     } else {
       print(res.reasonPhrase);
     }
@@ -1113,28 +1184,34 @@ class Client {
     var res = await req.send();
     final resBody = await res.stream.bytesToString();
     if (res.statusCode >= 200 && res.statusCode < 300) {
+      if (resBody.contains('otpSentPhone') && resBody.contains('session')) {
+        List<dynamic> result = [
+          cardNumber,
+          expireDate,
+          amount,
+          json.decode(resBody)['msg']['result']['session'],
+          json.decode(resBody)['msg']['result']['otpSentPhone']
+        ];
+        return result;
+      }
       if (resBody.contains('Eng kam miqdor')) {
         return ['error_miqdor'];
+      } else if (resBody.contains('Превышен')) {
+        return ['Превышен лимит отправки одноразового пароля'];
       } else if (resBody.contains('Неправильные входные данные') ||
           resBody.contains('Карта не найдена') ||
           resBody.contains('errorCode')) {
         return ['Неправильные входные данные'];
+      } else {
+        return ['xato'];
       }
-      List<dynamic> result = [
-        cardNumber,
-        expireDate,
-        amount,
-        json.decode(resBody)['msg']['result']['session'],
-        json.decode(resBody)['msg']['result']['otpSentPhone']
-      ];
-      return result;
     } else {
       print(res.reasonPhrase);
       return ['xato'];
     }
   }
 
-  Future<void> paymentConfirm(
+  Future<String> paymentConfirm(
     String cardNumber,
     String expireDate,
     String amount,
@@ -1163,10 +1240,16 @@ class Client {
     var res = await req.send();
     final resBody = await res.stream.bytesToString();
 
-    if (res.statusCode >= 200 && res.statusCode < 300) {
+    if (res.statusCode >= 200 && res.statusCode < 300 ||
+        res.statusCode == 500) {
+      if (resBody.contains('Qabul qilindi') || res.statusCode == 500) {
+        return 'OK';
+      }
       print(json.decode(resBody));
+      return 'xato';
     } else {
       print(res.reasonPhrase);
+      return 'xato';
     }
   }
 }

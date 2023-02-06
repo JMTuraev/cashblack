@@ -5,22 +5,24 @@ import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../../view_models/business_login_view_model.dart';
+import '../../../../widgets/info_alert_widget.dart';
 import '../../../../widgets/public_offer_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../business_login_verify_view/business_login_verify_view.dart';
 
 class BusinessLoginView extends StatelessWidget {
-  const BusinessLoginView({super.key});
+  BusinessLoginView({super.key});
+
+  TextEditingController phoneController = TextEditingController(text: '');
+  TextEditingController promoCodeController = TextEditingController(text: '');
+  MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
+      mask: '+### ## ### ## ##',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController phoneController = TextEditingController(text: '');
-    TextEditingController promoCodeController = TextEditingController(text: '');
     var provider = context.read<BusinessLoginViewModel>();
-    MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
-        mask: '+### ## ### ## ##',
-        filter: {"#": RegExp(r'[0-9]')},
-        type: MaskAutoCompletionType.lazy);
 
     void submit() async {
       if (maskFormatter.isFill()) {
@@ -28,20 +30,30 @@ class BusinessLoginView extends StatelessWidget {
 
         var promo = promoCodeController.text;
 
-        provider.sendSms(
+        bool sendSMS = false;
+
+        sendSMS = await provider.sendSms(
           phone,
           provider.appSignature = await SmsAutoFill().getAppSignature,
           promo,
         );
-        Navigator.of(context).push(
-          CupertinoPageRoute(
-            builder: (context) => BusinessLoginVerifyView(
-              appsign: provider.appSignature,
-              phone: phone,
-              promo: promo,
-            ),
-          ),
-        );
+        sendSMS
+            ? Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => BusinessLoginVerifyView(
+                    appsign: provider.appSignature,
+                    phone: phone,
+                    promo: promo,
+                  ),
+                ),
+              )
+            : showCupertinoDialog(
+                context: context,
+                builder: (context) {
+                  return InfoAlertWidget(
+                      title: 'Это аккаунт клиента, проверьте номер телефона');
+                },
+              );
       }
     }
 

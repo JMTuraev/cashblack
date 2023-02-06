@@ -11,7 +11,7 @@ class ClientLoginViewModel extends ChangeNotifier {
 
   bool isLoading = false;
 
-  Future<void> sendSms(String phoneNumber, String phoneId) async {
+  Future<bool> sendSms(String phoneNumber, String phoneId) async {
     isLoading = true;
     notifyListeners();
     phone = phoneNumber;
@@ -22,9 +22,22 @@ class ClientLoginViewModel extends ChangeNotifier {
     if (!isRegister) {
       await _client.login(phoneNumber);
     }
+    var user = await _client.getProfile();
+    if (user.groups.first.name != 'Client') {
+      // await showCupertinoDialog(
+      //   context: context,
+      //   builder: (context) {
+      //     return const InfoAlertWidget(title: 'Bu klient');
+      //   },
+      // );
+      isLoading = false;
+      notifyListeners();
+      return false;
+    }
     await _client.sendSMS(phoneId);
     isLoading = false;
     notifyListeners();
+    return true;
   }
 
   Future<bool> onVerifyButtonPressed(String code, String phone) async {
