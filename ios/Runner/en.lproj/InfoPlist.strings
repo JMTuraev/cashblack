@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "Cashblack";
+"CFBundleName" = "cashblack";
+"NSCameraUsageDescription" = "This app requires access to the camera to scan a QR code for getting user data from the database.";
+"NSPhotoLibraryUsageDescription" = "This app requires access to the photo library to set image to the store created by the user.";
