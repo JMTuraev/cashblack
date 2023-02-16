@@ -59,8 +59,9 @@ class _SendNotificationViewState extends State<SendNotificationView> {
 
   @override
   Widget build(BuildContext context) {
-    String balance = context.read<BusinessHomeViewModel>().balance.first.amount;
-    String price = context.read<SendNotificationViewModel>().notificationPrice;
+    String balance =
+        context.watch<BusinessHomeViewModel>().balance.first.amount;
+    String price = context.watch<SendNotificationViewModel>().notificationPrice;
 
     return SafeArea(
       child: Scaffold(
@@ -115,22 +116,25 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                           },
                         );
                         // );
-                      }
-                      await context
-                          .read<SendNotificationViewModel>()
-                          .send(
-                            _fileList[0]!,
-                            _titleController.text,
-                            _contentController.text,
-                          )
-                          .then(
-                            (value) => Navigator.of(context).pushAndRemoveUntil(
-                              CupertinoPageRoute(
-                                builder: (context) => const BusinessHomeView(),
+                      } else {
+                        await context
+                            .read<SendNotificationViewModel>()
+                            .send(
+                              _fileList[0]!,
+                              _titleController.text,
+                              _contentController.text,
+                            )
+                            .then(
+                              (value) =>
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                CupertinoPageRoute(
+                                  builder: (context) =>
+                                      const BusinessHomeView(),
+                                ),
+                                (route) => false,
                               ),
-                              (route) => false,
-                            ),
-                          );
+                            );
+                      }
                     },
                   ),
                   const SizedBox(height: 10),
