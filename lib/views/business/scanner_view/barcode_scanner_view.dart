@@ -40,21 +40,23 @@ class BarcodeScannerView extends StatelessWidget {
                 children: [
                   MobileScanner(
                     controller: controller,
-                    allowDuplicates: false,
-                    onDetect: (barcode, args) {
-                      if (barcode.rawValue == null) {
-                        debugPrint('Failed to scan Barcode');
-                      } else {
-                        final String code = barcode.rawValue!;
-                        debugPrint('Barcode found! $code');
-                        scannedTime += 1;
+                    // allowDuplicates: false,
+                    onDetect: (barcode) {
+                      final List<Barcode> codes = barcode.barcodes;
+
+                      // debugPrint('Barcode found! $code');
+                      for (final barcode in codes) {
+                        if (barcode.rawValue != null) {
+                          scannedTime += 1;
+                        }
+
                         if (scannedTime == 1) {
                           // context.read<BusinessHomeViewModel>().currentIndex = 0;
                           context.read<BusinessHomeViewModel>().setindex(0);
                           Navigator.of(context).push(
                             CupertinoPageRoute(
                               builder: (context) => PaymentClientView(
-                                code: code,
+                                code: barcode.rawValue!,
                                 shopId: shopId,
                               ),
                             ),

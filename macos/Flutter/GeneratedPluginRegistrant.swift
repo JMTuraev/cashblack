@@ -7,8 +7,8 @@ import Foundation
 
 import flutter_secure_storage_macos
 import mobile_scanner
-import path_provider_macos
-import shared_preferences_macos
+import path_provider_foundation
+import shared_preferences_foundation
 import sqflite
 import url_launcher_macos
 

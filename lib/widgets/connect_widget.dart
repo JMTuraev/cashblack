@@ -36,7 +36,7 @@ class ConnectWidget extends StatelessWidget {
                   color: Color(0xff262629),
                 ),
                 height: getH(44),
-                width: getW(44),
+                width: getH(44),
                 child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset('assets/svg/telegram.svg'),
@@ -45,14 +45,14 @@ class ConnectWidget extends StatelessWidget {
             ),
             SizedBox(width: getW(8)),
             GestureDetector(
-              onTap: () => Helpers.toCall('998997034444'),
+              onTap: () => Helpers.toCall('+998997034444'),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
                   color: Color(0xff262629),
                 ),
                 height: getH(44),
-                width: getW(44),
+                width: getH(44),
                 child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset('assets/svg/phone.svg'),

@@ -26,7 +26,7 @@ class MainButtonWidget extends StatelessWidget {
       children: [
         SizedBox(
           width: double.infinity,
-          height: getH(60),
+          // height: getH(60),
           child: ElevatedButton(
             onPressed:
                 (isLoading == null || isLoading == false) ? method : null,
@@ -47,37 +47,46 @@ class MainButtonWidget extends StatelessWidget {
                 ),
               ),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (isLoading == null || isLoading == false)
-                  const SizedBox()
-                else
-                  SizedBox(
-                    width: getW(26),
-                    height: getH(26),
-                  ),
-                Text(
-                  text,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                if (isLoading == null || isLoading == false)
-                  const SizedBox()
-                else
-                  SizedBox(
-                    width: getW(26),
-                    height: getH(26),
-                    child: const CupertinoActivityIndicator(
-                      // strokeWidth: 2,
-                      color: Colors.white,
+                Row(
+                  children: [
+                    Spacer(),
+                    Container(
+                      height: getH(26),
+                      child: Text(
+                        text,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                  ),
+                    Spacer(),
+                  ],
+                ),
+                isLoading == true
+                    ? Positioned(
+                        top: 0,
+                        bottom: 0,
+                        right: 0,
+                        child: SizedBox(
+                          width: getW(26),
+                          height: getH(26),
+                          child: const CupertinoActivityIndicator(
+                            // strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    : SizedBox(
+                        width: getW(26),
+                        height: getH(26),
+                      ),
               ],
             ),
           ),
@@ -87,19 +96,18 @@ class MainButtonWidget extends StatelessWidget {
             top: 2,
             right: 3,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   // color: Colors.green[300],
-                  borderRadius: const BorderRadius.all(
+                  borderRadius: BorderRadius.all(
                 Radius.circular(20),
               )),
               padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
               child: Text(
-                NumberFormat.simpleCurrency(
-                      name: '',
-                      locale: 'ru_RU',
-                      decimalDigits: 0,
-                    ).format(percent) +
-                    'сум',
+                '${NumberFormat.simpleCurrency(
+                  name: '',
+                  locale: 'ru_RU',
+                  decimalDigits: 0,
+                ).format(percent)}сум',
                 style: const TextStyle(
                   fontSize: 10,
                   color: Colors.white,
