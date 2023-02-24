@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../core/api/client.dart';
-import '../widgets/info_alert_widget.dart';
 
 class BusinessLoginViewModel extends ChangeNotifier {
   final Client _client = Client();
@@ -44,7 +43,13 @@ class BusinessLoginViewModel extends ChangeNotifier {
   }
 
   Future<bool> onVerifyButtonPressed(String code, String phone) async {
-    return await _client.checkSMS(code, 'isBusiness', phone);
+    // return await _client.checkSMS(code, 'isBusiness', phone);
+    isLoading = true;
+    notifyListeners();
+    var result = await _client.checkSMS(code, 'isBusiness', phone);
+    isLoading = false;
+    notifyListeners();
+    return result;
   }
 
   // Future<void> getProfile() async {

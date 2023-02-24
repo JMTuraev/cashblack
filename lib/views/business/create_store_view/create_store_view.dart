@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/category.dart';
 import '../../../domain/models/city.dart';
 import '../../../extensions.dart';
+import '../../../size_config.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/create_store_view_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
@@ -134,6 +135,8 @@ class _CreateStoreViewState extends State<CreateStoreView> {
     // Future<List<City>> cityItems =
     //     context.read<CreateStoreViewViewModel>().getCities('1');
     // FlutterNativeSplash.remove();
+
+    SizeConfig().init(context);
 
     return Scaffold(
       body: Padding(
@@ -321,13 +324,13 @@ class _CashbackWidget extends StatelessWidget {
               width: 2,
             ),
             borderRadius: BorderRadius.all(
-              Radius.circular(10),
+              Radius.circular(20),
             ),
           ),
           hintText: 'Кэшбек',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(10),
+              Radius.circular(20),
             ),
           ),
         ),
@@ -400,27 +403,26 @@ class _FilePickerWidget extends StatelessWidget {
       onTap: () => onTap(),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(
-            const Radius.circular(90),
-          ),
-          color: Colors.grey[800],
+          borderRadius: BorderRadius.circular(30),
+          color: Color(0xff1c1c1d),
         ),
-        width: 150,
-        height: 150,
+        width: 120,
+        height: 120,
         child: DottedBorder(
           borderType: BorderType.RRect,
-          radius: const Radius.circular(90),
-          padding: const EdgeInsets.all(14),
+          radius: const Radius.circular(30),
           dashPattern: const [3, 3, 3, 3],
           color: Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Center(
-                  child: Icon(
-                CupertinoIcons.photo,
-                size: 40,
-              )),
+                child: SvgPicture.asset(
+                  'assets/svg/gallery.svg',
+                  height: 60,
+                  width: 60,
+                ),
+              ),
             ],
           ),
         ),
@@ -448,13 +450,13 @@ class _BrandNameWidget extends StatelessWidget {
             width: 2,
           ),
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
         hintText: 'Бренд',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
       ),
@@ -490,7 +492,7 @@ class _SelectCategoryWidget extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
         child: DropdownButtonFormField<String>(
@@ -509,12 +511,12 @@ class _SelectCategoryWidget extends StatelessWidget {
                 width: 2,
               ),
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
           ),
@@ -539,7 +541,7 @@ class _DefaultSelectCategoryWidget extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
         child: DropdownButtonFormField<String>(
@@ -558,12 +560,12 @@ class _DefaultSelectCategoryWidget extends StatelessWidget {
                 width: 2,
               ),
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import '../../../../extensions.dart';
 import '../../../../view_models/client_home_view_model.dart';
 import '../../../../view_models/client_login_view_model.dart';
 import '../../../../widgets/hero_title_widget.dart';
@@ -10,12 +11,13 @@ import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../../../../widgets/text_button_widget.dart';
 import '../../client_home_view.dart/client_home_view.dart';
-import 'package:cashblack/extensions.dart';
 
 class ClientLoginVerifyView extends StatefulWidget {
-  const ClientLoginVerifyView(
-      {Key? key, required this.phone, required this.appsign})
-      : super(key: key);
+  const ClientLoginVerifyView({
+    Key? key,
+    required this.phone,
+    required this.appsign,
+  }) : super(key: key);
 
   final String phone;
   final String appsign;
@@ -45,7 +47,9 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-        vsync: this, duration: Duration(seconds: levelClock));
+      vsync: this,
+      duration: Duration(seconds: levelClock),
+    );
 
     _animationController!.forward();
 
@@ -61,9 +65,9 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
 
   @override
   void dispose() {
-    super.dispose();
     cancel();
     _animationController!.dispose();
+    super.dispose();
   }
 
   @override
@@ -74,7 +78,6 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const HeroTitleWidget(
                 text: 'Верификационный код',
@@ -129,20 +132,24 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
               ),
               const SizedBox(height: 20),
               MainButtonWidget(
+                isLoading: context.watch<ClientLoginViewModel>().isLoading,
                 text: 'Подтвердить',
                 method: () async {
                   await context.read<ClientHomeViewModel>().getProfile();
                   bool checked = await context
                       .read<ClientLoginViewModel>()
-                      .onVerifyButtonPressed(otpCode ?? textController.text,
-                          context.read<ClientLoginViewModel>().phone);
+                      .onVerifyButtonPressed(
+                        otpCode ?? textController.text,
+                        context.read<ClientLoginViewModel>().phone,
+                      );
 
                   checked
                       ? Navigator.of(context).pushAndRemoveUntil(
                           CupertinoPageRoute(
                             builder: (context) => const ClientHomeView(),
                           ),
-                          (route) => false)
+                          (route) => false,
+                        )
                       : null;
                 },
               ),

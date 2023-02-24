@@ -13,6 +13,13 @@ extension StringExtensions on String {
     );
   }
 
+  String phoneHiddenFormatter() {
+    return replaceAllMapped(
+      RegExp(r'(\d{3})(\d{2})(\d{3})(\d{2})(\d+)'),
+      (m) => '+${m[1]} ** *** ${m[4]} ${m[5]}',
+    );
+  }
+
   String cardFormatter() {
     return replaceAllMapped(
       RegExp(r'(\d{4})(\d{4})(\d{4})(\d{4})'),

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/received_notification.dart';
-import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/empty_widget.dart';
@@ -34,9 +33,10 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Уведомления'),
-          bottom: ThemeDetails.appBarDivider,
+          // bottom: ThemeDetails.appBarDivider,
         ),
         body: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
               FutureBuilder(
@@ -62,66 +62,66 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                                   ),
                                 );
                               },
-                              child: Card(
-                                child: Container(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      ClipRRect(
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          bottomLeft: Radius.circular(10),
-                                        ),
-                                        child: CachedNetworkImage(
-                                          fit: BoxFit.fitWidth,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              4,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              3,
-                                          imageUrl: Constants.media +
-                                              notifications[index].image,
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                  color: Color.fromRGBO(28, 28, 29, 1),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        bottomLeft: Radius.circular(20),
+                                      ),
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.fitHeight,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                4,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                3,
+                                        imageUrl: Constants.media +
+                                            notifications[index].image,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Container(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              notifications[index].name,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              notifications[index].title,
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      SizedBox(width: 10),
-                                      Expanded(
-                                        child: Container(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                notifications[index].name,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                notifications[index].title,
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    )
+                                  ],
                                 ),
                               ),
                             );
@@ -142,10 +142,10 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                     } else {
                       return Column(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 100,
                           ),
-                          Center(child: const EmptyWidget()),
+                          const Center(child: EmptyWidget()),
                         ],
                       );
                     }

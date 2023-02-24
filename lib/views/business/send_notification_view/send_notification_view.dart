@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../theme/theme_details.dart';
+import '../../../size_config.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/info_alert_widget.dart';
@@ -67,7 +67,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Отправка уведомлений'),
-          bottom: ThemeDetails.appBarDivider,
+          // bottom: ThemeDetails.appBarDivider,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -75,11 +75,12 @@ class _SendNotificationViewState extends State<SendNotificationView> {
             child: Form(
               child: Column(
                 children: [
-                  Image.asset(
-                    'assets/images/email.png',
-                    fit: BoxFit.contain,
-                    height: MediaQuery.of(context).size.width / 2.5,
-                  ),
+                  // Image.asset(
+                  //   'assets/images/email.png',
+                  //   fit: BoxFit.contain,
+                  //   height: MediaQuery.of(context).size.width / 2.5,
+                  // ),
+                  SizedBox(height: getH(58)),
                   _fileList.isEmpty
                       ? _FilePickerWidget(onTap: selectImage)
                       : _ImageViewWidget(
@@ -88,17 +89,37 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                             dltImages(_fileList.first);
                           },
                         ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: getH(20)),
                   TextFieldWidget(
                     hintText: 'Заголовок',
                     controller: _titleController,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: getH(20)),
                   MultilineTextFieldWidget(
                     hintText: 'Текст',
                     controller: _contentController,
                   ),
-                  const SizedBox(height: 20),
+                  // const Spacer(),
+                  SizedBox(height: getH(20)),
+
+                  FutureBuilder(
+                    future: prices,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(
+                          'Цена ${NumberFormat.simpleCurrency(
+                            name: '',
+                            locale: 'ru_RU',
+                            decimalDigits: 0,
+                          ).format(int.parse(snapshot.data.toString()))}сумов',
+                        );
+                      } else {
+                        return const Text('');
+                      }
+                    },
+                  ),
+                  SizedBox(height: getH(20)),
+
                   MainButtonWidget(
                     text: 'Отправить',
                     method: () async {
@@ -110,7 +131,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                         await showCupertinoDialog(
                           context: context,
                           builder: (context) {
-                            return InfoAlertWidget(
+                            return const InfoAlertWidget(
                               title: 'Пополните баланс',
                             );
                           },
@@ -138,22 +159,6 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                     },
                   ),
                   const SizedBox(height: 10),
-                  FutureBuilder(
-                    future: prices,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(
-                          'Цена ${NumberFormat.simpleCurrency(
-                            name: '',
-                            locale: 'ru_RU',
-                            decimalDigits: 0,
-                          ).format(int.parse(snapshot.data.toString()))}сумов',
-                        );
-                      } else {
-                        return const Text('');
-                      }
-                    },
-                  ),
                 ],
               ),
             ),
@@ -177,13 +182,16 @@ class _ImageViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(
+        Radius.circular(20),
+      ),
       child: Container(
         padding: const EdgeInsets.all(1),
         child: Stack(
           children: <Widget>[
             SizedBox(
-              height: 200,
+              height: getH(200),
               width: double.infinity,
               child: Image.file(
                 File(_fileList.first!.path),
@@ -191,7 +199,7 @@ class _ImageViewWidget extends StatelessWidget {
               ),
             ),
             Positioned(
-              right: 1,
+              right: 2,
               child: GestureDetector(
                 onTap: () => onTap(),
                 child: const Icon(Icons.cancel, color: Colors.redAccent),
@@ -219,25 +227,25 @@ class _FilePickerWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(
-            const Radius.circular(10),
+            Radius.circular(20),
           ),
           color: Colors.grey[800],
         ),
-        width: double.infinity,
-        child: DottedBorder(
-          borderType: BorderType.RRect,
-          radius: const Radius.circular(10),
-          padding: const EdgeInsets.all(14),
-          dashPattern: [3, 3, 3, 3],
-          color: Colors.white,
+        child: SizedBox(
+          width: getW(200),
+          height: getH(100),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(CupertinoIcons.photo),
+              SvgPicture.asset(
+                'assets/svg/gallery.svg',
+                width: getW(22),
+                height: getH(22),
+              ),
               const SizedBox(width: 10),
               const Text(
                 'Выберите картинку',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 14),
               ),
             ],
           ),

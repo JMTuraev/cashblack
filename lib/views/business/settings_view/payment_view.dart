@@ -1,17 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../extensions.dart';
-import '../../../theme/theme_details.dart';
 import '../../../utils/numberic_text_formatter.dart';
-import '../../../view_models/balance_view_model.dart';
 import '../../../view_models/business_home_view_model.dart';
-import '../../../widgets/info_alert_widget.dart';
 import '../../../widgets/main_button_widget.dart';
-import 'payment_verify_view.dart';
 
 class PaymentView extends StatefulWidget {
   const PaymentView({super.key});
@@ -38,12 +32,10 @@ class _PaymentViewState extends State<PaymentView> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLoading = context.read<BusinessHomeViewModel>().isLoading;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Пополнить баланс'),
-        bottom: ThemeDetails.appBarDivider,
+        // bottom: ThemeDetails.appBarDivider,
       ),
       body: SafeArea(
         child: Padding(
@@ -56,7 +48,7 @@ class _PaymentViewState extends State<PaymentView> {
                 child: Column(
                   children: [
                     Image.asset(
-                      'assets/images/cc.png',
+                      'assets/images/card.png',
                       fit: BoxFit.contain,
                       height: MediaQuery.of(context).size.width / 1.5,
                     ),
@@ -78,14 +70,14 @@ class _PaymentViewState extends State<PaymentView> {
                             width: 2,
                           ),
                           borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                            Radius.circular(20),
                           ),
                         ),
                         prefixIcon: Icon(Icons.credit_card),
                         hintText: '0000 0000 0000 0000',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                            Radius.circular(20),
                           ),
                         ),
                       ),
@@ -117,13 +109,13 @@ class _PaymentViewState extends State<PaymentView> {
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
+                                  Radius.circular(20),
                                 ),
                               ),
                               hintText: 'ММ/ГГ',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
+                                  Radius.circular(20),
                                 ),
                               ),
                             ),
@@ -156,13 +148,13 @@ class _PaymentViewState extends State<PaymentView> {
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
+                                  Radius.circular(20),
                                 ),
                               ),
                               hintText: 'Сумма',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
+                                  Radius.circular(20),
                                 ),
                               ),
                             ),
@@ -178,7 +170,8 @@ class _PaymentViewState extends State<PaymentView> {
                     ),
                     const SizedBox(height: 20),
                     MainButtonWidget(
-                      isLoading: isLoading,
+                      isLoading:
+                          context.watch<BusinessHomeViewModel>().isLoading,
                       text: 'Пополнить',
                       method: () async {
                         if (_formKey.currentState!.validate()) {

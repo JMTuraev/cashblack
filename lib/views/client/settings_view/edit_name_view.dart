@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/user.dart';
-import '../../../theme/theme_details.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/text_field_widget.dart';
@@ -25,7 +24,7 @@ class EditNameView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Редактировать профиль'),
-        bottom: ThemeDetails.appBarDivider,
+        // bottom: ThemeDetails.appBarDivider,
       ),
       body: SafeArea(
         child: Padding(
@@ -35,6 +34,7 @@ class EditNameView extends StatelessWidget {
               alignment: Alignment.center,
               child: Column(
                 children: [
+                  const SizedBox(height: 20),
                   user.firstName.isEmpty && user.lastName.isEmpty
                       ? const _SimpleTextWidget(
                           title: '',
@@ -42,7 +42,7 @@ class EditNameView extends StatelessWidget {
                       : _SimpleTextWidget(
                           title: '${user.firstName} ${user.lastName}',
                         ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 40),
                   TextFieldWidget(
                     hintText: 'Имя',
                     controller: firstNameController,
@@ -52,7 +52,7 @@ class EditNameView extends StatelessWidget {
                     hintText: 'Фамилия',
                     controller: lastNameController,
                   ),
-                  const SizedBox(height: 20),
+                  Spacer(),
                   MainButtonWidget(
                     text: 'OK',
                     method: () async {
@@ -73,6 +73,7 @@ class EditNameView extends StatelessWidget {
                           );
                     },
                   ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),

@@ -1,6 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../size_config.dart';
+import '../../widgets/active_switcher_widget.dart';
+import '../../widgets/inactive_switcher_widget.dart';
 import '../business/auth/business_login_view/business_login_view.dart';
 import '../client/auth/client_login_view/client_login_view.dart';
 
@@ -12,124 +14,124 @@ class SelectTypeView extends StatefulWidget {
 }
 
 class _SelectTypeViewState extends State<SelectTypeView> {
-  List<bool> selections = [true, false];
+  bool business = false;
+  bool client = true;
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Scaffold(
-      body: SafeArea(
-        child: Align(
-          alignment: Alignment.center,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // SizedBox(height: MediaQuery.of(context).size.width / 4),
-                  const Text(
-                    'Кто вы?',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Бизнес - владелец или сотрудник магазина',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Клиент - клиент магазина',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[900],
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(10),
+      resizeToAvoidBottomInset:
+          false, // overflow fix if keyboards hides and not scrollable
+      body: Column(
+        children: [
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    // SizedBox(height: MediaQuery.of(context).size.width / 4),
+                    const Text(
+                      'Кто вы?',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 26,
                       ),
                     ),
-                    padding: const EdgeInsets.all(6),
-                    child: ToggleButtons(
-                      isSelected: selections,
-                      onPressed: (index) {
-                        setState(() {
-                          switch (index) {
-                            case 0:
-                              selections = [true, false];
-                              break;
-                            case 1:
-                              selections = [false, true];
-                              break;
-                            default:
-                          }
-                        });
-                      },
-                      selectedColor: Colors.white,
-                      fillColor: Colors.grey[800],
-                      renderBorder: false,
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(10),
+                    SizedBox(height: getH(60)),
+                    const Text(
+                      'Владелец - владелец или сотрудник магазина',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        color: Color(0xff575758),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
                       ),
-                      selectedBorderColor: Colors.grey[800],
-                      splashColor: Colors.grey[700],
-                      children: const [
-                        _ButtonWidget(
-                          title: 'Бизнес',
-                        ),
-                        _ButtonWidget(
-                          title: 'Клиент',
-                        ),
-                      ],
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  selections[0] == true
-                      ? BusinessLoginView()
-                      : ClientLoginView(),
-                ],
+                    SizedBox(height: getH(6)),
+                    const Text(
+                      'Клиент - клиент магазина',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xff575758),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: getH(8)),
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Color.fromRGBO(28, 28, 29, 1),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
+                        ),
+                      ),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                      ),
+                      padding: const EdgeInsets.all(5),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: client
+                                ? ActiveSwitcherWidget(
+                                    onPressed: () {},
+                                    title: 'Клиент',
+                                    fontSize: 14,
+                                  )
+                                : InactiveSwitcherWidget(
+                                    fontSize: 14,
+                                    onPressed: () {
+                                      setState(() {
+                                        business = false;
+                                        client = true;
+                                      });
+                                    },
+                                    title: 'Клиент',
+                                  ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: business
+                                ? ActiveSwitcherWidget(
+                                    fontSize: 14,
+                                    onPressed: () {},
+                                    title: 'Владелец',
+                                  )
+                                : InactiveSwitcherWidget(
+                                    fontSize: 14,
+                                    title: 'Владелец',
+                                    onPressed: () {
+                                      setState(() {
+                                        business = true;
+                                        client = false;
+                                      });
+                                    },
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: getH(28)),
+                    const Text(
+                      'Мы отправим вам код подтверждения',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xff575758),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: getH(15)),
+                    if (business) BusinessLoginView() else ClientLoginView(),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ButtonWidget extends StatelessWidget {
-  const _ButtonWidget({
-    Key? key,
-    required this.title,
-  }) : super(key: key);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(10),
-        ),
-      ),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
+        ],
       ),
     );
   }

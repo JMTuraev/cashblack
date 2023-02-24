@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import '../../../../extensions.dart';
 import '../../../../view_models/business_home_view_model.dart';
 import '../../../../view_models/business_login_view_model.dart';
 import '../../../../widgets/hero_title_widget.dart';
@@ -11,7 +12,6 @@ import '../../../../widgets/small_title_widget.dart';
 import '../../../../widgets/text_button_widget.dart';
 import '../../business_home_view/business_home_view.dart';
 import '../../create_store_view/create_store_view.dart';
-import 'package:cashblack/extensions.dart';
 
 class BusinessLoginVerifyView extends StatefulWidget {
   const BusinessLoginVerifyView(
@@ -68,9 +68,9 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
 
   @override
   void dispose() {
-    super.dispose();
     cancel();
     _animationController!.dispose();
+    super.dispose();
   }
 
   @override
@@ -140,6 +140,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               ),
               const SizedBox(height: 20),
               MainButtonWidget(
+                isLoading: context.watch<BusinessLoginViewModel>().isLoading,
                 text: 'Подтвердить',
                 method: () async {
                   await context
@@ -150,6 +151,10 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                         .read<BusinessLoginViewModel>()
                         .onVerifyButtonPressed(otpCode ?? textController.text,
                             context.read<BusinessLoginViewModel>().phone);
+                    // if (textController.text.isEmpty) {
+                    //   print('asdasd');
+                    //   textController.text = otpCode!;
+                    // }
                     bool hasShop = context
                         .read<BusinessHomeViewModel>()
                         .user!

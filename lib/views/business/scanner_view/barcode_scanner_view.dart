@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 
-import '../../../theme/theme_details.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import 'payment_client_view.dart';
@@ -22,8 +21,8 @@ class BarcodeScannerView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Сканер'),
-        bottom: ThemeDetails.appBarDivider,
+        title: const Text('Оплата через QR'),
+        // bottom: ThemeDetails.appBarDivider,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -71,7 +70,7 @@ class BarcodeScannerView extends StatelessWidget {
                     right: 10,
                     child: Center(
                       child: Image.asset(
-                        'assets/images/view_frame.png',
+                        'assets/images/frame.png',
                       ),
                     ),
                   ),
@@ -160,7 +159,7 @@ class BarcodeScannerView extends StatelessWidget {
                       );
                     },
                     text: 'Оплата по номеру',
-                    color: Colors.black45,
+                    // color: Colors.black45,
                   ),
                 ],
               ),

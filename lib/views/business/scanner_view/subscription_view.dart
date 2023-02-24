@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../view_models/business_home_view_model.dart';
-import '../../../widgets/info_alert_widget.dart';
 import '../../../widgets/main_button_widget.dart';
-import '../../../widgets/medium_title_widget.dart';
-import '../business_home_view/business_home_view.dart';
 import '../settings_view/payment_view.dart';
 
 class SubscriptionView extends StatelessWidget {

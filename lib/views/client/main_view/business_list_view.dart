@@ -1,13 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/user_category.dart';
 import '../../../domain/models/user_shop.dart';
-import '../../../theme/theme_details.dart';
+import '../../../size_config.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
+import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import 'business_details_view.dart';
 
@@ -36,134 +39,148 @@ class _BusinessListViewState extends State<BusinessListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.userCategory.name),
-          bottom: ThemeDetails.appBarDivider,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(0),
-          child: SafeArea(
-            child: Column(
-              children: [
-                FutureBuilder(
-                  future: joineds,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<UserShop> shops = snapshot.data as List<UserShop>;
+      appBar: AppBar(
+        title: Text(widget.userCategory.name),
+        // bottom: ThemeDetails.appBarDivider,
+      ),
+      body: SafeArea(
+        child: EasyRefresh(
+          header: const MaterialHeader(),
+          onRefresh: () {
+            setState(() {
+              joineds = context
+                  .read<ClientHomeViewModel>()
+                  .getJoinedShops(widget.userCategory.id);
+            });
+          },
+          child: Column(
+            children: [
+              FutureBuilder(
+                future: joineds,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<UserShop> shops = snapshot.data as List<UserShop>;
+                    if (shops.length > 0) {
                       return Expanded(
                         child: ListView.separated(
                           itemCount: shops.length,
                           separatorBuilder: (context, index) {
-                            return const Divider(
-                              height: 1,
+                            return SizedBox(
+                              height: getH(10),
                             );
                           },
                           itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  CupertinoPageRoute(
-                                    builder: (context) => BusinessDetailsView(
-                                      userShop: shops[index],
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Card(
-                                child: Container(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      ClipRRect(
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          bottomLeft: Radius.circular(10),
-                                        ),
-                                        child: CachedNetworkImage(
-                                          fit: BoxFit.fitHeight,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              4,
-                                          imageUrl: Constants.media +
-                                              shops[index].logo,
-                                          placeholder: (context, url) =>
-                                              Container(
-                                            color: Colors.transparent,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                4,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                4,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 10),
-                                      Expanded(
-                                        child: Container(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                shops[index].name,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    CupertinoIcons
-                                                        .money_dollar_circle,
-                                                    size: 16,
-                                                    color: Colors.green[300],
-                                                  ),
-                                                  const SizedBox(width: 4),
-                                                  Text(
-                                                    shops[index]
-                                                        .cashbackPercentage
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
+                            return _ItemWidget(shops: shops, index: index);
                           },
                         ),
                       );
                     } else {
-                      return Center(child: const LogoAnimatedWidget(size: 1.5));
+                      return const Center(child: EmptyWidget());
                     }
-                  },
-                ),
-              ],
+                  } else {
+                    return const Center(child: LogoAnimatedWidget(size: 1.5));
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ItemWidget extends StatelessWidget {
+  const _ItemWidget({
+    super.key,
+    required this.shops,
+    required this.index,
+  });
+
+  final List<UserShop> shops;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: (context) => BusinessDetailsView(
+              userShop: shops[index],
             ),
           ),
-        ));
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: getH(20)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: const Color(0xff1c1c1d),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: getW(12),
+            vertical: getH(6),
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(20),
+                ),
+                child: CachedNetworkImage(
+                  fit: BoxFit.fitHeight,
+                  height: getH(80),
+                  width: getW(80),
+                  imageUrl: Constants.media + shops[index].logo,
+                  placeholder: (context, url) => Container(
+                    color: Colors.transparent,
+                    height: getH(80),
+                    width: getW(80),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Spacer(),
+                      Text(
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        shops[index].name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const Spacer(),
+                      SvgPicture.asset(
+                        'assets/svg/tag.svg',
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: getW(4)),
+                      Text(
+                        shops[index].cashbackPercentage.toString() + '%',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color.fromRGBO(201, 247, 158, 1),
+                        ),
+                      ),
+                      SizedBox(width: getW(10)),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

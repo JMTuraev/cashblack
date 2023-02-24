@@ -4,21 +4,32 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import '../../../../size_config.dart';
 import '../../../../view_models/business_login_view_model.dart';
+import '../../../../widgets/connect_widget.dart';
 import '../../../../widgets/info_alert_widget.dart';
+import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/public_offer_widget.dart';
-import '../../../../widgets/small_title_widget.dart';
 import '../business_login_verify_view/business_login_verify_view.dart';
 
-class BusinessLoginView extends StatelessWidget {
+class BusinessLoginView extends StatefulWidget {
   BusinessLoginView({super.key});
 
+  @override
+  State<BusinessLoginView> createState() => _BusinessLoginViewState();
+}
+
+class _BusinessLoginViewState extends State<BusinessLoginView> {
   TextEditingController phoneController = TextEditingController(text: '');
+
   TextEditingController promoCodeController = TextEditingController(text: '');
+
   MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
       mask: '+### ## ### ## ##',
       filter: {"#": RegExp(r'[0-9]')},
       type: MaskAutoCompletionType.lazy);
+
+  bool checked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +73,12 @@ class BusinessLoginView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SmallTitleWidget(
-            text: 'Мы отправим вам код подтверждения',
-          ),
-          const SizedBox(height: 10),
           TextField(
+            onChanged: (text) {
+              if (text.length == 17) {
+                FocusScope.of(context).requestFocus(FocusNode());
+              }
+            },
             decoration: InputDecoration(
               focusedBorder: const OutlineInputBorder(
                 borderSide: BorderSide(
@@ -74,11 +86,11 @@ class BusinessLoginView extends StatelessWidget {
                   width: 2,
                 ),
                 borderRadius: BorderRadius.all(
-                  Radius.circular(10),
+                  Radius.circular(20),
                 ),
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(20),
               ),
               filled: false,
               hintText: "Телефон",
@@ -101,11 +113,11 @@ class BusinessLoginView extends StatelessWidget {
                   width: 2,
                 ),
                 borderRadius: BorderRadius.all(
-                  Radius.circular(10),
+                  Radius.circular(20),
                 ),
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(20),
               ),
               filled: false,
               hintText: "Промокод",
@@ -118,53 +130,42 @@ class BusinessLoginView extends StatelessWidget {
             showCursor: true,
           ),
           const SizedBox(height: 20),
-          _MainButtonWidget(
+          MainButtonWidget(
             text: 'Вход',
-            method: context.watch<BusinessLoginViewModel>().isLoading
-                ? null
-                : submit,
+            isLoading: context.watch<BusinessLoginViewModel>().isLoading,
+            // method: context.watch<BusinessLoginViewModel>().isLoading
+            //     ? null
+            //     : submit,
+            method: checked
+                ? (context.watch<BusinessLoginViewModel>().isLoading
+                    ? null
+                    : submit)
+                : () {
+                    print('check');
+                  },
           ),
-          const SizedBox(height: 20),
-          const PublicOfferWidget(),
+          SizedBox(height: getH(35)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Checkbox(
+                  value: checked,
+                  onChanged: (value) {
+                    setState(() {
+                      checked = value!;
+                    });
+                  }),
+              Text(
+                'Я принимаю',
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+              PublicOfferWidget(),
+            ],
+          ),
+          ConnectWidget(),
         ],
-      ),
-    );
-  }
-}
-
-class _MainButtonWidget extends StatelessWidget {
-  const _MainButtonWidget({
-    Key? key,
-    required this.text,
-    required this.method,
-  }) : super(key: key);
-
-  final String text;
-  final VoidCallback? method;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: method,
-        style: ButtonStyle(
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-            const EdgeInsets.all(16),
-          ),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-          ),
-        ),
       ),
     );
   }

@@ -1,13 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../theme/theme_details.dart';
+import '../../../size_config.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/text_field_widget.dart';
-import '../business_home_view/business_home_view.dart';
 
 class CreateWorkerView extends StatelessWidget {
   const CreateWorkerView({super.key});
@@ -26,16 +24,16 @@ class CreateWorkerView extends StatelessWidget {
         child: Scaffold(
       appBar: AppBar(
         title: Text('Добавить сотрудник'),
-        bottom: ThemeDetails.appBarDivider,
+        // bottom: ThemeDetails.appBarDivider,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
-          child: Align(
-            alignment: Alignment.center,
+          child: Container(
+            // alignment: Alignment.center,
             child: Column(
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: getH(140)),
                 TextField(
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -44,13 +42,13 @@ class CreateWorkerView extends StatelessWidget {
                         width: 2,
                       ),
                       borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                        Radius.circular(20),
                       ),
                     ),
                     hintText: 'Телефон',
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                        Radius.circular(20),
                       ),
                     ),
                   ),
@@ -61,17 +59,17 @@ class CreateWorkerView extends StatelessWidget {
                   showCursor: true,
                   keyboardType: TextInputType.phone,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: getH(20)),
                 TextFieldWidget(
                   hintText: 'Имя',
                   controller: fistNameController,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: getH(20)),
                 TextFieldWidget(
                   hintText: 'Фамилия',
                   controller: lastNameController,
                 ),
-                const SizedBox(height: 20),
+                Spacer(),
                 MainButtonWidget(
                   text: 'OK',
                   method: () async {
@@ -93,6 +91,7 @@ class CreateWorkerView extends StatelessWidget {
                     // );
                   },
                 ),
+                SizedBox(height: getH(20)),
               ],
             ),
           ),

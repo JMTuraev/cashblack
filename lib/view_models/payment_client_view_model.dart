@@ -9,6 +9,7 @@ class PaymentClientViewModel extends ChangeNotifier {
   String price = '';
 
   bool isLoading = false;
+  bool isSmallLoading = false;
 
   Future<void> sendCashback(
       BuildContext context, String price, String barcodeId, int shopId) async {
@@ -32,11 +33,11 @@ class PaymentClientViewModel extends ChangeNotifier {
 
   Future<void> payForGoods(
       BuildContext context, String price, String barcodeId, int shopId) async {
-    isLoading = true;
+    isSmallLoading = true;
     notifyListeners();
     await _client.payForGoods(price, barcodeId, shopId).then(
       (value) {
-        isLoading = false;
+        isSmallLoading = false;
         notifyListeners();
         return Navigator.of(context).pushAndRemoveUntil(
           CupertinoPageRoute(

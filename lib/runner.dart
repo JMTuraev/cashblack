@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 mixin Runner {
   static Future<ThemeMode> themeRunner() async {
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
+      const SystemUiOverlayStyle(
           // statusBarColor: AppColors.flexSchemeLight.primary,
           // statusBarBrightness: Brightness.light,
           // statusBarIconBrightness: Brightness.light,

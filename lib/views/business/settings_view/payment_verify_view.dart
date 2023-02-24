@@ -1,5 +1,3 @@
-import 'package:cashblack/extensions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
@@ -7,9 +5,8 @@ import 'package:sms_autofill/sms_autofill.dart';
 import '../../../../widgets/hero_title_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
-import '../../../view_models/balance_view_model.dart';
+import '../../../extensions.dart';
 import '../../../view_models/business_home_view_model.dart';
-import '../scanner_view/payment_success_view.dart';
 
 class PaymentVerifyView extends StatefulWidget {
   PaymentVerifyView({
@@ -68,9 +65,9 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
 
   @override
   void dispose() {
-    super.dispose();
     cancel();
     _animationController!.dispose();
+    super.dispose();
   }
 
   @override

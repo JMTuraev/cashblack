@@ -1,10 +1,11 @@
-import 'package:flutter/cupertino.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/balance.dart';
 import '../../../domain/models/user.dart';
+import '../../../size_config.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/logo_animated_widget.dart';
@@ -73,47 +74,69 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     int currentIndex = context.watch<BusinessHomeViewModel>().currentIndex;
 
-    const List<BottomNavigationBarItem> items = [
-      BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.home),
-        label: 'Главная',
+    double iconSize = 34;
+
+    List<SvgPicture> items = [
+      SvgPicture.asset(
+        'assets/svg/home-2.svg',
+        color: Colors.white,
+        height: currentIndex == 0 ? iconSize : null,
+        width: currentIndex == 0 ? iconSize : null,
       ),
-      BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.chart_pie),
-        label: 'Статистика',
+      SvgPicture.asset(
+        'assets/svg/chart.svg',
+        color: Colors.white,
+        height: currentIndex == 1 ? iconSize : null,
+        width: currentIndex == 1 ? iconSize : null,
       ),
-      BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.viewfinder),
-        label: 'Сканер',
+      SvgPicture.asset(
+        'assets/svg/scan-barcode.svg',
+        color: Colors.white,
+        height: currentIndex == 2 ? iconSize : null,
+        width: currentIndex == 2 ? iconSize : null,
       ),
-      BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.square_grid_2x2),
-        label: 'Сервисы',
+      SvgPicture.asset(
+        'assets/svg/element-4.svg',
+        color: Colors.white,
+        height: currentIndex == 3 ? iconSize : null,
+        width: currentIndex == 3 ? iconSize : null,
       ),
-      BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.settings),
-        label: 'Настройки',
+      SvgPicture.asset(
+        'assets/svg/setting-2.svg',
+        color: Colors.white,
+        height: currentIndex == 4 ? iconSize : null,
+        width: currentIndex == 4 ? iconSize : null,
       ),
     ];
 
-    const List<BottomNavigationBarItem> itemsForWorkers = [
-      BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.home),
-        label: 'Главная',
+    List<SvgPicture> itemsForWorkers = [
+      SvgPicture.asset(
+        'assets/svg/home-2.svg',
+        color: Colors.white,
+        height: currentIndex == 0 ? iconSize : null,
+        width: currentIndex == 0 ? iconSize : null,
       ),
-      BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.chart_pie),
-        label: 'Статистика',
+      SvgPicture.asset(
+        'assets/svg/chart.svg',
+        color: Colors.white,
+        height: currentIndex == 1 ? iconSize : null,
+        width: currentIndex == 1 ? iconSize : null,
       ),
-      BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.viewfinder),
-        label: 'Сканер',
+      SvgPicture.asset(
+        'assets/svg/scan-barcode.svg',
+        color: Colors.white,
+        height: currentIndex == 2 ? iconSize : null,
+        width: currentIndex == 2 ? iconSize : null,
       ),
-      BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.settings),
-        label: 'Настройки',
+      SvgPicture.asset(
+        'assets/svg/setting-2.svg',
+        color: Colors.white,
+        height: currentIndex == 3 ? iconSize : null,
+        width: currentIndex == 3 ? iconSize : null,
       ),
     ];
 
@@ -162,16 +185,35 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
           return !hasShopp
               ? const CreateStoreView()
               : Scaffold(
-                  bottomNavigationBar: BottomNavigationBar(
-                    showUnselectedLabels: false,
-                    currentIndex: currentIndex,
-                    onTap: context.read<BusinessHomeViewModel>().onChange,
-                    type: BottomNavigationBarType.fixed,
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.grey,
-                    items: isBusiness ? items : itemsForWorkers,
+                  bottomNavigationBar: CurvedNavigationBar(
+                    buttonBackgroundColor: Color.fromRGBO(103, 206, 103, 1),
                     backgroundColor: Colors.black,
+                    color: Color.fromRGBO(28, 28, 29, 1),
+                    index: currentIndex,
+                    items: isBusiness ? items : itemsForWorkers,
+                    onTap: (index) {
+                      context.read<BusinessHomeViewModel>().onChange(index);
+                    },
                   ),
+                  // floatingActionButton: FloatingActionButton(
+                  //   //Floating action button on Scaffold
+                  //   onPressed: () {
+                  //     //code to execute on button press
+                  //   },
+                  //   child: Icon(Icons.send), //icon inside button
+                  // ),
+                  // floatingActionButtonLocation:
+                  //     FloatingActionButtonLocation.startDocked,
+                  // bottomNavigationBar: BottomNavigationBar(
+                  //   showUnselectedLabels: false,
+                  //   currentIndex: currentIndex,
+                  //   onTap: context.read<BusinessHomeViewModel>().onChange,
+                  //   type: BottomNavigationBarType.fixed,
+                  //   selectedItemColor: Colors.white,
+                  //   unselectedItemColor: Colors.grey,
+                  //   items: isBusiness ? items : itemsForWorkers,
+                  //   backgroundColor: Colors.black,
+                  // ),
                   body: SafeArea(
                     child: Stack(
                       alignment: Alignment.bottomCenter,
@@ -223,10 +265,10 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
                                   const SettingsView(),
                                 ],
                               ),
-                        const Divider(
-                          height: 1,
-                          color: Colors.white,
-                        ),
+                        // const Divider(
+                        //   height: 1,
+                        //   color: Colors.white,
+                        // ),
                       ],
                     ),
                   ),

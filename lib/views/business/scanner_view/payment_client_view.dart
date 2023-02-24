@@ -1,16 +1,14 @@
-import 'package:cashblack/extensions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/barcode_scan.dart';
+import '../../../extensions.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/payment_client_view_model.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/main_button_widget.dart';
-import 'payment_success_view.dart';
 
 class PaymentClientView extends StatefulWidget {
   const PaymentClientView({
@@ -146,14 +144,14 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                         width: 2,
                                       ),
                                       borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
+                                        Radius.circular(20),
                                       ),
                                     ),
                                     counterText: '',
                                     hintText: 'Сумма покупки',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
+                                        Radius.circular(20),
                                       ),
                                     ),
                                   ),

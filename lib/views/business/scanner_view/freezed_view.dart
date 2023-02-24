@@ -1,8 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../widgets/main_button_widget.dart';
-import '../settings_view/payment_view.dart';
 
 class FreezedView extends StatelessWidget {
   const FreezedView({

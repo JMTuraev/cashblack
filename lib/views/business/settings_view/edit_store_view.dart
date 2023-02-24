@@ -8,16 +8,12 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/category.dart';
-import '../../../domain/models/city.dart';
 import '../../../domain/models/shop.dart';
 import '../../../extensions.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/business_home_view_model.dart';
-import '../../../view_models/create_store_view_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
-import '../business_home_view/business_home_view.dart';
 
 class EditStoreView extends StatefulWidget {
   const EditStoreView({
@@ -156,7 +152,7 @@ class _EditStoreViewState extends State<EditStoreView> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(height: 20),
+                  // const SizedBox(height: 20),
                   _fileList.isEmpty
                       ? _ImageWidget(
                           onTap: getFromGallery,
@@ -353,13 +349,13 @@ class _CashbackWidget extends StatelessWidget {
             width: 2,
           ),
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
         // hintText: 'Кэшбек',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
       ),
@@ -482,13 +478,13 @@ class _BrandNameWidget extends StatelessWidget {
             width: 2,
           ),
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
         hintText: 'Бренд',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
       ),
@@ -524,7 +520,7 @@ class _SelectCategoryWidget extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
         child: DropdownButtonFormField<String>(
@@ -543,12 +539,12 @@ class _SelectCategoryWidget extends StatelessWidget {
                 width: 2,
               ),
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
           ),
@@ -573,7 +569,7 @@ class _DefaultSelectCategoryWidget extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
         child: DropdownButtonFormField<String>(
@@ -592,12 +588,12 @@ class _DefaultSelectCategoryWidget extends StatelessWidget {
                 width: 2,
               ),
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
           ),

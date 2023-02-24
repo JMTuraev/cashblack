@@ -1,3 +1,4 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -7,9 +8,11 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/sum_cashback.dart';
 import '../../../domain/models/sum_stat.dart';
 import '../../../extensions.dart';
-import '../../../theme/theme_details.dart';
+import '../../../size_config.dart';
 import '../../../view_models/statistics_view_model.dart';
+import '../../../widgets/active_switcher_widget.dart';
 import '../../../widgets/empty_widget.dart';
+import '../../../widgets/inactive_switcher_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
 
 class StatisticsView extends StatefulWidget {
@@ -73,7 +76,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Статистика'),
-        bottom: ThemeDetails.appBarDivider,
+        // bottom: ThemeDetails.appBarDivider,
       ),
       body: SafeArea(
         child: Padding(
@@ -83,76 +86,62 @@ class _StatisticsViewState extends State<StatisticsView> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              const Text(
-                'Фильтр по',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              // const Text(
+              //   'Фильтр по',
+              //   style: TextStyle(
+              //     fontSize: 18,
+              //     fontWeight: FontWeight.bold,
+              //   ),
+              // ),
+              // const SizedBox(height: 10),
+              Container(
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(28, 28, 29, 1),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: summa
-                        ? OutlinedButton(
-                            onPressed: () {},
-                            child: const Text(
-                              // 'Сумма',
-                              'Кэшбэк',
-
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                ),
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: summa
+                          ? ActiveSwitcherWidget(
+                              onPressed: () {},
+                              title: 'Кэшбэк',
+                            )
+                          : InactiveSwitcherWidget(
+                              title: 'Кэшбэк',
+                              onPressed: () {
+                                setState(() {
+                                  summa = true;
+                                  cashback = false;
+                                });
+                              },
                             ),
-                          )
-                        : ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                summa = true;
-                                cashback = false;
-                              });
-                            },
-                            child: const Text(
-                              // 'Сумма',
-                              'Кэшбэк',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: cashback
+                          ? ActiveSwitcherWidget(
+                              onPressed: () {},
+                              title: 'Клиент',
+                            )
+                          : InactiveSwitcherWidget(
+                              onPressed: () {
+                                setState(() {
+                                  summa = false;
+                                  cashback = true;
+                                });
+                              },
+                              title: 'Клиент',
                             ),
-                          ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: cashback
-                        ? OutlinedButton(
-                            onPressed: () {},
-                            child: const Text(
-                              // 'Кэшбэк',
-                              'Сумма',
-
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          )
-                        : ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                summa = false;
-                                cashback = true;
-                              });
-                            },
-                            child: const Text(
-                              // 'Кэшбэк',
-                              'Сумма',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
               Container(
@@ -228,7 +217,26 @@ class _StatisticsViewState extends State<StatisticsView> {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: body,
+                child: EasyRefresh(
+                  header: const MaterialHeader(),
+                  onRefresh: () {
+                    setState(() {
+                      _filter = '0';
+
+                      String start = '2023-01-01';
+                      String end =
+                          DateFormat('yyyy-MM-dd').format(DateTime.now());
+                      statCashback = context
+                          .read<StatisticsViewModel>()
+                          .getSumStats(start: start, end: end);
+
+                      statssum = context
+                          .read<StatisticsViewModel>()
+                          .getCashbackStats();
+                    });
+                  },
+                  child: body,
+                ),
               ),
             ],
           ),
@@ -317,14 +325,20 @@ class _SumWidget extends StatelessWidget {
                         return _CardWithdraw(sumStat: element);
                       }
                     },
-                    groupHeaderBuilder: (SumStat element) => Center(
-                      child: Text(
-                        formatter.format(DateTime.parse(element.date!)),
-                        style: const TextStyle(
-                          fontSize: 20,
+                    separator: SizedBox(height: getH(10)),
+                    groupHeaderBuilder: (SumStat element) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: getH(14)),
+                        child: Text(
+                          formatter.format(DateTime.parse(element.date!)),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                     // groupHeaderBuilder: (SumStat element) => Center(
                     //   child: Text(
                     //     formatter.format(DateTime.parse(element.date!)),
@@ -345,8 +359,8 @@ class _SumWidget extends StatelessWidget {
               }
             } else {
               return Column(
-                children: [
-                  const LogoAnimatedWidget(
+                children: const [
+                  LogoAnimatedWidget(
                     size: 1.5,
                   ),
                 ],
@@ -385,7 +399,7 @@ class _CashbackWidget extends StatelessWidget {
                 return Expanded(
                   child: ListView.builder(
                     itemCount: sumCashback.length,
-                    itemBuilder: (context, index) => _CardSum(
+                    itemBuilder: (context, index) => _CardClient(
                       sumCashback: sumCashback[index],
                     ),
                   ),
@@ -395,8 +409,8 @@ class _CashbackWidget extends StatelessWidget {
               }
             } else {
               return Column(
-                children: [
-                  const LogoAnimatedWidget(
+                children: const [
+                  LogoAnimatedWidget(
                     size: 1.5,
                   ),
                 ],
@@ -431,7 +445,7 @@ class _FilterWidget extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(20),
           ),
         ),
         child: DropdownButtonFormField<String>(
@@ -450,7 +464,7 @@ class _FilterWidget extends StatelessWidget {
                 width: 2,
               ),
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
             isDense: true,
@@ -460,7 +474,7 @@ class _FilterWidget extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
           ),
@@ -482,124 +496,120 @@ class _CardCashback extends StatelessWidget {
   Widget build(BuildContext context) {
     final DateFormat timeFormatter = DateFormat.Hm();
 
-    return Card(
-      color: Colors.green[300],
-      child: Card(
-        margin: const EdgeInsets.symmetric(
-          vertical: 1,
-          horizontal: 1,
+    return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
         ),
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 10,
-            ),
-            child: Column(
+        color: Color.fromRGBO(28, 28, 29, 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 14,
+          horizontal: 24,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                const SizedBox(height: 6),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        const SizedBox(width: 8),
-                        const Text(
-                          'сумма',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          NumberFormat.simpleCurrency(
-                                name: '',
-                                locale: 'ru_RU',
-                                decimalDigits: 0,
-                              ).format(sumStat.price) +
-                              'сум',
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
+                Expanded(
+                  child: Text(
+                    sumStat.fullName!.length > 2
+                        ? sumStat.fullName.toString()
+                        : sumStat.userName.phoneHiddenFormatter(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                    const SizedBox(width: 20),
-                    Column(
-                      children: [
-                        const Text(
-                          'кэшбек',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          NumberFormat.simpleCurrency(
-                                name: '',
-                                locale: 'ru_RU',
-                                decimalDigits: 0,
-                              ).format(sumStat.cashback) +
-                              'сум',
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Text(
-                      timeFormatter
-                          .format(DateTime.parse(sumStat.date.toString())),
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[400],
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 6),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      sumStat.fullName.toString(),
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[200],
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        sumStat.userName.phoneFormatter(),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[200],
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
+                SizedBox(width: getW(4)),
+                const _ChipWidget(
+                  title: 'Доход',
+                  color: Color(0xff34c85a),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(width: getW(12)),
+                Text(
+                  timeFormatter.format(DateTime.parse(sumStat.date.toString())),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ],
             ),
-          ),
+            SizedBox(height: getH(6)),
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Сумма:",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      "Кэшбэк:",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(width: getW(10)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      NumberFormat.simpleCurrency(
+                            name: '',
+                            locale: 'ru_RU',
+                            decimalDigits: 0,
+                          ).format(sumStat.price) +
+                          'сум',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      NumberFormat.simpleCurrency(
+                            name: '',
+                            locale: 'ru_RU',
+                            decimalDigits: 0,
+                          ).format(sumStat.cashback) +
+                          'сум',
+                      style: const TextStyle(
+                        color: Color(0xff67ce67),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _CardSum extends StatelessWidget {
-  const _CardSum({
+class _CardClient extends StatelessWidget {
+  const _CardClient({
     Key? key,
     required this.sumCashback,
   }) : super(key: key);
@@ -608,108 +618,204 @@ class _CardSum extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final oCcy = NumberFormat('# ##0', 'ru_RU');
+    final DateFormat timeFormatter = DateFormat.Hm();
 
-    return Card(
-      color: Colors.white30,
-      child: Card(
-        margin: const EdgeInsets.symmetric(
-          vertical: 1,
-          horizontal: 1,
+    return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
         ),
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 10,
-            ),
-            child: Column(
+        color: Color.fromRGBO(28, 28, 29, 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 14,
+          horizontal: 24,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                const SizedBox(height: 6),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                Expanded(
+                  child: Text(
+                    sumCashback.name.length > 2
+                        ? sumCashback.name
+                        : sumCashback.phone.phoneHiddenFormatter(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: getH(6)),
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
                     Text(
-                      sumCashback.name,
+                      "Сумма:",
                       style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[200],
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        sumCashback.phone.phoneFormatter(),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[200],
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    Text(
+                      "Кэшбэк:",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 6),
-                Row(
+                SizedBox(width: getW(10)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      children: [
-                        const Text(
-                          'сумма',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          NumberFormat.simpleCurrency(
-                                name: '',
-                                locale: 'ru_RU',
-                                decimalDigits: 0,
-                              ).format(sumCashback.sum) +
-                              'сум',
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 20),
-                    Column(
-                      children: [
-                        const Text(
-                          'кэшбек',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          NumberFormat.simpleCurrency(
+                    Text(
+                      NumberFormat.simpleCurrency(
                             name: '',
                             locale: 'ru_RU',
                             decimalDigits: 0,
-                          ).format(sumCashback.cashback),
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
+                          ).format(sumCashback.sum) +
+                          'сум',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      NumberFormat.simpleCurrency(
+                            name: '',
+                            locale: 'ru_RU',
+                            decimalDigits: 0,
+                          ).format(sumCashback.cashback) +
+                          'сум',
+                      style: const TextStyle(
+                        color: Color(0xff67ce67),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );
+
+    // return Card(
+    //   color: Colors.white30,
+    //   child: Card(
+    //     margin: const EdgeInsets.symmetric(
+    //       vertical: 1,
+    //       horizontal: 1,
+    //     ),
+    //     child: Container(
+    //       child: Padding(
+    //         padding: const EdgeInsets.symmetric(
+    //           vertical: 10,
+    //           horizontal: 10,
+    //         ),
+    //         child: Column(
+    //           children: [
+    //             const SizedBox(height: 6),
+    //             Row(
+    //               crossAxisAlignment: CrossAxisAlignment.center,
+    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //               children: [
+    //                 Text(
+    //                   sumCashback.name,
+    //                   style: TextStyle(
+    //                     fontSize: 16,
+    //                     color: Colors.grey[200],
+    //                     fontWeight: FontWeight.bold,
+    //                   ),
+    //                   overflow: TextOverflow.ellipsis,
+    //                 ),
+    //                 const SizedBox(width: 16),
+    //                 Expanded(
+    //                   child: Text(
+    //                     sumCashback.phone.phoneFormatter(),
+    //                     style: TextStyle(
+    //                       fontSize: 14,
+    //                       color: Colors.grey[200],
+    //                       fontWeight: FontWeight.bold,
+    //                     ),
+    //                     overflow: TextOverflow.ellipsis,
+    //                   ),
+    //                 ),
+    //                 const SizedBox(width: 8),
+    //               ],
+    //             ),
+    //             const SizedBox(height: 6),
+    //             Row(
+    //               children: [
+    //                 Column(
+    //                   children: [
+    //                     const Text(
+    //                       'сумма',
+    //                       style: TextStyle(
+    //                         fontSize: 10,
+    //                         color: Colors.grey,
+    //                       ),
+    //                     ),
+    //                     Text(
+    //                       NumberFormat.simpleCurrency(
+    //                             name: '',
+    //                             locale: 'ru_RU',
+    //                             decimalDigits: 0,
+    //                           ).format(sumCashback.sum) +
+    //                           'сум',
+    //                       style: const TextStyle(
+    //                         fontSize: 18,
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //                 const SizedBox(width: 20),
+    //                 Column(
+    //                   children: [
+    //                     const Text(
+    //                       'кэшбек',
+    //                       style: TextStyle(
+    //                         fontSize: 10,
+    //                         color: Colors.grey,
+    //                       ),
+    //                     ),
+    //                     Text(
+    //                       NumberFormat.simpleCurrency(
+    //                         name: '',
+    //                         locale: 'ru_RU',
+    //                         decimalDigits: 0,
+    //                       ).format(sumCashback.cashback),
+    //                       style: const TextStyle(
+    //                         fontSize: 18,
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ],
+    //             ),
+    //             const SizedBox(height: 6),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }
 
@@ -725,95 +831,199 @@ class _CardWithdraw extends StatelessWidget {
   Widget build(BuildContext context) {
     final DateFormat timeFormatter = DateFormat.Hm();
 
-    return Card(
-      color: Colors.red[300],
-      child: Card(
-        margin: const EdgeInsets.symmetric(
-          vertical: 1,
-          horizontal: 1,
+    return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
         ),
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 10,
-            ),
-            child: Column(
+        color: Color.fromRGBO(28, 28, 29, 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 14,
+          horizontal: 24,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                const SizedBox(height: 6),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        const SizedBox(width: 8),
-                        const Text(
-                          'покупка',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          NumberFormat.simpleCurrency(
-                                name: '',
-                                locale: 'ru_RU',
-                                decimalDigits: 0,
-                              ).format(sumStat.price) +
-                              'сум',
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
+                Expanded(
+                  child: Text(
+                    sumStat.fullName!.length > 2
+                        ? sumStat.fullName.toString()
+                        : sumStat.userName.phoneHiddenFormatter(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                    const SizedBox(width: 20),
-                    const Spacer(),
-                    Text(
-                      timeFormatter
-                          .format(DateTime.parse(sumStat.date.toString())),
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[400],
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 6),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      sumStat.fullName.toString(),
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[200],
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        sumStat.userName.phoneFormatter(),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[200],
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
+                SizedBox(width: getW(4)),
+                const _ChipWidget(
+                  title: 'Покупка',
+                  color: Color.fromRGBO(228, 0, 43, 1),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(width: getW(12)),
+                Text(
+                  timeFormatter.format(DateTime.parse(sumStat.date.toString())),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ],
             ),
-          ),
+            SizedBox(height: getH(10)),
+            Text(
+              '-' +
+                  NumberFormat.simpleCurrency(
+                    name: '',
+                    locale: 'ru_RU',
+                    decimalDigits: 0,
+                  ).format(sumStat.price) +
+                  'сум',
+              style: const TextStyle(
+                color: Color(0xffe4002b),
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+    // return Card(
+    //   color: Colors.red[300],
+    //   child: Card(
+    //     margin: const EdgeInsets.symmetric(
+    //       vertical: 1,
+    //       horizontal: 1,
+    //     ),
+    //     child: Container(
+    //       child: Padding(
+    //         padding: const EdgeInsets.symmetric(
+    //           vertical: 10,
+    //           horizontal: 10,
+    //         ),
+    //         child: Column(
+    //           children: [
+    //             const SizedBox(height: 6),
+    //             Row(
+    //               crossAxisAlignment: CrossAxisAlignment.start,
+    //               mainAxisAlignment: MainAxisAlignment.start,
+    //               children: [
+    //                 Column(
+    //                   children: [
+    //                     const SizedBox(width: 8),
+    //                     const Text(
+    //                       'покупка',
+    //                       style: TextStyle(
+    //                         fontSize: 10,
+    //                         color: Colors.grey,
+    //                       ),
+    //                     ),
+    //                     Text(
+    //                       NumberFormat.simpleCurrency(
+    //                             name: '',
+    //                             locale: 'ru_RU',
+    //                             decimalDigits: 0,
+    //                           ).format(sumStat.price) +
+    //                           'сум',
+    //                       style: const TextStyle(
+    //                         fontSize: 18,
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //                 const SizedBox(width: 20),
+    //                 const Spacer(),
+    //                 Text(
+    //                   timeFormatter
+    //                       .format(DateTime.parse(sumStat.date.toString())),
+    //                   style: TextStyle(
+    //                     fontSize: 12,
+    //                     color: Colors.grey[400],
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //             const SizedBox(height: 6),
+    //             Row(
+    //               crossAxisAlignment: CrossAxisAlignment.center,
+    //               mainAxisAlignment: MainAxisAlignment.start,
+    //               children: [
+    //                 Text(
+    //                   sumStat.fullName.toString(),
+    //                   style: TextStyle(
+    //                     fontSize: 16,
+    //                     color: Colors.grey[200],
+    //                     fontWeight: FontWeight.bold,
+    //                   ),
+    //                   overflow: TextOverflow.ellipsis,
+    //                 ),
+    //                 const SizedBox(width: 16),
+    //                 Expanded(
+    //                   child: Text(
+    //                     sumStat.userName.phoneFormatter(),
+    //                     style: TextStyle(
+    //                       fontSize: 14,
+    //                       color: Colors.grey[200],
+    //                       fontWeight: FontWeight.bold,
+    //                     ),
+    //                     overflow: TextOverflow.ellipsis,
+    //                   ),
+    //                 ),
+    //                 const SizedBox(width: 8),
+    //               ],
+    //             ),
+    //             const SizedBox(height: 6),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
+  }
+}
+
+class _ChipWidget extends StatelessWidget {
+  const _ChipWidget({
+    super.key,
+    required this.title,
+    required this.color,
+  });
+
+  final String title;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: color,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 2,
+      ),
+      child: Row(
+        // mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }

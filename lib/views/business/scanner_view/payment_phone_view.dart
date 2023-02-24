@@ -1,15 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../extensions.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/payment_client_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
-
-import '../../../extensions.dart';
-import '../business_home_view/business_home_view.dart';
-import 'payment_success_view.dart';
 
 class PaymentPhoneView extends StatelessWidget {
   PaymentPhoneView({
@@ -105,11 +101,11 @@ class PaymentPhoneView extends StatelessWidget {
                             width: 2,
                           ),
                           borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                            Radius.circular(20),
                           ),
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         filled: false,
                         hintText: "Телефон",
@@ -140,13 +136,13 @@ class PaymentPhoneView extends StatelessWidget {
                             width: 2,
                           ),
                           borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                            Radius.circular(20),
                           ),
                         ),
                         hintText: 'Сумма покупки',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                            Radius.circular(20),
                           ),
                         ),
                       ),
@@ -160,7 +156,7 @@ class PaymentPhoneView extends StatelessWidget {
                     const SizedBox(height: 20),
                     MainButtonWidget(
                       isLoading: isLoading,
-                      text: 'OK',
+                      text: 'Оплатит',
                       method: submit,
                     ),
                   ],

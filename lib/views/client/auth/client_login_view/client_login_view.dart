@@ -4,19 +4,29 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import '../../../../size_config.dart';
 import '../../../../view_models/client_login_view_model.dart';
+import '../../../../widgets/connect_widget.dart';
 import '../../../../widgets/info_alert_widget.dart';
+import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/public_offer_widget.dart';
-import '../../../../widgets/small_title_widget.dart';
 import '../client_login_verify_view/client_login_verify_view.dart';
 
-class ClientLoginView extends StatelessWidget {
+class ClientLoginView extends StatefulWidget {
   ClientLoginView({super.key});
 
+  @override
+  State<ClientLoginView> createState() => _ClientLoginViewState();
+}
+
+class _ClientLoginViewState extends State<ClientLoginView> {
   TextEditingController phoneController = TextEditingController(text: '');
+
+  bool checked = false;
+
   MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
       mask: '+### ## ### ## ##',
-      filter: {"#": RegExp(r'[0-9]')},
+      filter: {'#': RegExp(r'[0-9]')},
       type: MaskAutoCompletionType.lazy);
 
   @override
@@ -24,8 +34,10 @@ class ClientLoginView extends StatelessWidget {
     var provider = context.read<ClientLoginViewModel>();
 
     void submit() async {
+      print('object');
       if (maskFormatter.isFill()) {
         var phone = maskFormatter.unmaskText(phoneController.text);
+        print('object');
 
         bool sendSMS = false;
 
@@ -45,7 +57,7 @@ class ClientLoginView extends StatelessWidget {
             : showCupertinoDialog(
                 context: context,
                 builder: (context) {
-                  return InfoAlertWidget(
+                  return const InfoAlertWidget(
                       title:
                           'Это аккаунт сотрудника, проверьте номер телефона');
                 },
@@ -57,9 +69,12 @@ class ClientLoginView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SmallTitleWidget(text: 'Мы отправим вам код подтверждения'),
-        const SizedBox(height: 10),
         TextField(
+          onChanged: (text) {
+            if (text.length == 17) {
+              FocusScope.of(context).requestFocus(FocusNode());
+            }
+          },
           decoration: InputDecoration(
             focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(
@@ -67,14 +82,14 @@ class ClientLoginView extends StatelessWidget {
                 width: 2,
               ),
               borderRadius: BorderRadius.all(
-                Radius.circular(10),
+                Radius.circular(20),
               ),
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(20),
             ),
             filled: false,
-            hintText: "Телефон",
+            hintText: 'Телефон',
           ),
           inputFormatters: [maskFormatter],
           controller: phoneController,
@@ -86,52 +101,39 @@ class ClientLoginView extends StatelessWidget {
           keyboardType: TextInputType.phone,
         ),
         const SizedBox(height: 20),
-        _MainButtonWidget(
+        MainButtonWidget(
+          isLoading: context.watch<ClientLoginViewModel>().isLoading,
           text: 'Вход',
-          method:
-              context.watch<ClientLoginViewModel>().isLoading ? null : submit,
+          method: checked
+              ? (context.watch<ClientLoginViewModel>().isLoading
+                  ? null
+                  : submit)
+              : () {
+                  print('check');
+                },
         ),
-        const SizedBox(height: 20),
-        const PublicOfferWidget(),
-      ],
-    );
-  }
-}
-
-class _MainButtonWidget extends StatelessWidget {
-  const _MainButtonWidget({
-    Key? key,
-    required this.text,
-    required this.method,
-  }) : super(key: key);
-
-  final String text;
-  final VoidCallback? method;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: method,
-        style: ButtonStyle(
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-            const EdgeInsets.all(16),
-          ),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        SizedBox(height: getH(35)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Checkbox(
+                value: checked,
+                onChanged: (value) {
+                  setState(() {
+                    checked = value!;
+                  });
+                }),
+            Text(
+              'Я принимаю',
+              style: TextStyle(
+                fontSize: 14,
+              ),
             ),
-          ),
+            PublicOfferWidget(),
+          ],
         ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-          ),
-        ),
-      ),
+        ConnectWidget(),
+      ],
     );
   }
 }

@@ -9,7 +9,7 @@ import '../../../domain/models/balance.dart';
 import '../../../domain/models/one_month_statistic.dart';
 import '../../../domain/models/sum_cashback.dart';
 import '../../../domain/models/user.dart';
-import '../../../theme/theme_details.dart';
+import '../../../size_config.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/statistics_view_model.dart';
 import '../../../widgets/empty_widget.dart';
@@ -40,8 +40,8 @@ class _MainViewState extends State<MainView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cashblack'),
-        bottom: ThemeDetails.appBarDivider,
+        title: const Text('Ваш баланс'),
+        // bottom: ThemeDetails.appBarDivider,
       ),
       body: Container(
         child: Column(
@@ -135,13 +135,14 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
             children: [
               Column(
                 children: [
-                  const Text(
-                    'Ваш баланс',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
+                  // const Text(
+                  //   'Ваш баланс',
+                  //   style: TextStyle(
+                  //     fontSize: 16,
+                  //     fontWeight: FontWeight.w500,
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 14),
                   FutureBuilder(
                     future: myBalance,
                     builder: (context, snapshot) {
@@ -154,7 +155,7 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                                 decimalDigits: 0,
                               ).format(int.parse(balance.first.amount)) +
                               'сум',
-                          style: const TextStyle(fontSize: 28),
+                          style: const TextStyle(fontSize: 25),
                         );
                       } else
                         return const Text(
@@ -163,7 +164,7 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                         );
                     },
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: getH(18)),
                   isBusiness
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -177,16 +178,22 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                                 );
                               },
                               child: Column(
-                                children: const [
-                                  Icon(
-                                    CupertinoIcons.add_circled,
-                                    size: 30,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/svg/add-square.svg',
+                                    width: getW(20),
+                                    height: getH(20),
                                   ),
-                                  Text('Пополнить'),
+                                  const Text(
+                                    'Пополнить',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 20),
+                            SizedBox(width: getW(50)),
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(
@@ -197,13 +204,18 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                                 );
                               },
                               child: Column(
-                                children: const [
-                                  Icon(
-                                    CupertinoIcons
-                                        .arrow_right_arrow_left_circle,
-                                    size: 30,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/svg/clock.svg',
+                                    width: getW(20),
+                                    height: getH(20),
                                   ),
-                                  Text('История'),
+                                  const Text(
+                                    'История',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -226,6 +238,13 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                   List<SumCashback> data = snapshot.data as List<SumCashback>;
                   return Column(
                     children: [
+                      const Text(
+                        'Количество клиентов',
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                      SizedBox(height: getH(10)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -233,23 +252,17 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                             'assets/svg/profile-2user.svg',
                             semanticsLabel: 'user',
                             color: Colors.white,
-                            height: 30,
-                            width: 30,
+                            height: getH(24),
+                            width: getW(24),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: getW(18)),
                           Text(
                             data.length.toString(),
                             style: const TextStyle(
-                              fontSize: 30,
+                              fontSize: 15,
                             ),
                           ),
                         ],
-                      ),
-                      const Text(
-                        'Количество клиентов',
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
                       ),
                     ],
                   );
@@ -260,10 +273,10 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
             ),
           ],
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: getH(60)),
         SizedBox(
-          // height: MediaQuery.of(context).size.height / 3.5,
-          height: MediaQuery.of(context).size.height / 3,
+          height: getH(380),
+          // height: MediaQuery.of(context).size.height / 3,
           width: double.infinity,
           child: FutureBuilder(
             future: aWeekStats,
@@ -276,7 +289,8 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                   stats.forEach(
                     (e) {
                       var dif = e.date?.difference(
-                          DateTime.now().subtract(const Duration(days: 7)));
+                        DateTime.now().subtract(const Duration(days: 7)),
+                      );
                       if (dif?.inDays != null) {
                         aWeekStatistics[(dif!.inDays.abs()).abs()] =
                             OneMonthStatistic(
@@ -307,49 +321,6 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
           ),
         ),
         const SizedBox(height: 30),
-        // Column(
-        //   children: [
-        //     FutureBuilder(
-        //       future: statsFuture,
-        //       builder: (context, snapshot) {
-        //         if (snapshot.hasData) {
-        //           List<SumCashback> data = snapshot.data as List<SumCashback>;
-        //           return Column(
-        //             children: [
-        //               Row(
-        //                 mainAxisAlignment: MainAxisAlignment.center,
-        //                 children: [
-        //                   SvgPicture.asset(
-        //                     'assets/svg/user-octagon.svg',
-        //                     semanticsLabel: 'user',
-        //                     color: Colors.white,
-        //                     height: 30,
-        //                     width: 30,
-        //                   ),
-        //                   const SizedBox(width: 10),
-        //                   Text(
-        //                     data.length.toString(),
-        //                     style: const TextStyle(
-        //                       fontSize: 30,
-        //                     ),
-        //                   ),
-        //                 ],
-        //               ),
-        //               const Text(
-        //                 'Количество клиентов',
-        //                 style: TextStyle(
-        //                   fontSize: 16,
-        //                 ),
-        //               ),
-        //             ],
-        //           );
-        //         } else {
-        //           return const SizedBox();
-        //         }
-        //       },
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
@@ -426,8 +397,11 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
   Widget build(BuildContext context) {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
 
+    const color1 = Color.fromRGBO(103, 206, 103, 1);
+    const color2 = Color.fromRGBO(255, 144, 62, 1);
+
     LineChartBarData sumChartBarData = LineChartBarData(
-      color: Colors.blue,
+      color: color1,
       isCurved: true,
       curveSmoothness: 0.2,
       barWidth: 3,
@@ -440,7 +414,12 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
             return spot.y > 0 ? true : false;
           },
         ),
-        color: Colors.blue.withOpacity(0.3),
+        // color: color1.withOpacity(0.3),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [color1, color1.withOpacity(0.1)],
+        ),
       ),
       dotData: FlDotData(
         show: true,
@@ -452,7 +431,7 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
             radius: 3,
             color: Colors.white,
             strokeWidth: 1,
-            strokeColor: Colors.blue.withOpacity(0.3),
+            strokeColor: color1.withOpacity(0.3),
           );
         },
       ),
@@ -461,12 +440,15 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
               ...widget.aWeekStatistics.map(
                 (e) {
                   return FlSpot(
-                    double.parse(e.date!
-                        .difference(
-                            DateTime.now().subtract(const Duration(days: 7)))
-                        .inDays
-                        .abs()
-                        .toString()),
+                    double.parse(
+                      e.date!
+                          .difference(
+                            DateTime.now().subtract(const Duration(days: 7)),
+                          )
+                          .inDays
+                          .abs()
+                          .toString(),
+                    ),
                     double.parse(e.price.toString()),
                   );
                 },
@@ -476,13 +458,17 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
     );
 
     LineChartBarData cashbackChartBarData = LineChartBarData(
-      color: Colors.red,
+      color: color2,
       isCurved: true,
       curveSmoothness: 0.2,
       barWidth: 3,
       belowBarData: BarAreaData(
         show: true,
-        color: Colors.red.withOpacity(0.3),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [color2, color2.withOpacity(0.1)],
+        ),
         applyCutOffY: true,
         cutOffY: 0,
         spotsLine: BarAreaSpotsLine(
@@ -501,7 +487,7 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
             radius: 3,
             color: Colors.white,
             strokeWidth: 1,
-            strokeColor: Colors.red.withOpacity(0.3),
+            strokeColor: color2.withOpacity(0.3),
           );
         },
       ),
@@ -509,18 +495,30 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
           ? [
               ...widget.aWeekStatistics.map(
                 (e) => FlSpot(
-                    double.parse(e.date!
+                  double.parse(
+                    e.date!
                         .difference(
-                            DateTime.now().subtract(const Duration(days: 7)))
+                          DateTime.now().subtract(const Duration(days: 7)),
+                        )
                         .inDays
                         .abs()
-                        .toString()),
-                    double.parse(e.cashback.toString())),
+                        .toString(),
+                  ),
+                  //TODO 5 ga ko'paydi!
+                  double.parse(e.cashback.toString()) * 5,
+                ),
               ),
             ]
           : [FlSpot.zero],
     );
 
+    const boxShadow = [
+      BoxShadow(
+        color: Color.fromRGBO(255, 255, 255, 1),
+        blurRadius: 4,
+        offset: Offset(0, 0),
+      ),
+    ];
     return Column(
       children: [
         // const _LineInfoWidget(),
@@ -537,21 +535,25 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                   }
                 });
               },
-              child: Row(
+              child: Column(
                 children: [
-                  const SizedBox(width: 4),
+                  Text(
+                    'Сумма',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: showSum ? color1 : color1.withOpacity(0.5),
+                    ),
+                  ),
+                  SizedBox(height: getH(10)),
                   Container(
                     decoration: BoxDecoration(
-                      color: showSum ? Colors.blue[400] : Colors.blue[200],
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(6),
-                      ),
+                      color: showSum ? color1 : color1.withOpacity(0.5),
+                      boxShadow: boxShadow,
                     ),
-                    height: 14,
-                    width: 22,
+                    height: getH(2),
+                    width: getW(80),
                   ),
-                  const SizedBox(width: 4),
-                  const Text('Сумма'),
                 ],
               ),
             ),
@@ -566,20 +568,25 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                   }
                 });
               },
-              child: Row(
+              child: Column(
                 children: [
+                  Text(
+                    'Кэшбек',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: showCashback ? color2 : color2.withOpacity(0.5),
+                    ),
+                  ),
+                  SizedBox(height: getH(10)),
                   Container(
                     decoration: BoxDecoration(
-                      color: showCashback ? Colors.red[400] : Colors.red[200],
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(6),
-                      ),
+                      color: showCashback ? color2 : color2.withOpacity(0.5),
+                      boxShadow: boxShadow,
                     ),
-                    height: 14,
-                    width: 22,
+                    height: getH(2),
+                    width: getW(80),
                   ),
-                  const SizedBox(width: 4),
-                  const Text('Кэшбек'),
                 ],
               ),
             ),
@@ -606,90 +613,103 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                       fitInsideVertically: true,
                       getTooltipItems: (touchedBarSpots) {
                         return touchedBarSpots.map((barSpot) {
-                          return LineTooltipItem(
-                            NumberFormat.simpleCurrency(
-                              name: '',
-                              locale: 'ru_RU',
-                              decimalDigits: 0,
-                            ).format(barSpot.y),
-                            TextStyle(
-                              color: barSpot.bar.color,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            // children: [
-                            //   TextSpan(
-                            //     text: barSpot.y.toString(),
-                            //     style: TextStyle(
-                            //       color: Colors.blue[300],
-                            //     ),
-                            //   ),
-                            //   TextSpan(
-                            //     text: barSpot.y.toString(),
-                            //     style: TextStyle(
-                            //       color: Colors.red[300],
-                            //     ),
-                            //   ),
-                            // ],
-                          );
+                          return barSpot.barIndex == 0
+                              ? LineTooltipItem(
+                                  NumberFormat.simpleCurrency(
+                                    name: '',
+                                    locale: 'ru_RU',
+                                    decimalDigits: 0,
+                                  ).format(barSpot.y),
+                                  TextStyle(
+                                    color: barSpot.bar.color,
+                                    fontWeight: FontWeight.bold,
+                                  ))
+                              : LineTooltipItem(
+                                  NumberFormat.simpleCurrency(
+                                    name: '',
+                                    locale: 'ru_RU',
+                                    decimalDigits: 0,
+                                  ).format(
+                                    barSpot.y / 5,
+                                  ),
+                                  TextStyle(
+                                    color: barSpot.bar.color,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  // children: [
+                                  //   TextSpan(
+                                  //     text: barSpot.y.toString(),
+                                  //     style: TextStyle(
+                                  //       color: Colors.blue[300],
+                                  //     ),
+                                  //   ),
+                                  //   TextSpan(
+                                  //     text: barSpot.y.toString(),
+                                  //     style: TextStyle(
+                                  //       color: Colors.red[300],
+                                  //     ),
+                                  //   ),
+                                  // ],
+                                );
                         }).toList();
                       },
                     ),
                   ),
                   titlesData: FlTitlesData(
-                      show: true,
-                      rightTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
+                    show: true,
+                    rightTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        getTitlesWidget: (value, meta) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 2),
+                            child: Text(
+                              value.toInt() > 0
+                                  ? (value.toInt() / 1000).toStringAsFixed(0) +
+                                      ' тыс'
+                                  : '',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 10),
+                            ),
+                          );
+                        },
+                        showTitles: true,
+                        interval: widget.maxSum != 0 ? (widget.maxSum / 2) : 1,
+                        reservedSize: 30,
                       ),
-                      topTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          getTitlesWidget: (value, meta) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 2),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        getTitlesWidget: (value, meta) {
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              top: 30,
+                            ),
+                            child: RotationTransition(
+                              turns: const AlwaysStoppedAnimation(-45 / 360),
                               child: Text(
-                                value.toInt() > 0
-                                    ? (value.toInt() / 1000)
-                                            .toStringAsFixed(0) +
-                                        ' тыс'
-                                    : '',
+                                formatter.format(
+                                  widget.aWeekStatistics[value.toInt()].date!,
+                                ),
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(fontSize: 10),
-                              ),
-                            );
-                          },
-                          showTitles: true,
-                          interval:
-                              widget.maxSum != 0 ? (widget.maxSum / 2) : 1,
-                          reservedSize: 30,
-                        ),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          getTitlesWidget: (value, meta) {
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                top: 30,
-                              ),
-                              child: RotationTransition(
-                                turns: const AlwaysStoppedAnimation(-45 / 360),
-                                child: Text(
-                                  formatter.format(widget
-                                      .aWeekStatistics[value.toInt()].date!),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                  ),
+                                style: const TextStyle(
+                                  fontSize: 10,
                                 ),
                               ),
-                            );
-                          },
-                          showTitles: true,
-                          interval: 1,
-                          reservedSize: 60,
-                        ),
-                      )),
+                            ),
+                          );
+                        },
+                        showTitles: true,
+                        interval: 1,
+                        reservedSize: 60,
+                      ),
+                    ),
+                  ),
                   gridData: FlGridData(
                     show: true,
                     verticalInterval: 1,

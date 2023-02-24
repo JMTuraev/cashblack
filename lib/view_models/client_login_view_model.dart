@@ -41,7 +41,12 @@ class ClientLoginViewModel extends ChangeNotifier {
   }
 
   Future<bool> onVerifyButtonPressed(String code, String phone) async {
-    return _client.checkSMS(code, 'isClient', phone);
+    isLoading = true;
+    notifyListeners();
+    var result = await _client.checkSMS(code, 'isClient', phone);
+    isLoading = false;
+    notifyListeners();
+    return result;
   }
 
   // Future<void> getProfile() async {

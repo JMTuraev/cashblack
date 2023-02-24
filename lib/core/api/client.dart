@@ -98,7 +98,7 @@ class Client {
       'password': '1',
     };
 
-    if (appSignature.contains('/')) {
+    if (appSignature.contains('/') || appSignature.isEmpty) {
       appSignature = '9er8fjshds';
     }
 
@@ -571,8 +571,8 @@ class Client {
       var decode = (json.decode(resBody) as List);
       worker = decode
           .map((e) => SentNotification.fromJson(e))
-          // .toList()
-          // .reversed
+          .toList()
+          .reversed
           .toList();
       print('!!!!!sent notifs');
       return worker;

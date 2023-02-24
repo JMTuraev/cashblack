@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/payment.dart';
 import '../../../extensions.dart';
-import '../../../theme/theme_details.dart';
 import '../../../view_models/balance_view_model.dart';
 import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
@@ -27,13 +26,11 @@ class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat formatter = DateFormat('dd MMMM yyyy').add_Hm();
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('История платежей'),
-          bottom: ThemeDetails.appBarDivider,
+          // bottom: ThemeDetails.appBarDivider,
         ),
         body: Padding(
           padding: const EdgeInsets.all(10),
@@ -45,31 +42,26 @@ class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Payment> payments = snapshot.data as List<Payment>;
-
-                      if (payments.length > 0) {
+                      if (payments.isNotEmpty) {
                         return ListView.separated(
                           itemCount: payments.length,
                           separatorBuilder: (context, index) {
-                            return const Divider(
-                              height: 1,
-                              color: Colors.white54,
-                            );
+                            return const SizedBox(height: 10);
                           },
                           itemBuilder: (context, index) {
-                            return Padding(
+                            return Container(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                                color: Color.fromRGBO(28, 28, 29, 1),
+                              ),
                               padding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 6,
+                                vertical: 12,
+                                horizontal: 24,
                               ),
                               child: Row(
                                 children: [
-                                  Text(
-                                    (index + 1).toString(),
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -80,6 +72,7 @@ class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
                                             .cardHiddenFormatter(),
                                         style: const TextStyle(
                                           fontSize: 18,
+                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                       const SizedBox(height: 6),
@@ -87,14 +80,16 @@ class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
                                         payments[index]
                                             .date
                                             .getLocaleDateTime(),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ],
                                   ),
                                   const Spacer(),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         NumberFormat.simpleCurrency(
@@ -102,7 +97,8 @@ class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
                                           locale: 'ru_RU',
                                           decimalDigits: 0,
                                         ).format(
-                                            int.parse(payments[index].amount)),
+                                          int.parse(payments[index].amount),
+                                        ),
                                         style: TextStyle(
                                           fontSize: 18,
                                           color: Colors.green[400],

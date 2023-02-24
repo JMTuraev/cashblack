@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sent_notification.dart';
 import '../../../extensions.dart';
-import '../../../theme/theme_details.dart';
+import '../../../size_config.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/empty_widget.dart';
@@ -42,8 +43,10 @@ class _ServicesViewState extends State<ServicesView> {
                 ),
               );
             },
-            icon: const Icon(
-              Icons.send_rounded,
+            icon: SvgPicture.asset(
+              'assets/svg/send.svg',
+              width: getW(24),
+              height: getH(24),
             ),
           ),
         ],
@@ -53,7 +56,7 @@ class _ServicesViewState extends State<ServicesView> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        bottom: ThemeDetails.appBarDivider,
+        // bottom: ThemeDetails.appBarDivider,8600492931784702 0826
       ),
       body: SafeArea(
         child: Padding(
@@ -88,7 +91,13 @@ class _ServicesViewState extends State<ServicesView> {
                                   ),
                                 );
                               },
-                              child: Card(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                  color: Color.fromRGBO(28, 28, 29, 1),
+                                ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -96,8 +105,8 @@ class _ServicesViewState extends State<ServicesView> {
                                     ClipRRect(
                                       clipBehavior: Clip.antiAliasWithSaveLayer,
                                       borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        bottomLeft: Radius.circular(10),
+                                        topLeft: Radius.circular(20),
+                                        bottomLeft: Radius.circular(20),
                                       ),
                                       child: CachedNetworkImage(
                                         fit: BoxFit.fitHeight,
@@ -138,17 +147,16 @@ class _ServicesViewState extends State<ServicesView> {
                                                         .status ==
                                                     1)
                                                   const Icon(
-                                                    Icons.watch_later,
-                                                    color: Color.fromRGBO(
-                                                        100, 181, 246, 1),
+                                                    Icons.watch_later_outlined,
+                                                    color: Colors.white,
                                                   )
                                                 else if (notifications[index]
                                                         .status ==
                                                     3)
                                                   const Icon(
-                                                    Icons.check_circle_sharp,
-                                                    color: Color.fromRGBO(
-                                                        129, 199, 132, 1),
+                                                    Icons
+                                                        .check_circle_outline_sharp,
+                                                    color: Colors.white,
                                                   )
                                                 else
                                                   const Icon(Icons.clear),
@@ -182,7 +190,7 @@ class _ServicesViewState extends State<ServicesView> {
                             );
                           },
                           separatorBuilder: (context, index) {
-                            return const Divider(height: 1);
+                            return SizedBox(height: getH(10));
                           },
                         ),
                       );

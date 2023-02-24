@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/models/sent_notification.dart';
-import '../../../theme/theme_details.dart';
 import '../../../utils/constants.dart';
 
 class NotificationInfoView extends StatelessWidget {
@@ -18,7 +17,7 @@ class NotificationInfoView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(sentNotification.shop.name),
-        bottom: ThemeDetails.appBarDivider,
+        // bottom: ThemeDetails.appBarDivider,
       ),
       body: SafeArea(
         child: SingleChildScrollView(

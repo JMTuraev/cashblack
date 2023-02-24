@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -9,10 +10,9 @@ import '../../../domain/models/shop.dart';
 import '../../../domain/models/user.dart';
 import '../../../domain/models/worker.dart';
 import '../../../extensions.dart';
-import '../../../theme/theme_details.dart';
+import '../../../size_config.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/business_home_view_model.dart';
-import '../../../widgets/text_button_widget.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'create_worker_view.dart';
 import 'edit_name_view.dart';
@@ -52,7 +52,7 @@ class _SettingsViewState extends State<SettingsView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Настройки'),
-        bottom: ThemeDetails.appBarDivider,
+        // bottom: ThemeDetails.appBarDivider,
         actions: [
           IconButton(
             onPressed: () async {
@@ -65,7 +65,11 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                   );
             },
-            icon: const Icon(Icons.logout),
+            icon: SvgPicture.asset(
+              'assets/svg/logout.svg',
+              height: getH(24),
+              width: getW(24),
+            ),
           )
         ],
       ),
@@ -113,24 +117,20 @@ class _SettingsViewState extends State<SettingsView> {
                     return const SizedBox();
                 },
               ),
+              SizedBox(height: getH(20)),
               isBusiness
                   ? Row(
                       children: [
                         const Text(
                           'Сотрудники',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                           ),
                         ),
                         const Spacer(),
-                        TextButton(
-                          child: const Text(
-                            'Добавить',
-                            style: TextStyle(
-                              color: Colors.white70,
-                            ),
-                          ),
-                          onPressed: () {
+                        GestureDetector(
+                          child: SvgPicture.asset('assets/svg/user-add.svg'),
+                          onTap: () {
                             Navigator.of(context).push(
                               CupertinoPageRoute(
                                 builder: (context) => const CreateWorkerView(),
@@ -141,6 +141,7 @@ class _SettingsViewState extends State<SettingsView> {
                       ],
                     )
                   : const SizedBox(),
+              SizedBox(height: getH(20)),
               isBusiness
                   ? workersList.length > 0
                       ? Expanded(
@@ -148,48 +149,68 @@ class _SettingsViewState extends State<SettingsView> {
                             shrinkWrap: true,
                             itemCount: workersList.length,
                             separatorBuilder: (context, index) {
-                              return const Divider(
-                                height: 1,
-                              );
+                              return SizedBox(height: getH(10));
                             },
                             itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(
-                                  '${workersList[index].firstName} ${workersList[index].lastName}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  workersList[index].userName.phoneFormatter(),
-                                ),
-                                trailing: CupertinoSwitch(
-                                  activeColor: Colors.grey[100],
-                                  thumbColor: Colors.black,
-                                  trackColor: Colors.grey,
-                                  value: !workersList[index].isFreezed,
-                                  onChanged: (value) async {
-                                    await context
-                                        .read<BusinessHomeViewModel>()
-                                        .switchWorker(
-                                          workersList[index].id,
-                                          !value,
+                              return _BorderContainerWidget(
+                                child: Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${workersList[index].firstName} ${workersList[index].lastName}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        SizedBox(height: getH(4)),
+                                        Text(
+                                          workersList[index]
+                                              .userName
+                                              .phoneFormatter(),
+                                          style: TextStyle(
+                                            color: Color.fromRGBO(
+                                                164, 164, 164, 1),
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    CupertinoSwitch(
+                                      activeColor:
+                                          Color.fromRGBO(103, 206, 103, 1),
+                                      thumbColor: Colors.white,
+                                      trackColor: Color.fromRGBO(57, 57, 61, 1),
+                                      value: !workersList[index].isFreezed,
+                                      onChanged: (value) async {
+                                        await context
+                                            .read<BusinessHomeViewModel>()
+                                            .switchWorker(
+                                              workersList[index].id,
+                                              !value,
+                                            );
+                                        print(
+                                          context
+                                              .read<BusinessHomeViewModel>()
+                                              .workers
+                                              .first
+                                              .isFreezed,
                                         );
-                                    print(context
-                                        .read<BusinessHomeViewModel>()
-                                        .workers
-                                        .first
-                                        .isFreezed);
-                                    setState(() {});
-                                    print('object');
-                                  },
+                                        setState(() {});
+                                        print('object');
+                                      },
+                                    ),
+                                  ],
                                 ),
-                                contentPadding: const EdgeInsets.all(0),
                               );
                             },
                           ),
                         )
-                      : Center(child: const Text('У вас нет сотрудников'))
+                      : const Center(child: Text('У вас нет сотрудников'))
                   : const SizedBox(),
             ],
           ),
@@ -213,58 +234,73 @@ class _BrandCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var imageUrl = Constants.media + shop.image!;
     return _BorderContainerWidget(
-      child: Stack(
+      child: Row(
         children: [
-          Row(
-            children: [
-              SizedBox(
-                width: 60,
-                height: 60,
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  errorWidget: (context, url, error) => const Icon(Icons.clear),
-                ),
+          ClipRRect(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20),
+            ),
+            child: SizedBox(
+              width: getW(60),
+              height: getH(60),
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                errorWidget: (context, url, error) => const Icon(Icons.clear),
               ),
-              const SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _SimpleTextWidget(
-                    title: shop.name,
-                  ),
-                  Text(shop.category.title),
-                  Row(
-                    children: [
-                      const Icon(
-                        CupertinoIcons.money_dollar_circle,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text('${shop.cashback} %'),
-                    ],
-                  ),
-                ],
-              )
+            ),
+          ),
+          SizedBox(width: getW(18)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _SimpleTextWidget(
+                title: shop.name,
+              ),
+              SizedBox(height: getH(4)),
+              Text(
+                shop.category.title,
+                style: const TextStyle(fontSize: 15),
+              ),
             ],
           ),
-          isBusiness
-              ? Positioned(
-                  top: 5,
-                  right: 5,
-                  child: TextButtonWidget(
-                    method: () {
-                      Navigator.of(context).push(
-                        CupertinoPageRoute(
-                          builder: (context) => EditStoreView(
-                            shop: shop,
+          Spacer(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                shop.cashback.toString() + '%',
+                style: TextStyle(
+                  color: Color(0xffc9f79e),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(width: getW(18)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              isBusiness
+                  ? GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) => EditStoreView(
+                              shop: shop,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    text: 'Изменить',
-                  ),
-                )
-              : const SizedBox()
+                        );
+                      },
+                      child: SvgPicture.asset(
+                        'assets/svg/edit.svg',
+                        height: getH(24),
+                        width: getW(24),
+                      ),
+                    )
+                  : const SizedBox()
+            ],
+          ),
         ],
       ),
     );
@@ -298,9 +334,16 @@ class _SubscriptionCardWidget extends StatelessWidget {
                           name: '',
                           locale: 'ru_RU',
                           decimalDigits: 0,
-                        ).format(double.parse(
-                            balance.balanceShop.subscriptionPrice)) +
+                        ).format(
+                          double.parse(
+                            balance.balanceShop.subscriptionPrice,
+                          ),
+                        ) +
                         'сум',
+                    style: TextStyle(
+                      color: Color(0xffc9f79e),
+                      fontSize: 15,
+                    ),
                   ),
                 ],
               ),
@@ -316,11 +359,17 @@ class _SubscriptionCardWidget extends StatelessWidget {
               Row(
                 children: [
                   // const Text('Следующий платеж'),
-                  const Text('Статус'),
+                  const _SimpleTextWidget(
+                    title: 'Статус',
+                  ),
                   const SizedBox(width: 8),
                   // Text(balance.balanceShop.createdDate.getLocaleDateTime()),
                   Text(
                     balance.isSubscribedOne ? 'Активен' : 'Не оплачен',
+                    style: TextStyle(
+                      color: Color(0xffc9f79e),
+                      fontSize: 15,
+                    ),
                   ),
                 ],
               ),
@@ -328,14 +377,22 @@ class _SubscriptionCardWidget extends StatelessWidget {
               balance.date != null && balance.isSubscribedOne
                   ? Row(
                       children: [
-                        const Text('Следующий платеж'),
+                        const _SimpleTextWidget(
+                          title: 'Следующий платеж',
+                        ),
                         const SizedBox(width: 8),
-                        Text(balance.date != null
-                            ? DateTime.parse(balance.date)
-                                .add(Duration(days: 30))
-                                .toString()
-                                .getLocaleDate()
-                            : 'Не оплачен')
+                        Text(
+                          balance.date != null
+                              ? DateTime.parse(balance.date)
+                                  .add(const Duration(days: 30))
+                                  .toString()
+                                  .getLocaleDate()
+                              : 'Не оплачен',
+                          style: TextStyle(
+                            color: Color(0xffc9f79e),
+                            fontSize: 15,
+                          ),
+                        )
                       ],
                     )
                   : const SizedBox(),
@@ -371,14 +428,20 @@ class _ProfileCardWidget extends StatelessWidget {
                       title: '${user!.firstName} ${user!.lastName}',
                     ),
               const SizedBox(height: 10),
-              Text(user!.userName.phoneFormatter()),
+              Text(
+                user!.userName.phoneFormatter(),
+                style: TextStyle(
+                  color: Color(0xffa3a3a3),
+                ),
+              ),
             ],
           ),
           Positioned(
+            bottom: 5,
             top: 5,
             right: 5,
-            child: TextButtonWidget(
-              method: () {
+            child: GestureDetector(
+              onTap: () {
                 Navigator.of(context).push(
                   CupertinoPageRoute(
                     builder: (context) => EditNameView(
@@ -387,7 +450,11 @@ class _ProfileCardWidget extends StatelessWidget {
                   ),
                 );
               },
-              text: 'Изменить',
+              child: SvgPicture.asset(
+                'assets/svg/edit.svg',
+                height: getH(24),
+                width: getW(24),
+              ),
             ),
           ),
         ],
@@ -426,14 +493,18 @@ class _BorderContainerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 1,
-          color: Colors.white24,
-        ),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(10),
+      padding: EdgeInsets.symmetric(
+        horizontal: getW(23),
+        vertical: getH(15),
+      ),
+      decoration: const BoxDecoration(
+        // border: Border.all(
+        //   width: 1,
+        //   color: Colors.white24,
+        // ),
+        color: Color.fromRGBO(28, 28, 29, 1),
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
         ),
       ),
       child: child,

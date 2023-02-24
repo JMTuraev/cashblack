@@ -1,12 +1,13 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/user.dart';
 import '../../../extensions.dart';
-import '../../../theme/theme_details.dart';
+import '../../../size_config.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/small_title_widget.dart';
 import '../../../widgets/text_button_widget.dart';
@@ -34,7 +35,7 @@ class _SettingsViewState extends State<SettingsView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Профиль'),
-        bottom: ThemeDetails.appBarDivider,
+        // bottom: ThemeDetails.appBarDivider,
         actions: [
           IconButton(
             onPressed: () async {
@@ -47,7 +48,11 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                   );
             },
-            icon: const Icon(Icons.logout),
+            icon: SvgPicture.asset(
+              'assets/svg/logout.svg',
+              height: getH(24),
+              width: getW(24),
+            ),
           )
         ],
       ),
@@ -72,7 +77,7 @@ class _SettingsViewState extends State<SettingsView> {
                         height: MediaQuery.of(context).size.width / 1.5,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                            Radius.circular(20),
                           ),
                           color: Colors.white,
                         ),
@@ -263,7 +268,7 @@ class _BorderContainerWidget extends StatelessWidget {
           color: Colors.white24,
         ),
         borderRadius: const BorderRadius.all(
-          Radius.circular(10),
+          Radius.circular(20),
         ),
       ),
       child: child,

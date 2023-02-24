@@ -51,7 +51,7 @@ class BarcodeView extends StatelessWidget {
                   height: MediaQuery.of(context).size.width / 1.5,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(
-                      Radius.circular(10),
+                      Radius.circular(20),
                     ),
                     color: Colors.white,
                   ),
