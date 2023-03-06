@@ -101,17 +101,66 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                   ),
                   // const Spacer(),
                   SizedBox(height: getH(20)),
-
+                  MainButtonWidget(
+                    text: 'Отправить',
+                    isLoading:
+                        context.watch<SendNotificationViewModel>().isLoading,
+                    method: () async {
+                      if (_fileList.isNotEmpty &&
+                          _titleController.text.isNotEmpty &&
+                          _contentController.text.isNotEmpty) {
+                        if (int.parse(balance) < int.parse(price)) {
+                          // showCupertinoDialog(
+                          //   context: context,
+                          //   builder: (context) =>
+                          //       InfoAlertWidget(title: 'Пополните баланс'),
+                          await showCupertinoDialog(
+                            context: context,
+                            builder: (context) {
+                              return const InfoAlertWidget(
+                                title:
+                                    'Пополните баланс для отправки уведомлений',
+                              );
+                            },
+                          );
+                          // );
+                        } else {
+                          await context
+                              .read<SendNotificationViewModel>()
+                              .send(
+                                _fileList[0]!,
+                                _titleController.text,
+                                _contentController.text,
+                              )
+                              .then(
+                                (value) =>
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                  CupertinoPageRoute(
+                                    builder: (context) =>
+                                        const BusinessHomeView(),
+                                  ),
+                                  (route) => false,
+                                ),
+                              );
+                        }
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 20),
                   FutureBuilder(
                     future: prices,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Text(
-                          'Цена ${NumberFormat.simpleCurrency(
+                          'Отправленные уведомления увидят пользователи, которые вы выплатили кэшбэк. Цена одного уведомление составляет ${NumberFormat.simpleCurrency(
                             name: '',
                             locale: 'ru_RU',
                             decimalDigits: 0,
-                          ).format(int.parse(snapshot.data.toString()))}сумов',
+                          ).format(int.parse(snapshot.data.toString()))}сумов и будет видна в течение 48 часов (после подтверждения).',
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                         );
                       } else {
                         return const Text('');
@@ -119,46 +168,6 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                     },
                   ),
                   SizedBox(height: getH(20)),
-
-                  MainButtonWidget(
-                    text: 'Отправить',
-                    method: () async {
-                      if (int.parse(balance) < int.parse(price)) {
-                        // showCupertinoDialog(
-                        //   context: context,
-                        //   builder: (context) =>
-                        //       InfoAlertWidget(title: 'Пополните баланс'),
-                        await showCupertinoDialog(
-                          context: context,
-                          builder: (context) {
-                            return const InfoAlertWidget(
-                              title: 'Пополните баланс',
-                            );
-                          },
-                        );
-                        // );
-                      } else {
-                        await context
-                            .read<SendNotificationViewModel>()
-                            .send(
-                              _fileList[0]!,
-                              _titleController.text,
-                              _contentController.text,
-                            )
-                            .then(
-                              (value) =>
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                CupertinoPageRoute(
-                                  builder: (context) =>
-                                      const BusinessHomeView(),
-                                ),
-                                (route) => false,
-                              ),
-                            );
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -231,11 +240,13 @@ class _FilePickerWidget extends StatelessWidget {
           ),
           color: Colors.grey[800],
         ),
-        child: SizedBox(
-          width: getW(200),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          // width: getW(200),
           height: getH(100),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               SvgPicture.asset(
                 'assets/svg/gallery.svg',

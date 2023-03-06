@@ -55,7 +55,7 @@ class MainButtonWidget extends StatelessWidget {
                   children: [
                     Spacer(),
                     Container(
-                      height: getH(26),
+                      // height: getH(26),
                       child: Text(
                         text,
                         textAlign: TextAlign.center,
@@ -76,7 +76,7 @@ class MainButtonWidget extends StatelessWidget {
                         right: 0,
                         child: SizedBox(
                           width: getW(26),
-                          height: getH(26),
+                          // height: getH(26),
                           child: const CupertinoActivityIndicator(
                             // strokeWidth: 2,
                             color: Colors.white,
@@ -85,7 +85,7 @@ class MainButtonWidget extends StatelessWidget {
                       )
                     : SizedBox(
                         width: getW(26),
-                        height: getH(26),
+                        // height: getH(26),
                       ),
               ],
             ),
@@ -109,7 +109,7 @@ class MainButtonWidget extends StatelessWidget {
                   decimalDigits: 0,
                 ).format(percent)}сум',
                 style: const TextStyle(
-                  fontSize: 10,
+                  fontSize: 14,
                   color: Colors.white,
                 ),
               ),

@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/received_notification.dart';
+import '../../../extensions.dart';
+import '../../../size_config.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/empty_widget.dart';
@@ -43,100 +46,131 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                 future: notifs,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    var notifications =
-                        snapshot.data as List<ReceivedNotification>;
+                    var list = snapshot.data as List<ReceivedNotification>;
+                    var notifications = list
+                        .where(
+                            (element) => DateTime.parse(element.date).isAfter(
+                                  DateTime.now().subtract(
+                                    const Duration(
+                                      days: 2,
+                                    ),
+                                  ),
+                                ))
+                        .toList();
                     if (notifications.length > 0) {
                       return Expanded(
-                        child: ListView.separated(
-                          itemCount: notifications.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  CupertinoPageRoute(
-                                    builder: (context) =>
-                                        ClientNotificationInfoView(
-                                      receivedNotification:
-                                          notifications[index],
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                  color: Color.fromRGBO(28, 28, 29, 1),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ClipRRect(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        bottomLeft: Radius.circular(20),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.fitHeight,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4,
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        imageUrl: Constants.media +
-                                            notifications[index].image,
+                        child: EasyRefresh(
+                          header: const MaterialHeader(),
+                          onRefresh: () {
+                            setState(() {
+                              notifs = context
+                                  .read<ClientHomeViewModel>()
+                                  .getNotifications();
+                            });
+                          },
+                          child: ListView.separated(
+                            itemCount: notifications.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (context) =>
+                                          ClientNotificationInfoView(
+                                        receivedNotification:
+                                            notifications[index],
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Container(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              notifications[index].name,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              notifications[index].title,
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ],
+                                  );
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                    color: Color.fromRGBO(28, 28, 29, 1),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      ClipRRect(
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          bottomLeft: Radius.circular(20),
+                                        ),
+                                        child: CachedNetworkImage(
+                                          fit: BoxFit.fitHeight,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              3,
+                                          imageUrl: Constants.media +
+                                              notifications[index].image,
                                         ),
                                       ),
-                                    )
-                                  ],
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Container(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                notifications[index].name,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                notifications[index].title,
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                notifications[index]
+                                                    .date
+                                                    .getLocaleDateTime(),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                            return ListTile(
-                              title: Text(
-                                notifications[index].title,
-                              ),
-                              subtitle: Text(
-                                notifications[index].content,
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const Divider(height: 1);
-                          },
+                              );
+                              return ListTile(
+                                title: Text(
+                                  notifications[index].title,
+                                ),
+                                subtitle: Text(
+                                  notifications[index].content,
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return SizedBox(height: getH(10));
+                            },
+                          ),
                         ),
                       );
                     } else {

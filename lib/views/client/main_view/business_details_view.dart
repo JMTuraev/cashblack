@@ -75,7 +75,7 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                           Column(
                             children: [
                               const Text(
-                                'Ваш баланс',
+                                'Доступный кэшбек',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.white,
@@ -228,7 +228,17 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                         return const Center(child: EmptyWidget());
                       }
                     } else {
-                      return const LogoAnimatedWidget(size: 1.5);
+                      // return const LogoAnimatedWidget(size: 1.5);
+                      return Expanded(
+                        child: Column(
+                          children: const [
+                            Spacer(),
+                            LogoAnimatedWidget(size: 1.5),
+                            const SizedBox(height: 20),
+                            Spacer(),
+                          ],
+                        ),
+                      );
                     }
                   },
                 ),
@@ -412,7 +422,7 @@ class _CardOut extends StatelessWidget {
                         name: '',
                         locale: 'ru_RU',
                         decimalDigits: 0,
-                      ).format(sumCashback.cashback) +
+                      ).format(sumCashback.price) +
                       'сум',
                   style: const TextStyle(
                     color: Color(0xffe4002b),

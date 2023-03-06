@@ -226,7 +226,7 @@ class _BalanceWidget extends StatelessWidget {
             children: [
               SizedBox(height: getH(20)),
               const Text(
-                'Ваш баланс',
+                'Доступный кэшбек',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white,
@@ -326,7 +326,7 @@ class _TempWidget extends StatelessWidget {
             children: [
               SizedBox(height: getH(20)),
               const Text(
-                'Ваш баланс',
+                'Доступный кэшбек',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white,

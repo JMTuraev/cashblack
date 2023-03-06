@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -144,74 +145,90 @@ class _StatisticsViewState extends State<StatisticsView> {
                 ),
               ),
               const SizedBox(height: 20),
+
               Container(
                 child: summa
-                    ? _FilterWidget(
-                        categoryItems: [
-                          _menuItem(context, 'Выберите', start, end, '0'),
-                          _menuItem(context, 'Сегодня', today, today, '1'),
-                          _menuItem(
-                            context,
-                            'Вчера',
-                            returnDateInString(1),
-                            returnDateInString(1),
-                            '2',
+                    ? Column(
+                        children: [
+                          _BalanceWidget(
+                            cashback: context
+                                .watch<StatisticsViewModel>()
+                                .cashbackSum,
+                            price:
+                                context.watch<StatisticsViewModel>().priceSum,
+                            withdraw: context
+                                .watch<StatisticsViewModel>()
+                                .withdrawSum,
                           ),
-                          _menuItem(
-                            context,
-                            'Позавчера',
-                            returnDateInString(2),
-                            returnDateInString(2),
-                            '3',
-                          ),
-                          _menuItem(
-                            context,
-                            'Эта неделя',
-                            returnDateInString(6),
-                            today,
-                            '4',
-                          ),
-                          _menuItem(
-                            context,
-                            'Прошлая неделя',
-                            returnDateInString(13),
-                            returnDateInString(7),
-                            '5',
-                          ),
-                          _menuItem(
-                            context,
-                            'Этот месяц',
-                            returnDateInString(30),
-                            today,
-                            '6',
-                          ),
-                          _menuItem(
-                            context,
-                            'Прошлый месяц',
-                            returnDateInString(60),
-                            returnDateInString(30),
-                            '7',
-                          ),
-                          _menuItem(
-                            context,
-                            'Этот месяц',
-                            returnDateInString(90),
-                            today,
-                            '8',
-                          ),
-                          _menuItem(
-                            context,
-                            'Этот год',
-                            dateFormatter.format(
-                              DateTime(DateTime.now().year),
-                            ),
-                            today,
-                            '9',
+                          const SizedBox(height: 20),
+                          _FilterWidget(
+                            categoryItems: [
+                              _menuItem(context, 'Выберите', start, end, '0'),
+                              _menuItem(context, 'Сегодня', today, today, '1'),
+                              _menuItem(
+                                context,
+                                'Вчера',
+                                returnDateInString(1),
+                                returnDateInString(1),
+                                '2',
+                              ),
+                              _menuItem(
+                                context,
+                                'Позавчера',
+                                returnDateInString(2),
+                                returnDateInString(2),
+                                '3',
+                              ),
+                              _menuItem(
+                                context,
+                                'Эта неделя',
+                                returnDateInString(6),
+                                today,
+                                '4',
+                              ),
+                              _menuItem(
+                                context,
+                                'Прошлая неделя',
+                                returnDateInString(13),
+                                returnDateInString(7),
+                                '5',
+                              ),
+                              _menuItem(
+                                context,
+                                'Этот месяц',
+                                returnDateInString(30),
+                                today,
+                                '6',
+                              ),
+                              _menuItem(
+                                context,
+                                'Прошлый месяц',
+                                returnDateInString(60),
+                                returnDateInString(30),
+                                '7',
+                              ),
+                              _menuItem(
+                                context,
+                                'Этот месяц',
+                                returnDateInString(90),
+                                today,
+                                '8',
+                              ),
+                              _menuItem(
+                                context,
+                                'Этот год',
+                                dateFormatter.format(
+                                  DateTime(DateTime.now().year),
+                                ),
+                                today,
+                                '9',
+                              ),
+                            ],
+                            hint: 'Выберите',
+                            onChanged: onFilterChanged,
+                            selectedOption: _filter,
                           ),
                         ],
-                        hint: 'Выберите',
-                        onChanged: onFilterChanged,
-                        selectedOption: _filter,
                       )
                     : const SizedBox(),
               ),
@@ -397,8 +414,10 @@ class _CashbackWidget extends StatelessWidget {
                   snapshot.data as List<SumCashback>;
               if (sumCashback.length > 0) {
                 return Expanded(
-                  child: ListView.builder(
+                  child: ListView.separated(
                     itemCount: sumCashback.length,
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: getH(10)),
                     itemBuilder: (context, index) => _CardClient(
                       sumCashback: sumCashback[index],
                     ),
@@ -1021,6 +1040,131 @@ class _ChipWidget extends StatelessWidget {
               color: Colors.white,
               fontSize: 10,
               fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BalanceWidget extends StatelessWidget {
+  const _BalanceWidget({
+    Key? key,
+    required this.price,
+    required this.withdraw,
+    required this.cashback,
+  }) : super(key: key);
+
+  final int price;
+  final int withdraw;
+  final double cashback;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                const Text(
+                  'Доход',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color(0xff34c85a),
+                  ),
+                ),
+                SizedBox(height: getH(6)),
+                Text(
+                  NumberFormat.simpleCurrency(
+                    name: '',
+                    locale: 'ru_RU',
+                    decimalDigits: 0,
+                  ).format(price),
+                  textAlign: TextAlign.end,
+                  style: const TextStyle(
+                    color: Color(0xff34c85a),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Text(
+                  'сум',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color(0xff34c85a),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                const Text(
+                  'Кэшбек',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color.fromRGBO(75, 132, 231, 1),
+                  ),
+                ),
+                SizedBox(height: getH(6)),
+                Text(
+                  NumberFormat.simpleCurrency(
+                    name: '',
+                    locale: 'ru_RU',
+                    decimalDigits: 0,
+                  ).format(cashback),
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(75, 132, 231, 1),
+                  ),
+                ),
+                const Text(
+                  'сум',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color.fromRGBO(75, 132, 231, 1),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                const Text(
+                  'Покупка',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color.fromRGBO(228, 0, 43, 1),
+                  ),
+                ),
+                SizedBox(height: getH(6)),
+                Text(
+                  NumberFormat.simpleCurrency(
+                    name: '',
+                    locale: 'ru_RU',
+                    decimalDigits: 0,
+                  ).format(withdraw),
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(228, 0, 43, 1),
+                  ),
+                ),
+                const Text(
+                  'сум',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color.fromRGBO(228, 0, 43, 1),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

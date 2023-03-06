@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,7 +23,7 @@ class ServicesView extends StatefulWidget {
 }
 
 class _ServicesViewState extends State<ServicesView> {
-  late final Future sentFuture;
+  late Future sentFuture;
   @override
   void initState() {
     sentFuture = context.read<SendNotificationViewModel>().getNotifications();
@@ -56,7 +57,7 @@ class _ServicesViewState extends State<ServicesView> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        // bottom: ThemeDetails.appBarDivider,8600492931784702 0826
+        // bottom: ThemeDetails.appBarDivider,
       ),
       body: SafeArea(
         child: Padding(
@@ -78,129 +79,251 @@ class _ServicesViewState extends State<ServicesView> {
                     var notifications = snapshot.data as List<SentNotification>;
                     if (notifications.length > 0) {
                       return Expanded(
-                        child: ListView.separated(
-                          itemCount: notifications.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  CupertinoPageRoute(
-                                    builder: (context) => NotificationInfoView(
-                                      sentNotification: notifications[index],
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                  color: Color.fromRGBO(28, 28, 29, 1),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ClipRRect(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        bottomLeft: Radius.circular(20),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.fitHeight,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4,
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        imageUrl: Constants.media +
-                                            notifications[index].image,
+                        child: EasyRefresh(
+                          header: const MaterialHeader(),
+                          onRefresh: () {
+                            setState(() {
+                              sentFuture = context
+                                  .read<SendNotificationViewModel>()
+                                  .getNotifications();
+                            });
+                          },
+                          child: ListView.separated(
+                            itemCount: notifications.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (context) =>
+                                          NotificationInfoView(
+                                        sentNotification: notifications[index],
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Container(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  notifications[index]
-                                                      .shop
-                                                      .name,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                const Spacer(),
-                                                if (notifications[index]
-                                                        .status ==
-                                                    1)
-                                                  const Icon(
-                                                    Icons.watch_later_outlined,
-                                                    color: Colors.white,
-                                                  )
-                                                else if (notifications[index]
-                                                        .status ==
-                                                    3)
-                                                  const Icon(
-                                                    Icons
-                                                        .check_circle_outline_sharp,
-                                                    color: Colors.white,
-                                                  )
-                                                else
-                                                  const Icon(Icons.clear),
-                                                const SizedBox(width: 6),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              notifications[index].title,
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              notifications[index]
-                                                  .date
-                                                  .getLocaleDateTime(),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
+                                  );
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                    color: Color.fromRGBO(28, 28, 29, 1),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      ClipRRect(
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          bottomLeft: Radius.circular(20),
+                                        ),
+                                        child: CachedNetworkImage(
+                                          fit: BoxFit.fitHeight,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              3,
+                                          imageUrl: Constants.media +
+                                              notifications[index].image,
                                         ),
                                       ),
-                                    )
-                                  ],
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Container(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    notifications[index]
+                                                        .shop
+                                                        .name,
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  const Spacer(),
+                                                  if (notifications[index]
+                                                          .status ==
+                                                      1)
+                                                    const Icon(
+                                                      Icons
+                                                          .watch_later_outlined,
+                                                      color: Colors.white,
+                                                    )
+                                                  else if (notifications[index]
+                                                          .status ==
+                                                      3)
+                                                    Column(
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .check_circle_outline_sharp,
+                                                          color: DateTime.parse(
+                                                            notifications[index]
+                                                                .date,
+                                                          ).isAfter(
+                                                            DateTime.now()
+                                                                .subtract(
+                                                              const Duration(
+                                                                days: 2,
+                                                              ),
+                                                            ),
+                                                          )
+                                                              ? Colors.white
+                                                              // : Colors.red,
+                                                              : Colors.white,
+                                                        ),
+                                                      ],
+                                                    )
+                                                  else
+                                                    const Icon(
+                                                      Icons
+                                                          .remove_circle_outline_sharp,
+                                                      // color: Colors.red,
+                                                    ),
+                                                  const SizedBox(width: 6),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  right: 4,
+                                                ),
+                                                child: Text(
+                                                  notifications[index].title,
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                notifications[index]
+                                                    .date
+                                                    .getLocaleDateTime(),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              Container(
+                                                child: notifications[index]
+                                                            .status ==
+                                                        1
+                                                    ? const Text(
+                                                        'Проверяется',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    75,
+                                                                    132,
+                                                                    231,
+                                                                    1)),
+                                                      )
+                                                    : notifications[index]
+                                                                .status ==
+                                                            3
+                                                        ? DateTime.parse(
+                                                            notifications[index]
+                                                                .date,
+                                                          ).isAfter(
+                                                            DateTime.now()
+                                                                .subtract(
+                                                              const Duration(
+                                                                days: 2,
+                                                              ),
+                                                            ),
+                                                          )
+                                                            ? Row(
+                                                                children: [
+                                                                  const Text(
+                                                                    'Видимость: ',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .green,
+                                                                    ),
+                                                                  ),
+                                                                  Text(
+                                                                    DateTime.parse(
+                                                                          notifications[index]
+                                                                              .date,
+                                                                        )
+                                                                            .add(
+                                                                              const Duration(
+                                                                                days: 2,
+                                                                              ),
+                                                                            )
+                                                                            .difference(
+                                                                              DateTime.now(),
+                                                                            )
+                                                                            .inHours
+                                                                            .toString() +
+                                                                        ' часов',
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      color: Colors
+                                                                          .green,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : const Text(
+                                                                'Истекло',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .red,
+                                                                ),
+                                                              )
+                                                        : const Text(
+                                                            'Отменен',
+                                                            style: TextStyle(
+                                                              color: Colors.red,
+                                                            ),
+                                                          ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return SizedBox(height: getH(10));
-                          },
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return SizedBox(height: getH(10));
+                            },
+                          ),
                         ),
                       );
                     } else
-                      return Center(child: EmptyWidget());
+                      return const Center(child: EmptyWidget());
                   } else
                     return const Center(
-                        child: LogoAnimatedWidget(
-                      size: 1.5,
-                    ));
+                      child: LogoAnimatedWidget(
+                        size: 1.5,
+                      ),
+                    );
                 },
               ),
             ],

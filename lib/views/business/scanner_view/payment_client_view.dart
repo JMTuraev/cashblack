@@ -7,6 +7,7 @@ import '../../../extensions.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/payment_client_view_model.dart';
+import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 
@@ -50,8 +51,14 @@ class _PaymentClientViewState extends State<PaymentClientView> {
         context.read<BusinessHomeViewModel>().user.shops.first.cashback;
 
     bool isLoading = context.watch<PaymentClientViewModel>().isLoading;
+    bool isSmallLoading =
+        context.watch<PaymentClientViewModel>().isSmallLoading;
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Оплата через QR'),
+        // bottom: ThemeDetails.appBarDivider,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -66,180 +73,199 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                 //     .getUserFromBarcode(widget.code),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    print(snapshot.data.toString());
                     var user = snapshot.data as BarcodeScan;
-                    return Column(
-                      children: [
-                        Text(
-                          // 'asd',
-                          user.datum.first.fullName,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          // 'asd',
-                          user.datum.first.userName.toString().phoneFormatter(),
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                        const SizedBox(height: 30),
-                        Text(
-                          'Все кэшбеки ' +
-                              NumberFormat.simpleCurrency(
-                                name: '',
-                                locale: 'ru_RU',
-                                decimalDigits: 0,
-                              ).format(user.cashback) +
-                              'сум',
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                        Center(
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  maxLength: 12,
-                                  onChanged: (value) {
-                                    print(value);
-                                    setState(() {
-                                      if (value.isEmpty || value == null) {
-                                        percent = '';
-                                      } else {
-                                        double a = double.parse(
-                                                value.removeWhitespaces()) /
-                                            100 *
-                                            cashbackPercentage;
-                                        percent = a.toStringAsFixed(0);
-                                      }
-                                    });
-                                  },
-                                  validator: (value) {
-                                    // print('val ' + value.toString());
-                                    if (value == null ||
-                                        value.isEmpty ||
-                                        int.parse(value.removeWhitespaces()) <=
-                                            0) {
-                                      print('Введите сумму');
-                                      return 'Введите сумму';
-                                    } else if (int.parse(
-                                              value.removeWhitespaces(),
-                                            ) >
-                                            user.cashback.toInt() &&
-                                        isWithdraw) {
-                                      return 'Введите сумму меньше кэшбека';
-                                    }
-                                    return null;
-                                  },
-                                  inputFormatters: [numericTextFormatter],
-                                  decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.grey,
-                                        width: 2,
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(20),
-                                      ),
-                                    ),
-                                    counterText: '',
-                                    hintText: 'Сумма покупки',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(20),
-                                      ),
-                                    ),
-                                  ),
-                                  controller: priceController,
-                                  autocorrect: false,
-                                  enableSuggestions: false,
-                                  keyboardAppearance: Brightness.dark,
-                                  showCursor: true,
-                                  keyboardType: TextInputType.number,
-                                ),
-                                const SizedBox(height: 20),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: MainButtonWidget(
-                                        isLoading: isLoading,
-                                        percent: percent.isEmpty
-                                            ? null
-                                            : int.parse(percent),
-                                        text: 'Кэшбек',
-                                        method: () async {
-                                          isWithdraw = false;
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            print('Кэшбек');
-                                            print(isWithdraw);
-                                            await context
-                                                .read<PaymentClientViewModel>()
-                                                .sendCashback(
-                                                  context,
-                                                  priceController.text
-                                                      .removeWhitespaces(),
-                                                  widget.code,
-                                                  widget.shopId,
-                                                );
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      flex: 1,
-                                      child: MainButtonWidget(
-                                        isLoading: isLoading,
-                                        text: 'Оплата',
-                                        method: () async {
-                                          isWithdraw = true;
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            print('Оплата');
-                                            print(isWithdraw);
-                                            // return true;
-                                            await context
-                                                .read<PaymentClientViewModel>()
-                                                .payForGoods(
-                                                  context,
-                                                  priceController.text
-                                                      .removeWhitespaces(),
-                                                  widget.code,
-                                                  widget.shopId,
-                                                );
-                                            // .then(
-                                            //   (value) =>
-                                            //       Navigator.of(context)
-                                            //           .pushAndRemoveUntil(
-                                            //     CupertinoPageRoute(
-                                            //       builder: (context) =>
-                                            //           const PaymentSuccessView(
-                                            //         title: 'Оплачено',
-                                            //       ),
-                                            //     ),
-                                            //     (route) => false,
-                                            //   ),
-                                            // );
-                                          }
-                                        },
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ],
+
+                    if (user.datum.isNotEmpty) {
+                      return Column(
+                        children: [
+                          Text(
+                            // 'asd',
+                            user.datum.first.fullName,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 30),
-                      ],
-                    );
+                          const SizedBox(height: 4),
+                          Text(
+                            // 'asd',
+                            user.datum.first.userName
+                                .toString()
+                                .phoneFormatter(),
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            'Все кэшбеки ' +
+                                NumberFormat.simpleCurrency(
+                                  name: '',
+                                  locale: 'ru_RU',
+                                  decimalDigits: 0,
+                                ).format(user.cashback) +
+                                'сум',
+                            style: const TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Center(
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    maxLength: 12,
+                                    onChanged: (value) {
+                                      print(value);
+                                      setState(() {
+                                        if (value.isEmpty || value == null) {
+                                          percent = '';
+                                        } else {
+                                          double a = double.parse(
+                                                  value.removeWhitespaces()) /
+                                              100 *
+                                              cashbackPercentage;
+                                          percent = a.toStringAsFixed(0);
+                                        }
+                                      });
+                                    },
+                                    validator: (value) {
+                                      // print('val ' + value.toString());
+                                      if (value == null ||
+                                          value.isEmpty ||
+                                          int.parse(
+                                                  value.removeWhitespaces()) <=
+                                              0) {
+                                        print('Введите сумму');
+                                        return 'Введите сумму';
+                                      } else if (int.parse(
+                                                value.removeWhitespaces(),
+                                              ) >
+                                              user.cashback.toInt() &&
+                                          isWithdraw) {
+                                        return 'Введите сумму меньше кэшбека';
+                                      }
+                                      return null;
+                                    },
+                                    inputFormatters: [numericTextFormatter],
+                                    decoration: const InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                          width: 2,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(20),
+                                        ),
+                                      ),
+                                      counterText: '',
+                                      hintText: 'Сумма покупки',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(20),
+                                        ),
+                                      ),
+                                    ),
+                                    controller: priceController,
+                                    autocorrect: false,
+                                    enableSuggestions: false,
+                                    keyboardAppearance: Brightness.dark,
+                                    showCursor: true,
+                                    keyboardType: TextInputType.number,
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: MainButtonWidget(
+                                          isLoading: isLoading,
+                                          percent: percent.isEmpty
+                                              ? null
+                                              : int.parse(percent),
+                                          text: 'Кэшбек',
+                                          method: () async {
+                                            isWithdraw = false;
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              print('Кэшбек');
+                                              print(isWithdraw);
+                                              await context
+                                                  .read<
+                                                      PaymentClientViewModel>()
+                                                  .sendCashback(
+                                                    context,
+                                                    priceController.text
+                                                        .removeWhitespaces(),
+                                                    widget.code,
+                                                    widget.shopId,
+                                                  );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        flex: 1,
+                                        child: MainButtonWidget(
+                                          isLoading: isSmallLoading,
+                                          text: 'Оплата',
+                                          method: () async {
+                                            isWithdraw = true;
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              print('Оплата');
+                                              print(isWithdraw);
+                                              // return true;
+                                              await context
+                                                  .read<
+                                                      PaymentClientViewModel>()
+                                                  .payForGoods(
+                                                    context,
+                                                    priceController.text
+                                                        .removeWhitespaces(),
+                                                    widget.code,
+                                                    widget.shopId,
+                                                  );
+                                              // .then(
+                                              //   (value) =>
+                                              //       Navigator.of(context)
+                                              //           .pushAndRemoveUntil(
+                                              //     CupertinoPageRoute(
+                                              //       builder: (context) =>
+                                              //           const PaymentSuccessView(
+                                              //         title: 'Оплачено',
+                                              //       ),
+                                              //     ),
+                                              //     (route) => false,
+                                              //   ),
+                                              // );
+                                            }
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                        ],
+                      );
+                    } else {
+                      return Column(
+                        children: [
+                          Text(
+                            'Пользователь не найден',
+                            style: TextStyle(
+                              fontSize: 24,
+                            ),
+                          ),
+                          const Center(child: EmptyWidget()),
+                        ],
+                      );
+                    }
                   } else {
                     return SizedBox(
                       height: MediaQuery.of(context).size.width,

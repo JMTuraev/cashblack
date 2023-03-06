@@ -21,6 +21,7 @@ import '../../domain/models/user.dart';
 import '../../domain/models/user_category.dart';
 import '../../domain/models/user_shop.dart';
 import '../../domain/models/worker.dart';
+import '../../extensions.dart';
 import '../../utils/constants.dart';
 
 class Client {
@@ -571,6 +572,7 @@ class Client {
       var decode = (json.decode(resBody) as List);
       worker = decode
           .map((e) => SentNotification.fromJson(e))
+          .sortedBy((e) => e.id)
           .toList()
           .reversed
           .toList();
@@ -602,6 +604,7 @@ class Client {
       var decode = (json.decode(resBody) as List);
       worker = decode
           .map((e) => ReceivedNotification.fromJson(e))
+          .sortedBy((e) => e.id)
           .toList()
           .reversed
           .toList();
@@ -902,7 +905,7 @@ class Client {
     }
   }
 
-  Future<dynamic> getUserFromBarcode(String barcode, int shopId) async {
+  Future<BarcodeScan> getUserFromBarcode(String barcode, int shopId) async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
       'Content-Type': ' application/json; charset=utf-8',
@@ -926,7 +929,7 @@ class Client {
       return barcodeScan;
     } else {
       print(res.reasonPhrase);
-      return [];
+      return BarcodeScan(datum: [], cashback: 0);
     }
   }
 

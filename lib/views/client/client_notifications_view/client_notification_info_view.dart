@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/models/received_notification.dart';
+import '../../../extensions.dart';
 import '../../../utils/constants.dart';
 import '../../../widgets/medium_title_widget.dart';
 
@@ -28,8 +29,12 @@ class ClientNotificationInfoView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: MediumTitleWidget(
-                    text: receivedNotification.title,
+                  child: Text(
+                    receivedNotification.title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -40,6 +45,12 @@ class ClientNotificationInfoView extends StatelessWidget {
                     fit: BoxFit.cover,
                     imageUrl: Constants.media + receivedNotification.image,
                   ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  receivedNotification.date.getLocaleDateTime(),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 10),
                 Text(

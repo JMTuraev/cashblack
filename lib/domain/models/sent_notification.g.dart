@@ -8,6 +8,7 @@ part of 'sent_notification.dart';
 
 SentNotification _$SentNotificationFromJson(Map<String, dynamic> json) =>
     SentNotification(
+      id: json['id'] as int,
       shop: ShopNotification.fromJson(json['shop_id'] as Map<String, dynamic>),
       title: json['title'] as String,
       content: json['content'] as String,
@@ -20,6 +21,7 @@ SentNotification _$SentNotificationFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$SentNotificationToJson(SentNotification instance) =>
     <String, dynamic>{
       'shop_id': instance.shop,
+      'id': instance.id,
       'title': instance.title,
       'content': instance.content,
       'img': instance.image,

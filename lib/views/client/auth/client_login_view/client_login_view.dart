@@ -4,6 +4,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import '../../../../extensions.dart';
 import '../../../../size_config.dart';
 import '../../../../view_models/client_login_view_model.dart';
 import '../../../../widgets/connect_widget.dart';
@@ -23,21 +24,25 @@ class _ClientLoginViewState extends State<ClientLoginView> {
   TextEditingController phoneController = TextEditingController(text: '');
 
   bool checked = false;
+  bool show = false;
 
   MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
-      mask: '+### ## ### ## ##',
-      filter: {'#': RegExp(r'[0-9]')},
-      type: MaskAutoCompletionType.lazy);
+    mask: '+### ## ### ## ##',
+    filter: {'#': RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     var provider = context.read<ClientLoginViewModel>();
 
     void submit() async {
-      print('object');
+      print('submit');
       if (maskFormatter.isFill()) {
         var phone = maskFormatter.unmaskText(phoneController.text);
-        print('object');
+        print('phone');
 
         bool sendSMS = false;
 
@@ -58,82 +63,125 @@ class _ClientLoginViewState extends State<ClientLoginView> {
                 context: context,
                 builder: (context) {
                   return const InfoAlertWidget(
-                      title:
-                          'Это аккаунт сотрудника, проверьте номер телефона');
+                    title: 'Это аккаунт сотрудника, проверьте номер телефона',
+                  );
                 },
               );
       }
     }
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          onChanged: (text) {
-            if (text.length == 17) {
-              FocusScope.of(context).requestFocus(FocusNode());
-            }
-          },
-          decoration: InputDecoration(
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-                width: 2,
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            validator: (value) {
+              if (value == null ||
+                  value.isEmpty ||
+                  int.parse(value.removeWhitespaces()) <= 0) {
+                return 'Введите номер телефона';
+              }
+              return null;
+            },
+            onChanged: (text) {
+              setState(() {
+                show = false;
+              });
+              if (text.length == 17) {
+                FocusScope.of(context).requestFocus(FocusNode());
+              }
+            },
+            decoration: InputDecoration(
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.grey,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20),
+                ),
               ),
-              borderRadius: BorderRadius.all(
-                Radius.circular(20),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
+              filled: false,
+              hintText: 'Телефон',
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            filled: false,
-            hintText: 'Телефон',
+            inputFormatters: [maskFormatter],
+            controller: phoneController,
+            autocorrect: false,
+            // autofocus: true,
+            enableSuggestions: false,
+            keyboardAppearance: Brightness.dark,
+            showCursor: true,
+            keyboardType: TextInputType.phone,
           ),
-          inputFormatters: [maskFormatter],
-          controller: phoneController,
-          autocorrect: false,
-          // autofocus: true,
-          enableSuggestions: false,
-          keyboardAppearance: Brightness.dark,
-          showCursor: true,
-          keyboardType: TextInputType.phone,
-        ),
-        const SizedBox(height: 20),
-        MainButtonWidget(
-          isLoading: context.watch<ClientLoginViewModel>().isLoading,
-          text: 'Вход',
-          method: checked
-              ? (context.watch<ClientLoginViewModel>().isLoading
-                  ? null
-                  : submit)
-              : () {
-                  print('check');
-                },
-        ),
-        SizedBox(height: getH(35)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Checkbox(
+          SizedBox(
+            height: 30,
+            child: Center(
+              child: show && maskFormatter.isFill()
+                  ? const Text(
+                      'Принимайте условия оферты',
+                      style: TextStyle(color: Colors.red),
+                    )
+                  : const Text(''),
+            ),
+          ),
+          MainButtonWidget(
+            isLoading: context.watch<ClientLoginViewModel>().isLoading,
+            text: 'Вход',
+            // method: () {
+            //   if (_formKey.currentState!.validate()) {
+            //     print('object1');
+            //     context.watch<ClientLoginViewModel>().isLoading
+            //         ? null
+            //         : submit();
+            //   }
+            // },
+            method: checked
+                ? (context.watch<ClientLoginViewModel>().isLoading
+                    ? null
+                    : submit)
+                : () {
+                    setState(() {
+                      show = true;
+                    });
+                  },
+          ),
+          SizedBox(height: getH(35)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Checkbox(
                 value: checked,
+                activeColor: const Color.fromRGBO(52, 200, 90, 1),
                 onChanged: (value) {
                   setState(() {
                     checked = value!;
                   });
-                }),
-            Text(
-              'Я принимаю',
-              style: TextStyle(
-                fontSize: 14,
+                },
               ),
-            ),
-            PublicOfferWidget(),
-          ],
-        ),
-        ConnectWidget(),
-      ],
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    checked = !checked;
+                  });
+                },
+                child: const Text(
+                  'Я принимаю',
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              const PublicOfferWidget(),
+            ],
+          ),
+          const ConnectWidget(),
+        ],
+      ),
     );
   }
 }

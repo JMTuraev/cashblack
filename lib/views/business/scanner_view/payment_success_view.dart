@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../../size_config.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/medium_title_widget.dart';
@@ -25,6 +27,14 @@ class PaymentSuccessView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Image.asset(
+                    'assets/images/success.png',
+                    fit: BoxFit.contain,
+                    width: getW(200),
+                    height: getW(200),
+                    color: const Color.fromRGBO(52, 200, 90, 1),
+                  ),
+                  SizedBox(height: getH(20)),
                   Center(child: MediumTitleWidget(text: title)),
                   const SizedBox(height: 20),
                   MainButtonWidget(
@@ -33,7 +43,7 @@ class PaymentSuccessView extends StatelessWidget {
                       context.read<BusinessHomeViewModel>().onChange(0);
                       Navigator.of(context).pushReplacement(
                         CupertinoPageRoute(
-                          builder: (context) => BusinessHomeView(),
+                          builder: (context) => const BusinessHomeView(),
                         ),
                       );
                     },

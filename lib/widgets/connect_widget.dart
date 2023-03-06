@@ -29,7 +29,7 @@ class ConnectWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: () => Helpers.toWeb('t.me/nurkhonov', 'telegram'),
+              onTap: () => Helpers.toWeb('t.me/tjm010', 'telegram'),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),

@@ -9,13 +9,32 @@ class StatisticsViewModel extends ChangeNotifier {
 
   late Future<List<SumStat>> sumStats;
   late var clients;
+  double cashbackSum = 0;
+  int withdrawSum = 0;
+  int priceSum = 0;
 
   Future<List<SumStat>> getSumStats({
     required String start,
     required String end,
   }) async {
     var sumStats = _client.getSumStatistics(start: start, end: end);
-    // notifyListeners();
+    var sumStat = await sumStats;
+    var _cashbackList = sumStat.where((element) => !element.isWithdraw);
+    var _withdrawList = sumStat.where((element) => element.isWithdraw);
+    cashbackSum = 0;
+    withdrawSum = 0;
+    priceSum = 0;
+    for (var element in _cashbackList) {
+      priceSum += element.price;
+    }
+    for (var element in _cashbackList) {
+      cashbackSum += element.cashback;
+    }
+    for (var element in _withdrawList) {
+      withdrawSum += element.price;
+    }
+
+    notifyListeners();
     return sumStats;
   }
 

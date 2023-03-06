@@ -191,7 +191,7 @@ class BusinessHomeViewModel extends ChangeNotifier {
             builder: (context) {
               return InfoAlertWidget(
                 title:
-                    'Сумма должен быт больше ${balance.first.balanceShop.subscriptionPrice}',
+                    'Сумма должен быт больше ${balance.first.balanceShop.subscriptionPrice} сум',
               );
             },
           );

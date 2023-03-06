@@ -41,25 +41,25 @@ class _SelectTypeViewState extends State<SelectTypeView> {
                       ),
                     ),
                     SizedBox(height: getH(60)),
-                    const Text(
-                      'Владелец - владелец или сотрудник магазина',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: Color(0xff575758),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: getH(6)),
-                    const Text(
-                      'Клиент - клиент магазина',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xff575758),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    business
+                        ? const Text(
+                            'Владелец - владелец или сотрудник магазина',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: Color(0xff575758),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )
+                        : const Text(
+                            'Клиент - клиент магазина',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xff575758),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                     SizedBox(height: getH(8)),
                     Container(
                       decoration: const BoxDecoration(

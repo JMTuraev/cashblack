@@ -8,6 +8,7 @@ part 'sent_notification.g.dart';
 class SentNotification {
   @JsonKey(name: 'shop_id')
   final ShopNotification shop;
+  final int id;
   final String title;
   final String content;
   @JsonKey(name: 'img')
@@ -18,6 +19,7 @@ class SentNotification {
   @JsonKey(name: 'payment_summ')
   dynamic? payment;
   SentNotification({
+    required this.id,
     required this.shop,
     required this.title,
     required this.content,

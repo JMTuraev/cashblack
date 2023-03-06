@@ -78,7 +78,16 @@ class _BusinessListViewState extends State<BusinessListView> {
                       return const Center(child: EmptyWidget());
                     }
                   } else {
-                    return const Center(child: LogoAnimatedWidget(size: 1.5));
+                    // return const Center(child: LogoAnimatedWidget(size: 1.5));
+                    return Expanded(
+                      child: Column(
+                        children: [
+                          Spacer(),
+                          LogoAnimatedWidget(size: 1.5),
+                          Spacer(),
+                        ],
+                      ),
+                    );
                   }
                 },
               ),
@@ -148,26 +157,34 @@ class _ItemWidget extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Spacer(),
-                      Text(
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        shops[index].name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                      // const Spacer(),
+                      SizedBox(width: getW(10)),
+                      Expanded(
+                        child: Text(
+                          shops[index].name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                         ),
                       ),
-                      const Spacer(),
+                      // const Spacer(),
+                      SizedBox(width: getW(10)),
+
                       SvgPicture.asset(
                         'assets/svg/tag.svg',
                         color: Colors.white,
+                        height: getH(26),
+                        width: getH(26),
                       ),
                       SizedBox(width: getW(4)),
                       Text(
                         shops[index].cashbackPercentage.toString() + '%',
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           color: Color.fromRGBO(201, 247, 158, 1),
                         ),
                       ),
