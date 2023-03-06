@@ -37,6 +37,8 @@ class MultilineTextFieldWidget extends StatelessWidget {
       showCursor: true,
       keyboardType: TextInputType.multiline,
       maxLines: null,
+      maxLength: 500,
+      minLines: 2,
       controller: controller,
     );
   }

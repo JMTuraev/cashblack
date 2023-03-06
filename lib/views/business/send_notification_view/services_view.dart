@@ -121,19 +121,29 @@ class _ServicesViewState extends State<ServicesView> {
                                           topLeft: Radius.circular(20),
                                           bottomLeft: Radius.circular(20),
                                         ),
-                                        child: CachedNetworkImage(
-                                          fit: BoxFit.fitHeight,
-                                          height: MediaQuery.of(context)
+                                        child: Placeholder(
+                                          fallbackHeight: MediaQuery.of(context)
                                                   .size
                                                   .width /
                                               4,
-                                          width: MediaQuery.of(context)
+                                          fallbackWidth: MediaQuery.of(context)
                                                   .size
                                                   .width /
                                               3,
-                                          imageUrl: Constants.media +
-                                              notifications[index].image,
                                         ),
+                                        //   CachedNetworkImage(
+                                        //     fit: BoxFit.fitHeight,
+                                        //     height: MediaQuery.of(context)
+                                        //             .size
+                                        //             .width /
+                                        //         4,
+                                        //     width: MediaQuery.of(context)
+                                        //             .size
+                                        //             .width /
+                                        //         3,
+                                        //     imageUrl: Constants.media +
+                                        //         notifications[index].image,
+                                        //   ),
                                       ),
                                       const SizedBox(width: 10),
                                       Expanded(

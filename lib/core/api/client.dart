@@ -518,7 +518,7 @@ class Client {
   Future<void> sendNotification(
     String title,
     String content,
-    File img,
+    // File img,
   ) async {
     String? value = await storage.read(key: 'bearer');
     Map<String, String> headers = {
@@ -537,9 +537,9 @@ class Client {
       'content': content,
     });
 
-    var picture = await http.MultipartFile.fromPath('img', img.path);
+    // var picture = await http.MultipartFile.fromPath('img', img.path);
 
-    request.files.add(picture);
+    // request.files.add(picture);
 
     request.headers.addAll(headers);
 

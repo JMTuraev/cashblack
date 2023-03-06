@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../extensions.dart';
+import '../../../size_config.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
@@ -19,14 +21,16 @@ class _PaymentViewState extends State<PaymentView> {
 
   NumericTextFormatter numericTextFormatter = NumericTextFormatter();
   MaskTextInputFormatter maskFormatterCardName = MaskTextInputFormatter(
-      mask: '#### #### #### ####',
-      filter: {"#": RegExp(r'[0-9]')},
-      type: MaskAutoCompletionType.lazy);
+    mask: '#### #### #### ####',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
 
   MaskTextInputFormatter maskFormatterCardDate = MaskTextInputFormatter(
-      mask: '##/##',
-      filter: {"#": RegExp(r'[0-9]')},
-      type: MaskAutoCompletionType.lazy);
+    mask: '##/##',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
 
   TextEditingController amountController = TextEditingController();
 
@@ -39,7 +43,7 @@ class _PaymentViewState extends State<PaymentView> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(0),
           child: Form(
             key: _formKey,
             child: Align(
@@ -47,61 +51,48 @@ class _PaymentViewState extends State<PaymentView> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Image.asset(
-                      'assets/images/card.png',
-                      fit: BoxFit.contain,
-                      height: MediaQuery.of(context).size.width / 1.5,
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.length < 19) {
-                          return 'Введите данные карты';
-                        }
-                        return null;
-                      },
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          ),
+                    // Image.asset(
+                    //   'assets/images/card.png',
+                    //   fit: BoxFit.contain,
+                    //   height: MediaQuery.of(context).size.width / 1.5,
+                    // ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: getW(30),
+                        vertical: getH(40),
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(30),
                         ),
-                        prefixIcon: Icon(Icons.credit_card),
-                        hintText: '0000 0000 0000 0000',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          ),
+                        border: Border.all(
+                          width: 0.5,
+                          color: Colors.grey,
+                        ),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Colors.grey.shade700, Colors.black],
                         ),
                       ),
-                      inputFormatters: [maskFormatterCardName],
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      keyboardAppearance: Brightness.dark,
-                      showCursor: true,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/svg/sim.svg',
+                            width: getW(48),
+                          ),
+                          SizedBox(height: getH(10)),
+                          TextFormField(
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
-                                  value.length < 5) {
-                                return 'Введите';
+                                  value.length < 19) {
+                                return 'Введите данные карты';
                               }
                               return null;
                             },
-                            textAlign: TextAlign.center,
+                            textAlign: TextAlign.start,
                             decoration: const InputDecoration(
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -112,61 +103,104 @@ class _PaymentViewState extends State<PaymentView> {
                                   Radius.circular(20),
                                 ),
                               ),
-                              hintText: 'ММ/ГГ',
+                              hintStyle: TextStyle(fontSize: 20),
+                              hintText: '**** **** **** ****',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(20),
                                 ),
                               ),
                             ),
-                            inputFormatters: [maskFormatterCardDate],
+                            inputFormatters: [maskFormatterCardName],
                             autocorrect: false,
                             enableSuggestions: false,
                             keyboardAppearance: Brightness.dark,
                             showCursor: true,
                             keyboardType: TextInputType.number,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          flex: 2,
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  int.parse(value.removeWhitespaces()) < 10) {
-                                return 'Сумма меньше 500';
-                              }
-                              return null;
-                            },
-                            inputFormatters: [numericTextFormatter],
-                            textAlign: TextAlign.center,
-                            decoration: const InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.isEmpty ||
+                                        value.length < 5) {
+                                      return 'Введите';
+                                    }
+                                    return null;
+                                  },
+                                  textAlign: TextAlign.start,
+                                  decoration: const InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    hintText: 'ММ/ГГ',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                  ),
+                                  inputFormatters: [maskFormatterCardDate],
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  keyboardAppearance: Brightness.dark,
+                                  showCursor: true,
+                                  keyboardType: TextInputType.number,
                                 ),
                               ),
-                              hintText: 'Сумма',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                flex: 2,
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.isEmpty ||
+                                        int.parse(value.removeWhitespaces()) <
+                                            10) {
+                                      return 'Сумма меньше 500';
+                                    }
+                                    return null;
+                                  },
+                                  inputFormatters: [numericTextFormatter],
+                                  textAlign: TextAlign.start,
+                                  decoration: const InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    hintText: 'Сумма',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                  ),
+                                  controller: amountController,
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  keyboardAppearance: Brightness.dark,
+                                  showCursor: true,
+                                  keyboardType: TextInputType.number,
                                 ),
                               ),
-                            ),
-                            controller: amountController,
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            keyboardAppearance: Brightness.dark,
-                            showCursor: true,
-                            keyboardType: TextInputType.number,
+                            ],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 20),
                     MainButtonWidget(

@@ -271,7 +271,7 @@ class _BrandCardWidget extends StatelessWidget {
               Text(
                 shop.cashback.toString() + '%',
                 style: TextStyle(
-                  color: Color(0xffc9f79e),
+                  color: Color.fromRGBO(103, 206, 103, 1),
                 ),
               ),
             ],
@@ -341,7 +341,7 @@ class _SubscriptionCardWidget extends StatelessWidget {
                         ) +
                         'сум',
                     style: TextStyle(
-                      color: Color(0xffc9f79e),
+                      color: Color.fromRGBO(103, 206, 103, 1),
                       fontSize: 15,
                     ),
                   ),
@@ -367,7 +367,7 @@ class _SubscriptionCardWidget extends StatelessWidget {
                   Text(
                     balance.isSubscribedOne ? 'Активен' : 'Не оплачен',
                     style: TextStyle(
-                      color: Color(0xffc9f79e),
+                      color: Color.fromRGBO(103, 206, 103, 1),
                       fontSize: 15,
                     ),
                   ),
@@ -389,7 +389,7 @@ class _SubscriptionCardWidget extends StatelessWidget {
                                   .getLocaleDate()
                               : 'Не оплачен',
                           style: TextStyle(
-                            color: Color(0xffc9f79e),
+                            color: Color.fromRGBO(103, 206, 103, 1),
                             fontSize: 15,
                           ),
                         )

@@ -548,7 +548,7 @@ class _CardCashback extends StatelessWidget {
                 ),
                 SizedBox(width: getW(4)),
                 const _ChipWidget(
-                  title: 'Доход',
+                  title: 'Продажа',
                   color: Color(0xff34c85a),
                 ),
                 SizedBox(width: getW(12)),
@@ -883,8 +883,8 @@ class _CardWithdraw extends StatelessWidget {
                 ),
                 SizedBox(width: getW(4)),
                 const _ChipWidget(
-                  title: 'Покупка',
-                  color: Color.fromRGBO(228, 0, 43, 1),
+                  title: 'Оплачено',
+                  color: Color.fromRGBO(255, 144, 62, 1),
                 ),
                 SizedBox(width: getW(12)),
                 Text(
@@ -907,7 +907,7 @@ class _CardWithdraw extends StatelessWidget {
                   ).format(sumStat.price) +
                   'сум',
               style: const TextStyle(
-                color: Color(0xffe4002b),
+                color: Color.fromRGBO(255, 144, 62, 1),
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -940,7 +940,7 @@ class _CardWithdraw extends StatelessWidget {
     //                   children: [
     //                     const SizedBox(width: 8),
     //                     const Text(
-    //                       'покупка',
+    //                       'Оплачено',
     //                       style: TextStyle(
     //                         fontSize: 10,
     //                         color: Colors.grey,
@@ -1069,7 +1069,7 @@ class _BalanceWidget extends StatelessWidget {
             child: Column(
               children: [
                 const Text(
-                  'Доход',
+                  'Продажа',
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xff34c85a),
@@ -1137,10 +1137,10 @@ class _BalanceWidget extends StatelessWidget {
             child: Column(
               children: [
                 const Text(
-                  'Покупка',
+                  'Оплачено',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Color.fromRGBO(228, 0, 43, 1),
+                    color: Color.fromRGBO(255, 144, 62, 1),
                   ),
                 ),
                 SizedBox(height: getH(6)),
@@ -1154,14 +1154,14 @@ class _BalanceWidget extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(228, 0, 43, 1),
+                    color: Color.fromRGBO(255, 144, 62, 1),
                   ),
                 ),
                 const Text(
                   'сум',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Color.fromRGBO(228, 0, 43, 1),
+                    color: Color.fromRGBO(255, 144, 62, 1),
                   ),
                 ),
               ],

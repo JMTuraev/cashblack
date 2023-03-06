@@ -11,10 +11,16 @@ class SendNotificationViewModel extends ChangeNotifier {
   String notificationPrice = '';
   bool isLoading = false;
 
-  Future<void> send(File file, String title, String content) async {
+  Future<void> send(
+      // File file,
+      String title,
+      String content) async {
     isLoading = true;
     notifyListeners();
-    await _client.sendNotification(title, content, file);
+    await _client.sendNotification(
+      title, content,
+      // file
+    );
     isLoading = false;
     notifyListeners();
   }

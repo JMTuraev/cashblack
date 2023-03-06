@@ -40,10 +40,11 @@ class NotificationInfoView extends StatelessWidget {
                 Container(
                   height: MediaQuery.of(context).size.width / 1.5,
                   width: double.infinity,
-                  child: CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: Constants.media + sentNotification.image,
-                  ),
+                  // child: CachedNetworkImage(
+                  //   fit: BoxFit.cover,
+                  //   imageUrl: Constants.media + sentNotification.image,
+                  // ),
+                  child: Placeholder(),
                 ),
                 const SizedBox(height: 4),
                 Row(

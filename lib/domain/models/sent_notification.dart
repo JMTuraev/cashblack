@@ -11,8 +11,8 @@ class SentNotification {
   final int id;
   final String title;
   final String content;
-  @JsonKey(name: 'img')
-  final String image;
+  // @JsonKey(name: 'img')
+  // final String image;
   @JsonKey(name: 'status_id')
   final int status;
   final String date;
@@ -23,7 +23,7 @@ class SentNotification {
     required this.shop,
     required this.title,
     required this.content,
-    required this.image,
+    // required this.image,
     required this.status,
     required this.date,
     this.payment,

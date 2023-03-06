@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -10,6 +11,8 @@ import 'package:provider/provider.dart';
 import '../../../size_config.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/send_notification_view_model.dart';
+import '../../../widgets/active_switcher_widget.dart';
+import '../../../widgets/inactive_switcher_widget.dart';
 import '../../../widgets/info_alert_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/multiline_text_field_widget.dart';
@@ -24,27 +27,27 @@ class SendNotificationView extends StatefulWidget {
 }
 
 class _SendNotificationViewState extends State<SendNotificationView> {
-  final ImagePicker _picker = ImagePicker();
-  List<File?> _fileList = [];
+  // final ImagePicker _picker = ImagePicker();
+  // List<File?> _fileList = [];
 
-  void dltImages(data) {
-    setState(() {
-      _fileList.remove(data);
-    });
-  }
+  // void dltImages(data) {
+  //   setState(() {
+  //     _fileList.remove(data);
+  //   });
+  // }
 
-  void selectImage() async {
-    final XFile? image = await _picker.pickImage(
-      source: ImageSource.gallery,
-      maxHeight: 1080,
-      maxWidth: 1080,
-      // imageQuality: 75,
-    );
-    setState(() {
-      File? file = File(image!.path);
-      _fileList.add(file);
-    });
-  }
+  // void selectImage() async {
+  //   final XFile? image = await _picker.pickImage(
+  //     source: ImageSource.gallery,
+  //     maxHeight: 1080,
+  //     maxWidth: 1080,
+  //     // imageQuality: 75,
+  //   );
+  //   setState(() {
+  //     File? file = File(image!.path);
+  //     _fileList.add(file);
+  //   });
+  // }
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
@@ -56,6 +59,32 @@ class _SendNotificationViewState extends State<SendNotificationView> {
     prices = context.read<SendNotificationViewModel>().getNotificationPrice();
     super.initState();
   }
+
+  List<bool> selections = [true, false, false];
+
+  var actionImages = [
+    'assets/images/notification/ak-1.png',
+    'assets/images/notification/ak-2.png',
+    'assets/images/notification/ak-3.png',
+    'assets/images/notification/ak-4.png',
+  ];
+
+  var adImages = [
+    'assets/images/notification/re-1.png',
+    'assets/images/notification/re-2.png',
+    'assets/images/notification/re-3.png',
+  ];
+
+  var cashbackImages = [
+    'assets/images/notification/bo-3.png',
+    'assets/images/notification/bo-5.png',
+    'assets/images/notification/bo-8.png',
+    'assets/images/notification/bo-10.png',
+    'assets/images/notification/bo-12.png',
+    'assets/images/notification/bo-15.png',
+    'assets/images/notification/bo-25.png',
+    'assets/images/notification/bo-50.png',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -75,26 +104,140 @@ class _SendNotificationViewState extends State<SendNotificationView> {
             child: Form(
               child: Column(
                 children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Color.fromRGBO(28, 28, 29, 1),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(12),
+                      ),
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                    ),
+                    padding: const EdgeInsets.all(5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: selections[0] == true
+                          ? [
+                              Expanded(
+                                child: ActiveSwitcherWidget(
+                                  title: 'Акция',
+                                  onPressed: () {},
+                                ),
+                              ),
+                              SizedBox(width: getW(4)),
+                              Expanded(
+                                child: InactiveSwitcherWidget(
+                                  title: 'Бонус',
+                                  onPressed: () {
+                                    setState(() {
+                                      selections = [false, true, false];
+                                    });
+                                  },
+                                ),
+                              ),
+                              SizedBox(width: getW(4)),
+                              Expanded(
+                                child: InactiveSwitcherWidget(
+                                  title: 'Реклама',
+                                  onPressed: () {
+                                    setState(() {
+                                      selections = [false, false, true];
+                                    });
+                                  },
+                                ),
+                              ),
+                            ]
+                          : (selections[1] == true)
+                              ? [
+                                  Expanded(
+                                    child: InactiveSwitcherWidget(
+                                      title: 'Акция',
+                                      onPressed: () {
+                                        setState(() {
+                                          selections = [true, false, false];
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(width: getW(4)),
+                                  Expanded(
+                                    child: ActiveSwitcherWidget(
+                                      title: 'Бонус',
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                  SizedBox(width: getW(4)),
+                                  Expanded(
+                                    child: InactiveSwitcherWidget(
+                                      title: 'Реклама',
+                                      onPressed: () {
+                                        setState(() {
+                                          selections = [false, false, true];
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ]
+                              : [
+                                  Expanded(
+                                    child: InactiveSwitcherWidget(
+                                      title: 'Акция',
+                                      onPressed: () {
+                                        setState(() {
+                                          selections = [true, false, false];
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(width: getW(4)),
+                                  Expanded(
+                                    child: InactiveSwitcherWidget(
+                                      title: 'Бонус',
+                                      onPressed: () {
+                                        setState(() {
+                                          selections = [false, true, false];
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(width: getW(4)),
+                                  Expanded(
+                                    child: ActiveSwitcherWidget(
+                                      onPressed: () {},
+                                      title: 'Реклама',
+                                    ),
+                                  ),
+                                ],
+                    ),
+                  ),
                   // Image.asset(
                   //   'assets/images/email.png',
                   //   fit: BoxFit.contain,
                   //   height: MediaQuery.of(context).size.width / 2.5,
                   // ),
-                  SizedBox(height: getH(58)),
-                  _fileList.isEmpty
-                      ? _FilePickerWidget(onTap: selectImage)
-                      : _ImageViewWidget(
-                          fileList: _fileList,
-                          onTap: () {
-                            dltImages(_fileList.first);
-                          },
-                        ),
                   SizedBox(height: getH(20)),
-                  TextFieldWidget(
-                    hintText: 'Заголовок',
-                    controller: _titleController,
+                  cardBuilder(
+                    selections[0] == true
+                        ? actionImages
+                        : (selections[1] == true ? cashbackImages : adImages),
                   ),
+
+                  // SizedBox(height: getH(58)),
+                  // // _fileList.isEmpty
+                  // //     ? _FilePickerWidget(onTap: selectImage)
+                  // //     : _ImageViewWidget(
+                  // //         fileList: _fileList,
+                  // //         onTap: () {
+                  // //           dltImages(_fileList.first);
+                  // //         },
+                  // //       ),
                   SizedBox(height: getH(20)),
+                  // TextFieldWidget(
+                  //   hintText: 'Заголовок',
+                  //   controller: _titleController,
+                  // ),
+                  // SizedBox(height: getH(20)),
                   MultilineTextFieldWidget(
                     hintText: 'Текст',
                     controller: _contentController,
@@ -106,9 +249,10 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                     isLoading:
                         context.watch<SendNotificationViewModel>().isLoading,
                     method: () async {
-                      if (_fileList.isNotEmpty &&
+                      if (
+                          // _fileList.isNotEmpty &&
                           _titleController.text.isNotEmpty &&
-                          _contentController.text.isNotEmpty) {
+                              _contentController.text.isNotEmpty) {
                         if (int.parse(balance) < int.parse(price)) {
                           // showCupertinoDialog(
                           //   context: context,
@@ -128,7 +272,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                           await context
                               .read<SendNotificationViewModel>()
                               .send(
-                                _fileList[0]!,
+                                // _fileList[0]!,
                                 _titleController.text,
                                 _contentController.text,
                               )
@@ -158,8 +302,9 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                             decimalDigits: 0,
                           ).format(int.parse(snapshot.data.toString()))}сумов и будет видна в течение 48 часов (после подтверждения).',
                           textAlign: TextAlign.justify,
-                          style: TextStyle(
-                            fontSize: 18,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey,
                           ),
                         );
                       } else {
@@ -173,6 +318,49 @@ class _SendNotificationViewState extends State<SendNotificationView> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Container cardBuilder(List imagesList) {
+    return Container(
+      height: getH(150),
+      width: double.infinity,
+      child: ListView.separated(
+        key: ObjectKey(imagesList[0]),
+        scrollDirection: Axis.horizontal,
+        itemCount: imagesList.length,
+        itemBuilder: (context, index) =>
+            _ImageCardWidget(image: imagesList[index]),
+        separatorBuilder: (context, index) => SizedBox(
+          width: getW(10),
+        ),
+      ),
+    );
+  }
+}
+
+class _ImageCardWidget extends StatelessWidget {
+  const _ImageCardWidget({
+    Key? key,
+    required this.image,
+  }) : super(key: key);
+
+  final String image;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: getH(150),
+      width: getH(200),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(10),
+        ),
+      ),
+      child: Image.asset(
+        image,
+        fit: BoxFit.cover,
       ),
     );
   }
@@ -264,4 +452,13 @@ class _FilePickerWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class ImageCard {
+  final String type;
+  final String image;
+  ImageCard({
+    required this.type,
+    required this.image,
+  });
 }

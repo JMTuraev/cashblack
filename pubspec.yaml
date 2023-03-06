@@ -61,6 +61,7 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   url_launcher: ^6.1.9
   easy_refresh: ^3.3.1
+  flutter_credit_card: ^3.0.5
 
 dev_dependencies:
   flutter_test:
