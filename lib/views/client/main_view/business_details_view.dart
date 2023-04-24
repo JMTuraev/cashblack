@@ -103,10 +103,10 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                                 child: Column(
                                   children: [
                                     const Text(
-                                      'сумма покупки',
+                                      'Сумма покупки',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Color.fromRGBO(103, 206, 103, 1),
+                                        color: Color.fromRGBO(255, 144, 62, 1),
                                       ),
                                     ),
                                     SizedBox(height: getH(6)),
@@ -118,7 +118,7 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                                       ).format(stat.allSum),
                                       textAlign: TextAlign.end,
                                       style: const TextStyle(
-                                        color: Color.fromRGBO(103, 206, 103, 1),
+                                        color: Color.fromRGBO(255, 144, 62, 1),
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -130,10 +130,11 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                                 child: Column(
                                   children: [
                                     const Text(
-                                      'все кэшбеки',
+                                      'Все кэшбеки',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Color.fromRGBO(75, 132, 231, 1),
+                                        // color: Color.fromRGBO(75, 132, 231, 1),
+                                        color: Color.fromRGBO(103, 206, 103, 1),
                                       ),
                                     ),
                                     SizedBox(height: getH(6)),
@@ -147,7 +148,7 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Color.fromRGBO(75, 132, 231, 1),
+                                        color: Color.fromRGBO(103, 206, 103, 1),
                                       ),
                                     ),
                                   ],
@@ -355,7 +356,7 @@ class _CardIncome extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: const [
                           Text(
-                            'Доход',
+                            'Покупка',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 10,
@@ -425,7 +426,7 @@ class _CardOut extends StatelessWidget {
                       ).format(sumCashback.price) +
                       'сум',
                   style: const TextStyle(
-                    color: Color(0xffe4002b),
+                    color: Color.fromRGBO(255, 144, 62, 1),
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                   ),
@@ -437,7 +438,7 @@ class _CardOut extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
-                        color: const Color(0xffe4002b),
+                        color: Color.fromRGBO(255, 144, 62, 1),
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
@@ -449,7 +450,7 @@ class _CardOut extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: const [
                           Text(
-                            'Покупка',
+                            'Оплата',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 10,

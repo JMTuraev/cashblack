@@ -9,8 +9,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../size_config.dart';
+import '../../../utils/constants.dart';
 import '../../../view_models/business_home_view_model.dart';
 import '../../../view_models/send_notification_view_model.dart';
+import '../../../view_models/statistics_view_model.dart';
 import '../../../widgets/active_switcher_widget.dart';
 import '../../../widgets/inactive_switcher_widget.dart';
 import '../../../widgets/info_alert_widget.dart';
@@ -60,31 +62,9 @@ class _SendNotificationViewState extends State<SendNotificationView> {
     super.initState();
   }
 
-  List<bool> selections = [true, false, false];
+  List<bool> selections = [false, true, false];
 
-  var actionImages = [
-    'assets/images/notification/ak-1.png',
-    'assets/images/notification/ak-2.png',
-    'assets/images/notification/ak-3.png',
-    'assets/images/notification/ak-4.png',
-  ];
-
-  var adImages = [
-    'assets/images/notification/re-1.png',
-    'assets/images/notification/re-2.png',
-    'assets/images/notification/re-3.png',
-  ];
-
-  var cashbackImages = [
-    'assets/images/notification/bo-3.png',
-    'assets/images/notification/bo-5.png',
-    'assets/images/notification/bo-8.png',
-    'assets/images/notification/bo-10.png',
-    'assets/images/notification/bo-12.png',
-    'assets/images/notification/bo-15.png',
-    'assets/images/notification/bo-25.png',
-    'assets/images/notification/bo-50.png',
-  ];
+  int selectedItem = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -99,222 +79,278 @@ class _SendNotificationViewState extends State<SendNotificationView> {
           // bottom: ThemeDetails.appBarDivider,
         ),
         body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Form(
-              child: Column(
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                      color: Color.fromRGBO(28, 28, 29, 1),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
+          child: Form(
+            child: Column(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(28, 28, 29, 1),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                  ),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                  ),
+                  padding: const EdgeInsets.all(5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: selections[0] == true
+                        ? [
+                            Expanded(
+                              child: ActiveSwitcherWidget(
+                                fontSize: 16,
+                                color: const Color.fromRGBO(103, 206, 103, 1),
+                                title: 'Акция',
+                                onPressed: () {},
+                              ),
+                            ),
+                            SizedBox(width: getW(4)),
+                            Expanded(
+                              child: InactiveSwitcherWidget(
+                                fontSize: 16,
+                                color: Colors.white,
+                                title: 'Бонус',
+                                onPressed: () {
+                                  setState(() {
+                                    selectedItem = -1;
+                                    selections = [false, true, false];
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(width: getW(4)),
+                            Expanded(
+                              child: InactiveSwitcherWidget(
+                                fontSize: 16,
+                                color: Colors.white,
+                                title: 'Реклама',
+                                onPressed: () {
+                                  setState(() {
+                                    selectedItem = -1;
+                                    selections = [false, false, true];
+                                  });
+                                },
+                              ),
+                            ),
+                          ]
+                        : (selections[1] == true)
+                            ? [
+                                Expanded(
+                                  child: InactiveSwitcherWidget(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    title: 'Акция',
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedItem = -1;
+                                        selections = [true, false, false];
+                                      });
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: getW(4)),
+                                Expanded(
+                                  child: ActiveSwitcherWidget(
+                                    fontSize: 16,
+                                    color:
+                                        const Color.fromRGBO(103, 206, 103, 1),
+                                    title: 'Бонус',
+                                    onPressed: () {},
+                                  ),
+                                ),
+                                SizedBox(width: getW(4)),
+                                Expanded(
+                                  child: InactiveSwitcherWidget(
+                                    fontSize: 16,
+                                    title: 'Реклама',
+                                    color: Colors.white,
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedItem = -1;
+                                        selections = [false, false, true];
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ]
+                            : [
+                                Expanded(
+                                  child: InactiveSwitcherWidget(
+                                    fontSize: 16,
+                                    title: 'Акция',
+                                    color: Colors.white,
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedItem = -1;
+                                        selections = [true, false, false];
+                                      });
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: getW(4)),
+                                Expanded(
+                                  child: InactiveSwitcherWidget(
+                                    fontSize: 16,
+                                    title: 'Бонус',
+                                    color: Colors.white,
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedItem = -1;
+                                        selections = [false, true, false];
+                                      });
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: getW(4)),
+                                Expanded(
+                                  child: ActiveSwitcherWidget(
+                                    fontSize: 16,
+                                    color:
+                                        const Color.fromRGBO(103, 206, 103, 1),
+                                    onPressed: () {},
+                                    title: 'Реклама',
+                                  ),
+                                ),
+                              ],
+                  ),
+                ),
+                SizedBox(height: getH(20)),
+                Stack(
+                  children: [
+                    if (selections[0] == true)
+                      cardBuilder(Constants.actionImages, 'Акция')
+                    else
+                      selections[1] == true
+                          ? cardBuilder(Constants.cashbackImages, 'Бонус')
+                          : cardBuilder(Constants.adImages, 'Реклама'),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              Colors.black,
+                              Colors.black12,
+                              Colors.transparent,
+                            ],
+                          ),
+                        ),
+                        width: 30,
                       ),
                     ),
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                    ),
-                    padding: const EdgeInsets.all(5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: selections[0] == true
-                          ? [
-                              Expanded(
-                                child: ActiveSwitcherWidget(
-                                  title: 'Акция',
-                                  onPressed: () {},
-                                ),
-                              ),
-                              SizedBox(width: getW(4)),
-                              Expanded(
-                                child: InactiveSwitcherWidget(
-                                  title: 'Бонус',
-                                  onPressed: () {
-                                    setState(() {
-                                      selections = [false, true, false];
-                                    });
-                                  },
-                                ),
-                              ),
-                              SizedBox(width: getW(4)),
-                              Expanded(
-                                child: InactiveSwitcherWidget(
-                                  title: 'Реклама',
-                                  onPressed: () {
-                                    setState(() {
-                                      selections = [false, false, true];
-                                    });
-                                  },
-                                ),
-                              ),
-                            ]
-                          : (selections[1] == true)
-                              ? [
-                                  Expanded(
-                                    child: InactiveSwitcherWidget(
-                                      title: 'Акция',
-                                      onPressed: () {
-                                        setState(() {
-                                          selections = [true, false, false];
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(width: getW(4)),
-                                  Expanded(
-                                    child: ActiveSwitcherWidget(
-                                      title: 'Бонус',
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                  SizedBox(width: getW(4)),
-                                  Expanded(
-                                    child: InactiveSwitcherWidget(
-                                      title: 'Реклама',
-                                      onPressed: () {
-                                        setState(() {
-                                          selections = [false, false, true];
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ]
-                              : [
-                                  Expanded(
-                                    child: InactiveSwitcherWidget(
-                                      title: 'Акция',
-                                      onPressed: () {
-                                        setState(() {
-                                          selections = [true, false, false];
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(width: getW(4)),
-                                  Expanded(
-                                    child: InactiveSwitcherWidget(
-                                      title: 'Бонус',
-                                      onPressed: () {
-                                        setState(() {
-                                          selections = [false, true, false];
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(width: getW(4)),
-                                  Expanded(
-                                    child: ActiveSwitcherWidget(
-                                      onPressed: () {},
-                                      title: 'Реклама',
-                                    ),
-                                  ),
-                                ],
-                    ),
-                  ),
-                  // Image.asset(
-                  //   'assets/images/email.png',
-                  //   fit: BoxFit.contain,
-                  //   height: MediaQuery.of(context).size.width / 2.5,
-                  // ),
-                  SizedBox(height: getH(20)),
-                  cardBuilder(
-                    selections[0] == true
-                        ? actionImages
-                        : (selections[1] == true ? cashbackImages : adImages),
-                  ),
-
-                  // SizedBox(height: getH(58)),
-                  // // _fileList.isEmpty
-                  // //     ? _FilePickerWidget(onTap: selectImage)
-                  // //     : _ImageViewWidget(
-                  // //         fileList: _fileList,
-                  // //         onTap: () {
-                  // //           dltImages(_fileList.first);
-                  // //         },
-                  // //       ),
-                  SizedBox(height: getH(20)),
-                  // TextFieldWidget(
-                  //   hintText: 'Заголовок',
-                  //   controller: _titleController,
-                  // ),
-                  // SizedBox(height: getH(20)),
-                  MultilineTextFieldWidget(
-                    hintText: 'Текст',
-                    controller: _contentController,
-                  ),
-                  // const Spacer(),
-                  SizedBox(height: getH(20)),
-                  MainButtonWidget(
-                    text: 'Отправить',
-                    isLoading:
-                        context.watch<SendNotificationViewModel>().isLoading,
-                    method: () async {
-                      if (
-                          // _fileList.isNotEmpty &&
-                          _titleController.text.isNotEmpty &&
-                              _contentController.text.isNotEmpty) {
-                        if (int.parse(balance) < int.parse(price)) {
-                          // showCupertinoDialog(
-                          //   context: context,
-                          //   builder: (context) =>
-                          //       InfoAlertWidget(title: 'Пополните баланс'),
-                          await showCupertinoDialog(
-                            context: context,
-                            builder: (context) {
-                              return const InfoAlertWidget(
-                                title:
-                                    'Пополните баланс для отправки уведомлений',
-                              );
-                            },
-                          );
-                          // );
-                        } else {
-                          await context
-                              .read<SendNotificationViewModel>()
-                              .send(
-                                // _fileList[0]!,
-                                _titleController.text,
-                                _contentController.text,
-                              )
-                              .then(
-                                (value) =>
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                  CupertinoPageRoute(
-                                    builder: (context) =>
-                                        const BusinessHomeView(),
-                                  ),
-                                  (route) => false,
-                                ),
-                              );
-                        }
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  FutureBuilder(
-                    future: prices,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(
-                          'Отправленные уведомления увидят пользователи, которые вы выплатили кэшбэк. Цена одного уведомление составляет ${NumberFormat.simpleCurrency(
-                            name: '',
-                            locale: 'ru_RU',
-                            decimalDigits: 0,
-                          ).format(int.parse(snapshot.data.toString()))}сумов и будет видна в течение 48 часов (после подтверждения).',
-                          textAlign: TextAlign.justify,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey,
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerRight,
+                            end: Alignment.centerLeft,
+                            colors: [
+                              Colors.black,
+                              Colors.black12,
+                              Colors.transparent,
+                            ],
                           ),
-                        );
-                      } else {
-                        return const Text('');
-                      }
-                    },
+                        ),
+                        width: 30,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: getH(20)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      MultilineTextFieldWidget(
+                        hintText: 'Текст',
+                        controller: _contentController,
+                      ),
+                      // const Spacer(),
+                      SizedBox(height: getH(20)),
+                      MainButtonWidget(
+                        text: 'Отправить',
+                        isLoading: context
+                            .watch<SendNotificationViewModel>()
+                            .isLoading,
+                        method: () async {
+                          if (
+                              // _fileList.isNotEmpty &&
+                              selectedItem != -1 &&
+                                  _titleController.text != -1 &&
+                                  _titleController.text.isNotEmpty &&
+                                  _contentController.text.isNotEmpty) {
+                            if (int.parse(balance) < int.parse(price)) {
+                              // showCupertinoDialog(
+                              //   context: context,
+                              //   builder: (context) =>
+                              //       InfoAlertWidget(title: 'Пополните баланс'),
+                              await showCupertinoDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const InfoAlertWidget(
+                                    title:
+                                        'Пополните баланс для отправки уведомлений',
+                                  );
+                                },
+                              );
+                              // );
+                            } else {
+                              await context
+                                  .read<SendNotificationViewModel>()
+                                  .send(
+                                    // _fileList[0]!,
+                                    _titleController.text,
+                                    _contentController.text,
+                                  )
+                                  .then(
+                                    (value) => Navigator.of(context)
+                                        .pushAndRemoveUntil(
+                                      CupertinoPageRoute(
+                                        builder: (context) =>
+                                            const BusinessHomeView(),
+                                      ),
+                                      (route) => false,
+                                    ),
+                                  );
+                            }
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      FutureBuilder(
+                        future: prices,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Text(
+                              'Отправленные уведомления увидят пользователи, которые вы выплатили кэшбэк (${context.read<StatisticsViewModel>().clients.length} пользователей). Цена одного уведомление составляет ${NumberFormat.simpleCurrency(
+                                name: '',
+                                locale: 'ru_RU',
+                                decimalDigits: 0,
+                              ).format(int.parse(snapshot.data.toString()))}сумов и будет видна в течение 48 часов (после подтверждения).',
+                              textAlign: TextAlign.justify,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                              ),
+                            );
+                          } else {
+                            return const Text('');
+                          }
+                        },
+                      ),
+                      SizedBox(height: getH(20)),
+                    ],
                   ),
-                  SizedBox(height: getH(20)),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -322,7 +358,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
     );
   }
 
-  Container cardBuilder(List imagesList) {
+  Container cardBuilder(List imagesList, String type) {
     return Container(
       height: getH(150),
       width: double.infinity,
@@ -330,8 +366,30 @@ class _SendNotificationViewState extends State<SendNotificationView> {
         key: ObjectKey(imagesList[0]),
         scrollDirection: Axis.horizontal,
         itemCount: imagesList.length,
-        itemBuilder: (context, index) =>
-            _ImageCardWidget(image: imagesList[index]),
+        itemBuilder: (context, index) => GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedItem = index;
+              var ind = imagesList[index]
+                  .split('-')
+                  .last
+                  .toString()
+                  .split('.png')
+                  .first;
+
+              _titleController.text = '$type-$ind';
+            });
+          },
+          child: selectedItem == index
+              ? _ImageCardWidget(
+                  image: imagesList[index],
+                  selectedIndex: true,
+                )
+              : _ImageCardWidget(
+                  image: imagesList[index],
+                  selectedIndex: false,
+                ),
+        ),
         separatorBuilder: (context, index) => SizedBox(
           width: getW(10),
         ),
@@ -344,24 +402,57 @@ class _ImageCardWidget extends StatelessWidget {
   const _ImageCardWidget({
     Key? key,
     required this.image,
+    this.selectedIndex,
   }) : super(key: key);
 
   final String image;
+  final bool? selectedIndex;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: getH(150),
-      width: getH(200),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(10),
+    return Stack(
+      children: [
+        Container(
+          height: getH(150),
+          width: getH(200),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+          ),
+          child: Image.asset(
+            image,
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      child: Image.asset(
-        image,
-        fit: BoxFit.cover,
-      ),
+        selectedIndex == true
+            ? Positioned(
+                right: getW(8),
+                top: getW(8),
+                child: Container(
+                  padding: const EdgeInsets.all(0.00011),
+                  decoration: const BoxDecoration(
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colors.white.withOpacity(0.1),
+                    //     spreadRadius: 0.1,
+                    //     blurRadius: 0.1,
+                    //     offset: Offset(0.1, 0.1),
+                    //   )
+                    // ],
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(90),
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.check_circle,
+                    size: 30,
+                    color: Color.fromRGBO(103, 206, 103, 1),
+                  ),
+                ))
+            : const SizedBox()
+      ],
     );
   }
 }
@@ -452,13 +543,4 @@ class _FilePickerWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-class ImageCard {
-  final String type;
-  final String image;
-  ImageCard({
-    required this.type,
-    required this.image,
-  });
 }

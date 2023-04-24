@@ -12,8 +12,8 @@ ReceivedNotification _$ReceivedNotificationFromJson(
       id: json['id'] as int,
       title: json['title'] as String,
       content: json['content'] as String,
-      image: json['img'] as String,
       name: json['name_shops'] as String,
+      category: json['catgoriya'] as String,
       date: json['date'] as String,
     );
 
@@ -23,7 +23,7 @@ Map<String, dynamic> _$ReceivedNotificationToJson(
       'title': instance.title,
       'id': instance.id,
       'content': instance.content,
-      'img': instance.image,
       'name_shops': instance.name,
+      'catgoriya': instance.category,
       'date': instance.date,
     };

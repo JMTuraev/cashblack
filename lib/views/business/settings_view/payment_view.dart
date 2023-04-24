@@ -43,7 +43,7 @@ class _PaymentViewState extends State<PaymentView> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(0),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Form(
             key: _formKey,
             child: Align(

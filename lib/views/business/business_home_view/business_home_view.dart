@@ -185,9 +185,14 @@ class _BusinessHomeViewState extends State<BusinessHomeView> {
           return !hasShopp
               ? const CreateStoreView()
               : Scaffold(
+                  extendBody: true,
+                  // floatingActionButtonLocation:
+                  // FloatingActionButtonLocation.endDocked,
                   bottomNavigationBar: CurvedNavigationBar(
+                    // height: getH(40),
                     buttonBackgroundColor: Color.fromRGBO(103, 206, 103, 1),
-                    backgroundColor: Colors.black,
+                    // backgroundColor: Colors.black,
+                    backgroundColor: Colors.transparent,
                     color: Color.fromRGBO(28, 28, 29, 1),
                     index: currentIndex,
                     items: isBusiness ? items : itemsForWorkers,

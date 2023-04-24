@@ -8,6 +8,18 @@ mixin Helpers {
     }
   }
 
+  static String getLocalImage(String text) {
+    String index = text.split('-').last;
+    if (text.contains('Акция')) {
+      return 'assets/images/notification/ak-$index.png';
+    } else if (text.contains('Бонус')) {
+      return 'assets/images/notification/bo-$index.png';
+    } else if (text.contains('Реклама')) {
+      return 'assets/images/notification/re-$index.png';
+    }
+    return text;
+  }
+
   static void toWeb(String web, String type) async {
     Uri url = Uri.parse(web);
     if (await canLaunchUrl(url)) {

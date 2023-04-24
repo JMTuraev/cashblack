@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/models/sent_notification.dart';
 import '../../../extensions.dart';
 import '../../../utils/constants.dart';
+import '../../../utils/helpers.dart';
 
 class NotificationInfoView extends StatelessWidget {
   const NotificationInfoView({
@@ -27,24 +28,30 @@ class NotificationInfoView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: Text(
-                    sentNotification.title,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
+                // Center(
+                //   child: Text(
+                //     sentNotification.title,
+                //     textAlign: TextAlign.center,
+                //     style: const TextStyle(
+                //       fontSize: 24,
+                //     ),
+                //   ),
+                // ),
+                // const SizedBox(height: 20),
                 Container(
                   height: MediaQuery.of(context).size.width / 1.5,
                   width: double.infinity,
-                  // child: CachedNetworkImage(
-                  //   fit: BoxFit.cover,
-                  //   imageUrl: Constants.media + sentNotification.image,
-                  // ),
-                  child: Placeholder(),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                    child: Image.asset(
+                      Helpers.getLocalImage(
+                        sentNotification.title,
+                      ),
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Row(

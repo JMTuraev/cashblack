@@ -8,7 +8,7 @@ class StatisticsViewModel extends ChangeNotifier {
   final Client _client = Client();
 
   late Future<List<SumStat>> sumStats;
-  late var clients;
+  List<SumCashback> clients = [];
   double cashbackSum = 0;
   int withdrawSum = 0;
   int priceSum = 0;

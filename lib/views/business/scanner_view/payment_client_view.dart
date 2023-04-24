@@ -74,6 +74,11 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var user = snapshot.data as BarcodeScan;
+                    if (user.cashback == null) {
+                      user.cashback = 0;
+                    }
+
+                    print(user.cashback);
 
                     if (user.datum.isNotEmpty) {
                       return Column(
@@ -141,7 +146,7 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                       } else if (int.parse(
                                                 value.removeWhitespaces(),
                                               ) >
-                                              user.cashback.toInt() &&
+                                              user.cashback!.toInt() &&
                                           isWithdraw) {
                                         return 'Введите сумму меньше кэшбека';
                                       }

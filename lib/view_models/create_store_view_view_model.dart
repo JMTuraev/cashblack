@@ -9,6 +9,7 @@ import '../domain/models/user.dart';
 
 class CreateStoreViewViewModel extends ChangeNotifier {
   final Client _client = Client();
+  bool isLoading = false;
   // List<Category> categories = [];
   // List<Province> provincies = [];
   // List<City> cities = [];
@@ -56,7 +57,9 @@ class CreateStoreViewViewModel extends ChangeNotifier {
     int city,
     File file,
   ) async {
-    return _client.createStore(
+    isLoading = true;
+    notifyListeners();
+    var result = _client.createStore(
       // userId,
       category,
       name,
@@ -65,6 +68,9 @@ class CreateStoreViewViewModel extends ChangeNotifier {
       city,
       file,
     );
+    isLoading = false;
+    notifyListeners();
+    return result;
   }
 
   // Future<void> editstore(

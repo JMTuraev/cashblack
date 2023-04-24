@@ -8,11 +8,13 @@ class ActiveSwitcherWidget extends StatelessWidget {
     required this.title,
     required this.onPressed,
     this.fontSize,
+    this.color,
   });
 
   final String title;
   final VoidCallback onPressed;
   final double? fontSize;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +37,9 @@ class ActiveSwitcherWidget extends StatelessWidget {
           child: Text(
             title,
             style: TextStyle(
-              color: Colors.white,
+              color: color ?? Colors.white,
               fontSize: fontSize ?? 20,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),

@@ -12,8 +12,13 @@ class MultilineTextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int maxLength = 200;
+
     return TextFormField(
       decoration: InputDecoration(
+        // counterStyle: TextStyle(
+        //   color: controller!.text.length == maxLength ? Colors.red : null,
+        // ),
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
@@ -37,7 +42,7 @@ class MultilineTextFieldWidget extends StatelessWidget {
       showCursor: true,
       keyboardType: TextInputType.multiline,
       maxLines: null,
-      maxLength: 500,
+      maxLength: maxLength,
       minLines: 2,
       controller: controller,
     );

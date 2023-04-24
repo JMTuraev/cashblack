@@ -40,7 +40,7 @@ class _LogoAnimatedWidgetState extends State<LogoAnimatedWidget>
               Radius.circular(999),
             ),
             child: Image.asset(
-              'assets/images/icon_no_alpha.png',
+              'assets/images/icon.png',
               fit: BoxFit.cover,
               height: MediaQuery.of(context).size.width / widget.size,
             ),

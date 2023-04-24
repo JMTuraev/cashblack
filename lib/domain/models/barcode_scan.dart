@@ -9,7 +9,7 @@ part 'barcode_scan.g.dart';
 class BarcodeScan {
   @JsonKey(name: 'data')
   final List<Datum> datum;
-  final double cashback;
+  double? cashback;
 
   BarcodeScan({
     required this.datum,

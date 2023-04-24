@@ -141,12 +141,12 @@ class _ItemWidget extends StatelessWidget {
                 ),
                 child: CachedNetworkImage(
                   fit: BoxFit.fitHeight,
-                  height: getH(80),
+                  height: getW(80),
                   width: getW(80),
                   imageUrl: Constants.media + shops[index].logo,
                   placeholder: (context, url) => Container(
                     color: Colors.transparent,
-                    height: getH(80),
+                    height: getW(80),
                     width: getW(80),
                   ),
                 ),

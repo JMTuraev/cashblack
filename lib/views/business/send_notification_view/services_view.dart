@@ -9,6 +9,7 @@ import '../../../domain/models/sent_notification.dart';
 import '../../../extensions.dart';
 import '../../../size_config.dart';
 import '../../../utils/constants.dart';
+import '../../../utils/helpers.dart';
 import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
@@ -121,12 +122,15 @@ class _ServicesViewState extends State<ServicesView> {
                                           topLeft: Radius.circular(20),
                                           bottomLeft: Radius.circular(20),
                                         ),
-                                        child: Placeholder(
-                                          fallbackHeight: MediaQuery.of(context)
+                                        child: Image.asset(
+                                          Helpers.getLocalImage(
+                                            notifications[index].title,
+                                          ),
+                                          height: MediaQuery.of(context)
                                                   .size
                                                   .width /
                                               4,
-                                          fallbackWidth: MediaQuery.of(context)
+                                          width: MediaQuery.of(context)
                                                   .size
                                                   .width /
                                               3,
@@ -156,19 +160,20 @@ class _ServicesViewState extends State<ServicesView> {
                                             children: [
                                               Row(
                                                 children: [
-                                                  Text(
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    notifications[index]
-                                                        .shop
-                                                        .name,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                  Expanded(
+                                                    child: Text(
+                                                      notifications[index]
+                                                          .content,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                     ),
                                                   ),
-                                                  const Spacer(),
+                                                  const SizedBox(width: 10),
                                                   if (notifications[index]
                                                           .status ==
                                                       1)
@@ -211,21 +216,21 @@ class _ServicesViewState extends State<ServicesView> {
                                                   const SizedBox(width: 6),
                                                 ],
                                               ),
-                                              const SizedBox(height: 4),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                  right: 4,
-                                                ),
-                                                child: Text(
-                                                  notifications[index].title,
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                              ),
+                                              // const SizedBox(height: 4),
+                                              // Padding(
+                                              //   padding: const EdgeInsets.only(
+                                              //     right: 4,
+                                              //   ),
+                                              //   child: Text(
+                                              //     notifications[index].content,
+                                              //     maxLines: 2,
+                                              //     overflow:
+                                              //         TextOverflow.ellipsis,
+                                              //     style: const TextStyle(
+                                              //       fontSize: 18,
+                                              //     ),
+                                              //   ),
+                                              // ),
                                               const SizedBox(height: 4),
                                               Text(
                                                 notifications[index]
@@ -327,7 +332,16 @@ class _ServicesViewState extends State<ServicesView> {
                         ),
                       );
                     } else
-                      return const Center(child: EmptyWidget());
+                      return EasyRefresh(
+                          header: const MaterialHeader(),
+                          onRefresh: () {
+                            setState(() {
+                              sentFuture = context
+                                  .read<SendNotificationViewModel>()
+                                  .getNotifications();
+                            });
+                          },
+                          child: const Center(child: EmptyWidget()));
                   } else
                     return const Center(
                       child: LogoAnimatedWidget(

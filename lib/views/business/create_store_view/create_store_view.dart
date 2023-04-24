@@ -267,6 +267,8 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                   const SizedBox(height: 20),
                   MainButtonWidget(
                       text: 'OK',
+                      isLoading:
+                          context.watch<CreateStoreViewViewModel>().isLoading,
                       method: () async {
                         if (_isChecked && _fileList.isNotEmpty) {
                           context
@@ -327,6 +329,7 @@ class _CashbackWidget extends StatelessWidget {
               Radius.circular(20),
             ),
           ),
+          counterText: '',
           hintText: 'Кэшбек',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(
@@ -334,6 +337,7 @@ class _CashbackWidget extends StatelessWidget {
             ),
           ),
         ),
+        maxLength: 2,
         autocorrect: false,
         enableSuggestions: false,
         keyboardAppearance: Brightness.dark,

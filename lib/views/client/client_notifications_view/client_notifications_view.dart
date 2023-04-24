@@ -8,6 +8,7 @@ import '../../../domain/models/received_notification.dart';
 import '../../../extensions.dart';
 import '../../../size_config.dart';
 import '../../../utils/constants.dart';
+import '../../../utils/helpers.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
@@ -102,7 +103,10 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                                           topLeft: Radius.circular(20),
                                           bottomLeft: Radius.circular(20),
                                         ),
-                                        child: CachedNetworkImage(
+                                        child: Image.asset(
+                                          Helpers.getLocalImage(
+                                            notifications[index].title,
+                                          ),
                                           fit: BoxFit.fitHeight,
                                           height: MediaQuery.of(context)
                                                   .size
@@ -112,8 +116,6 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                                                   .size
                                                   .width /
                                               3,
-                                          imageUrl: Constants.media +
-                                              notifications[index].image,
                                         ),
                                       ),
                                       const SizedBox(width: 10),
@@ -127,20 +129,18 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                                             children: [
                                               Text(
                                                 notifications[index].name,
-                                                maxLines: 2,
+                                                maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
+                                                  fontSize: 18,
                                                 ),
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
+                                                notifications[index].category,
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
-                                                notifications[index].title,
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                ),
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
@@ -174,13 +174,23 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                         ),
                       );
                     } else {
-                      return Column(
-                        children: [
-                          const SizedBox(
-                            height: 100,
-                          ),
-                          const Center(child: EmptyWidget()),
-                        ],
+                      return EasyRefresh(
+                        header: const MaterialHeader(),
+                        onRefresh: () {
+                          setState(() {
+                            notifs = context
+                                .read<ClientHomeViewModel>()
+                                .getNotifications();
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 100,
+                            ),
+                            const Center(child: EmptyWidget()),
+                          ],
+                        ),
                       );
                     }
                   } else

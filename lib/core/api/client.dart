@@ -914,6 +914,7 @@ class Client {
 
     // Uri url = Uri.parse('$path/shop_client_views/');
     Uri url = Uri.parse('$path/cashbak_create/$barcode/False/$shopId/');
+    Uri urlTwo = Uri.parse('$path/ClientAllsView/$barcode/');
     http.Request req = http.Request('GET', url);
     req.headers.addAll(headers);
 
@@ -929,6 +930,19 @@ class Client {
       return barcodeScan;
     } else {
       print(res.reasonPhrase);
+      Uri urlTwo = Uri.parse('$path/ClientAllsView/$barcode/');
+      http.Request reqTwo = http.Request('GET', urlTwo);
+      reqTwo.headers.addAll(headers);
+      var resTwo = await reqTwo.send();
+      final resBodyTwo = await resTwo.stream.bytesToString();
+      if (resTwo.statusCode >= 200 && resTwo.statusCode < 300) {
+        // var decode = (json.decode(resBody) as List);
+        BarcodeScan barcodeScanTwo;
+        var decodeTwo = (json.decode(resBodyTwo));
+        barcodeScanTwo = BarcodeScan.fromJson(decodeTwo);
+        print('!!!!!get from barcode two');
+        return barcodeScanTwo;
+      }
       return BarcodeScan(datum: [], cashback: 0);
     }
   }

@@ -10,7 +10,7 @@ BarcodeScan _$BarcodeScanFromJson(Map<String, dynamic> json) => BarcodeScan(
       datum: (json['data'] as List<dynamic>)
           .map((e) => Datum.fromJson(e as Map<String, dynamic>))
           .toList(),
-      cashback: (json['cashback'] as num).toDouble(),
+      cashback: (json['cashback'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$BarcodeScanToJson(BarcodeScan instance) =>

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/models/received_notification.dart';
 import '../../../extensions.dart';
 import '../../../utils/constants.dart';
+import '../../../utils/helpers.dart';
 import '../../../widgets/medium_title_widget.dart';
 
 class ClientNotificationInfoView extends StatelessWidget {
@@ -28,35 +29,52 @@ class ClientNotificationInfoView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: Text(
-                    receivedNotification.title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
+                // Center(
+                //   child: Text(
+                //     receivedNotification.title,
+                //     textAlign: TextAlign.center,
+                //     style: const TextStyle(
+                //       fontSize: 24,
+                //     ),
+                //   ),
+                // ),
+                // const SizedBox(height: 20),
                 Container(
                   height: MediaQuery.of(context).size.width / 1.5,
                   width: double.infinity,
-                  child: CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: Constants.media + receivedNotification.image,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                    child: Image.asset(
+                      Helpers.getLocalImage(
+                        receivedNotification.title,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  receivedNotification.date.getLocaleDateTime(),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                Row(
+                  children: [
+                    Text(
+                      receivedNotification.date.getLocaleDateTime(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Spacer(),
+                    Text(
+                      receivedNotification.category,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   receivedNotification.content,
                   textAlign: TextAlign.justify,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                   ),
                 )

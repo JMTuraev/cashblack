@@ -123,8 +123,10 @@ class _MainViewState extends State<MainView> {
                                         Padding(
                                           //TODO changes needed
                                           padding:
-                                              const EdgeInsets.only(bottom: 16),
+                                              // const EdgeInsets.only(bottom: 16),
+                                              const EdgeInsets.all(33),
                                           child: CachedNetworkImage(
+                                            color: Colors.white,
                                             width: double.infinity,
                                             imageUrl: Constants.media +
                                                 userCategoryList[index].logo,
@@ -133,7 +135,7 @@ class _MainViewState extends State<MainView> {
                                         Positioned(
                                           left: 0,
                                           right: 0,
-                                          bottom: 10,
+                                          bottom: 20,
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 10,
@@ -263,7 +265,7 @@ class _BalanceWidget extends StatelessWidget {
                     SizedBox(height: getH(6)),
                     Text(
                       NumberFormat.simpleCurrency(
-                        name: '',
+                        name: 'сум',
                         locale: 'ru_RU',
                         decimalDigits: 0,
                       ).format(stat.allSum),
@@ -290,7 +292,7 @@ class _BalanceWidget extends StatelessWidget {
                     SizedBox(height: getH(6)),
                     Text(
                       NumberFormat.simpleCurrency(
-                        name: '',
+                        name: 'сум',
                         locale: 'ru_RU',
                         decimalDigits: 0,
                       ).format(stat.allCashback),
