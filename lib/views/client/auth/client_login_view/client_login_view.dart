@@ -4,9 +4,9 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
-import '../../../../extensions.dart';
+import '../../../../string_extensions.dart';
 import '../../../../size_config.dart';
-import '../../../../view_models/client_login_view_model.dart';
+import '../../../../view_models/client/client_login_view_model.dart';
 import '../../../../widgets/connect_widget.dart';
 import '../../../../widgets/info_alert_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
@@ -44,12 +44,20 @@ class _ClientLoginViewState extends State<ClientLoginView> {
         var phone = maskFormatter.unmaskText(phoneController.text);
         print('phone');
 
-        bool sendSMS = false;
+        // bool sendSMS = false;
 
-        sendSMS = await provider.sendSms(
-          phone,
-          provider.appSignature = await SmsAutoFill().getAppSignature,
-        );
+        // phone = '998973000225';
+
+        bool sendSMS =
+            await context.read<ClientLoginViewModel>().onEnterButtonPressed(
+                  phone.substring(3),
+                  'nickname',
+                  'firstName',
+                  'lastName',
+                  '59',
+                  'client',
+                  '',
+                );
         sendSMS
             ? Navigator.of(context).push(
                 CupertinoPageRoute(
@@ -80,7 +88,7 @@ class _ClientLoginViewState extends State<ClientLoginView> {
             validator: (value) {
               if (value == null ||
                   value.isEmpty ||
-                  int.parse(value.removeWhitespaces()) <= 0) {
+                  int.parse(value.removeWhitespace()) <= 0) {
                 return 'Введите номер телефона';
               }
               return null;

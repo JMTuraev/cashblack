@@ -1,7 +1,7 @@
 class Constants {
-  static const String path = 'http://176.96.243.117:9000/api';
-  // static const String pathTest = 'http://176.96.243.117:9000/api';
-  static const String media = 'http://176.96.243.117:9000';
+  static const String path = 'http://cashblack.assist.uz/api';
+  // static const String pathTest = 'http://176.96.243.209:9000/api';
+  static const String media = 'http://176.96.243.209:9000';
 
   static const actionImages = [
     'assets/images/notification/ak-1.png',

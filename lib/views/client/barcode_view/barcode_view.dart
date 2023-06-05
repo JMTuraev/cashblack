@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/user.dart';
-import '../../../extensions.dart';
+import '../../../string_extensions.dart';
 import '../../../theme/theme_details.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
@@ -17,7 +17,7 @@ class BarcodeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User user = context.watch<ClientHomeViewModel>().user;
+    // User user = context.watch<ClientHomeViewModel>().user;
 
     return Scaffold(
       appBar: AppBar(
@@ -26,14 +26,14 @@ class BarcodeView extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              await context.read<ClientHomeViewModel>().logout().then(
-                    (value) => Navigator.of(context).pushAndRemoveUntil(
-                      CupertinoPageRoute(
-                        builder: (context) => const SelectTypeView(),
-                      ),
-                      (route) => false,
-                    ),
-                  );
+              // await context.read<ClientHomeViewModel>().logout().then(
+              //       (value) => Navigator.of(context).pushAndRemoveUntil(
+              //         CupertinoPageRoute(
+              //           builder: (context) => const SelectTypeView(),
+              //         ),
+              //         (route) => false,
+              //       ),
+              //     );
             },
             icon: const Icon(Icons.logout),
           )
@@ -60,25 +60,24 @@ class BarcodeView extends StatelessWidget {
                     fontSize: 18,
                   ),
                   padding: const EdgeInsets.all(10),
-                  data: user.barcode!,
+                  data: 'user.barcode!',
                   barcode: Barcode.qrCode(),
                 ),
                 SizedBox(height: 60),
                 GestureDetector(
-                  child: HeroTitleWidget(
-                      text: '${user.firstName} ${user.lastName}'),
+                  child: HeroTitleWidget(text: 'asd asdas'),
                   onTap: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => EditNameView(
-                          user: user!,
-                        ),
-                      ),
-                    );
+                    // Navigator.of(context).push(
+                    //   CupertinoPageRoute(
+                    //     builder: (context) => EditNameView(
+                    //       user: user!,
+                    //     ),
+                    //   ),
+                    // );
                   },
                 ),
                 SizedBox(height: 20),
-                SmallTitleWidget(text: user!.userName.phoneFormatter()),
+                SmallTitleWidget(text: '+123123123'),
                 const SizedBox(height: 15),
                 const SizedBox(height: 15),
               ],

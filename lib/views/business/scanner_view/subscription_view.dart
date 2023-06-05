@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../view_models/business_home_view_model.dart';
+import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../settings_view/payment_view.dart';
 
@@ -20,8 +20,8 @@ class SubscriptionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var balance = context.read<BusinessHomeViewModel>().balance.first.amount;
-    bool isLoading = context.watch<BusinessHomeViewModel>().isLoading;
+    var balance = 12;
+    bool isLoading = context.watch<BusinessViewModel>().isLoading;
 
     return Scaffold(
       body: Scaffold(
@@ -55,14 +55,14 @@ class SubscriptionView extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 isBusiness
-                    ? int.parse(balance) > int.parse(subscribtionPrice)
+                    ? int.parse('12') > int.parse(subscribtionPrice)
                         ? MainButtonWidget(
                             isLoading: isLoading,
                             text: 'Оплатить',
                             method: () async {
-                              await context
-                                  .read<BusinessHomeViewModel>()
-                                  .paySubscription(context, true);
+                              // await context
+                              //     .read<BusinessHomeViewModel>()
+                              //     .paySubscription(context, true);
                             },
                           )
                         : MainButtonWidget(

@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
-import '../../../../extensions.dart';
+import '../../../../string_extensions.dart';
 import '../../../../view_models/client_home_view_model.dart';
-import '../../../../view_models/client_login_view_model.dart';
+import '../../../../view_models/client/client_login_view_model.dart';
 import '../../../../widgets/hero_title_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../../../../widgets/text_button_widget.dart';
-import '../../client_home_view.dart/client_home_view.dart';
+import '../../client_view.dart';
 
 class ClientLoginVerifyView extends StatefulWidget {
   const ClientLoginVerifyView({
@@ -95,7 +95,7 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
               PinFieldAutoFill(
                 controller: textController,
                 autoFocus: true,
-                codeLength: 5,
+                codeLength: 6,
                 decoration: UnderlineDecoration(
                   gapSpace: 40,
                   textStyle: const TextStyle(
@@ -107,7 +107,7 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                 currentCode: otpCode,
                 onCodeSubmitted: (code) {},
                 onCodeChanged: (code) {
-                  if (code!.length == 5) {
+                  if (code!.length == 6) {
                     FocusScope.of(context).requestFocus(FocusNode());
                   }
                 },
@@ -118,7 +118,15 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                 method: () async {
                   await context
                       .read<ClientLoginViewModel>()
-                      .sendSms(widget.phone, widget.appsign);
+                      .onEnterButtonPressed(
+                        textController.text,
+                        'nickname',
+                        'firstName',
+                        'lastName',
+                        '1',
+                        'client',
+                        '',
+                      );
                   _animationController!.reset();
                   _animationController!.forward();
                 },
@@ -135,22 +143,42 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                 isLoading: context.watch<ClientLoginViewModel>().isLoading,
                 text: 'Подтвердить',
                 method: () async {
-                  await context.read<ClientHomeViewModel>().getProfile();
-                  bool checked = await context
+                  await context
                       .read<ClientLoginViewModel>()
                       .onVerifyButtonPressed(
+                        // context.read<BusinessLoginViewModel>().phone,
+                        widget.phone.substring(3),
                         otpCode ?? textController.text,
-                        context.read<ClientLoginViewModel>().phone,
+                      )
+                      .then((value) async {
+                    if (value == true) {
+                      await Navigator.of(context).pushAndRemoveUntil(
+                        CupertinoPageRoute(
+                          builder: (context) => const ClientView(),
+                        ),
+                        (route) => false,
                       );
+                    }
+                  });
 
-                  checked
-                      ? Navigator.of(context).pushAndRemoveUntil(
-                          CupertinoPageRoute(
-                            builder: (context) => const ClientHomeView(),
-                          ),
-                          (route) => false,
-                        )
-                      : null;
+                  // await context
+                  //     .read<ClientHomeViewModel>()
+                  //     .getProfile()
+                  //     .then((value) async {
+                  //   await context
+                  //       .read<ClientLoginViewModel>()
+                  //       .onVerifyButtonPressed(
+                  //         context.read<ClientLoginViewModel>().phone,
+                  //         otpCode ?? textController.text,
+                  //       );
+
+                  //   Navigator.of(context).pushAndRemoveUntil(
+                  //     CupertinoPageRoute(
+                  //       builder: (context) => const ClientHomeView(),
+                  //     ),
+                  //     (route) => false,
+                  //   );
+                  // });
                 },
               ),
             ],

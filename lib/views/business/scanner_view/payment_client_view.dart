@@ -3,9 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/barcode_scan.dart';
-import '../../../extensions.dart';
+import '../../../string_extensions.dart';
 import '../../../utils/numberic_text_formatter.dart';
-import '../../../view_models/business_home_view_model.dart';
+import '../../../view_models/business/business_view_model.dart';
 import '../../../view_models/payment_client_view_model.dart';
 import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
@@ -29,9 +29,9 @@ class _PaymentClientViewState extends State<PaymentClientView> {
   late final Future profile;
   @override
   void initState() {
-    profile = context
-        .read<PaymentClientViewModel>()
-        .getUserFromBarcode(widget.code, widget.shopId);
+    // profile = context
+    //     .read<PaymentClientViewModel>()
+    //     .getUserFromBarcode(widget.code, widget.shopId);
     super.initState();
   }
 
@@ -47,12 +47,10 @@ class _PaymentClientViewState extends State<PaymentClientView> {
 
   @override
   Widget build(BuildContext context) {
-    int cashbackPercentage =
-        context.read<BusinessHomeViewModel>().user.shops.first.cashback;
+    int cashbackPercentage = 0;
 
-    bool isLoading = context.watch<PaymentClientViewModel>().isLoading;
-    bool isSmallLoading =
-        context.watch<PaymentClientViewModel>().isSmallLoading;
+    bool isLoading = false;
+    bool isSmallLoading = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -127,7 +125,7 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                           percent = '';
                                         } else {
                                           double a = double.parse(
-                                                  value.removeWhitespaces()) /
+                                                  value.removeWhitespace()) /
                                               100 *
                                               cashbackPercentage;
                                           percent = a.toStringAsFixed(0);
@@ -138,13 +136,12 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                       // print('val ' + value.toString());
                                       if (value == null ||
                                           value.isEmpty ||
-                                          int.parse(
-                                                  value.removeWhitespaces()) <=
+                                          int.parse(value.removeWhitespace()) <=
                                               0) {
                                         print('Введите сумму');
                                         return 'Введите сумму';
                                       } else if (int.parse(
-                                                value.removeWhitespaces(),
+                                                value.removeWhitespace(),
                                               ) >
                                               user.cashback!.toInt() &&
                                           isWithdraw) {
@@ -195,16 +192,16 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                                 .validate()) {
                                               print('Кэшбек');
                                               print(isWithdraw);
-                                              await context
-                                                  .read<
-                                                      PaymentClientViewModel>()
-                                                  .sendCashback(
-                                                    context,
-                                                    priceController.text
-                                                        .removeWhitespaces(),
-                                                    widget.code,
-                                                    widget.shopId,
-                                                  );
+                                              // await context
+                                              //     .read<
+                                              //         PaymentClientViewModel>()
+                                              //     .sendCashback(
+                                              //       context,
+                                              //       priceController.text
+                                              //           .removeWhitespaces(),
+                                              //       widget.code,
+                                              //       widget.shopId,
+                                              //     );
                                             }
                                           },
                                         ),
@@ -222,16 +219,16 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                               print('Оплата');
                                               print(isWithdraw);
                                               // return true;
-                                              await context
-                                                  .read<
-                                                      PaymentClientViewModel>()
-                                                  .payForGoods(
-                                                    context,
-                                                    priceController.text
-                                                        .removeWhitespaces(),
-                                                    widget.code,
-                                                    widget.shopId,
-                                                  );
+                                              // await context
+                                              //     .read<
+                                              //         PaymentClientViewModel>()
+                                              //     .payForGoods(
+                                              //       context,
+                                              //       priceController.text
+                                              //           .removeWhitespaces(),
+                                              //       widget.code,
+                                              //       widget.shopId,
+                                              //     );
                                               // .then(
                                               //   (value) =>
                                               //       Navigator.of(context)

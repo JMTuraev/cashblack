@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/sum_cashback.dart';
 import '../../../domain/models/sum_stat.dart';
-import '../../../extensions.dart';
+import '../../../string_extensions.dart';
 import '../../../size_config.dart';
 import '../../../view_models/statistics_view_model.dart';
 import '../../../widgets/active_switcher_widget.dart';
@@ -29,10 +29,10 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   String? _filter;
 
-  late Future<List<SumStat>> statCashback;
-  late Future<List<SumCashback>> statssum;
+  // late Future<List<SumStat>> statCashback;
+  // late Future<List<SumCashback>> statssum;
 
-  onFilterChanged(value) {
+  onFilterChanged(String value) {
     setState(() {
       _filter = value;
     });
@@ -41,10 +41,10 @@ class _StatisticsViewState extends State<StatisticsView> {
   @override
   void initState() {
     super.initState();
-    statCashback =
-        context.read<StatisticsViewModel>().getSumStats(start: start, end: end);
-    // stats = context.watch<StatisticsViewModel>().sumStats;
-    statssum = context.read<StatisticsViewModel>().getCashbackStats();
+    // statCashback =
+    //     context.read<StatisticsViewModel>().getSumStats(start: start, end: end);
+    // // stats = context.watch<StatisticsViewModel>().sumStats;
+    // statssum = context.read<StatisticsViewModel>().getCashbackStats();
   }
 
   String start = '2023-01-01';
@@ -55,12 +55,12 @@ class _StatisticsViewState extends State<StatisticsView> {
     var body = IndexedStack(
       index: summa ? 0 : 1,
       children: [
-        _SumWidget(
-          stats: statCashback,
-        ),
-        _CashbackWidget(
-          stats: statssum,
-        ),
+        // _SumWidget(
+        //   stats: statCashback,
+        // ),
+        // _CashbackWidget(
+        //   stats: statssum,
+        // ),
       ],
     );
 
@@ -102,9 +102,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                     Radius.circular(12),
                   ),
                 ),
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                ),
+                // margin: const EdgeInsets.symmetric(
+                //   horizontal: 0,
+                // ),
                 padding: const EdgeInsets.all(5),
                 child: Row(
                   children: [
@@ -150,16 +150,16 @@ class _StatisticsViewState extends State<StatisticsView> {
                 child: summa
                     ? Column(
                         children: [
-                          _BalanceWidget(
-                            cashback: context
-                                .watch<StatisticsViewModel>()
-                                .cashbackSum,
-                            price:
-                                context.watch<StatisticsViewModel>().priceSum,
-                            withdraw: context
-                                .watch<StatisticsViewModel>()
-                                .withdrawSum,
-                          ),
+                          // _BalanceWidget(
+                          //   cashback: context
+                          //       .watch<StatisticsViewModel>()
+                          //       .cashbackSum,
+                          //   price:
+                          //       context.watch<StatisticsViewModel>().priceSum,
+                          //   withdraw: context
+                          //       .watch<StatisticsViewModel>()
+                          //       .withdrawSum,
+                          // ),
                           const SizedBox(height: 20),
                           _FilterWidget(
                             categoryItems: [
@@ -243,13 +243,13 @@ class _StatisticsViewState extends State<StatisticsView> {
                       String start = '2023-01-01';
                       String end =
                           DateFormat('yyyy-MM-dd').format(DateTime.now());
-                      statCashback = context
-                          .read<StatisticsViewModel>()
-                          .getSumStats(start: start, end: end);
+                      // statCashback = context
+                      //     .read<StatisticsViewModel>()
+                      //     .getSumStats(start: start, end: end);
 
-                      statssum = context
-                          .read<StatisticsViewModel>()
-                          .getCashbackStats();
+                      // statssum = context
+                      //     .read<StatisticsViewModel>()
+                      //     .getCashbackStats();
                     });
                   },
                   child: body,
@@ -270,19 +270,19 @@ class _StatisticsViewState extends State<StatisticsView> {
     String value,
   ) {
     return DropdownMenuItem(
-      value: value,
-      child: Text(
-        title,
-        style: TextStyle(
-          fontWeight: value == '0' ? FontWeight.bold : null,
+        value: value,
+        child: Text(
+          title,
+          style: TextStyle(
+            fontWeight: value == '0' ? FontWeight.bold : null,
+          ),
         ),
-      ),
-      onTap: () async =>
-          statCashback = context.read<StatisticsViewModel>().getSumStats(
-                start: today,
-                end: end,
-              ),
-    );
+        onTap: () async => start = start
+        // statCashback = context.read<StatisticsViewModel>().getSumStats(
+        //       start: today,
+        //       end: end,
+        //     ),
+        );
   }
 }
 
@@ -336,7 +336,7 @@ class _SumWidget extends StatelessWidget {
                     //   //     formatter.format(DateTime.parse(groupByValue)));
                     // },
                     itemBuilder: (context, SumStat element) {
-                      if (!element.isWithdraw) {
+                      if (!element.isWithdraw!) {
                         return _CardCashback(sumStat: element);
                       } else {
                         return _CardWithdraw(sumStat: element);

@@ -5,8 +5,8 @@ import 'package:sms_autofill/sms_autofill.dart';
 import '../../../../widgets/hero_title_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
-import '../../../extensions.dart';
-import '../../../view_models/business_home_view_model.dart';
+import '../../../string_extensions.dart';
+import '../../../view_models/business/business_view_model.dart';
 
 class PaymentVerifyView extends StatefulWidget {
   PaymentVerifyView({
@@ -72,7 +72,7 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
 
   @override
   Widget build(BuildContext context) {
-    bool isLoading = context.read<BusinessHomeViewModel>().isLoading;
+    bool isLoading = context.read<BusinessViewModel>().isLoading;
 
     return Scaffold(
       body: SafeArea(
@@ -126,24 +126,7 @@ class _PaymentVerifyViewState extends State<PaymentVerifyView>
                 isLoading: isLoading,
                 text: 'Подтвердить',
                 method: () async {
-                  await context.read<BusinessHomeViewModel>().paymentConfirm(
-                        context,
-                        widget.cardNumber,
-                        widget.expireDate,
-                        widget.amount,
-                        widget.session,
-                        otpCode ?? textController.text,
-                      );
-                  // .then(
-                  //   (value) => Navigator.of(context).pushAndRemoveUntil(
-                  //     CupertinoPageRoute(
-                  //       builder: (context) => const PaymentSuccessView(
-                  //         title: 'Счет пополнено',
-                  //       ),
-                  //     ),
-                  //     (route) => false,
-                  //   ),
-                  // );
+                  Navigator.pop(context);
                 },
               ),
             ],

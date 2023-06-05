@@ -6,17 +6,16 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/balance.dart';
-import '../../../domain/models/shop.dart';
-import '../../../domain/models/user.dart';
-import '../../../domain/models/worker.dart';
-import '../../../extensions.dart';
+import '../../../domain/models/balance_shop.dart';
+import '../../../domain/models/owner/business_company.dart';
+import '../../../domain/models/owner/business_profile.dart';
+import '../../../string_extensions.dart';
 import '../../../size_config.dart';
-import '../../../utils/constants.dart';
-import '../../../view_models/business_home_view_model.dart';
+import '../../../view_models/business/business_dashboard_view_model.dart';
+import '../../../view_models/business/business_settings_view_model.dart';
+import '../../../view_models/business/business_view_model.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'create_worker_view.dart';
-import 'edit_name_view.dart';
-import 'edit_store_view.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -26,29 +25,31 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  late User user;
+  // late User user;
   // late final Future<User> userFuture;
-  late final Future<List<Balance>> balanceFuture;
-  late final Future<List<Worker>> workersFuture;
+  // late final Future<List<Balance>> balanceFuture;
+  // late final Future<List<Worker>> workersFuture;
 
   @override
   void initState() {
-    user = context.read<BusinessHomeViewModel>().user;
+    // user = context.read<BusinessHomeViewModel>().user;
     // userFuture = context.read<BusinessHomeViewModel>().getProfile();
-    balanceFuture = context.read<BusinessHomeViewModel>().getBalance();
-    workersFuture = context.read<BusinessHomeViewModel>().getWorkers();
+    // balanceFuture = context.read<BusinessHomeViewModel>().getBalance();
+    // workersFuture = context.read<BusinessHomeViewModel>().getWorkers();
+    // context.read<BusinessSettingsViewModel>().getOwnerProfile();
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var user = context.watch<BusinessHomeViewModel>().user;
-    var isBusiness = user!.groups.first.name == 'Biznes';
-    var balans = context.watch<BusinessHomeViewModel>().balance;
+    // var user = context.watch<BusinessHomeViewModel>().user;
+    // var isBusiness = user!.groups.first.name == 'Biznes';
+    // var balans = context.watch<BusinessHomeViewModel>().balance;
 
-    List<Worker> workersList = context.watch<BusinessHomeViewModel>().workers;
+    // List<Worker> workersList = [];
 
+    final allWorkers = context.read<BusinessSettingsViewModel>().workers;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Настройки'),
@@ -56,7 +57,7 @@ class _SettingsViewState extends State<SettingsView> {
         actions: [
           IconButton(
             onPressed: () async {
-              await context.read<BusinessHomeViewModel>().logout().then(
+              await context.read<BusinessViewModel>().logout().then(
                     (value) => Navigator.of(context).pushAndRemoveUntil(
                       CupertinoPageRoute(
                         builder: (context) => const SelectTypeView(),
@@ -88,14 +89,22 @@ class _SettingsViewState extends State<SettingsView> {
               //       return
               Column(
                 children: [
-                  _ProfileCardWidget(
-                    user: user,
-                  ),
+                  context.watch<BusinessSettingsViewModel>().isLoading
+                      ? const CupertinoActivityIndicator()
+                      : _ProfileCardWidget(
+                          user: context
+                              .read<BusinessSettingsViewModel>()
+                              .businessProfile,
+                        ),
                   const SizedBox(height: 15),
-                  _BrandCardWidget(
-                    isBusiness: isBusiness,
-                    shop: user.shops.last,
-                  ),
+                  context.watch<BusinessDashboardViewModel>().isLoading
+                      ? const CupertinoActivityIndicator()
+                      : _BrandCardWidget(
+                          isBusiness: true,
+                          company: context
+                              .read<BusinessDashboardViewModel>()
+                              .businessCompany!,
+                        ),
                 ],
               ),
               // ;
@@ -105,20 +114,20 @@ class _SettingsViewState extends State<SettingsView> {
               //   },
               // ),
               const SizedBox(height: 15),
-              FutureBuilder(
-                future: balanceFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    var balance = snapshot.data!.first as Balance;
-                    return _SubscriptionCardWidget(
-                      balance: balance,
-                    );
-                  } else
-                    return const SizedBox();
-                },
+              _SubscriptionCardWidget(
+                balance: Balance(
+                  id: 1,
+                  amount: '12121',
+                  date: '2023-05-05',
+                  balanceShop: BalanceShop(
+                    subscriptionPrice: '0',
+                    createdDate: '2023-05-06',
+                  ),
+                  isSubscribedOne: false,
+                ),
               ),
               SizedBox(height: getH(20)),
-              isBusiness
+              1 == 1
                   ? Row(
                       children: [
                         const Text(
@@ -142,12 +151,13 @@ class _SettingsViewState extends State<SettingsView> {
                     )
                   : const SizedBox(),
               SizedBox(height: getH(20)),
-              isBusiness
-                  ? workersList.length > 0
+
+              !context.watch<BusinessSettingsViewModel>().isLoading
+                  ? allWorkers.isNotEmpty
                       ? Expanded(
                           child: ListView.separated(
                             shrinkWrap: true,
-                            itemCount: workersList.length,
+                            itemCount: allWorkers.length,
                             separatorBuilder: (context, index) {
                               return SizedBox(height: getH(10));
                             },
@@ -160,7 +170,7 @@ class _SettingsViewState extends State<SettingsView> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '${workersList[index].firstName} ${workersList[index].lastName}',
+                                          '${allWorkers[index].firstName} ${allWorkers[index].lastName}',
                                           style: const TextStyle(
                                             fontSize: 14,
                                             color: Colors.white,
@@ -168,12 +178,28 @@ class _SettingsViewState extends State<SettingsView> {
                                         ),
                                         SizedBox(height: getH(4)),
                                         Text(
-                                          workersList[index]
-                                              .userName
+                                          '998${allWorkers[index].phone}'
                                               .phoneFormatter(),
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Color.fromRGBO(
-                                                164, 164, 164, 1),
+                                              164,
+                                              164,
+                                              164,
+                                              1,
+                                            ),
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        SizedBox(height: getH(4)),
+                                        Text(
+                                          allWorkers[index].shop.name,
+                                          style: const TextStyle(
+                                            color: Color.fromRGBO(
+                                              164,
+                                              164,
+                                              164,
+                                              1,
+                                            ),
                                             fontSize: 15,
                                           ),
                                         ),
@@ -181,26 +207,40 @@ class _SettingsViewState extends State<SettingsView> {
                                     ),
                                     const Spacer(),
                                     CupertinoSwitch(
-                                      activeColor:
-                                          Color.fromRGBO(103, 206, 103, 1),
+                                      activeColor: const Color.fromRGBO(
+                                        103,
+                                        206,
+                                        103,
+                                        1,
+                                      ),
                                       thumbColor: Colors.white,
-                                      trackColor: Color.fromRGBO(57, 57, 61, 1),
-                                      value: !workersList[index].isFreezed,
+                                      trackColor:
+                                          const Color.fromRGBO(57, 57, 61, 1),
+                                      value: allWorkers[index].status == 1
+                                          ? true
+                                          : false,
+                                      // value: true,
                                       onChanged: (value) async {
+                                        // setState(() {});
                                         await context
-                                            .read<BusinessHomeViewModel>()
-                                            .switchWorker(
-                                              workersList[index].id,
-                                              !value,
-                                            );
-                                        print(
-                                          context
-                                              .read<BusinessHomeViewModel>()
-                                              .workers
-                                              .first
-                                              .isFreezed,
-                                        );
-                                        setState(() {});
+                                            .read<BusinessSettingsViewModel>()
+                                            .updateSellerStatus(
+                                              allWorkers[index].id,
+                                              allWorkers[index].status == 1
+                                                  ? 0
+                                                  : 1,
+                                            )
+                                            .then((value) {
+                                          if (value) {
+                                            context
+                                                .read<
+                                                    BusinessSettingsViewModel>()
+                                                .getWorkers();
+                                            // Navigator.pop(context);
+                                          } else {
+                                            print('xato');
+                                          }
+                                        });
                                         print('object');
                                       },
                                     ),
@@ -223,16 +263,15 @@ class _SettingsViewState extends State<SettingsView> {
 class _BrandCardWidget extends StatelessWidget {
   const _BrandCardWidget({
     Key? key,
-    required this.shop,
+    required this.company,
     required this.isBusiness,
   }) : super(key: key);
 
-  final Shop shop;
+  final BusinessCompany company;
   final bool isBusiness;
 
   @override
   Widget build(BuildContext context) {
-    var imageUrl = Constants.media + shop.image!;
     return _BorderContainerWidget(
       child: Row(
         children: [
@@ -244,8 +283,11 @@ class _BrandCardWidget extends StatelessWidget {
               width: getW(60),
               height: getH(60),
               child: CachedNetworkImage(
-                imageUrl: imageUrl,
-                errorWidget: (context, url, error) => const Icon(Icons.clear),
+                imageUrl: company.logo,
+                errorWidget: (context, url, error) => const Icon(
+                  Icons.home_repair_service_rounded,
+                  size: 40,
+                ),
               ),
             ),
           ),
@@ -254,29 +296,16 @@ class _BrandCardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _SimpleTextWidget(
-                title: shop.name,
+                title: company.name,
               ),
               SizedBox(height: getH(4)),
               Text(
-                shop.category.title,
+                company.inn,
                 style: const TextStyle(fontSize: 15),
               ),
             ],
           ),
-          Spacer(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                shop.cashback.toString() + '%',
-                style: TextStyle(
-                  color: Color.fromRGBO(103, 206, 103, 1),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(width: getW(18)),
+          const Spacer(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -284,13 +313,13 @@ class _BrandCardWidget extends StatelessWidget {
               isBusiness
                   ? GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(
-                          CupertinoPageRoute(
-                            builder: (context) => EditStoreView(
-                              shop: shop,
-                            ),
-                          ),
-                        );
+                        // Navigator.of(context).push(
+                        //   CupertinoPageRoute(
+                        //     builder: (context) => EditStoreView(
+                        //       shop: shop,
+                        //     ),
+                        //   ),
+                        // );
                       },
                       child: SvgPicture.asset(
                         'assets/svg/edit.svg',
@@ -340,7 +369,7 @@ class _SubscriptionCardWidget extends StatelessWidget {
                           ),
                         ) +
                         'сум',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color.fromRGBO(103, 206, 103, 1),
                       fontSize: 15,
                     ),
@@ -366,7 +395,7 @@ class _SubscriptionCardWidget extends StatelessWidget {
                   // Text(balance.balanceShop.createdDate.getLocaleDateTime()),
                   Text(
                     balance.isSubscribedOne ? 'Активен' : 'Не оплачен',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color.fromRGBO(103, 206, 103, 1),
                       fontSize: 15,
                     ),
@@ -383,12 +412,12 @@ class _SubscriptionCardWidget extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           balance.date != null
-                              ? DateTime.parse(balance.date)
+                              ? DateTime.parse(balance.date ?? '2023-04-01')
                                   .add(const Duration(days: 30))
                                   .toString()
                                   .getLocaleDate()
                               : 'Не оплачен',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color.fromRGBO(103, 206, 103, 1),
                             fontSize: 15,
                           ),
@@ -410,7 +439,7 @@ class _ProfileCardWidget extends StatelessWidget {
     required this.user,
   }) : super(key: key);
 
-  final User? user;
+  final BusinessProfile? user;
 
   @override
   Widget build(BuildContext context) {
@@ -420,17 +449,17 @@ class _ProfileCardWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              user!.firstName.isEmpty && user!.lastName.isEmpty
+              user == null
                   ? const _SimpleTextWidget(
                       title: 'Имя не указано',
                     )
                   : _SimpleTextWidget(
-                      title: '${user!.firstName} ${user!.lastName}',
+                      title: '${user?.firstName} ${user?.lastName}',
                     ),
               const SizedBox(height: 10),
               Text(
-                user!.userName.phoneFormatter(),
-                style: TextStyle(
+                '998${user?.phone}'.phoneFormatter(),
+                style: const TextStyle(
                   color: Color(0xffa3a3a3),
                 ),
               ),
@@ -442,13 +471,13 @@ class _ProfileCardWidget extends StatelessWidget {
             right: 5,
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => EditNameView(
-                      user: user!,
-                    ),
-                  ),
-                );
+                // Navigator.of(context).push(
+                //   CupertinoPageRoute(
+                //     builder: (context) => EditNameView(
+                //       user: user!,
+                //     ),
+                //   ),
+                // );
               },
               child: SvgPicture.asset(
                 'assets/svg/edit.svg',

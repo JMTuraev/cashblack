@@ -3,10 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../extensions.dart';
+import '../../../string_extensions.dart';
 import '../../../size_config.dart';
 import '../../../utils/numberic_text_formatter.dart';
-import '../../../view_models/business_home_view_model.dart';
+import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 
 class PaymentView extends StatefulWidget {
@@ -164,7 +164,7 @@ class _PaymentViewState extends State<PaymentView> {
                                   validator: (value) {
                                     if (value == null ||
                                         value.isEmpty ||
-                                        int.parse(value.removeWhitespaces()) <
+                                        int.parse(value.removeWhitespace()) <
                                             10) {
                                       return 'Сумма меньше 500';
                                     }
@@ -204,8 +204,7 @@ class _PaymentViewState extends State<PaymentView> {
                     ),
                     const SizedBox(height: 20),
                     MainButtonWidget(
-                      isLoading:
-                          context.watch<BusinessHomeViewModel>().isLoading,
+                      isLoading: context.watch<BusinessViewModel>().isLoading,
                       text: 'Пополнить',
                       method: () async {
                         if (_formKey.currentState!.validate()) {
@@ -213,62 +212,7 @@ class _PaymentViewState extends State<PaymentView> {
                           var fixedDate =
                               eDate[2] + eDate[3] + eDate[0] + eDate[1];
 
-                          await context
-                              .read<BusinessHomeViewModel>()
-                              .enterCardDetails(
-                                context,
-                                maskFormatterCardName.getUnmaskedText(),
-                                fixedDate,
-                                amountController.text.removeWhitespaces(),
-                              );
-                          //     .then(
-                          //   (value) {
-                          //     if (value[0] == 'error_miqdor') {
-                          //       showCupertinoDialog(
-                          //         context: context,
-                          //         builder: (context) {
-                          //           return InfoAlertWidget(
-                          //             title:
-                          //                 'Сумма должен быт больше ${context.read<BusinessHomeViewModel>().balance.first.balanceShop.subscriptionPrice}',
-                          //           );
-                          //         },
-                          //       );
-                          //       return true;
-                          //     } else if (value[0] ==
-                          //         'Неправильные входные данные') {
-                          //       showCupertinoDialog(
-                          //         context: context,
-                          //         builder: (context) {
-                          //           return const InfoAlertWidget(
-                          //             title: 'Неправильные входные данные',
-                          //           );
-                          //         },
-                          //       );
-                          //       return true;
-                          //     } else if (value[0] == 'xato') {
-                          //       showCupertinoDialog(
-                          //         context: context,
-                          //         builder: (context) {
-                          //           return const InfoAlertWidget(
-                          //             title: 'Попробуйте позже',
-                          //           );
-                          //         },
-                          //       );
-                          //       return true;
-                          //     }
-                          //     return Navigator.of(context).push(
-                          //       CupertinoPageRoute(
-                          //         builder: (context) => PaymentVerifyView(
-                          //           cardNumber: value[0],
-                          //           expireDate: value[1],
-                          //           amount: value[2],
-                          //           session: value[3],
-                          //           phone: value[4],
-                          //         ),
-                          //       ),
-                          //     );
-                          //   },
-                          // );
+                          Navigator.pop(context);
                         }
                       },
                     ),

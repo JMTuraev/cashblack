@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/client/client_category.dart';
+import '../../../domain/models/client/client_shop.dart';
 import '../../../domain/models/user_category.dart';
 import '../../../domain/models/user_shop.dart';
 import '../../../size_config.dart';
@@ -15,10 +17,10 @@ import '../../../widgets/logo_animated_widget.dart';
 import 'business_details_view.dart';
 
 class BusinessListView extends StatefulWidget {
-  final UserCategory userCategory;
+  final ClientCategory clientCategory;
   const BusinessListView({
     Key? key,
-    required this.userCategory,
+    required this.clientCategory,
   }) : super(key: key);
 
   @override
@@ -26,21 +28,44 @@ class BusinessListView extends StatefulWidget {
 }
 
 class _BusinessListViewState extends State<BusinessListView> {
-  late Future joineds;
+  // late Future joineds;
 
   @override
   void initState() {
     super.initState();
-    joineds = context
-        .read<ClientHomeViewModel>()
-        .getJoinedShops(widget.userCategory.id);
   }
 
   @override
   Widget build(BuildContext context) {
+    // List<ClientShop> shops = [
+    //   ClientShop(
+    //     id: 200,
+    //     name: 'nameasdas',
+    //     logo: 'logo',
+    //     address: 'address',
+    //     waymark: 'waymark',
+    //     percent: 'percent',
+    //     categoryShopId: 11,
+    //     clientCompany: ClientCompany(id: 1, name: 'name'),
+    //     amount: 123123,
+    //     cashback: List.empty(),
+    //   ),
+    //   ClientShop(
+    //     id: 100,
+    //     name: 'namdeas',
+    //     logo: 'logo',
+    //     address: 'address',
+    //     waymark: 'waymark',
+    //     percent: 'percent',
+    //     categoryShopId: 11,
+    //     clientCompany: ClientCompany(id: 1, name: 'name'),
+    //     amount: 123123,
+    //     cashback: List.empty(),
+    //   ),
+    // ];
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.userCategory.name),
+        title: Text(widget.clientCategory.name),
         // bottom: ThemeDetails.appBarDivider,
       ),
       body: SafeArea(
@@ -48,50 +73,27 @@ class _BusinessListViewState extends State<BusinessListView> {
           header: const MaterialHeader(),
           onRefresh: () {
             setState(() {
-              joineds = context
-                  .read<ClientHomeViewModel>()
-                  .getJoinedShops(widget.userCategory.id);
+              // joineds = context
+              //     .read<ClientHomeViewModel>()
+              //     .getJoinedShops(widget.userCategory.id);
             });
           },
-          child: Column(
-            children: [
-              FutureBuilder(
-                future: joineds,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<UserShop> shops = snapshot.data as List<UserShop>;
-                    if (shops.length > 0) {
-                      return Expanded(
-                        child: ListView.separated(
-                          itemCount: shops.length,
-                          separatorBuilder: (context, index) {
-                            return SizedBox(
-                              height: getH(10),
-                            );
-                          },
-                          itemBuilder: (context, index) {
-                            return _ItemWidget(shops: shops, index: index);
-                          },
-                        ),
-                      );
-                    } else {
-                      return const Center(child: EmptyWidget());
-                    }
-                  } else {
-                    // return const Center(child: LogoAnimatedWidget(size: 1.5));
-                    return Expanded(
-                      child: Column(
-                        children: [
-                          Spacer(),
-                          LogoAnimatedWidget(size: 1.5),
-                          Spacer(),
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
-            ],
+          child: Container(
+            child: ListView.separated(
+              // shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: widget.clientCategory.shops.length,
+              separatorBuilder: (context, index) {
+                return SizedBox(
+                  height: getH(10),
+                );
+              },
+              itemBuilder: (context, index) {
+                return _ItemWidget(
+                    shops: widget.clientCategory.shops, index: index);
+                // return Text(widget.clientCategory.shops[index].name);
+              },
+            ),
           ),
         ),
       ),
@@ -106,7 +108,7 @@ class _ItemWidget extends StatelessWidget {
     required this.index,
   });
 
-  final List<UserShop> shops;
+  final List<ClientShop> shops;
   final int index;
 
   @override
@@ -143,7 +145,7 @@ class _ItemWidget extends StatelessWidget {
                   fit: BoxFit.fitHeight,
                   height: getW(80),
                   width: getW(80),
-                  imageUrl: Constants.media + shops[index].logo,
+                  imageUrl: shops[index].logo ?? '',
                   placeholder: (context, url) => Container(
                     color: Colors.transparent,
                     height: getW(80),
@@ -182,7 +184,7 @@ class _ItemWidget extends StatelessWidget {
                       ),
                       SizedBox(width: getW(4)),
                       Text(
-                        shops[index].cashbackPercentage.toString() + '%',
+                        shops[index].percent.toString() + '%',
                         style: const TextStyle(
                           fontSize: 16,
                           color: Color.fromRGBO(201, 247, 158, 1),

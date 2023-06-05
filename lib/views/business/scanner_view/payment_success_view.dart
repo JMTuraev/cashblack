@@ -4,10 +4,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../size_config.dart';
-import '../../../view_models/business_home_view_model.dart';
+import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/medium_title_widget.dart';
-import '../business_home_view/business_home_view.dart';
+import '../business_view.dart';
 
 class PaymentSuccessView extends StatelessWidget {
   const PaymentSuccessView({
@@ -40,10 +40,10 @@ class PaymentSuccessView extends StatelessWidget {
                   MainButtonWidget(
                     text: 'OK',
                     method: () {
-                      context.read<BusinessHomeViewModel>().onChange(0);
+                      context.read<BusinessViewModel>().onChange(0);
                       Navigator.of(context).pushReplacement(
                         CupertinoPageRoute(
-                          builder: (context) => const BusinessHomeView(),
+                          builder: (context) => const BusinessView(),
                         ),
                       );
                     },

@@ -1,25 +1,20 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../size_config.dart';
 import '../../../utils/constants.dart';
-import '../../../view_models/business_home_view_model.dart';
-import '../../../view_models/send_notification_view_model.dart';
-import '../../../view_models/statistics_view_model.dart';
+import '../../../view_models/business/business_notifications_view_model.dart';
+import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../widgets/active_switcher_widget.dart';
 import '../../../widgets/inactive_switcher_widget.dart';
 import '../../../widgets/info_alert_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/multiline_text_field_widget.dart';
-import '../../../widgets/text_field_widget.dart';
-import '../business_home_view/business_home_view.dart';
 
 class SendNotificationView extends StatefulWidget {
   const SendNotificationView({super.key});
@@ -54,23 +49,23 @@ class _SendNotificationViewState extends State<SendNotificationView> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
-  late Future prices;
+  // late Future prices;
 
   @override
   void initState() {
-    prices = context.read<SendNotificationViewModel>().getNotificationPrice();
+    context.read<BusinessNotificationsViewModel>().getPrices();
     super.initState();
   }
 
   List<bool> selections = [false, true, false];
 
-  int selectedItem = -1;
+  int selectedItem = 0;
 
   @override
   Widget build(BuildContext context) {
     String balance =
-        context.watch<BusinessHomeViewModel>().balance.first.amount;
-    String price = context.watch<SendNotificationViewModel>().notificationPrice;
+        context.read<BusinessSettingsViewModel>().businessProfile!.totalAmount;
+    // String price = context.watch<SendNotificationViewModel>().notificationPrice;
 
     return SafeArea(
       child: Scaffold(
@@ -90,7 +85,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                     ),
                   ),
                   margin: const EdgeInsets.symmetric(
-                    horizontal: 20,
+                    horizontal: 10,
                   ),
                   padding: const EdgeInsets.all(5),
                   child: Row(
@@ -113,7 +108,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                                 title: 'Бонус',
                                 onPressed: () {
                                   setState(() {
-                                    selectedItem = -1;
+                                    selectedItem = 0;
                                     selections = [false, true, false];
                                   });
                                 },
@@ -127,7 +122,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                                 title: 'Реклама',
                                 onPressed: () {
                                   setState(() {
-                                    selectedItem = -1;
+                                    selectedItem = 0;
                                     selections = [false, false, true];
                                   });
                                 },
@@ -143,7 +138,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                                     title: 'Акция',
                                     onPressed: () {
                                       setState(() {
-                                        selectedItem = -1;
+                                        selectedItem = 0;
                                         selections = [true, false, false];
                                       });
                                     },
@@ -167,7 +162,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                                     color: Colors.white,
                                     onPressed: () {
                                       setState(() {
-                                        selectedItem = -1;
+                                        selectedItem = 0;
                                         selections = [false, false, true];
                                       });
                                     },
@@ -182,7 +177,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                                     color: Colors.white,
                                     onPressed: () {
                                       setState(() {
-                                        selectedItem = -1;
+                                        selectedItem = 0;
                                         selections = [true, false, false];
                                       });
                                     },
@@ -196,7 +191,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                                     color: Colors.white,
                                     onPressed: () {
                                       setState(() {
-                                        selectedItem = -1;
+                                        selectedItem = 0;
                                         selections = [false, true, false];
                                       });
                                     },
@@ -216,70 +211,87 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                   ),
                 ),
                 SizedBox(height: getH(20)),
-                Stack(
-                  children: [
-                    if (selections[0] == true)
-                      cardBuilder(Constants.actionImages, 'Акция')
-                    else
-                      selections[1] == true
-                          ? cardBuilder(Constants.cashbackImages, 'Бонус')
-                          : cardBuilder(Constants.adImages, 'Реклама'),
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                              Colors.black,
-                              Colors.black12,
-                              Colors.transparent,
-                            ],
-                          ),
-                        ),
-                        width: 30,
-                      ),
-                    ),
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerRight,
-                            end: Alignment.centerLeft,
-                            colors: [
-                              Colors.black,
-                              Colors.black12,
-                              Colors.transparent,
-                            ],
-                          ),
-                        ),
-                        width: 30,
-                      ),
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: _BigImageCardWidget(
+                    image: selections[0] == true
+                        ? Constants.actionImages[selectedItem]
+                        : (selections[1] == true
+                            ? Constants.cashbackImages[selectedItem]
+                            : Constants.adImages[selectedItem]),
+                  ),
                 ),
                 SizedBox(height: getH(20)),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: MultilineTextFieldWidget(
+                    hintText: 'Что у вас нового?',
+                    controller: _contentController,
+                  ),
+                ),
+                // const Spacer(),
+                SizedBox(height: getH(10)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Stack(
+                    children: [
+                      if (selections[0] == true)
+                        cardBuilder(Constants.actionImages, 'Акция')
+                      else
+                        selections[1] == true
+                            ? cardBuilder(Constants.cashbackImages, 'Бонус')
+                            : cardBuilder(Constants.adImages, 'Реклама'),
+                      // Positioned(
+                      //   top: 0,
+                      //   left: 0,
+                      //   bottom: 0,
+                      //   child: Container(
+                      //     decoration: const BoxDecoration(
+                      //       gradient: LinearGradient(
+                      //         begin: Alignment.centerLeft,
+                      //         end: Alignment.centerRight,
+                      //         colors: [
+                      //           Colors.black,
+                      //           Colors.black12,
+                      //           Colors.transparent,
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     width: 30,
+                      //   ),
+                      // ),
+                      // Positioned(
+                      //   top: 0,
+                      //   right: 0,
+                      //   bottom: 0,
+                      //   child: Container(
+                      //     decoration: const BoxDecoration(
+                      //       gradient: LinearGradient(
+                      //         begin: Alignment.centerRight,
+                      //         end: Alignment.centerLeft,
+                      //         colors: [
+                      //           Colors.black,
+                      //           Colors.black12,
+                      //           Colors.transparent,
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     width: 30,
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: getH(20)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                  ),
                   child: Column(
                     children: [
-                      MultilineTextFieldWidget(
-                        hintText: 'Текст',
-                        controller: _contentController,
-                      ),
-                      // const Spacer(),
-                      SizedBox(height: getH(20)),
                       MainButtonWidget(
                         text: 'Отправить',
-                        isLoading: context
-                            .watch<SendNotificationViewModel>()
-                            .isLoading,
+                        isLoading: false,
                         method: () async {
                           if (
                               // _fileList.isNotEmpty &&
@@ -287,7 +299,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                                   _titleController.text != -1 &&
                                   _titleController.text.isNotEmpty &&
                                   _contentController.text.isNotEmpty) {
-                            if (int.parse(balance) < int.parse(price)) {
+                            if (int.parse(balance) < int.parse('233')) {
                               // showCupertinoDialog(
                               //   context: context,
                               //   builder: (context) =>
@@ -303,34 +315,34 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                               );
                               // );
                             } else {
-                              await context
-                                  .read<SendNotificationViewModel>()
-                                  .send(
-                                    // _fileList[0]!,
-                                    _titleController.text,
-                                    _contentController.text,
-                                  )
-                                  .then(
-                                    (value) => Navigator.of(context)
-                                        .pushAndRemoveUntil(
-                                      CupertinoPageRoute(
-                                        builder: (context) =>
-                                            const BusinessHomeView(),
-                                      ),
-                                      (route) => false,
-                                    ),
-                                  );
+                              // await context
+                              //     .read<SendNotificationViewModel>()
+                              //     .send(
+                              //       // _fileList[0]!,
+                              //       _titleController.text,
+                              //       _contentController.text,
+                              //     )
+                              //     .then(
+                              //       (value) => Navigator.of(context)
+                              //           .pushAndRemoveUntil(
+                              //         CupertinoPageRoute(
+                              //           builder: (context) =>
+                              //               const BusinessView(),
+                              //         ),
+                              //         (route) => false,
+                              //       ),
+                              //     );
                             }
                           }
                         },
                       ),
                       const SizedBox(height: 20),
                       FutureBuilder(
-                        future: prices,
+                        future: Future.delayed(Duration.zero),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return Text(
-                              'Отправленные уведомления увидят пользователи, которые вы выплатили кэшбэк (${context.read<StatisticsViewModel>().clients.length} пользователей). Цена одного уведомление составляет ${NumberFormat.simpleCurrency(
+                              'Отправленные уведомления увидят пользователи, которые вы выплатили кэшбэк (23 пользователей). Цена одного уведомление составляет ${NumberFormat.simpleCurrency(
                                 name: '',
                                 locale: 'ru_RU',
                                 decimalDigits: 0,
@@ -360,7 +372,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
 
   Container cardBuilder(List imagesList, String type) {
     return Container(
-      height: getH(150),
+      height: getH(52),
       width: double.infinity,
       child: ListView.separated(
         key: ObjectKey(imagesList[0]),
@@ -382,11 +394,11 @@ class _SendNotificationViewState extends State<SendNotificationView> {
           },
           child: selectedItem == index
               ? _ImageCardWidget(
-                  image: imagesList[index],
+                  image: imagesList[index].toString(),
                   selectedIndex: true,
                 )
               : _ImageCardWidget(
-                  image: imagesList[index],
+                  image: imagesList[index].toString(),
                   selectedIndex: false,
                 ),
         ),
@@ -413,46 +425,91 @@ class _ImageCardWidget extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: getH(150),
-          width: getH(200),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(
+          height: getH(50),
+          width: getH(70),
+          padding: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(
               Radius.circular(10),
             ),
+            border: selectedIndex == true
+                ? Border.all(
+                    width: 2,
+                    color: Colors.green,
+                  )
+                : Border.all(
+                    width: 2,
+                    color: Colors.transparent,
+                  ),
           ),
-          child: Image.asset(
-            image,
-            fit: BoxFit.cover,
+          child: ClipRRect(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            borderRadius: const BorderRadius.all(
+              Radius.circular(10),
+            ),
+            child: Image.asset(
+              image,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-        selectedIndex == true
-            ? Positioned(
-                right: getW(8),
-                top: getW(8),
-                child: Container(
-                  padding: const EdgeInsets.all(0.00011),
-                  decoration: const BoxDecoration(
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.white.withOpacity(0.1),
-                    //     spreadRadius: 0.1,
-                    //     blurRadius: 0.1,
-                    //     offset: Offset(0.1, 0.1),
-                    //   )
-                    // ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(90),
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.check_circle,
-                    size: 30,
-                    color: Color.fromRGBO(103, 206, 103, 1),
-                  ),
-                ))
-            : const SizedBox()
+        // selectedIndex == true
+        //     ? Positioned(
+        //         right: getW(8),
+        //         top: getW(8),
+        //         child: Container(
+        //           padding: const EdgeInsets.all(0.00011),
+        //           decoration: const BoxDecoration(
+        //             // boxShadow: [
+        //             //   BoxShadow(
+        //             //     color: Colors.white.withOpacity(0.1),
+        //             //     spreadRadius: 0.1,
+        //             //     blurRadius: 0.1,
+        //             //     offset: Offset(0.1, 0.1),
+        //             //   )
+        //             // ],
+        //             color: Colors.white,
+        //             borderRadius: BorderRadius.all(
+        //               Radius.circular(90),
+        //             ),
+        //           ),
+        //           child: const Icon(
+        //             Icons.check_circle,
+        //             size: 30,
+        //             color: Color.fromRGBO(103, 206, 103, 1),
+        //           ),
+        //         ))
+        //     : const SizedBox()
       ],
+    );
+  }
+}
+
+class _BigImageCardWidget extends StatelessWidget {
+  const _BigImageCardWidget({
+    Key? key,
+    required this.image,
+    this.selectedIndex,
+  }) : super(key: key);
+
+  final String image;
+  final bool? selectedIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // height: getH(200),
+      // width: getH(300),
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(10),
+        ),
+      ),
+      child: Image.asset(
+        image,
+        fit: BoxFit.cover,
+      ),
     );
   }
 }

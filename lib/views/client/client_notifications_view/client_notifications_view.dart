@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/received_notification.dart';
-import '../../../extensions.dart';
+import '../../../string_extensions.dart';
 import '../../../size_config.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/helpers.dart';
@@ -23,12 +23,12 @@ class ClientNotificationsView extends StatefulWidget {
 }
 
 class _ClientNotificationsViewState extends State<ClientNotificationsView> {
-  late Future notifs;
+  // late Future notifs;
 
   @override
   void initState() {
     super.initState();
-    notifs = context.read<ClientHomeViewModel>().getNotifications();
+    // notifs = context.read<ClientHomeViewModel>().getNotifications();
   }
 
   @override
@@ -44,7 +44,7 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
           child: Column(
             children: [
               FutureBuilder(
-                future: notifs,
+                future: null,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var list = snapshot.data as List<ReceivedNotification>;
@@ -64,9 +64,9 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                           header: const MaterialHeader(),
                           onRefresh: () {
                             setState(() {
-                              notifs = context
-                                  .read<ClientHomeViewModel>()
-                                  .getNotifications();
+                              // notifs = context
+                              //     .read<ClientHomeViewModel>()
+                              //     .getNotifications();
                             });
                           },
                           child: ListView.separated(
@@ -178,9 +178,9 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                         header: const MaterialHeader(),
                         onRefresh: () {
                           setState(() {
-                            notifs = context
-                                .read<ClientHomeViewModel>()
-                                .getNotifications();
+                            // notifs = context
+                            //     .read<ClientHomeViewModel>()
+                            //     .getNotifications();
                           });
                         },
                         child: Column(

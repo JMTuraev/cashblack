@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/user.dart';
-import '../../../view_models/business_home_view_model.dart';
+import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/text_field_widget.dart';
 
@@ -53,24 +53,7 @@ class EditNameView extends StatelessWidget {
                   MainButtonWidget(
                     text: 'OK',
                     method: () async {
-                      await context
-                          .read<BusinessHomeViewModel>()
-                          .changeName(
-                            user.id,
-                            firstNameController.text,
-                            lastNameController.text,
-                          )
-                          .then(
-                        (value) {
-                          return Navigator.pop(context);
-                          // return Navigator.of(context).pushAndRemoveUntil(
-                          //   CupertinoPageRoute(
-                          //     builder: (context) => const BusinessHomeView(),
-                          //   ),
-                          //   (route) => false,
-                          // );
-                        },
-                      );
+                      Navigator.pop(context);
                     },
                   ),
                   const SizedBox(height: 20),

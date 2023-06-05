@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sent_notification.dart';
-import '../../../extensions.dart';
+import '../../../string_extensions.dart';
 import '../../../size_config.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/helpers.dart';
@@ -14,6 +14,7 @@ import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import 'notification_info_view.dart';
+import 'posts_view.dart';
 import 'send_notification_view.dart';
 
 class ServicesView extends StatefulWidget {
@@ -24,10 +25,9 @@ class ServicesView extends StatefulWidget {
 }
 
 class _ServicesViewState extends State<ServicesView> {
-  late Future sentFuture;
+  List<dynamic> notifications = ['asd', 'asd', 'asd'];
   @override
   void initState() {
-    sentFuture = context.read<SendNotificationViewModel>().getNotifications();
     super.initState();
   }
 
@@ -35,324 +35,191 @@ class _ServicesViewState extends State<ServicesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            tooltip: 'Отправка уведомлений',
-            onPressed: () {
-              Navigator.of(context).push(
-                CupertinoPageRoute(
-                  builder: (context) => const SendNotificationView(),
-                ),
-              );
-            },
-            icon: SvgPicture.asset(
-              'assets/svg/send.svg',
-              width: getW(24),
-              height: getH(24),
-            ),
-          ),
-        ],
         title: const Text(
-          'Сервисы',
+          'Виджеты',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
-        // bottom: ThemeDetails.appBarDivider,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              const Text(
-                'Отправленные уведомления',
-                style: TextStyle(
-                  fontSize: 22,
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20),
                 ),
+                color: Color.fromRGBO(25, 25, 25, 1),
               ),
-              const SizedBox(height: 20),
-              FutureBuilder(
-                future: sentFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    var notifications = snapshot.data as List<SentNotification>;
-                    if (notifications.length > 0) {
-                      return Expanded(
-                        child: EasyRefresh(
-                          header: const MaterialHeader(),
-                          onRefresh: () {
-                            setState(() {
-                              sentFuture = context
-                                  .read<SendNotificationViewModel>()
-                                  .getNotifications();
-                            });
-                          },
-                          child: ListView.separated(
-                            itemCount: notifications.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    CupertinoPageRoute(
-                                      builder: (context) =>
-                                          NotificationInfoView(
-                                        sentNotification: notifications[index],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                    color: Color.fromRGBO(28, 28, 29, 1),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      ClipRRect(
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          bottomLeft: Radius.circular(20),
-                                        ),
-                                        child: Image.asset(
-                                          Helpers.getLocalImage(
-                                            notifications[index].title,
-                                          ),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              4,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              3,
-                                        ),
-                                        //   CachedNetworkImage(
-                                        //     fit: BoxFit.fitHeight,
-                                        //     height: MediaQuery.of(context)
-                                        //             .size
-                                        //             .width /
-                                        //         4,
-                                        //     width: MediaQuery.of(context)
-                                        //             .size
-                                        //             .width /
-                                        //         3,
-                                        //     imageUrl: Constants.media +
-                                        //         notifications[index].image,
-                                        //   ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Container(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      notifications[index]
-                                                          .content,
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 10),
-                                                  if (notifications[index]
-                                                          .status ==
-                                                      1)
-                                                    const Icon(
-                                                      Icons
-                                                          .watch_later_outlined,
-                                                      color: Colors.white,
-                                                    )
-                                                  else if (notifications[index]
-                                                          .status ==
-                                                      3)
-                                                    Column(
-                                                      children: [
-                                                        Icon(
-                                                          Icons
-                                                              .check_circle_outline_sharp,
-                                                          color: DateTime.parse(
-                                                            notifications[index]
-                                                                .date,
-                                                          ).isAfter(
-                                                            DateTime.now()
-                                                                .subtract(
-                                                              const Duration(
-                                                                days: 2,
-                                                              ),
-                                                            ),
-                                                          )
-                                                              ? Colors.white
-                                                              // : Colors.red,
-                                                              : Colors.white,
-                                                        ),
-                                                      ],
-                                                    )
-                                                  else
-                                                    const Icon(
-                                                      Icons
-                                                          .remove_circle_outline_sharp,
-                                                      // color: Colors.red,
-                                                    ),
-                                                  const SizedBox(width: 6),
-                                                ],
-                                              ),
-                                              // const SizedBox(height: 4),
-                                              // Padding(
-                                              //   padding: const EdgeInsets.only(
-                                              //     right: 4,
-                                              //   ),
-                                              //   child: Text(
-                                              //     notifications[index].content,
-                                              //     maxLines: 2,
-                                              //     overflow:
-                                              //         TextOverflow.ellipsis,
-                                              //     style: const TextStyle(
-                                              //       fontSize: 18,
-                                              //     ),
-                                              //   ),
-                                              // ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                notifications[index]
-                                                    .date
-                                                    .getLocaleDateTime(),
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                              Container(
-                                                child: notifications[index]
-                                                            .status ==
-                                                        1
-                                                    ? const Text(
-                                                        'Проверяется',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Color.fromRGBO(
-                                                                    75,
-                                                                    132,
-                                                                    231,
-                                                                    1)),
-                                                      )
-                                                    : notifications[index]
-                                                                .status ==
-                                                            3
-                                                        ? DateTime.parse(
-                                                            notifications[index]
-                                                                .date,
-                                                          ).isAfter(
-                                                            DateTime.now()
-                                                                .subtract(
-                                                              const Duration(
-                                                                days: 2,
-                                                              ),
-                                                            ),
-                                                          )
-                                                            ? Row(
-                                                                children: [
-                                                                  const Text(
-                                                                    'Видимость: ',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .green,
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    DateTime.parse(
-                                                                          notifications[index]
-                                                                              .date,
-                                                                        )
-                                                                            .add(
-                                                                              const Duration(
-                                                                                days: 2,
-                                                                              ),
-                                                                            )
-                                                                            .difference(
-                                                                              DateTime.now(),
-                                                                            )
-                                                                            .inHours
-                                                                            .toString() +
-                                                                        ' часов',
-                                                                    style:
-                                                                        const TextStyle(
-                                                                      color: Colors
-                                                                          .green,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              )
-                                                            : const Text(
-                                                                'Истекло',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .red,
-                                                                ),
-                                                              )
-                                                        : const Text(
-                                                            'Отменен',
-                                                            style: TextStyle(
-                                                              color: Colors.red,
-                                                            ),
-                                                          ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 28,
+                      vertical: 10,
+                    ),
+                    child: Text(
+                      'Мини-приложения',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const _IconWidget(
+                            svg: 'assets/svg/service-chat.svg',
+                            title: 'Чат',
+                            color: Color.fromRGBO(40, 30, 29, 1),
+                            onTap: null,
+                          ),
+                          _IconWidget(
+                            svg: 'assets/svg/service-post.svg',
+                            title: 'Посты',
+                            color: const Color.fromRGBO(48, 42, 54, 1),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) => const PostsView(),
                                 ),
                               );
                             },
-                            separatorBuilder: (context, index) {
-                              return SizedBox(height: getH(10));
-                            },
                           ),
-                        ),
-                      );
-                    } else
-                      return EasyRefresh(
-                          header: const MaterialHeader(),
-                          onRefresh: () {
-                            setState(() {
-                              sentFuture = context
-                                  .read<SendNotificationViewModel>()
-                                  .getNotifications();
-                            });
-                          },
-                          child: const Center(child: EmptyWidget()));
-                  } else
-                    return const Center(
-                      child: LogoAnimatedWidget(
-                        size: 1.5,
+                          const _IconWidget(
+                            svg: 'assets/svg/service-schedule.svg',
+                            title: 'Табель',
+                            color: Color.fromRGBO(45, 37, 24, 1),
+                            onTap: null,
+                          ),
+                        ],
                       ),
-                    );
-                },
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const _IconWidget(
+                            svg: 'assets/svg/service-store.svg',
+                            title: 'Склад',
+                            color: Color.fromRGBO(30, 37, 30, 1),
+                            onTap: null,
+                          ),
+                          const _IconWidget(
+                            svg: 'assets/svg/service-shop.svg',
+                            title: 'Продажа',
+                            color: Color.fromRGBO(53, 30, 38, 1),
+                            onTap: null,
+                          ),
+                          const _IconWidget(
+                            svg: 'assets/svg/service-calculator.svg',
+                            title: 'Касса',
+                            color: Color.fromRGBO(23, 36, 53, 1),
+                            onTap: null,
+                          ),
+                        ],
+                      )
+                    ],
+                  )
+                ],
               ),
-            ],
-          ),
+            )
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class _IconWidget extends StatelessWidget {
+  const _IconWidget({
+    Key? key,
+    required this.svg,
+    required this.title,
+    required this.color,
+    required this.onTap,
+  }) : super(key: key);
+  final String svg;
+  final String title;
+  final Color color;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(
+              top: 6,
+              right: 6,
+            ),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                    color: onTap == null ? Colors.black26 : color,
+                  ),
+                  child: SvgPicture.asset(
+                    svg,
+                    height: 30,
+                    width: 30,
+                    color: onTap == null ? Colors.white24 : null,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: onTap == null ? Colors.white24 : null,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          onTap == null
+              ? Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 2,
+                      ),
+                      decoration: const BoxDecoration(
+                          color: Color.fromRGBO(103, 206, 103, 1),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(4),
+                          )),
+                      child: const Text(
+                        'Скоро',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : const SizedBox()
+        ],
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/client/client_shop.dart';
 import '../../../domain/models/client_info.dart';
 import '../../../domain/models/client_statistics.dart';
 import '../../../domain/models/user_shop.dart';
@@ -16,7 +17,7 @@ class BusinessDetailsView extends StatefulWidget {
   @override
   State<BusinessDetailsView> createState() => _BusinessDetailsViewState();
 
-  final UserShop userShop;
+  final ClientShop userShop;
   const BusinessDetailsView({
     Key? key,
     required this.userShop,
@@ -34,18 +35,58 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
   //   });
   // }
 
-  late Future<ClientStatistics> stats;
+  // late Future<ClientStatistics> stats;
 
   @override
   void initState() {
-    stats = context
-        .read<ClientHomeViewModel>()
-        .getShopStatistics(widget.userShop.id);
+    // stats = context
+    //     .read<ClientHomeViewModel>()
+    //     .getShopStatistics(widget.userShop.id);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    var stat = [
+      ClientInfo(
+        cashback: 1,
+        date: '2023-04-01',
+        fullName: 'kajnkja',
+        isWithdraw: true,
+        price: 12312,
+      ),
+      ClientInfo(
+        cashback: 1,
+        date: '2023-04-01',
+        fullName: 'kajnkja',
+        isWithdraw: true,
+        price: 12312,
+      ),
+      ClientInfo(
+        cashback: 1,
+        date: '2023-04-01',
+        fullName: 'kajnkja',
+        isWithdraw: true,
+        price: 12312,
+      ),
+      ClientInfo(
+        cashback: 1,
+        date: '2023-04-01',
+        fullName: 'kajnkja',
+        isWithdraw: false,
+        price: 12312,
+      ),
+      ClientInfo(
+        cashback: 1,
+        date: '2023-04-01',
+        fullName: 'kajnkja',
+        isWithdraw: true,
+        price: 12312,
+      ),
+    ];
+    stat.sort((a, b) => a.date!.compareTo(b.date!));
+    final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
+    final DateFormat sorter = DateFormat('dd MMMM yyyy');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.userShop.name),
@@ -57,191 +98,137 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
           child: EasyRefresh(
             header: const MaterialHeader(),
             onRefresh: () {
-              setState(() {
-                stats = context
-                    .read<ClientHomeViewModel>()
-                    .getShopStatistics(widget.userShop.id);
-              });
+              // setState(() {
+              //   stats = context
+              //       .read<ClientHomeViewModel>()
+              //       .getShopStatistics(widget.userShop.id);
+              // });
             },
             child: Column(
               children: [
-                FutureBuilder(
-                  future: stats,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      var stat = snapshot.data as ClientStatistics;
-                      return Column(
-                        children: [
-                          Column(
+                Column(
+                  children: [
+                    Column(
+                      children: [
+                        const Text(
+                          'Доступный кэшбек',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          // NumberFormat.simpleCurrency(
+                          //       name: '',
+                          //       locale: 'ru_RU',
+                          //       decimalDigits: 0,
+                          //     ).format('asd') +
+                          //     'сум',
+                          '1 212 сум',
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: getH(25)),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
                             children: [
                               const Text(
-                                'Доступный кэшбек',
+                                'Сумма покупки',
                                 style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
+                                  fontSize: 12,
+                                  color: Color.fromRGBO(255, 144, 62, 1),
                                 ),
                               ),
+                              SizedBox(height: getH(6)),
                               Text(
-                                NumberFormat.simpleCurrency(
-                                      name: '',
-                                      locale: 'ru_RU',
-                                      decimalDigits: 0,
-                                    ).format(stat.allSeperateCashback) +
-                                    'сум',
+                                '1 111' + 'сум',
                                 textAlign: TextAlign.end,
                                 style: const TextStyle(
-                                  fontSize: 25,
+                                  color: Color.fromRGBO(255, 144, 62, 1),
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: getH(25)),
-                          Row(
+                        ),
+                        Expanded(
+                          child: Column(
                             children: [
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    const Text(
-                                      'Сумма покупки',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color.fromRGBO(255, 144, 62, 1),
-                                      ),
-                                    ),
-                                    SizedBox(height: getH(6)),
-                                    Text(
-                                      NumberFormat.simpleCurrency(
-                                        name: '',
-                                        locale: 'ru_RU',
-                                        decimalDigits: 0,
-                                      ).format(stat.allSum),
-                                      textAlign: TextAlign.end,
-                                      style: const TextStyle(
-                                        color: Color.fromRGBO(255, 144, 62, 1),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+                              const Text(
+                                'Все кэшбеки',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  // color: Color.fromRGBO(75, 132, 231, 1),
+                                  color: Color.fromRGBO(103, 206, 103, 1),
                                 ),
                               ),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    const Text(
-                                      'Все кэшбеки',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        // color: Color.fromRGBO(75, 132, 231, 1),
-                                        color: Color.fromRGBO(103, 206, 103, 1),
-                                      ),
-                                    ),
-                                    SizedBox(height: getH(6)),
-                                    Text(
-                                      NumberFormat.simpleCurrency(
-                                        name: '',
-                                        locale: 'ru_RU',
-                                        decimalDigits: 0,
-                                      ).format(stat.allCashback),
-                                      textAlign: TextAlign.start,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color.fromRGBO(103, 206, 103, 1),
-                                      ),
-                                    ),
-                                  ],
+                              SizedBox(height: getH(6)),
+                              Text(
+                                '1 111' + 'сум',
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(103, 206, 103, 1),
                                 ),
                               ),
                             ],
                           ),
-                        ],
-                      );
-                    } else
-                      return const Text(
-                        '',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
                         ),
-                      );
-                  },
+                      ],
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
-                FutureBuilder(
-                  future: stats,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      var stat = snapshot.data!.clientInfo as List<ClientInfo>;
-
-                      stat.sort((a, b) => a.date!.compareTo(b.date!));
-
-                      if (stat.length > 0) {
-                        final DateFormat formatter =
-                            DateFormat('dd MMMM yyyy, EEEE');
-                        final DateFormat sorter = DateFormat('dd MMMM yyyy');
-                        return Expanded(
-                          child: GroupedListView<ClientInfo, String>(
-                            elements: stat,
-                            groupBy: (element) {
-                              DateTime dates = DateTime.parse(element.date!);
-                              return DateUtils.dateOnly(dates).toString();
-                              // return DateTime(dates.year, dates.month, dates.day,
-                              //         dates.hour, dates.minute)
-                              //     .toString();
-                            },
-                            groupSeparatorBuilder: (String groupByValue) {
-                              print(groupByValue);
-                              return Text(groupByValue);
-                            },
-                            separator: SizedBox(height: getH(10)),
-                            itemBuilder: (context, ClientInfo element) {
-                              if (element.isWithdraw) {
-                                return _CardOut(sumCashback: element);
-                              } else {
-                                return _CardIncome(sumCashback: element);
-                              }
-                            },
-                            groupHeaderBuilder: (ClientInfo element) {
-                              return Padding(
-                                padding:
-                                    EdgeInsets.symmetric(vertical: getH(14)),
-                                child: Text(
-                                  formatter
-                                      .format(DateTime.parse(element.date!)),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              );
-                            },
-                            order: GroupedListOrder.DESC,
-                            groupComparator: (value1, value2) {
-                              // print(value1);
-                              return value1.compareTo(value2);
-                            },
-                          ),
-                        );
+                Expanded(
+                  child: GroupedListView<ClientInfo, String>(
+                    elements: stat,
+                    groupBy: (element) {
+                      DateTime dates = DateTime.parse(element.date!);
+                      return DateUtils.dateOnly(dates).toString();
+                      // return DateTime(dates.year, dates.month, dates.day,
+                      //         dates.hour, dates.minute)
+                      //     .toString();
+                    },
+                    groupSeparatorBuilder: (String groupByValue) {
+                      print(groupByValue);
+                      return Text(groupByValue);
+                    },
+                    separator: SizedBox(height: getH(10)),
+                    itemBuilder: (context, ClientInfo element) {
+                      if (element.isWithdraw) {
+                        return _CardOut(sumCashback: element);
                       } else {
-                        return const Center(child: EmptyWidget());
+                        return _CardIncome(sumCashback: element);
                       }
-                    } else {
-                      // return const LogoAnimatedWidget(size: 1.5);
-                      return Expanded(
-                        child: Column(
-                          children: const [
-                            Spacer(),
-                            LogoAnimatedWidget(size: 1.5),
-                            const SizedBox(height: 20),
-                            Spacer(),
-                          ],
+                    },
+                    groupHeaderBuilder: (ClientInfo element) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: getH(14)),
+                        child: Text(
+                          formatter.format(DateTime.parse(element.date!)),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       );
-                    }
-                  },
+                    },
+                    order: GroupedListOrder.DESC,
+                    groupComparator: (value1, value2) {
+                      // print(value1);
+                      return value1.compareTo(value2);
+                    },
+                  ),
                 ),
               ],
             ),

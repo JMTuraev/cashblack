@@ -122,7 +122,6 @@ class MainButtonWidget extends StatelessWidget {
   }
 }
 
-
 // if (percent != null && percent! > 0)
 //                   Row(
 //                     children: [

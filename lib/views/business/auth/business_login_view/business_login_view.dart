@@ -4,9 +4,9 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
-import '../../../../extensions.dart';
+import '../../../../string_extensions.dart';
 import '../../../../size_config.dart';
-import '../../../../view_models/business_login_view_model.dart';
+import '../../../../view_models/business/business_login_view_model.dart';
 import '../../../../widgets/connect_widget.dart';
 import '../../../../widgets/info_alert_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
@@ -41,19 +41,26 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
   Widget build(BuildContext context) {
     var provider = context.read<BusinessLoginViewModel>();
 
-    void submit() async {
+    Future<void> submit() async {
       if (maskFormatter.isFill()) {
         var phone = maskFormatter.unmaskText(phoneController.text);
 
         var promo = promoCodeController.text;
 
-        bool sendSMS = false;
+        // phone = '998973000225';
 
-        sendSMS = await provider.sendSms(
-          phone,
-          provider.appSignature = await SmsAutoFill().getAppSignature,
-          promo,
-        );
+        // bool sendSMS = false;
+
+        bool sendSMS =
+            await context.read<BusinessLoginViewModel>().onEnterButtonPressed(
+                  phone.substring(3),
+                  'nickname',
+                  'firstName',
+                  'lastName',
+                  '59',
+                  'owner',
+                  promo,
+                );
         sendSMS
             ? Navigator.of(context).push(
                 CupertinoPageRoute(
@@ -86,7 +93,7 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
               validator: (value) {
                 if (value == null ||
                     value.isEmpty ||
-                    int.parse(value.removeWhitespaces()) <= 0) {
+                    int.parse(value.removeWhitespace()) <= 0) {
                   return 'Введите номер телефона';
                 }
                 return null;

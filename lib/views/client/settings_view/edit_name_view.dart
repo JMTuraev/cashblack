@@ -6,7 +6,7 @@ import '../../../domain/models/user.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/text_field_widget.dart';
-import '../../client/client_home_view.dart/client_home_view.dart';
+import '../client_view.dart';
 
 class EditNameView extends StatelessWidget {
   const EditNameView({
@@ -56,21 +56,21 @@ class EditNameView extends StatelessWidget {
                   MainButtonWidget(
                     text: 'OK',
                     method: () async {
-                      await context
-                          .read<ClientHomeViewModel>()
-                          .changeName(
-                            user.id,
-                            firstNameController.text,
-                            lastNameController.text,
-                          )
-                          .then(
-                            (value) => Navigator.of(context).pushAndRemoveUntil(
-                              CupertinoPageRoute(
-                                builder: (context) => const ClientHomeView(),
-                              ),
-                              (route) => false,
-                            ),
-                          );
+                      // await context
+                      //     .read<ClientHomeViewModel>()
+                      //     .changeName(
+                      //       user.id,
+                      //       firstNameController.text,
+                      //       lastNameController.text,
+                      //     )
+                      //     .then(
+                      //       (value) => Navigator.of(context).pushAndRemoveUntil(
+                      //         CupertinoPageRoute(
+                      //           builder: (context) => const ClientHomeView(),
+                      //         ),
+                      //         (route) => false,
+                      //       ),
+                      //     );
                     },
                   ),
                   const SizedBox(height: 20),

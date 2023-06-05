@@ -3,83 +3,83 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/api/client.dart';
-import '../domain/models/client_statistics.dart';
-import '../domain/models/client_statistics_all.dart';
-import '../domain/models/received_notification.dart';
-import '../domain/models/user.dart';
-import '../domain/models/user_category.dart';
-import '../domain/models/user_shop.dart';
+// import '../domain/models/client_statistics.dart';
+// import '../domain/models/client_statistics_all.dart';
+// import '../domain/models/received_notification.dart';
+// import '../domain/models/user.dart';
+// import '../domain/models/user_category.dart';
+// import '../domain/models/user_shop.dart';
 
 class ClientHomeViewModel extends ChangeNotifier {
-  final Client _client = Client();
+  // final Client _client = Client();
 
-  int currentIndex = 0;
+  // int currentIndex = 0;
 
-  late User user;
-  late List<UserCategory> userCategory;
-  late List<UserShop> userShop;
+  // late User user;
+  // late List<UserCategory> userCategory;
+  // late List<UserShop> userShop;
 
-  Future<User> getProfile() async {
-    return user = await _client.getProfile();
-  }
-
-  // Future<void> getCategories() async {
-  //   userCategory = await _client.getRegisteredCategoriesForClient();
+  // Future<User> getProfile() async {
+  //   return user = await _client.getProfile();
   // }
 
-  Future<List<UserCategory>> getJoinedCategories() async {
-    var registeredCategoriesForClient =
-        _client.getRegisteredCategoriesForClient();
-    // notifyListeners();
+  // // Future<void> getCategories() async {
+  // //   userCategory = await _client.getRegisteredCategoriesForClient();
+  // // }
 
-    return registeredCategoriesForClient;
-  }
+  // Future<List<UserCategory>> getJoinedCategories() async {
+  //   var registeredCategoriesForClient =
+  //       _client.getRegisteredCategoriesForClient();
+  //   // notifyListeners();
 
-  Future<List<UserShop>> getJoinedShops(int id) async {
-    var registeredMarketsForClient = _client.getRegisteredMarketsForClient(id);
-    // notifyListeners();
+  //   return registeredCategoriesForClient;
+  // }
 
-    return registeredMarketsForClient;
-  }
+  // Future<List<UserShop>> getJoinedShops(int id) async {
+  //   var registeredMarketsForClient = _client.getRegisteredMarketsForClient(id);
+  //   // notifyListeners();
 
-  Future<ClientStatistics> getShopStatistics(int id) async {
-    var shopStatistics = _client.getShopStatistics(id);
-    // notifyListeners();
-    return shopStatistics;
-  }
+  //   return registeredMarketsForClient;
+  // }
 
-  Future<ClientStatisticsAll> getAllShopStatistics() async {
-    var allShopStatistics = _client.getAllShopStatistics();
-    // notifyListeners();
-    return allShopStatistics;
-  }
+  // Future<ClientStatistics> getShopStatistics(int id) async {
+  //   var shopStatistics = _client.getShopStatistics(id);
+  //   // notifyListeners();
+  //   return shopStatistics;
+  // }
 
-  Future<List<ReceivedNotification>> getNotifications() async {
-    var receivedNotifications = _client.getReceivedNotifications();
-    // notifyListeners();
-    return receivedNotifications;
-  }
+  // Future<ClientStatisticsAll> getAllShopStatistics() async {
+  //   var allShopStatistics = _client.getAllShopStatistics();
+  //   // notifyListeners();
+  //   return allShopStatistics;
+  // }
 
-  void onChange(int index) {
-    currentIndex = index;
-    notifyListeners();
-  }
+  // Future<List<ReceivedNotification>> getNotifications() async {
+  //   var receivedNotifications = _client.getReceivedNotifications();
+  //   // notifyListeners();
+  //   return receivedNotifications;
+  // }
 
-  Future<void> changeName(int userId, String firstName, String lastName) async {
-    await _client.changeName(userId, firstName, lastName);
-    await getProfile();
-    notifyListeners();
-  }
+  // void onChange(int index) {
+  //   currentIndex = index;
+  //   notifyListeners();
+  // }
 
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    final storage = FlutterSecureStorage();
+  // Future<void> changeName(int userId, String firstName, String lastName) async {
+  //   await _client.changeName(userId, firstName, lastName);
+  //   await getProfile();
+  //   notifyListeners();
+  // }
 
-    // await prefs.remove('isLogged');
-    // await storage.delete(key: 'bearer');
-    await prefs.clear();
-    await storage.deleteAll();
-    currentIndex = 0;
-    // notifyListeners();
-  }
+  // Future<void> logout() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final storage = FlutterSecureStorage();
+
+  //   // await prefs.remove('isLogged');
+  //   // await storage.delete(key: 'token');
+  //   await prefs.clear();
+  //   await storage.deleteAll();
+  //   currentIndex = 0;
+  //   // notifyListeners();
+  // }
 }

@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'sum_cashback.g.dart';
@@ -19,7 +18,8 @@ class SumCashback {
     required this.cashback,
   });
 
-  factory SumCashback.fromJson(Map<String, Object?> json) => _$SumCashbackFromJson(json);
-  
+  factory SumCashback.fromJson(Map<String, Object?> json) =>
+      _$SumCashbackFromJson(json);
+
   Map<String, Object?> toJson() => _$SumCashbackToJson(this);
 }

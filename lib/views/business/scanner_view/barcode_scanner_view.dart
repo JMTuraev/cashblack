@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 
-import '../../../view_models/business_home_view_model.dart';
+import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import 'payment_client_view.dart';
 import 'payment_phone_view.dart';
@@ -51,8 +51,8 @@ class BarcodeScannerView extends StatelessWidget {
                         }
 
                         if (scannedTime == 1) {
-                          // context.read<BusinessHomeViewModel>().currentIndex = 0;
-                          context.read<BusinessHomeViewModel>().setindex(0);
+                          // context.read<BusinessViewModel>().currentIndex = 0;
+                          context.read<BusinessViewModel>().setindex(0);
                           Navigator.of(context).push(
                             CupertinoPageRoute(
                               builder: (context) => PaymentClientView(

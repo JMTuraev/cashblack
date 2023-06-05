@@ -3,23 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
-import '../../../../extensions.dart';
-import '../../../../view_models/business_home_view_model.dart';
-import '../../../../view_models/business_login_view_model.dart';
+import '../../../../string_extensions.dart';
+import '../../../../view_models/business/business_login_view_model.dart';
 import '../../../../widgets/hero_title_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../../../../widgets/text_button_widget.dart';
-import '../../business_home_view/business_home_view.dart';
+import '../../business_view.dart';
 import '../../create_store_view/create_store_view.dart';
 
 class BusinessLoginVerifyView extends StatefulWidget {
-  const BusinessLoginVerifyView(
-      {Key? key,
-      required this.phone,
-      required this.appsign,
-      required this.promo})
-      : super(key: key);
+  const BusinessLoginVerifyView({
+    Key? key,
+    required this.phone,
+    required this.appsign,
+    required this.promo,
+  }) : super(key: key);
 
   final String phone;
   final String appsign;
@@ -52,7 +51,9 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-        vsync: this, duration: Duration(seconds: levelClock));
+      vsync: this,
+      duration: Duration(seconds: levelClock),
+    );
 
     _animationController!.forward();
 
@@ -101,7 +102,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               PinFieldAutoFill(
                 controller: textController,
                 autoFocus: true,
-                codeLength: 5,
+                codeLength: 6,
                 decoration: UnderlineDecoration(
                   gapSpace: 40,
                   textStyle: const TextStyle(
@@ -113,7 +114,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                 currentCode: otpCode,
                 onCodeSubmitted: (code) {},
                 onCodeChanged: (code) {
-                  if (code!.length == 5) {
+                  if (code!.length == 6) {
                     FocusScope.of(context).requestFocus(FocusNode());
                   }
                 },
@@ -122,10 +123,16 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               TextButtonWidget(
                 text: 'Не получили код. Отправить код еще раз',
                 method: () async {
-                  await context.read<BusinessLoginViewModel>().sendSms(
-                        widget.phone,
-                        widget.appsign,
-                        widget.promo,
+                  await context
+                      .read<BusinessLoginViewModel>()
+                      .onEnterButtonPressed(
+                        widget.phone.substring(3),
+                        'nickname',
+                        'firstName',
+                        'lastName',
+                        '59',
+                        'owner',
+                        'promo',
                       );
                   _animationController!.reset();
                   _animationController!.forward();
@@ -143,39 +150,45 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                 isLoading: context.watch<BusinessLoginViewModel>().isLoading,
                 text: 'Подтвердить',
                 method: () async {
+                  // await context
+                  //     .read<BusinessHomeViewModel>()
+                  //     .getProfile()
+                  //     .then((value) async {
                   await context
-                      .read<BusinessHomeViewModel>()
-                      .getProfile()
+                      .read<BusinessLoginViewModel>()
+                      .onVerifyButtonPressed(
+                        // context.read<BusinessLoginViewModel>().phone,
+                        widget.phone.substring(3),
+                        otpCode ?? textController.text,
+                      )
                       .then((value) async {
-                    bool checked = await context
-                        .read<BusinessLoginViewModel>()
-                        .onVerifyButtonPressed(otpCode ?? textController.text,
-                            context.read<BusinessLoginViewModel>().phone);
-                    // if (textController.text.isEmpty) {
-                    //   print('asdasd');
-                    //   textController.text = otpCode!;
-                    // }
-                    bool hasShop = context
-                        .read<BusinessHomeViewModel>()
-                        .user!
-                        .shops
-                        .isNotEmpty;
-
-                    checked
-                        ? (hasShop
-                            ? Navigator.of(context).pushAndRemoveUntil(
-                                CupertinoPageRoute(
-                                  builder: (context) =>
-                                      const BusinessHomeView(),
-                                ),
-                                (route) => false)
-                            : Navigator.of(context).pushAndRemoveUntil(
-                                CupertinoPageRoute(
-                                  builder: (context) => const CreateStoreView(),
-                                ),
-                                (route) => false))
-                        : null;
+                    if (value == true) {
+                      await Navigator.of(context).pushAndRemoveUntil(
+                        CupertinoPageRoute(
+                          builder: (context) => const BusinessView(),
+                        ),
+                        (route) => false,
+                      );
+                    }
                   });
+                  // if (textController.text.isEmpty) {
+                  //   print('asdasd');
+                  //   textController.text = otpCode!;
+                  // }
+                  // bool hasShop = context
+                  //     .read<BusinessHomeViewModel>()
+                  //     .user!
+                  //     .shops
+                  //     .isNotEmpty;
+
+                  // await Navigator.of(context).pushAndRemoveUntil(
+                  //   CupertinoPageRoute(
+                  //     builder: (context) => const BusinessHomeView(),
+                  //   ),
+                  //   (route) => false,
+                  // );
+                  // }
+                  // );
                 },
               ),
             ],

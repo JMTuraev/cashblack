@@ -9,10 +9,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/shop.dart';
-import '../../../extensions.dart';
+import '../../../string_extensions.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/numberic_text_formatter.dart';
-import '../../../view_models/business_home_view_model.dart';
+import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 
 class EditStoreView extends StatefulWidget {
@@ -49,7 +49,7 @@ class _EditStoreViewState extends State<EditStoreView> {
     _cropImage(pickedFile!.path);
   }
 
-  void _cropImage(filepath) async {
+  void _cropImage(String filepath) async {
     clearImages();
     var croppedImage = await ImageCropper.platform.cropImage(
       sourcePath: filepath,
@@ -278,39 +278,7 @@ class _EditStoreViewState extends State<EditStoreView> {
                   MainButtonWidget(
                     text: 'OK',
                     method: () async {
-                      if (_fileList.isNotEmpty) {
-                        await context
-                            .read<BusinessHomeViewModel>()
-                            .editStoreImage(widget.shop.id, _fileList[0]!);
-                      }
-                      await context
-                          .read<BusinessHomeViewModel>()
-                          // .editstore(
-                          //   widget.shop.id,
-                          //   int.parse(_selectedCategory!),
-                          //   _brandName.text,
-                          //   int.parse(_cashback.text.removeWhitespaces()),
-                          //   int.parse(_selectedProvince!),
-                          //   int.parse(_selectedCity!),
-                          //   _fileList[0]!,
-                          // )
-                          .editStore(
-                            widget.shop.id,
-                            widget.shop.category.id,
-                            widget.shop.name,
-                            int.parse(_cashback.text.removeWhitespaces()),
-                            widget.shop.province.id,
-                            widget.shop.city.id,
-                          )
-                          .then((value) =>
-                              //     Navigator.of(context).pushAndRemoveUntil(
-                              //   CupertinoPageRoute(
-                              //     builder: (context) =>
-                              //         const BusinessHomeView(),
-                              //   ),
-                              //   (route) => false,
-                              // ));
-                              Navigator.pop(context));
+                      Navigator.pop(context);
                     },
                   ),
                   const SizedBox(height: 20),

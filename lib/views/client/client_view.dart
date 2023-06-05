@@ -1,35 +1,43 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
-import '../../../size_config.dart';
-import '../client_notifications_view/client_notifications_view.dart';
-import '../main_view/main_view.dart';
-import '../settings_view/settings_view.dart';
+import '../../size_config.dart';
+import '../../view_models/client/client_dashboard_view_model.dart';
+import '../../view_models/client/client_settings_view_model.dart';
+import '../../view_models/client/client_view_model.dart';
+import 'client_notifications_view/client_notifications_view.dart';
+import 'client_dashboard_view.dart/client_dashboard_view.dart';
+import 'settings_view/settings_view.dart';
 
-class ClientHomeView extends StatefulWidget {
-  const ClientHomeView({Key? key}) : super(key: key);
+class ClientView extends StatefulWidget {
+  const ClientView({Key? key}) : super(key: key);
 
   @override
-  State<ClientHomeView> createState() => _ClientHomeViewState();
+  State<ClientView> createState() => _ClientViewState();
 }
 
-class _ClientHomeViewState extends State<ClientHomeView> {
-  int currentIndex = 0;
-  void onChange(index) {
-    setState(() {
-      currentIndex = index;
-    });
+class _ClientViewState extends State<ClientView> {
+  // int currentIndex = 0;
+
+  @override
+  void initState() {
+    context.read<ClientSettingsViewModel>().getClientProfile();
+    context.read<ClientDashboardViewModel>().getClientCategories();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
+    int currentIndex = context.watch<ClientViewModel>().currentIndex;
+
     var body = IndexedStack(
       index: currentIndex,
       children: const [
-        MainView(),
+        ClientDashboardView(),
         SettingsView(),
         ClientNotificationsView(),
       ],
@@ -77,7 +85,9 @@ class _ClientHomeViewState extends State<ClientHomeView> {
         color: Color.fromRGBO(28, 28, 29, 1),
         index: currentIndex,
         items: items,
-        onTap: onChange,
+        onTap: (value) {
+          context.read<ClientViewModel>().onChange(value);
+        },
       ),
       body: SafeArea(
         child: Stack(
