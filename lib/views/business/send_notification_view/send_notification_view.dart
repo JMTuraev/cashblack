@@ -53,7 +53,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
 
   @override
   void initState() {
-    context.read<BusinessNotificationsViewModel>().getPrices();
+    // context.read<BusinessNotificationsViewModel>().getPrices();
     super.initState();
   }
 

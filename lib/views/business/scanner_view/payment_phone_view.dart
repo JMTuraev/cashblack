@@ -112,7 +112,7 @@ class PaymentPhoneView extends StatelessWidget {
                     _SelectCategoryWidget(
                       categoryItems: context
                           .read<BusinessDashboardViewModel>()
-                          .businessShops
+                          .businessShops!
                           .map(
                             (e) => DropdownMenuItem<String>(
                               value: e.id.toString(),

@@ -51,9 +51,9 @@ class _ClientLoginViewState extends State<ClientLoginView> {
         bool sendSMS =
             await context.read<ClientLoginViewModel>().onEnterButtonPressed(
                   phone.substring(3),
-                  'nickname',
-                  'firstName',
-                  'lastName',
+                  phone.substring(3),
+                  phone.substring(3),
+                  phone.substring(3),
                   '59',
                   'client',
                   '',

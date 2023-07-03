@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/owner/business_profile.dart';
 import '../../../domain/models/user.dart';
+import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/text_field_widget.dart';
@@ -12,7 +14,7 @@ class EditNameView extends StatelessWidget {
     required this.user,
   });
 
-  final User user;
+  final BusinessProfile user;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,21 @@ class EditNameView extends StatelessWidget {
                   MainButtonWidget(
                     text: 'OK',
                     method: () async {
-                      Navigator.pop(context);
+                      await context
+                          .read<BusinessSettingsViewModel>()
+                          .editOwnerProfile(
+                            firstNameController.text,
+                            lastNameController.text,
+                            user.phone,
+                          )
+                          .then((value) {
+                        if (value) {
+                          context
+                              .read<BusinessSettingsViewModel>()
+                              .getOwnerProfile();
+                          Navigator.pop(context);
+                        }
+                      });
                     },
                   ),
                   const SizedBox(height: 20),

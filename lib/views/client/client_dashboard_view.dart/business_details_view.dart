@@ -9,6 +9,7 @@ import '../../../domain/models/client_info.dart';
 import '../../../domain/models/client_statistics.dart';
 import '../../../domain/models/user_shop.dart';
 import '../../../size_config.dart';
+import '../../../string_extensions.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
@@ -124,7 +125,9 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                           //       decimalDigits: 0,
                           //     ).format('asd') +
                           //     'сум',
-                          '1 212 сум',
+                          widget.userShop.cashbackSum
+                              .toString()
+                              .getAmountInSum(),
                           textAlign: TextAlign.end,
                           style: const TextStyle(
                             fontSize: 25,
@@ -148,7 +151,9 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                               ),
                               SizedBox(height: getH(6)),
                               Text(
-                                '1 111' + 'сум',
+                                widget.userShop.withdrawSum
+                                    .toString()
+                                    .getAmountInSum(),
                                 textAlign: TextAlign.end,
                                 style: const TextStyle(
                                   color: Color.fromRGBO(255, 144, 62, 1),
@@ -172,7 +177,9 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                               ),
                               SizedBox(height: getH(6)),
                               Text(
-                                '1 111' + 'сум',
+                                widget.userShop.amount
+                                    .toString()
+                                    .getAmountInSum(),
                                 textAlign: TextAlign.start,
                                 style: const TextStyle(
                                   fontSize: 16,
@@ -190,7 +197,7 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                 const SizedBox(height: 20),
                 Expanded(
                   child: GroupedListView<ClientInfo, String>(
-                    elements: stat,
+                    elements: [],
                     groupBy: (element) {
                       DateTime dates = DateTime.parse(element.date!);
                       return DateUtils.dateOnly(dates).toString();

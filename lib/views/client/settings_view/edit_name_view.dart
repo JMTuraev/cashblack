@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/client/client_profile.dart';
 import '../../../domain/models/user.dart';
+import '../../../view_models/client/client_settings_view_model.dart';
 import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/text_field_widget.dart';
@@ -14,7 +16,7 @@ class EditNameView extends StatelessWidget {
     required this.user,
   });
 
-  final User user;
+  final ClientProfile user;
 
   @override
   Widget build(BuildContext context) {
@@ -56,21 +58,21 @@ class EditNameView extends StatelessWidget {
                   MainButtonWidget(
                     text: 'OK',
                     method: () async {
-                      // await context
-                      //     .read<ClientHomeViewModel>()
-                      //     .changeName(
-                      //       user.id,
-                      //       firstNameController.text,
-                      //       lastNameController.text,
-                      //     )
-                      //     .then(
-                      //       (value) => Navigator.of(context).pushAndRemoveUntil(
-                      //         CupertinoPageRoute(
-                      //           builder: (context) => const ClientHomeView(),
-                      //         ),
-                      //         (route) => false,
-                      //       ),
-                      //     );
+                      await context
+                          .read<ClientSettingsViewModel>()
+                          .editClientProfile(
+                            firstNameController.text,
+                            lastNameController.text,
+                            user.phone,
+                          )
+                          .then((value) {
+                        if (value) {
+                          context
+                              .read<ClientSettingsViewModel>()
+                              .getClientProfile();
+                          Navigator.pop(context);
+                        }
+                      });
                     },
                   ),
                   const SizedBox(height: 20),

@@ -7,7 +7,7 @@ class ClientCashback {
   @JsonKey(name: 'company_name')
   final String companyName;
   @JsonKey(name: 'company_logo')
-  final String companyLogo;
+  final String? companyLogo;
   @JsonKey(name: 'seller_id')
   final int sellerId;
   @JsonKey(name: 'seller_name')
@@ -21,11 +21,11 @@ class ClientCashback {
   @JsonKey(name: 'shop_name')
   final String shopName;
   @JsonKey(name: 'shop_logo')
-  final String shopLogo;
+  final String? shopLogo;
   final String percent;
   @JsonKey(name: 'total_price')
-  final String totalPrice;
-  final String amount;
+  final dynamic totalPrice;
+  final dynamic amount;
   final String date;
   ClientCashback({
     required this.companyName,

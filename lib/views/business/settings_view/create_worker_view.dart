@@ -69,11 +69,11 @@ class _CreateWorkerViewState extends State<CreateWorkerView> {
                   showCursor: true,
                   keyboardType: TextInputType.phone,
                 ),
-                SizedBox(height: getH(20)),
-                TextFieldWidget(
-                  hintText: 'Nickname',
-                  controller: nickNameController,
-                ),
+                // SizedBox(height: getH(20)),
+                // TextFieldWidget(
+                //   hintText: 'Nickname',
+                //   controller: nickNameController,
+                // ),
                 SizedBox(height: getH(20)),
                 TextFieldWidget(
                   hintText: 'Имя',
@@ -88,7 +88,7 @@ class _CreateWorkerViewState extends State<CreateWorkerView> {
                 _SelectCategoryWidget(
                   categoryItems: context
                       .read<BusinessDashboardViewModel>()
-                      .businessShops
+                      .businessShops!
                       .map(
                         (e) => DropdownMenuItem<String>(
                           value: e.id.toString(),
@@ -111,7 +111,8 @@ class _CreateWorkerViewState extends State<CreateWorkerView> {
                         .read<BusinessSettingsViewModel>()
                         .createSeller(
                             maskFormatter.getUnmaskedText().substring(3),
-                            nickNameController.text,
+                            // nickNameController.text,
+                            maskFormatter.getUnmaskedText().substring(3),
                             fistNameController.text,
                             lastNameController.text,
                             '44',

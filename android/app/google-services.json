@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "727495980108",
+    "project_id": "cashblack-9abb8",
+    "storage_bucket": "cashblack-9abb8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:727495980108:android:4e61ceea9bd7a5c854f0e9",
+        "android_client_info": {
+          "package_name": "com.cashblackdevteam.cashblack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "727495980108-q7q7b9reehldqsh79vl1q2gq9r4j6pnb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAS7Rt8vPzssbVW_ZI28QCHVA220qUZSrM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "727495980108-q7q7b9reehldqsh79vl1q2gq9r4j6pnb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "727495980108-qo8hii46n85cpgsoclj8f3er1gbckfph.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cashblackdevteam.cashblack"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

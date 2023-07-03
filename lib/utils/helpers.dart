@@ -1,6 +1,17 @@
 import 'package:url_launcher/url_launcher.dart';
 
+import '../domain/models/owner/business_profile.dart';
+import '../string_extensions.dart';
+
 mixin Helpers {
+  static bool subsctibedChecker(BusinessProfile profile) {
+    print(profile.balance);
+    return profile.licence.isNotEmpty &&
+        DateTime.parse(
+          profile.licence.first.endAt.getDateForQuery(),
+        ).isAfter(DateTime.now());
+  }
+
   static void toCall(String phone) async {
     Uri url = Uri.parse('tel:$phone');
     if (await canLaunchUrl(url)) {

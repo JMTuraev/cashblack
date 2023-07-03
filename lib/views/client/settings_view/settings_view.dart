@@ -4,12 +4,13 @@ import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/user.dart';
 import '../../../string_extensions.dart';
 import '../../../size_config.dart';
+import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/client/client_settings_view_model.dart';
 import '../../../view_models/client/client_view_model.dart';
 import '../../../view_models/client_home_view_model.dart';
@@ -87,8 +88,8 @@ class _SettingsViewState extends State<SettingsView> {
                         fontSize: 18,
                       ),
                       padding: const EdgeInsets.all(10),
-                      // data: client!.phone,
-                      data: base64.encode(utf8.encode(client!.phone)),
+                      data: client!.phone,
+                      // data: base64.encode(utf8.encode(client!.phone)),
                       barcode: Barcode.qrCode(),
                     ),
                     // Text(base64.encode(utf8.encode(client!.phone))),
@@ -99,7 +100,10 @@ class _SettingsViewState extends State<SettingsView> {
                         children: [
                           Text(
                             '${client.firstName} ${client.lastName}',
-                            style: GoogleFonts.abrilFatface(
+                            // style: GoogleFonts.abrilFatface(
+                            //   fontSize: 26,
+                            // ),
+                            style: TextStyle(
                               fontSize: 26,
                             ),
                           ),
@@ -111,13 +115,13 @@ class _SettingsViewState extends State<SettingsView> {
                         ],
                       ),
                       onTap: () {
-                        // Navigator.of(context).push(
-                        //   CupertinoPageRoute(
-                        //     builder: (context) => EditNameView(
-                        //       user: user!,
-                        //     ),
-                        //   ),
-                        // );
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) => EditNameView(
+                              user: client!,
+                            ),
+                          ),
+                        );
                       },
                     ),
                     SizedBox(height: 30),
@@ -132,103 +136,103 @@ class _SettingsViewState extends State<SettingsView> {
   }
 }
 
-class _ProfileCardWidget extends StatelessWidget {
-  const _ProfileCardWidget({
-    Key? key,
-    required this.user,
-  }) : super(key: key);
+// class _ProfileCardWidget extends StatelessWidget {
+//   const _ProfileCardWidget({
+//     Key? key,
+//     required this.user,
+//   }) : super(key: key);
 
-  final User? user;
+//   final User? user;
 
-  @override
-  Widget build(BuildContext context) {
-    return _BorderContainerWidget(
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              user!.firstName.isEmpty && user!.lastName.isEmpty
-                  ? const _SimpleTextWidget(
-                      title: 'Имя не указано',
-                    )
-                  : _SimpleTextWidget(
-                      title: '${user!.firstName} ${user!.lastName}',
-                    ),
-              const SizedBox(height: 10),
-              Text(user!.userName.phoneFormatter()),
-            ],
-          ),
-          Positioned(
-            top: 5,
-            right: 5,
-            child: TextButtonWidget(
-              method: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => EditNameView(
-                      user: user!,
-                    ),
-                  ),
-                );
-              },
-              text: 'Изменить',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return _BorderContainerWidget(
+//       child: Stack(
+//         children: [
+//           Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               user!.firstName.isEmpty && user!.lastName.isEmpty
+//                   ? const _SimpleTextWidget(
+//                       title: 'Имя не указано',
+//                     )
+//                   : _SimpleTextWidget(
+//                       title: '${user!.firstName} ${user!.lastName}',
+//                     ),
+//               const SizedBox(height: 10),
+//               Text(user!.userName.phoneFormatter()),
+//             ],
+//           ),
+//           Positioned(
+//             top: 5,
+//             right: 5,
+//             child: TextButtonWidget(
+//               method: () {
+//                 Navigator.of(context).push(
+//                   CupertinoPageRoute(
+//                     builder: (context) => EditNameView(
+//                       user: user!,
+//                     ),
+//                   ),
+//                 );
+//               },
+//               text: 'Изменить',
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
-class _ProfileCardWidget2 extends StatelessWidget {
-  const _ProfileCardWidget2({
-    Key? key,
-    required this.user,
-  }) : super(key: key);
+// class _ProfileCardWidget2 extends StatelessWidget {
+//   const _ProfileCardWidget2({
+//     Key? key,
+//     required this.user,
+//   }) : super(key: key);
 
-  final User? user;
+//   final User? user;
 
-  @override
-  Widget build(BuildContext context) {
-    return _BorderContainerWidget(
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              user!.firstName.isEmpty && user!.lastName.isEmpty
-                  ? const _SimpleTextWidget(
-                      title: 'Имя не введено',
-                    )
-                  : _SimpleTextWidget(
-                      title: '${user!.firstName} ${user!.lastName}',
-                    ),
-              const SizedBox(height: 10),
-              Text(user!.userName),
-            ],
-          ),
-          Positioned(
-            top: 5,
-            right: 5,
-            child: TextButtonWidget(
-              method: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => EditNameView(
-                      user: user!,
-                    ),
-                  ),
-                );
-              },
-              text: 'Изменить',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return _BorderContainerWidget(
+//       child: Stack(
+//         children: [
+//           Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               user!.firstName.isEmpty && user!.lastName.isEmpty
+//                   ? const _SimpleTextWidget(
+//                       title: 'Имя не введено',
+//                     )
+//                   : _SimpleTextWidget(
+//                       title: '${user!.firstName} ${user!.lastName}',
+//                     ),
+//               const SizedBox(height: 10),
+//               Text(user!.userName),
+//             ],
+//           ),
+//           Positioned(
+//             top: 5,
+//             right: 5,
+//             child: TextButtonWidget(
+//               method: () {
+//                 Navigator.of(context).push(
+//                   CupertinoPageRoute(
+//                     builder: (context) => EditNameView(
+//                       user: user!,
+//                     ),
+//                   ),
+//                 );
+//               },
+//               text: 'Изменить',
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class _SimpleTextWidget extends StatelessWidget {
   const _SimpleTextWidget({

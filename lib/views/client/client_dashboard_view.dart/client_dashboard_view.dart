@@ -41,6 +41,8 @@ class _ClientDashboardViewState extends State<ClientDashboardView> {
     void refresh() {
       setState(() {
         print('object');
+        context.read<ClientSettingsViewModel>().getClientProfile();
+        context.read<ClientDashboardViewModel>().getClientCategories();
         // context.read<ClientHomeViewModel>().getProfile();
         // allshopstats =
         //     context.read<ClientHomeViewModel>().getAllShopStatistics();
@@ -126,7 +128,7 @@ class _ClientDashboardViewState extends State<ClientDashboardView> {
                                             .toString(),
                                         errorWidget: (context, url, error) =>
                                             const Icon(
-                                          Icons.category_outlined,
+                                          Icons.home_repair_service_rounded,
                                           size: 80,
                                         ),
                                       ),

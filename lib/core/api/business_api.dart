@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 import '../../domain/models/common/category.dart';
 // import '../../domain/models/category.dart';
@@ -9,11 +10,13 @@ import '../../domain/models/owner/business_profile.dart';
 import '../../domain/models/owner/business_shop.dart';
 import '../../domain/models/owner/cashback.dart';
 import '../../domain/models/owner/notification_price.dart';
+import '../../domain/models/owner/owner_notification.dart';
+import '../../domain/models/owner/report_cashback.dart';
+import '../../domain/models/owner/report_cashback_client.dart';
 import '../../domain/models/owner/seller_profile.dart';
+import '../../domain/models/owner/weekly_stat.dart';
 import '../../string_extensions.dart';
 import '../../utils/constants.dart';
-
-import 'package:http/http.dart' as http;
 
 class BusinessApi {
   final Dio _dio = Dio();
@@ -54,6 +57,44 @@ class BusinessApi {
     return prices;
   }
 
+  Future<List<OwnerNotification>> getNotifications() async {
+    await _setDioHeader();
+
+    // final response =
+    // await _dio.get('http://cashblack.assist.uz/api/v1/owner/announcement');
+    final response = await _dio.get('${Constants.path}/v1/owner/announcement');
+
+    // var bookingList = response.data as List;
+    final notifs = (response.data['data'] as List)
+        .map((x) => OwnerNotification.fromJson(x as Map<String, Object?>))
+        .toList();
+    print('owner notifs');
+
+    return notifs;
+  }
+
+  Future<bool> subscribe(int priceId) async {
+    await _setDioHeader();
+
+    try {
+      final response = await _dio.post(
+        '${Constants.path}/v1/owner/announcement',
+        data: FormData.fromMap(
+          {
+            'price_id': priceId,
+          },
+        ),
+      );
+
+      print('subscribe one month');
+
+      return true;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
+  }
+
   Future<List<BonusPrice>> getBonusPrices() async {
     await _setDioHeader();
 
@@ -67,16 +108,21 @@ class BusinessApi {
     return prices;
   }
 
-  Future<BusinessCompany> getBusinessCompany() async {
+  Future<BusinessCompany?> getBusinessCompany() async {
     await _setDioHeader();
 
     final response = await _dio.get('${Constants.path}/v1/owner/company');
     // var bookingList = response.data as List;
-    final businessCompany =
-        BusinessCompany.fromJson(response.data['data'] as Map<String, Object?>);
-    print('get business comapny');
+    try {
+      final businessCompany = BusinessCompany.fromJson(
+          response.data['data'] as Map<String, Object?>);
+      print('get business comapny');
 
-    return businessCompany;
+      return businessCompany;
+    } on Exception catch (e) {
+      print('no comp');
+      return null;
+    }
   }
 
   Future<List<SellerProfile>> getWorkers() async {
@@ -136,7 +182,7 @@ class BusinessApi {
 
     try {
       final response = await _dio.post(
-        '${Constants.path}/owner/v1/owner',
+        '${Constants.path}/v1/owner/company',
         data: FormData.fromMap(
           {
             'name': name,
@@ -156,6 +202,46 @@ class BusinessApi {
       return true;
     } on DioError catch (e) {
       print(e.response!.data);
+      return false;
+    }
+  }
+
+  Future<bool> editBusinessCompany(
+    String name,
+    String address,
+    String passwordSerial,
+    String passwordNumber,
+    String inn,
+    String pinfl,
+    // String provinceId,
+    String districtId,
+  ) async {
+    String? token = await _flutterSecureStorage.read(key: 'token');
+
+    final headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': token!
+    };
+    final request = http.Request(
+        'PUT', Uri.parse('http://cashblack.assist.uz/api/v1/owner/company'));
+    request.bodyFields = {
+      'name': name,
+      'address': address,
+      'p_seria': passwordSerial,
+      'inn': inn,
+      'p_number': passwordNumber,
+      'pinfl': pinfl,
+      'district_id': '59'
+    };
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    } else {
+      print(response.reasonPhrase);
       return false;
     }
   }
@@ -235,19 +321,25 @@ class BusinessApi {
     }
   }
 
-  Future<List<BusinessShop>> getBusinessShops() async {
+  Future<List<BusinessShop>?> getBusinessShops() async {
     await _setDioHeader();
 
     final response = await _dio.get('${Constants.path}/v1/owner/shop');
     // var bookingList = response.data as List;
 
-    final businessShops = (response.data['data'] as List)
-        .map((x) => BusinessShop.fromJson(x as Map<String, Object?>))
-        .toList();
+    try {
+      final businessShops = (response.data['data'] as List)
+          .map((x) => BusinessShop.fromJson(x as Map<String, Object?>))
+          .toList();
 
-    print('get business shops');
+      print('get business shops');
 
-    return businessShops;
+      return businessShops;
+    } on Exception catch (e) {
+      print('no shops');
+
+      return null;
+    }
   }
 
   Future<String> getPaymentUrl(String amount) async {
@@ -280,7 +372,47 @@ class BusinessApi {
         .map((x) => Cashback.fromJson(x as Map<String, Object?>))
         .toList();
 
-    print('get categories');
+    print('get before pay');
+
+    return cashbacks;
+  }
+
+  Future<List<ReportCashback>> getCashbackStatistics() async {
+    await _setDioHeader();
+
+    final response = await _dio.get('${Constants.path}/v1/report/cashback');
+    final cashbacks = (response.data['data'] as List)
+        .map((x) => ReportCashback.fromJson(x as Map<String, Object?>))
+        .toList();
+
+    print('get cashback stats');
+
+    return cashbacks;
+  }
+
+  Future<List<ReportCashbackClient>> getCashbackStatisticsByClient() async {
+    await _setDioHeader();
+
+    final response = await _dio.get('${Constants.path}/v1/report/by-clients');
+    final cashbacks = (response.data['data'] as List)
+        .map((x) => ReportCashbackClient.fromJson(x as Map<String, Object?>))
+        .toList();
+
+    print('get cashback stats');
+
+    return cashbacks;
+  }
+
+  Future<List<WeeklyStat>> getWeeklyStatistics(int shopId) async {
+    await _setDioHeader();
+
+    final response = await _dio
+        .get('${Constants.path}/v1/report/by-days?days=6&shop_id=$shopId');
+    final cashbacks = (response.data['data'] as List)
+        .map((x) => WeeklyStat.fromJson(x as Map<String, Object?>))
+        .toList();
+
+    print('get cashback stats');
 
     return cashbacks;
   }
@@ -385,6 +517,37 @@ class BusinessApi {
       return true;
     } on DioError catch (e) {
       print(e.response!.data);
+      return false;
+    }
+  }
+
+  Future<bool> editOwnerProfile(
+    String firstName,
+    String lastName,
+    String phone,
+  ) async {
+    token = await _flutterSecureStorage.read(key: 'token');
+    final headers = <String, String>{
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': token!,
+    };
+    final request =
+        http.Request('PUT', Uri.parse('${Constants.path}/v1/owner/profile'));
+    request.bodyFields = {
+      'nickname': phone,
+      'first_name': firstName,
+      'last_name': lastName,
+      'district_id': '59'
+    };
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    } else {
+      print(response.reasonPhrase);
       return false;
     }
   }

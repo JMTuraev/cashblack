@@ -10,6 +10,7 @@ class ClientSettingsViewModel extends ChangeNotifier {
   final ClientApi _clientApi = ClientApi();
 
   bool isLoading = false;
+  bool isEditing = false;
   bool isDisabling = false;
   bool isGettingWorkers = false;
   ClientProfile? clientProfile;
@@ -20,5 +21,17 @@ class ClientSettingsViewModel extends ChangeNotifier {
     clientProfile = await _clientApi.getClientProfile();
     isLoading = false;
     notifyListeners();
+  }
+
+  Future<bool> editClientProfile(
+    String firstName,
+    String lastName,
+    String phone,
+  ) async {
+    isEditing = true;
+    final res = await _clientApi.editClientProfile(firstName, lastName, phone);
+    isEditing = false;
+    notifyListeners();
+    return res;
   }
 }

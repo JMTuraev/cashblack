@@ -1,0 +1,126 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'report_cashback.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+ReportCashback _$ReportCashbackFromJson(Map<String, dynamic> json) =>
+    ReportCashback(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      logo: json['logo'] as String?,
+      address: json['address'] as String,
+      waymark: json['waymark'] as String,
+      percent: json['percent'] as String,
+      categoryShopId: json['category_shop_id'] as int,
+      companyId:
+          ClientCompany.fromJson(json['company_id'] as Map<String, dynamic>),
+      amount: json['amount'],
+      withdrawSum: json['withdraw_sum'],
+      cashbackSum: json['cashback_sum'],
+      withdraw: (json['withdraw'] as List<dynamic>)
+          .map((e) => InlineWithdraw.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      cashback: (json['cashback'] as List<dynamic>)
+          .map((e) => InlineCashback.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$ReportCashbackToJson(ReportCashback instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'logo': instance.logo,
+      'address': instance.address,
+      'waymark': instance.waymark,
+      'percent': instance.percent,
+      'category_shop_id': instance.categoryShopId,
+      'company_id': instance.companyId,
+      'amount': instance.amount,
+      'withdraw_sum': instance.withdrawSum,
+      'cashback_sum': instance.cashbackSum,
+      'withdraw': instance.withdraw,
+      'cashback': instance.cashback,
+    };
+
+InlineWithdraw _$InlineWithdrawFromJson(Map<String, dynamic> json) =>
+    InlineWithdraw(
+      type: json['type'] as String,
+      companyName: json['company_name'] as String,
+      companyLogo: json['company_logo'] as String?,
+      clientId: json['client_id'] as int,
+      clientName: json['client'] as String,
+      clientPhone: json['client_phone'] as String,
+      sellerId: json['seller_id'] as int,
+      sellerName: json['seller_name'] as String,
+      sellerPhone: json['seller_phone'] as String,
+      sellerType: json['seller_type'] as String,
+      shopId: json['shop_id'] as int,
+      shopName: json['shop_name'] as String,
+      shopLogo: json['shop_logo'] as String?,
+      amount: json['amouth'] as String,
+      date: json['date'] as String,
+    );
+
+Map<String, dynamic> _$InlineWithdrawToJson(InlineWithdraw instance) =>
+    <String, dynamic>{
+      'type': instance.type,
+      'company_name': instance.companyName,
+      'company_logo': instance.companyLogo,
+      'client_id': instance.clientId,
+      'client': instance.clientName,
+      'client_phone': instance.clientPhone,
+      'seller_id': instance.sellerId,
+      'seller_name': instance.sellerName,
+      'seller_phone': instance.sellerPhone,
+      'seller_type': instance.sellerType,
+      'shop_id': instance.shopId,
+      'shop_name': instance.shopName,
+      'shop_logo': instance.shopLogo,
+      'amouth': instance.amount,
+      'date': instance.date,
+    };
+
+InlineCashback _$InlineCashbackFromJson(Map<String, dynamic> json) =>
+    InlineCashback(
+      type: json['type'] as String,
+      companyName: json['company_name'] as String,
+      companyLogo: json['company_logo'] as String?,
+      clientId: json['client_id'] as int,
+      clientName: json['client'] as String,
+      clientPhone: json['client_phone'] as String,
+      sellerId: json['seller_id'] as int,
+      sellerName: json['seller_name'] as String,
+      sellerPhone: json['seller_phone'] as String,
+      sellerType: json['seller_type'] as String,
+      shopId: json['shop_id'] as int,
+      shopName: json['shop_name'] as String,
+      shopLogo: json['shop_logo'] as String?,
+      percent: json['percent'] as String,
+      totalPrice: json['total_price'] as String,
+      amount: json['amount'] as String,
+      date: json['date'] as String,
+    );
+
+Map<String, dynamic> _$InlineCashbackToJson(InlineCashback instance) =>
+    <String, dynamic>{
+      'type': instance.type,
+      'company_name': instance.companyName,
+      'company_logo': instance.companyLogo,
+      'client_id': instance.clientId,
+      'client': instance.clientName,
+      'client_phone': instance.clientPhone,
+      'seller_id': instance.sellerId,
+      'seller_name': instance.sellerName,
+      'seller_phone': instance.sellerPhone,
+      'seller_type': instance.sellerType,
+      'shop_id': instance.shopId,
+      'shop_name': instance.shopName,
+      'shop_logo': instance.shopLogo,
+      'percent': instance.percent,
+      'total_price': instance.totalPrice,
+      'amount': instance.amount,
+      'date': instance.date,
+    };

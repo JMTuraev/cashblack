@@ -1,27 +1,27 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/shop.dart';
+import '../../../domain/models/category.dart';
+// import '../../../domain/models/city.dart';
 import '../../../string_extensions.dart';
-import '../../../utils/constants.dart';
+import '../../../size_config.dart';
 import '../../../utils/numberic_text_formatter.dart';
+import '../../../view_models/business/business_dashboard_view_model.dart';
+import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
+import '../../../view_models/create_store_view_view_model.dart';
+import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 
 class EditStoreView extends StatefulWidget {
-  const EditStoreView({
-    Key? key,
-    required this.shop,
-  }) : super(key: key);
-
-  final Shop shop;
+  const EditStoreView({super.key});
 
   @override
   State<EditStoreView> createState() => _EditStoreViewState();
@@ -36,75 +36,77 @@ class _EditStoreViewState extends State<EditStoreView> {
   // Future<List<Province>>? provinceItems;
   // Future<List<City>>? cityItems;
 
-  final ImagePicker _picker = ImagePicker();
-  final List<File?> _fileList = [];
+  bool _isChecked = false;
 
-  void getFromGallery() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.gallery,
-      maxHeight: 1080,
-      maxWidth: 1080,
-      // imageQuality: 75,
-    );
-    _cropImage(pickedFile!.path);
-  }
+  // final ImagePicker _picker = ImagePicker();
+  // final List<File?> _fileList = [];
 
-  void _cropImage(String filepath) async {
-    clearImages();
-    var croppedImage = await ImageCropper.platform.cropImage(
-      sourcePath: filepath,
-      maxHeight: 1080,
-      maxWidth: 1080,
-      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      cropStyle: CropStyle.circle,
-      uiSettings: <PlatformUiSettings>[],
-    );
-    if (croppedImage != null) {
-      setState(() {
-        _fileList.add(File(croppedImage.path));
-      });
-    }
-  }
+  // void getFromGallery() async {
+  //   PickedFile? pickedFile = await ImagePicker().getImage(
+  //     source: ImageSource.gallery,
+  //     maxHeight: 1080,
+  //     maxWidth: 1080,
+  //     // imageQuality: 75,
+  //   );
+  //   _cropImage(pickedFile!.path);
+  // }
 
-  void dltImages(data) {
-    setState(() {
-      _fileList.remove(data);
-    });
-  }
+  // void _cropImage(String filepath) async {
+  //   clearImages();
+  //   var croppedImage = await ImageCropper.platform.cropImage(
+  //     sourcePath: filepath,
+  //     maxHeight: 1080,
+  //     maxWidth: 1080,
+  //     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+  //     cropStyle: CropStyle.circle,
+  //     uiSettings: <PlatformUiSettings>[],
+  //   );
+  //   if (croppedImage != null) {
+  //     setState(() {
+  //       _fileList.add(File(croppedImage.path));
+  //     });
+  //   }
+  // }
 
-  void clearImages() {
-    setState(() {
-      _fileList.clear();
-    });
-  }
+  // void dltImages(data) {
+  //   setState(() {
+  //     _fileList.remove(data);
+  //   });
+  // }
 
-  void selectImage() async {
-    final XFile? image = await _picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    setState(() {
-      File? file = File(image!.path);
-      _fileList.add(file);
-    });
-  }
+  // void clearImages() {
+  //   setState(() {
+  //     _fileList.clear();
+  //   });
+  // }
 
-  // onCategoryChanged(value) {
+  // void selectImage() async {
+  //   final XFile? image = await _picker.pickImage(
+  //     source: ImageSource.gallery,
+  //   );
+  //   setState(() {
+  //     File? file = File(image!.path);
+  //     _fileList.add(file);
+  //   });
+  // }
+
+  // onCategoryChanged(String value) {
   //   setState(() {
   //     _selectedCategory = value;
   //   });
   // }
 
-  // onProvinceChanged(value) {
+  // onProvinceChanged(String value) {
   //   setState(() {
   //     _selectedCity = null;
   //     _selectedProvince = value;
-  //     cityItems = context
-  //         .read<CreateStoreViewViewModel>()
-  //         .getCities(_selectedProvince!);
+  //     // cityItems = context
+  //     //     .read<EditStoreViewViewModel>()
+  //     //     .getCities(_selectedProvince!);
   //   });
   // }
 
-  // onCityChanged(value) {
+  // onCityChanged(String value) {
   //   setState(() {
   //     _selectedCity = value;
   //   });
@@ -112,70 +114,60 @@ class _EditStoreViewState extends State<EditStoreView> {
 
   // @override
   // void initState() {
-  // super.initState();
-  // loadUser();
-  // _selectedCity = widget.shop.city.id.toString();
-  // _selectedProvince = widget.shop.province.id.toString();
-  // _selectedCategory = widget.shop.category.id.toString();
-  // setState(() {});
+  //   super.initState();
+  //   loadUser();
+  //   setState(() {});
   // }
 
   // Future<void> loadUser() async {
-  //   categoryItems = context.read<CreateStoreViewViewModel>().getCategories();
-  //   provinceItems = context.read<CreateStoreViewViewModel>().getProvincies();
-  //   cityItems = context
-  //       .read<CreateStoreViewViewModel>()
-  //       .getCities(widget.shop.province.id.toString());
+  //   // categoryItems = context.read<EditStoreViewViewModel>().getCategories();
+  //   // provinceItems = context.read<EditStoreViewViewModel>().getProvincies();
+  //   // cityItems = context.read<EditStoreViewViewModel>().getCities('1');
   // }
+
+  final TextEditingController _brandName = TextEditingController();
+  final TextEditingController _passport = TextEditingController();
+  final TextEditingController _address = TextEditingController();
+  final TextEditingController _inn = TextEditingController();
+  final TextEditingController _pinfl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    // final TextEditingController _brandName =
-    TextEditingController(text: widget.shop.name);
-    final TextEditingController _cashback =
-        TextEditingController(text: widget.shop.cashback.toString());
     // Future<List<Category>> categoryItems =
-    //     context.read<CreateStoreViewViewModel>().getCategories();
+    //     context.read<EditStoreViewViewModel>().getCategories();
     // Future<List<Province>> provinceItems =
-    //     context.read<CreateStoreViewViewModel>().getProvincies();
+    //     context.read<EditStoreViewViewModel>().getProvincies();
     // Future<List<City>> cityItems =
-    //     context.read<CreateStoreViewViewModel>().getCities('1');
+    //     context.read<EditStoreViewViewModel>().getCities('1');
+    // FlutterNativeSplash.remove();
+
+    SizeConfig().init(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Изменить'),
-      ),
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
           child: Align(
+            alignment: Alignment.topCenter,
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  // const SizedBox(height: 40),
+                  const HeroTitleWidget(text: 'Изминить компанию'),
                   // const SizedBox(height: 20),
-                  _fileList.isEmpty
-                      ? _ImageWidget(
-                          onTap: getFromGallery,
-                          image: widget.shop.image!,
-                        )
-                      : _ImageViewWidget(
-                          fileList: _fileList,
-                          onDelete: () {
-                            clearImages();
-                          },
-                          onEdit: () {
-                            getFromGallery();
-                          },
-                        ),
-                  const SizedBox(height: 20),
-                  Text(
-                    widget.shop.name,
-                    style: const TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
+                  // _fileList.isEmpty
+                  //     ? _FilePickerWidget(onTap: getFromGallery)
+                  //     : _ImageViewWidget(
+                  //         fileList: _fileList,
+                  //         onDelete: () {
+                  //           clearImages();
+                  //         },
+                  //         onEdit: () {
+                  //           getFromGallery();
+                  //         },
+                  //       ),
+                  // const SizedBox(height: 20),
                   // FutureBuilder(
                   //   future: categoryItems,
                   //   builder: (context, snapshot) {
@@ -183,7 +175,7 @@ class _EditStoreViewState extends State<EditStoreView> {
                   //       var category = snapshot.data as List<Category>;
                   //       return _SelectCategoryWidget(
                   //         hint: 'Категория',
-                  //         selectedOption: widget.shop.category.id.toString(),
+                  //         selectedOption: _selectedCategory,
                   //         categoryItems: category
                   //             .map(
                   //               (e) => DropdownMenuItem<String>(
@@ -201,13 +193,35 @@ class _EditStoreViewState extends State<EditStoreView> {
                   //     }
                   //   },
                   // ),
-                  // const SizedBox(height: 20),
-                  // _BrandNameWidget(controller: _brandName),
-                  // const SizedBox(height: 20),
-                  _CashbackWidget(
-                    controller: _cashback,
-                  ),
                   const SizedBox(height: 20),
+                  // _BrandNameWidget(controller: _brandName),
+
+                  _GenericTextFieldWidget(
+                    controller: _brandName,
+                    title: 'Название',
+                  ),
+                  // const SizedBox(height: 20),
+                  // _SelectCategoryWidget(
+                  //   hint: 'Категория',
+                  //   selectedOption: _selectedCategory,
+                  //   categoryItems:
+                  //       context.read<BusinessViewModel>().isLoadingCategories
+                  //           ? []
+                  //           : context
+                  //               .read<BusinessViewModel>()
+                  //               .categories
+                  //               .map(
+                  //                 (e) => DropdownMenuItem<String>(
+                  //                   value: e.id.toString(),
+                  //                   child: Text(e.title),
+                  //                 ),
+                  //               )
+                  //               .toList(),
+                  //   onChanged: onCategoryChanged,
+                  // ),
+                  // const SizedBox(height: 20),
+                  // _CashbackWidget(controller: _cashback),
+                  // const SizedBox(height: 20),
                   // FutureBuilder(
                   //   future: provinceItems,
                   //   builder: (context, snapshot) {
@@ -215,15 +229,7 @@ class _EditStoreViewState extends State<EditStoreView> {
                   //       var provincy = snapshot.data as List<Province>;
                   //       return _SelectCategoryWidget(
                   //         hint: 'Область',
-                  //         // selectedOption: _selectedProvince,
-                  //         selectedOption: provincy
-                  //             .where(
-                  //               (element) =>
-                  //                   element.id == widget.shop.province.id,
-                  //             )
-                  //             .first
-                  //             .id
-                  //             .toString(),
+                  //         selectedOption: _selectedProvince,
                   //         categoryItems: provincy
                   //             .map(
                   //               (e) => DropdownMenuItem<String>(
@@ -249,14 +255,7 @@ class _EditStoreViewState extends State<EditStoreView> {
                   //       var city = snapshot.data as List<City>;
                   //       return _SelectCategoryWidget(
                   //         hint: 'Город',
-                  //         // selectedOption: _selectedCity,
-                  //         selectedOption: city
-                  //             // .where(
-                  //             //   (element) => element.id == widget.shop.city.id,
-                  //             // )
-                  //             .first
-                  //             .id
-                  //             .toString(),
+                  //         selectedOption: _selectedCity,
                   //         categoryItems: city
                   //             .map(
                   //               (e) => DropdownMenuItem<String>(
@@ -275,10 +274,73 @@ class _EditStoreViewState extends State<EditStoreView> {
                   //   },
                   // ),
                   const SizedBox(height: 20),
+                  _GenericTextFieldWidget(
+                    controller: _address,
+                    title: 'Адрес',
+                  ),
+                  const SizedBox(height: 20),
+                  _GenericTextFieldWidget(
+                    controller: _passport,
+                    title: 'Паспорт серия',
+                    maxlength: 9,
+                  ),
+                  const SizedBox(height: 20),
+                  _NumberTextFieldWidget(
+                    controller: _inn,
+                    title: 'ИНН',
+                    maxLength: 9,
+                  ),
+                  const SizedBox(height: 20),
+                  _NumberTextFieldWidget(
+                    controller: _pinfl,
+                    title: 'ПИГФЛ',
+                    maxLength: 13,
+                  ),
+                  // const SizedBox(height: 20),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     Checkbox(
+                  //       value: _isChecked,
+                  //       onChanged: ((value) {
+                  //         setState(() {
+                  //           _isChecked = value!;
+                  //         });
+                  //       }),
+                  //     ),
+                  //     const Text(
+                  //       'Я принимаю условия оферты',
+                  //       style: TextStyle(
+                  //         fontSize: 16,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  const SizedBox(height: 20),
                   MainButtonWidget(
                     text: 'OK',
+                    isLoading: false,
                     method: () async {
-                      Navigator.pop(context);
+                      context
+                          .read<BusinessSettingsViewModel>()
+                          .editBusinessCompany(
+                              _brandName.text,
+                              _address.text,
+                              _passport.text.substring(0, 2),
+                              _passport.text.substring(2),
+                              _inn.text,
+                              _pinfl.text,
+                              '44')
+                          .then((value) {
+                        if (value) {
+                          context
+                              .read<BusinessDashboardViewModel>()
+                              .getBusinessCompany();
+                          Navigator.pop(context);
+                        } else {
+                          print('Ошибка сервера');
+                        }
+                      });
                     },
                   ),
                   const SizedBox(height: 20),
@@ -292,25 +354,26 @@ class _EditStoreViewState extends State<EditStoreView> {
   }
 }
 
-class _CashbackWidget extends StatelessWidget {
-  const _CashbackWidget({
+class _NumberTextFieldWidget extends StatelessWidget {
+  const _NumberTextFieldWidget({
     Key? key,
     required this.controller,
+    required this.title,
+    required this.maxLength,
   }) : super(key: key);
 
   final TextEditingController controller;
+  final String title;
+  final int maxLength;
 
   @override
   Widget build(BuildContext context) {
-    NumericTextFormatter numericTextFormatter = NumericTextFormatter();
+    // NumericTextFormatter numericTextFormatter = NumericTextFormatter();
 
     return TextFormField(
       controller: controller,
-      maxLength: 2,
-      inputFormatters: [numericTextFormatter],
-      decoration: const InputDecoration(
-        counterText: '',
-        labelText: 'Кэшбек',
+      // inputFormatters: [numericTextFormatter],
+      decoration: InputDecoration(
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
@@ -320,13 +383,15 @@ class _CashbackWidget extends StatelessWidget {
             Radius.circular(20),
           ),
         ),
-        // hintText: 'Кэшбек',
+        counterText: '',
+        hintText: title,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),
           ),
         ),
       ),
+      maxLength: maxLength,
       autocorrect: false,
       enableSuggestions: false,
       keyboardAppearance: Brightness.dark,
@@ -397,26 +462,24 @@ class _FilePickerWidget extends StatelessWidget {
       onTap: () => onTap(),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(
-            const Radius.circular(90),
-          ),
-          color: Colors.grey[800],
+          borderRadius: BorderRadius.circular(30),
+          color: Color(0xff1c1c1d),
         ),
-        width: 150,
-        height: 150,
+        width: 120,
+        height: 120,
         child: DottedBorder(
           borderType: BorderType.RRect,
-          radius: const Radius.circular(90),
-          padding: const EdgeInsets.all(14),
+          radius: const Radius.circular(30),
           dashPattern: const [3, 3, 3, 3],
           color: Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Center(
-                child: Icon(
-                  CupertinoIcons.photo,
-                  size: 40,
+                child: SvgPicture.asset(
+                  'assets/svg/gallery.svg',
+                  height: 60,
+                  width: 60,
                 ),
               ),
             ],
@@ -427,20 +490,24 @@ class _FilePickerWidget extends StatelessWidget {
   }
 }
 
-class _BrandNameWidget extends StatelessWidget {
-  const _BrandNameWidget({
+class _GenericTextFieldWidget extends StatelessWidget {
+  const _GenericTextFieldWidget({
     Key? key,
     required this.controller,
+    required this.title,
+    this.maxlength,
   }) : super(key: key);
 
   final TextEditingController controller;
+  final String title;
+  final int? maxlength;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      decoration: const InputDecoration(
-        focusedBorder: OutlineInputBorder(
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
             width: 2,
@@ -449,13 +516,15 @@ class _BrandNameWidget extends StatelessWidget {
             Radius.circular(20),
           ),
         ),
-        hintText: 'Бренд',
-        border: OutlineInputBorder(
+        hintText: title,
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),
           ),
         ),
+        counterText: '',
       ),
+      maxLength: maxlength,
       textCapitalization: TextCapitalization.sentences,
       autocorrect: false,
       enableSuggestions: false,
@@ -563,59 +632,6 @@ class _DefaultSelectCategoryWidget extends StatelessWidget {
               borderRadius: BorderRadius.all(
                 Radius.circular(20),
               ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ImageWidget extends StatelessWidget {
-  const _ImageWidget({
-    Key? key,
-    required this.onTap,
-    required this.image,
-  }) : super(key: key);
-
-  final Function onTap;
-  final String image;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onTap(),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(
-            const Radius.circular(90),
-          ),
-          color: Colors.grey[800],
-        ),
-        width: 150,
-        height: 150,
-        child: DottedBorder(
-          borderType: BorderType.RRect,
-          radius: const Radius.circular(90),
-          // padding: const EdgeInsets.all(14),
-          dashPattern: const [3, 3, 3, 3],
-          color: Colors.white,
-          // child: Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Center(
-          //       child: CachedNetworkImage(imageUrl: Constants.media + image),
-          //     ),
-          //   ],
-          // ),
-          child: ClipRRect(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            borderRadius: BorderRadius.circular(100),
-            child: CachedNetworkImage(
-              imageUrl: Constants.media + image,
-              fit: BoxFit.cover,
-              height: 150,
-              width: 150,
             ),
           ),
         ),

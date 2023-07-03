@@ -11,7 +11,7 @@ NotificationPrice _$NotificationPriceFromJson(Map<String, dynamic> json) =>
       id: json['id'] as int,
       type: json['type'] as String,
       price: json['price'] as String,
-      days: json['days'] as int,
+      days: json['days'] as int?,
       month: json['month'] as int?,
     );
 

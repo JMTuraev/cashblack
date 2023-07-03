@@ -151,6 +151,10 @@ class _ItemWidget extends StatelessWidget {
                     height: getW(80),
                     width: getW(80),
                   ),
+                  errorWidget: (context, url, error) => const Icon(
+                    Icons.home_repair_service_rounded,
+                    size: 40,
+                  ),
                 ),
               ),
               const SizedBox(width: 10),

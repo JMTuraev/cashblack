@@ -10,7 +10,7 @@ BusinessCompany _$BusinessCompanyFromJson(Map<String, dynamic> json) =>
     BusinessCompany(
       id: json['id'] as int,
       name: json['name'] as String,
-      logo: json['logo'] as String,
+      logo: json['logo'] as String?,
       inn: json['inn'] as String,
       address: json['address'] as String,
       passwordId: json['p_seria'] as String,

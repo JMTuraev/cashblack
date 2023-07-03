@@ -7,7 +7,7 @@ class NotificationPrice {
   final int id;
   final String type;
   final String price;
-  final int days;
+  final int? days;
   final int? month;
 
   NotificationPrice({

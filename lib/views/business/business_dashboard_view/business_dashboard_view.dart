@@ -11,13 +11,17 @@ import 'dart:math' as math;
 
 import '../../../domain/models/one_month_statistic.dart';
 import '../../../domain/models/owner/bonus_price.dart';
+import '../../../domain/models/owner/weekly_stat.dart';
 import '../../../size_config.dart';
 import '../../../string_extensions.dart';
 import '../../../utils/helpers.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_payment_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
+import '../../../view_models/business/business_statistics_view_model.dart';
+import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/show_modal.dart';
+import '../create_company_view.dart';
 import '../create_store_view/create_store_view.dart';
 import '../settings_view/payment_view.dart';
 import '../settings_view/payments_history_view.dart';
@@ -75,45 +79,54 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
   @override
   void initState() {
     super.initState();
+    // context.read<BusinessDashboardViewModel>().getWeeklyStatistics(
+    //     context.read<BusinessDashboardViewModel>().businessShops!.first.id);
   }
 
   double maxSum = 0;
   int currentShopIndex = 0;
 
-  List<OneMonthStatistic> aWeekStatistics = [
-    OneMonthStatistic(
-      cashback: 10,
-      price: 10,
+  List<WeeklyStat> dummyWeekStatistics = [
+    WeeklyStat(
+      cashback: 0,
+      totalCashback: 0,
+      withdraw: 0,
       date: DateTime.now().subtract(const Duration(days: 6)),
     ),
-    OneMonthStatistic(
-      cashback: 20,
-      price: 20,
+    WeeklyStat(
+      cashback: 0,
+      totalCashback: 0,
+      withdraw: 0,
       date: DateTime.now().subtract(const Duration(days: 5)),
     ),
-    OneMonthStatistic(
-      cashback: 30,
-      price: 30,
+    WeeklyStat(
+      cashback: 0,
+      totalCashback: 0,
+      withdraw: 0,
       date: DateTime.now().subtract(const Duration(days: 4)),
     ),
-    OneMonthStatistic(
-      cashback: 34,
-      price: 0,
+    WeeklyStat(
+      cashback: 0,
+      totalCashback: 0,
+      withdraw: 0,
       date: DateTime.now().subtract(const Duration(days: 3)),
     ),
-    OneMonthStatistic(
-      cashback: 34,
-      price: 0,
+    WeeklyStat(
+      cashback: 0,
+      totalCashback: 0,
+      withdraw: 0,
       date: DateTime.now().subtract(const Duration(days: 2)),
     ),
-    OneMonthStatistic(
+    WeeklyStat(
       cashback: 0,
-      price: 12,
+      totalCashback: 0,
+      withdraw: 0,
       date: DateTime.now().subtract(const Duration(days: 1)),
     ),
-    OneMonthStatistic(
+    WeeklyStat(
       cashback: 0,
-      price: 103,
+      totalCashback: 0,
+      withdraw: 0,
       date: DateTime.now(),
     ),
   ];
@@ -125,7 +138,7 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
     // var isBusiness = user!.groups.first.name == 'Biznes';
 
     final businessShops =
-        context.read<BusinessDashboardViewModel>().businessShops;
+        context.read<BusinessDashboardViewModel>().businessShops!;
     var profile = context.read<BusinessSettingsViewModel>().businessProfile;
     return Container(
       // header: const CupertinoHeader(),
@@ -143,16 +156,24 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => const CreateStoreView(),
-                      ),
-                    );
+                    if (context.read<BusinessDashboardViewModel>().hasCompany) {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => const CreateStoreView(),
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => const CreateCompanyView(),
+                        ),
+                      );
+                    }
                   },
                   child: const _AddStoreWidget(),
                 ),
                 const SizedBox(width: 10),
-                context.watch<BusinessDashboardViewModel>().isLoading
+                context.watch<BusinessDashboardViewModel>().isGettingShops
                     ? const CupertinoActivityIndicator()
                     : Expanded(
                         child: ListView.separated(
@@ -165,6 +186,9 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                             final shop = businessShops[index];
                             return GestureDetector(
                               onTap: () {
+                                context
+                                    .read<BusinessDashboardViewModel>()
+                                    .getWeeklyStatistics(shop.id);
                                 setState(() {
                                   currentShopIndex = index;
                                 });
@@ -244,7 +268,9 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
           Column(
             children: [
               Text(
-                businessShops[currentShopIndex].name,
+                businessShops.isNotEmpty
+                    ? businessShops[currentShopIndex].name
+                    : '',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
@@ -259,15 +285,9 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
               //   ),
               // ),
               // const SizedBox(height: 14),
-              Text(
-                '${NumberFormat.simpleCurrency(
-                  name: '',
-                  locale: 'ru_RU',
-                  decimalDigits: 0,
-                ).format(double.parse(profile!.totalAmount))}сум',
-                style: const TextStyle(fontSize: 25),
-              ),
-              SizedBox(height: getH(18)),
+
+              // SizedBox(height: getH(18)),
+              //TODO apple
               1 == 1
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -405,66 +425,6 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                                             );
                                           },
                                         ),
-                                        // ListView.separated(
-                                        //   shrinkWrap: true,
-                                        //   physics:
-                                        //       const NeverScrollableScrollPhysics(),
-                                        //   itemCount: bonusPrices.length,
-                                        //   separatorBuilder: (context, index) {
-                                        //     return const SizedBox(height: 10);
-                                        //   },
-                                        //   itemBuilder: (context, index) {
-                                        //     return Container(
-                                        //       padding: EdgeInsets.symmetric(
-                                        //         horizontal: 20,
-                                        //         vertical: 10,
-                                        //       ),
-                                        //       decoration: BoxDecoration(
-                                        //           color: Colors.black26,
-                                        //           borderRadius:
-                                        //               BorderRadius.all(
-                                        //             Radius.circular(10),
-                                        //           )),
-                                        //       child: Row(
-                                        //         children: [
-                                        //           Text(
-                                        //             bonusPrices[index]
-                                        //                 .amount
-                                        //                 .getAmountInSum(),
-                                        //             style: TextStyle(
-                                        //               fontSize: 20,
-                                        //               fontWeight:
-                                        //                   FontWeight.w500,
-                                        //             ),
-                                        //           ),
-                                        //           Column(
-                                        //             children: [
-                                        //               Text(
-                                        //                 bonusPrices[index]
-                                        //                     .bonus
-                                        //                     .getAmountInSum(),
-                                        //                 style: TextStyle(
-                                        //                   fontSize: 20,
-                                        //                   fontWeight:
-                                        //                       FontWeight.w500,
-                                        //                 ),
-                                        //               ),
-                                        //               Text(
-                                        //                 'бонус'.toUpperCase(),
-                                        //                 style: TextStyle(
-                                        //                   fontSize: 14,
-                                        //                   fontWeight:
-                                        //                       FontWeight.w500,
-                                        //                   color: Colors.white24,
-                                        //                 ),
-                                        //               )
-                                        //             ],
-                                        //           ),
-                                        //         ],
-                                        //       ),
-                                        //     );
-                                        //   },
-                                        // ),
                                       ],
                                     ),
                                   ]);
@@ -514,6 +474,7 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                       ],
                     )
                   : const Center(child: SizedBox()),
+              SizedBox(height: getH(10)),
               const Text(
                 'Количество клиентов',
                 style: TextStyle(
@@ -533,7 +494,15 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                   ),
                   SizedBox(width: getW(18)),
                   Text(
-                    0.toString(),
+                    context
+                            .watch<BusinessStatisticsViewModel>()
+                            .isClientsLoading
+                        ? ' '
+                        : context
+                            .read<BusinessStatisticsViewModel>()
+                            .clients
+                            .length
+                            .toString(),
                     style: const TextStyle(
                       fontSize: 15,
                     ),
@@ -546,11 +515,25 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
           // _LineInfoWidget(),
           Container(
             // width: 300,
-            height: 300,
-            child: _ChartCashbackWidget(
-              aWeekStatistics: aWeekStatistics,
-              maxSum: 1000,
-            ),
+            height: getW(300),
+            child: context.watch<BusinessDashboardViewModel>().isWeeklyLoading
+                ? LogoAnimatedWidget(size: 1)
+                : (context
+                        .watch<BusinessDashboardViewModel>()
+                        .weeklyStatistics
+                        .isEmpty
+                    ? _ChartCashbackWidget(
+                        aWeekStatistics: dummyWeekStatistics,
+                        maxSum:
+                            context.read<BusinessDashboardViewModel>().maxSum,
+                      )
+                    : _ChartCashbackWidget(
+                        aWeekStatistics: context
+                            .read<BusinessDashboardViewModel>()
+                            .weeklyStatistics,
+                        maxSum:
+                            context.read<BusinessDashboardViewModel>().maxSum,
+                      )),
           ),
         ],
       ),
@@ -804,7 +787,7 @@ class _ChartCashbackWidget extends StatefulWidget {
     required this.maxSum,
   });
 
-  final List<OneMonthStatistic> aWeekStatistics;
+  final List<WeeklyStat> aWeekStatistics;
   final double maxSum;
 
   @override
@@ -860,22 +843,52 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
       ),
       spots: showSum
           ? [
-              ...widget.aWeekStatistics.map(
-                (e) {
-                  return FlSpot(
-                    double.parse(
-                      e.date!
-                          .difference(
-                            DateTime.now().subtract(const Duration(days: 7)),
-                          )
-                          .inDays
-                          .abs()
-                          .toString(),
-                    ),
-                    double.parse(e.price.toString()),
-                  );
-                },
-              ),
+              ...List.generate(
+                widget.aWeekStatistics.length,
+                (index) => FlSpot(
+                  double.parse(index.toString()),
+                  double.parse(
+                    widget.aWeekStatistics[index].totalCashback.toString(),
+                  ),
+                ),
+              )
+
+              // FlSpot(
+              //   0,
+              //   double.parse(widget.aWeekStatistics[0].cashback.toString()),
+              // ),
+              // FlSpot(1, 4000),
+              // FlSpot(2, 6000),
+              // FlSpot(3, 8000),
+              // FlSpot(4, 10000),
+              // FlSpot(5, 12000),
+              // FlSpot(6, 14000),
+
+              // ...widget.aWeekStatistics.map(
+              //   (e) {
+              //     return FlSpot(
+              //       0,
+              //       double.parse(e.cashback.toString()),
+              //     );
+              //   },
+              // ),
+
+              // ...widget.aWeekStatistics.map(
+              //   (e) {
+              //     return FlSpot(
+              //       double.parse(
+              //         e.date!
+              //             .difference(
+              //               DateTime.now().subtract(const Duration(days: 7)),
+              //             )
+              //             .inDays
+              //             .abs()
+              //             .toString(),
+              //       ),
+              //       double.parse(e.cashback.toString()),
+              //     );
+              //   },
+              // ),
             ]
           : [FlSpot.zero],
     );
@@ -916,21 +929,39 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
       ),
       spots: showCashback
           ? [
-              ...widget.aWeekStatistics.map(
-                (e) => FlSpot(
+              // ...widget.aWeekStatistics.map(
+              //   (e) => FlSpot(
+              //     12.2,
+              //     21,
+              //   ),
+              // ),
+
+              ...List.generate(
+                widget.aWeekStatistics.length,
+                (index) => FlSpot(
+                  double.parse(index.toString()),
                   double.parse(
-                    e.date!
-                        .difference(
-                          DateTime.now().subtract(const Duration(days: 7)),
-                        )
-                        .inDays
-                        .abs()
-                        .toString(),
-                  ),
-                  //TODO 5 ga ko'paydi!
-                  double.parse(e.cashback.toString()) * 5,
+                        widget.aWeekStatistics[index].cashback.toString(),
+                      ) *
+                      5,
                 ),
-              ),
+              )
+
+              // ...widget.aWeekStatistics.map(
+              //   (e) => FlSpot(
+              //     double.parse(
+              //       e.date!
+              //           .difference(
+              //             DateTime.now().subtract(const Duration(days: 7)),
+              //           )
+              //           .inDays
+              //           .abs()
+              //           .toString(),
+              //     ),
+              //     //TODO 5 ga ko'paydi!
+              //     double.parse(e.cashback.toString()) * 5,
+              //   ),
+              // ),
             ]
           : [FlSpot.zero],
     );
@@ -947,8 +978,8 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            GestureDetector(
-              onTap: () {
+            IconButton(
+              onPressed: () {
                 setState(() {
                   showSum = !showSum;
                   if (showCashback == false) {
@@ -957,7 +988,7 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                   }
                 });
               },
-              child: Column(
+              icon: Column(
                 children: [
                   Text(
                     'Сумма',
@@ -980,8 +1011,8 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
               ),
             ),
             const SizedBox(width: 40),
-            GestureDetector(
-              onTap: () {
+            IconButton(
+              onPressed: () {
                 setState(() {
                   showCashback = !showCashback;
                   if (showSum == false) {
@@ -990,7 +1021,7 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                   }
                 });
               },
-              child: Column(
+              icon: Column(
                 children: [
                   Text(
                     'Кэшбек',
@@ -1053,7 +1084,8 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                                     locale: 'ru_RU',
                                     decimalDigits: 0,
                                   ).format(
-                                    barSpot.y / 5,
+                                    // barSpot.y / 5,
+                                    barSpot.y,
                                   ),
                                   TextStyle(
                                     color: barSpot.bar.color,
@@ -1095,6 +1127,7 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                               value.toInt() > 0
                                   ? '${(value.toInt() / 1000).toStringAsFixed(0)} тыс'
                                   : '',
+                              // 'se',
                               textAlign: TextAlign.center,
                               style: const TextStyle(fontSize: 10),
                             ),
@@ -1115,9 +1148,10 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                             child: RotationTransition(
                               turns: const AlwaysStoppedAnimation(-45 / 360),
                               child: Text(
-                                formatter.format(
-                                  widget.aWeekStatistics[value.toInt()].date!,
-                                ),
+                                widget.aWeekStatistics[value.toInt()].date
+                                    .toString()
+                                    .getLocaleDateWithoutYearWithMont(),
+                                // 'as',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontSize: 10,

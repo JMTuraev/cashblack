@@ -20,6 +20,8 @@ ClientShop _$ClientShopFromJson(Map<String, dynamic> json) => ClientShop(
       cashback: (json['cashback'] as List<dynamic>)
           .map((e) => ClientCashback.fromJson(e as Map<String, dynamic>))
           .toList(),
+      withdrawSum: json['withdraw_sum'],
+      cashbackSum: json['cashback_sum'],
     );
 
 Map<String, dynamic> _$ClientShopToJson(ClientShop instance) =>
@@ -34,6 +36,8 @@ Map<String, dynamic> _$ClientShopToJson(ClientShop instance) =>
       'company_id': instance.clientCompany,
       'amount': instance.amount,
       'cashback': instance.cashback,
+      'withdraw_sum': instance.withdrawSum,
+      'cashback_sum': instance.cashbackSum,
     };
 
 ClientCompany _$ClientCompanyFromJson(Map<String, dynamic> json) =>

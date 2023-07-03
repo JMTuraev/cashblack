@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/owner/business_license.dart';
-import '../../../domain/models/payment.dart';
 import '../../../string_extensions.dart';
-import '../../../view_models/balance_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
-import '../../../widgets/empty_widget.dart';
-import '../../../widgets/logo_animated_widget.dart';
 
 class PaymentsHistoryView extends StatefulWidget {
   const PaymentsHistoryView({super.key});
@@ -75,15 +70,15 @@ class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
                                     payments[index]
                                         .endAt
                                         .getLocaleDateWithYear(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              SizedBox(height: 6),
+                              const SizedBox(height: 6),
                               Text(
                                 payments[index].createdAt.getLocaleDateTime(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 ),

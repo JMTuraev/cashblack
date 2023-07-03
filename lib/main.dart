@@ -10,6 +10,7 @@ import 'view_models/balance_view_model.dart';
 import 'view_models/business/business_dashboard_view_model.dart';
 import 'view_models/business/business_notifications_view_model.dart';
 import 'view_models/business/business_payment_view_model.dart';
+import 'view_models/business/business_statistics_view_model.dart';
 import 'view_models/business/business_view_model.dart';
 import 'view_models/business/business_login_view_model.dart';
 import 'view_models/business/business_settings_view_model.dart';
@@ -33,8 +34,13 @@ import 'widgets/dismiss_keyboard_widget.dart';
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  await SystemChrome.setEnabledSystemUIOverlays(
-      [SystemUiOverlay.bottom, SystemUiOverlay.top]);
+  // await SystemChrome.setEnabledSystemUIOverlays(
+  //     [SystemUiOverlay.bottom, SystemUiOverlay.top]);
+
+  await SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.manual,
+    overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top],
+  );
 
   final prefs = await SharedPreferences.getInstance();
 
@@ -89,6 +95,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<BusinessPaymentViewModel>(
           create: (ctx) => BusinessPaymentViewModel(),
+        ),
+        ChangeNotifierProvider<BusinessStatisticsViewModel>(
+          create: (ctx) => BusinessStatisticsViewModel(),
         ),
         //client
         ChangeNotifierProvider<ClientViewModel>(

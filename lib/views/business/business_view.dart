@@ -4,10 +4,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../size_config.dart';
+import '../../utils/helpers.dart';
 import '../../view_models/business/business_dashboard_view_model.dart';
+import '../../view_models/business/business_notifications_view_model.dart';
 import '../../view_models/business/business_payment_view_model.dart';
+import '../../view_models/business/business_statistics_view_model.dart';
 import '../../view_models/business/business_view_model.dart';
 import '../../view_models/business/business_settings_view_model.dart';
+import '../../widgets/logo_animated_widget.dart';
 import 'business_dashboard_view/business_dashboard_view.dart';
 import 'scanner_view/barcode_scanner_view.dart';
 import 'scanner_view/freezed_view.dart';
@@ -23,16 +27,52 @@ class BusinessView extends StatefulWidget {
   State<BusinessView> createState() => _BusinessViewState();
 }
 
-class _BusinessViewState extends State<BusinessView> {
+class _BusinessViewState extends State<BusinessView>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     context.read<BusinessDashboardViewModel>().getBusinessCompany();
     context.read<BusinessDashboardViewModel>().getBusinessShops();
+    context.read<BusinessNotificationsViewModel>().getPrices();
+    // context.read<BusinessNotificationsViewModel>().getNotifications();
+    // context.read<BusinessDashboardViewModel>().getWeeklyStatistics();
     context.read<BusinessSettingsViewModel>().getOwnerProfile();
     context.read<BusinessViewModel>().getCategories();
     context.read<BusinessSettingsViewModel>().getWorkers();
     context.read<BusinessPaymentViewModel>().getBonusPrices();
+    context.read<BusinessStatisticsViewModel>().getStats();
+    context.read<BusinessStatisticsViewModel>().getClients();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    print('Dispose');
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.inactive:
+        // Navigator.pop(context);
+        print('appLifeCycleState inactive');
+        break;
+      case AppLifecycleState.resumed:
+        context.read<BusinessSettingsViewModel>().getOwnerProfile;
+        print('appLifeCycleState resumed');
+        break;
+      case AppLifecycleState.paused:
+        // Navigator.pop(context);
+        print('appLifeCycleState paused');
+        break;
+      case AppLifecycleState.detached:
+        print('appLifeCycleState detached');
+        break;
+    }
   }
 
   @override
@@ -77,89 +117,112 @@ class _BusinessViewState extends State<BusinessView> {
     ];
 
     List<SvgPicture> itemsForWorkers = [
+      // SvgPicture.asset(
+      //   'assets/svg/home-2.svg',
+      //   color: Colors.white,
+      //   height: currentIndex == 0 ? iconSize : null,
+      //   width: currentIndex == 0 ? iconSize : null,
+      // ),
+      // SvgPicture.asset(
+      //   'assets/svg/chart.svg',
+      //   color: Colors.white,
+      //   height: currentIndex == 1 ? iconSize : null,
+      //   width: currentIndex == 1 ? iconSize : null,
+      // ),
       SvgPicture.asset(
-        'assets/svg/home-2.svg',
+        'assets/svg/scan-barcode.svg',
         color: Colors.white,
         height: currentIndex == 0 ? iconSize : null,
         width: currentIndex == 0 ? iconSize : null,
       ),
       SvgPicture.asset(
-        'assets/svg/chart.svg',
+        'assets/svg/setting-2.svg',
         color: Colors.white,
         height: currentIndex == 1 ? iconSize : null,
         width: currentIndex == 1 ? iconSize : null,
       ),
-      SvgPicture.asset(
-        'assets/svg/scan-barcode.svg',
-        color: Colors.white,
-        height: currentIndex == 2 ? iconSize : null,
-        width: currentIndex == 2 ? iconSize : null,
-      ),
-      SvgPicture.asset(
-        'assets/svg/setting-2.svg',
-        color: Colors.white,
-        height: currentIndex == 3 ? iconSize : null,
-        width: currentIndex == 3 ? iconSize : null,
-      ),
     ];
 
-    return Scaffold(
-      // extendBody: true,
-      bottomNavigationBar: CurvedNavigationBar(
-        buttonBackgroundColor: const Color.fromRGBO(103, 206, 103, 1),
-        backgroundColor: Colors.transparent,
-        color: const Color.fromRGBO(28, 28, 29, 1),
-        index: currentIndex,
-        items: 1 == 1 ? items : itemsForWorkers,
-        onTap: (index) {
-          context.read<BusinessViewModel>().onChange(index);
-        },
-      ),
-      body: 1 == 1
-          ? IndexedStack(
+    return context.watch<BusinessSettingsViewModel>().isLoading
+        ? LogoAnimatedWidget(size: 1.5)
+        : Scaffold(
+            // extendBody: true,
+            bottomNavigationBar: CurvedNavigationBar(
+              buttonBackgroundColor: const Color.fromRGBO(103, 206, 103, 1),
+              backgroundColor: Colors.transparent,
+              color: const Color.fromRGBO(28, 28, 29, 1),
               index: currentIndex,
-              children: [
-                const BusinessDashboardView(),
-                const StatisticsView(),
-                BarcodeScannerView(
-                  shopId: 1,
-                ),
-
-                const ServicesView(),
-                const SettingsView(),
-
-                // currentIndex == 2 && 1 == 1
-                //     ? BarcodeScannerView(
-                //         shopId: 1,
-                //       )
-                //     : SubscriptionView(
-                //         isBusiness: true,
-                //         subscribtionPrice: '1000',
-                //         shopId: 1,
-                //       ),
-                // const ServicesView(),
-                // const SettingsView(),
-              ],
-            )
-          : IndexedStack(
-              index: currentIndex,
-              children: [
-                const BusinessDashboardView(),
-                const StatisticsView(),
-                currentIndex == 2 && 1 == 1
-                    ? 2 == 2
-                        ? const FreezedView()
-                        : BarcodeScannerView(
-                            shopId: 1,
-                          )
-                    : const SubscriptionView(
-                        isBusiness: true,
-                        subscribtionPrice: '2000',
-                        shopId: 1,
-                      ),
-                const SettingsView(),
-              ],
+              items: context
+                          .read<BusinessSettingsViewModel>()
+                          .businessProfile!
+                          .type ==
+                      'owner'
+                  ? items
+                  : itemsForWorkers,
+              onTap: (index) {
+                context.read<BusinessViewModel>().onChange(index);
+              },
             ),
-    );
+            body: context
+                        .read<BusinessSettingsViewModel>()
+                        .businessProfile!
+                        .type ==
+                    'owner'
+                ? IndexedStack(
+                    index: currentIndex,
+                    children: [
+                      const BusinessDashboardView(),
+                      const StatisticsView(),
+                      currentIndex == 2 &&
+                              Helpers.subsctibedChecker(
+                                context
+                                    .read<BusinessSettingsViewModel>()
+                                    .businessProfile!,
+                              )
+                          ? BarcodeScannerView(
+                              shopId: 1,
+                            )
+                          : SubscriptionView(
+                              isBusiness: true,
+                              subscribtionPrice: '1',
+                              shopId: 1,
+                            ),
+
+                      const ServicesView(),
+                      const SettingsView(),
+
+                      // currentIndex == 2 && 1 == 1
+                      //     ? BarcodeScannerView(
+                      //         shopId: 1,
+                      //       )
+                      //     : SubscriptionView(
+                      //         isBusiness: true,
+                      //         subscribtionPrice: '1000',
+                      //         shopId: 1,
+                      //       ),
+                      // const ServicesView(),
+                      // const SettingsView(),
+                    ],
+                  )
+                : IndexedStack(
+                    index: currentIndex,
+                    children: [
+                      // const BusinessDashboardView(),
+                      // const StatisticsView(),
+                      currentIndex == 0 && 1 == 1
+                          ? 2 == 2
+                              ? const FreezedView()
+                              : BarcodeScannerView(
+                                  shopId: 1,
+                                )
+                          : const SubscriptionView(
+                              isBusiness: true,
+                              subscribtionPrice: '2000',
+                              shopId: 1,
+                            ),
+                      const SettingsView(),
+                    ],
+                  ),
+          );
   }
 }

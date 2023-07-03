@@ -18,6 +18,10 @@ class ClientShop {
   final ClientCompany clientCompany;
   final dynamic amount;
   final List<ClientCashback> cashback;
+  @JsonKey(name: 'withdraw_sum')
+  final dynamic withdrawSum;
+  @JsonKey(name: 'cashback_sum')
+  final dynamic cashbackSum;
   ClientShop({
     required this.id,
     required this.name,
@@ -29,6 +33,8 @@ class ClientShop {
     required this.clientCompany,
     required this.amount,
     required this.cashback,
+    required this.withdrawSum,
+    required this.cashbackSum,
   });
 
   /// Generate Class from Map<String, Object?>

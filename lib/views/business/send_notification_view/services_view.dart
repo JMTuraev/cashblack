@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,16 +7,22 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sent_notification.dart';
-import '../../../string_extensions.dart';
 import '../../../size_config.dart';
+import '../../../string_extensions.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/helpers.dart';
 import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
+import '../services/kassa/kassa_view.dart';
+import '../services/staff/staff_view.dart';
+import '../services/store/store_view.dart';
+import '../services/tabel/tabel_view.dart';
+import '../services/task/tasks_view.dart';
 import 'notification_info_view.dart';
 import 'posts_view.dart';
 import 'send_notification_view.dart';
+import 'task_item_widget.dart';
 
 class ServicesView extends StatefulWidget {
   const ServicesView({super.key});
@@ -42,7 +49,8 @@ class _ServicesViewState extends State<ServicesView> {
           ),
         ),
       ),
-      body: SafeArea(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
             Container(
@@ -99,6 +107,51 @@ class _ServicesViewState extends State<ServicesView> {
                             title: 'Табель',
                             color: Color.fromRGBO(45, 37, 24, 1),
                             onTap: null,
+                            // onTap: () {
+                            //   Navigator.of(context).push(
+                            //     CupertinoPageRoute(
+                            //       builder: (context) => const TabelView(),
+                            //     ),
+                            //   );
+                            // },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: const [
+                          _IconWidget(
+                            svg: 'assets/svg/service-store.svg',
+                            title: 'Склад',
+                            color: Color.fromRGBO(30, 37, 30, 1),
+                            // onTap: () {
+                            //   Navigator.of(context).push(
+                            //     CupertinoPageRoute(
+                            //       builder: (context) => const StoreView(),
+                            //     ),
+                            //   );
+                            // },
+                            onTap: null,
+                          ),
+                          _IconWidget(
+                            svg: 'assets/svg/service-shop.svg',
+                            title: 'Продажа',
+                            color: Color.fromRGBO(53, 30, 38, 1),
+                            onTap: null,
+                          ),
+                          _IconWidget(
+                            svg: 'assets/svg/service-calculator.svg',
+                            title: 'Касса',
+                            color: Color.fromRGBO(23, 36, 53, 1),
+                            onTap: null,
+                            // onTap: () {
+                            //   Navigator.of(context).push(
+                            //     CupertinoPageRoute(
+                            //       builder: (context) => const KassaView(),
+                            //     ),
+                            //   );
+                            // },
                           ),
                         ],
                       ),
@@ -107,22 +160,39 @@ class _ServicesViewState extends State<ServicesView> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           const _IconWidget(
-                            svg: 'assets/svg/service-store.svg',
-                            title: 'Склад',
-                            color: Color.fromRGBO(30, 37, 30, 1),
+                            svg: 'assets/svg/service-add.svg',
+                            title: 'Создать',
+                            color: Color.fromRGBO(48, 42, 54, 1),
                             onTap: null,
+                            // onTap: () {
+                            //   Navigator.of(context).push(
+                            //     CupertinoPageRoute(
+                            //       builder: (context) => const StaffView(),
+                            //     ),
+                            //   );
+                            // },
                           ),
-                          const _IconWidget(
-                            svg: 'assets/svg/service-shop.svg',
-                            title: 'Продажа',
-                            color: Color.fromRGBO(53, 30, 38, 1),
-                            onTap: null,
+                          Container(
+                            margin: const EdgeInsets.only(
+                              top: 6,
+                              right: 6,
+                            ),
+                            padding: const EdgeInsets.all(18),
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                            ),
                           ),
-                          const _IconWidget(
-                            svg: 'assets/svg/service-calculator.svg',
-                            title: 'Касса',
-                            color: Color.fromRGBO(23, 36, 53, 1),
-                            onTap: null,
+                          Container(
+                            margin: const EdgeInsets.only(
+                              top: 6,
+                              right: 6,
+                            ),
+                            padding: const EdgeInsets.all(18),
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                            ),
                           ),
                         ],
                       )
@@ -130,7 +200,73 @@ class _ServicesViewState extends State<ServicesView> {
                   )
                 ],
               ),
-            )
+            ),
+            const SizedBox(height: 20),
+            1 == 1
+                ? const SizedBox()
+                : Container(
+                    padding: const EdgeInsets.all(20),
+                    width: double.infinity,
+                    height: getH(270),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                      color: Color.fromRGBO(25, 25, 25, 1),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 28,
+                            vertical: 10,
+                          ),
+                          child: Text(
+                            'Список заданий',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        ListView.separated(
+                          shrinkWrap: true,
+                          // physics: NeverScrollableScrollPhysics(),
+                          itemCount: 1,
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(height: 10);
+                          },
+                          itemBuilder: (context, index) {
+                            return TaskItemWidget(
+                              onEditPressed: () {},
+                            );
+                          },
+                        ),
+                        // const SizedBox(height: 10),
+                        const Spacer(),
+                        Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) => TasksView(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Показать все',
+                              style: TextStyle(
+                                color: Color(0xff6cd768),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
           ],
         ),
       ),
@@ -203,10 +339,11 @@ class _IconWidget extends StatelessWidget {
                         horizontal: 2,
                       ),
                       decoration: const BoxDecoration(
-                          color: Color.fromRGBO(103, 206, 103, 1),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(4),
-                          )),
+                        color: Color.fromRGBO(103, 206, 103, 1),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4),
+                        ),
+                      ),
                       child: const Text(
                         'Скоро',
                         style: TextStyle(

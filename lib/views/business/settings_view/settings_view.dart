@@ -11,11 +11,15 @@ import '../../../domain/models/owner/business_company.dart';
 import '../../../domain/models/owner/business_profile.dart';
 import '../../../string_extensions.dart';
 import '../../../size_config.dart';
+import '../../../utils/helpers.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
+import '../../../view_models/business/business_notifications_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'create_worker_view.dart';
+import 'edit_name_view.dart';
+import 'edit_store_view.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -57,14 +61,19 @@ class _SettingsViewState extends State<SettingsView> {
         actions: [
           IconButton(
             onPressed: () async {
+              context.read<BusinessDashboardViewModel>().maxSum = 10;
               await context.read<BusinessViewModel>().logout().then(
-                    (value) => Navigator.of(context).pushAndRemoveUntil(
-                      CupertinoPageRoute(
-                        builder: (context) => const SelectTypeView(),
-                      ),
-                      (route) => false,
+                (value) {
+                  context.read<BusinessDashboardViewModel>().clearData();
+
+                  return Navigator.of(context).pushAndRemoveUntil(
+                    CupertinoPageRoute(
+                      builder: (context) => const SelectTypeView(),
                     ),
+                    (route) => false,
                   );
+                },
+              );
             },
             icon: SvgPicture.asset(
               'assets/svg/logout.svg',
@@ -97,14 +106,16 @@ class _SettingsViewState extends State<SettingsView> {
                               .businessProfile,
                         ),
                   const SizedBox(height: 15),
-                  context.watch<BusinessDashboardViewModel>().isLoading
+                  context.watch<BusinessDashboardViewModel>().isGettingCompany
                       ? const CupertinoActivityIndicator()
-                      : _BrandCardWidget(
-                          isBusiness: true,
-                          company: context
-                              .read<BusinessDashboardViewModel>()
-                              .businessCompany!,
-                        ),
+                      : (context.read<BusinessDashboardViewModel>().hasCompany
+                          ? _BrandCardWidget(
+                              isBusiness: true,
+                              company: context
+                                  .read<BusinessDashboardViewModel>()
+                                  .businessCompany!,
+                            )
+                          : const Text('Создайте компания')),
                 ],
               ),
               // ;
@@ -114,18 +125,13 @@ class _SettingsViewState extends State<SettingsView> {
               //   },
               // ),
               const SizedBox(height: 15),
-              _SubscriptionCardWidget(
-                balance: Balance(
-                  id: 1,
-                  amount: '12121',
-                  date: '2023-05-05',
-                  balanceShop: BalanceShop(
-                    subscriptionPrice: '0',
-                    createdDate: '2023-05-06',
-                  ),
-                  isSubscribedOne: false,
-                ),
-              ),
+              context.watch<BusinessSettingsViewModel>().isLoading
+                  ? const SizedBox()
+                  : _SubscriptionCardWidget(
+                      profile: context
+                          .read<BusinessSettingsViewModel>()
+                          .businessProfile!,
+                    ),
               SizedBox(height: getH(20)),
               1 == 1
                   ? Row(
@@ -283,7 +289,7 @@ class _BrandCardWidget extends StatelessWidget {
               width: getW(60),
               height: getH(60),
               child: CachedNetworkImage(
-                imageUrl: company.logo,
+                imageUrl: company.logo ?? '',
                 errorWidget: (context, url, error) => const Icon(
                   Icons.home_repair_service_rounded,
                   size: 40,
@@ -300,7 +306,7 @@ class _BrandCardWidget extends StatelessWidget {
               ),
               SizedBox(height: getH(4)),
               Text(
-                company.inn,
+                company.address,
                 style: const TextStyle(fontSize: 15),
               ),
             ],
@@ -313,13 +319,11 @@ class _BrandCardWidget extends StatelessWidget {
               isBusiness
                   ? GestureDetector(
                       onTap: () {
-                        // Navigator.of(context).push(
-                        //   CupertinoPageRoute(
-                        //     builder: (context) => EditStoreView(
-                        //       shop: shop,
-                        //     ),
-                        //   ),
-                        // );
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) => const EditStoreView(),
+                          ),
+                        );
                       },
                       child: SvgPicture.asset(
                         'assets/svg/edit.svg',
@@ -339,10 +343,10 @@ class _BrandCardWidget extends StatelessWidget {
 class _SubscriptionCardWidget extends StatelessWidget {
   const _SubscriptionCardWidget({
     Key? key,
-    required this.balance,
+    required this.profile,
   }) : super(key: key);
 
-  final Balance balance;
+  final BusinessProfile profile;
 
   @override
   Widget build(BuildContext context) {
@@ -355,20 +359,47 @@ class _SubscriptionCardWidget extends StatelessWidget {
               Row(
                 children: [
                   const _SimpleTextWidget(
+                    title: 'Баланс',
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    context.watch<BusinessSettingsViewModel>().isLoading
+                        ? ''
+                        : profile.balance.getAmountInSum(),
+                    style: const TextStyle(
+                      color: Color.fromRGBO(103, 206, 103, 1),
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+
+              Row(
+                children: [
+                  const _SimpleTextWidget(
                     title: 'Абонентская плата',
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    NumberFormat.simpleCurrency(
-                          name: '',
-                          locale: 'ru_RU',
-                          decimalDigits: 0,
-                        ).format(
-                          double.parse(
-                            balance.balanceShop.subscriptionPrice,
-                          ),
-                        ) +
-                        'сум',
+                    '${NumberFormat.simpleCurrency(
+                      name: '',
+                      locale: 'ru_RU',
+                      decimalDigits: 0,
+                    ).format(
+                      double.parse(
+                        context
+                            .read<BusinessNotificationsViewModel>()
+                            .prices
+                            .where(
+                              (element) =>
+                                  element.type == 'subscript' &&
+                                  element.month == 1,
+                            )
+                            .first
+                            .price,
+                      ),
+                    )}сум',
                     style: const TextStyle(
                       color: Color.fromRGBO(103, 206, 103, 1),
                       fontSize: 15,
@@ -394,7 +425,10 @@ class _SubscriptionCardWidget extends StatelessWidget {
                   const SizedBox(width: 8),
                   // Text(balance.balanceShop.createdDate.getLocaleDateTime()),
                   Text(
-                    balance.isSubscribedOne ? 'Активен' : 'Не оплачен',
+                    //todo active/deactive locense
+                    Helpers.subsctibedChecker(profile)
+                        ? 'Активен'
+                        : 'Не оплачен',
                     style: const TextStyle(
                       color: Color.fromRGBO(103, 206, 103, 1),
                       fontSize: 15,
@@ -403,7 +437,29 @@ class _SubscriptionCardWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 6),
-              balance.date != null && balance.isSubscribedOne
+              //todo active/deactive license
+              Helpers.subsctibedChecker(profile)
+                  ? Row(
+                      children: [
+                        const _SimpleTextWidget(
+                          title: 'Последный платеж',
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          Helpers.subsctibedChecker(profile)
+                              ? profile.licence.first.startAt.getLocaleDate()
+                              : 'Не оплачен',
+                          style: const TextStyle(
+                            color: Color.fromRGBO(103, 206, 103, 1),
+                            fontSize: 15,
+                          ),
+                        )
+                      ],
+                    )
+                  : const SizedBox(),
+              const SizedBox(height: 6),
+              //todo active/deactive license
+              Helpers.subsctibedChecker(profile)
                   ? Row(
                       children: [
                         const _SimpleTextWidget(
@@ -411,11 +467,8 @@ class _SubscriptionCardWidget extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          balance.date != null
-                              ? DateTime.parse(balance.date ?? '2023-04-01')
-                                  .add(const Duration(days: 30))
-                                  .toString()
-                                  .getLocaleDate()
+                          Helpers.subsctibedChecker(profile)
+                              ? profile.licence.first.endAt.getLocaleDate()
                               : 'Не оплачен',
                           style: const TextStyle(
                             color: Color.fromRGBO(103, 206, 103, 1),
@@ -471,13 +524,13 @@ class _ProfileCardWidget extends StatelessWidget {
             right: 5,
             child: GestureDetector(
               onTap: () {
-                // Navigator.of(context).push(
-                //   CupertinoPageRoute(
-                //     builder: (context) => EditNameView(
-                //       user: user!,
-                //     ),
-                //   ),
-                // );
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => EditNameView(
+                      user: user!,
+                    ),
+                  ),
+                );
               },
               child: SvgPicture.asset(
                 'assets/svg/edit.svg',

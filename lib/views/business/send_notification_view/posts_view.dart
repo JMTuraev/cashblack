@@ -3,6 +3,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 // import 'package:provider/provider.dart';
 
 import '../../../domain/models/sent_notification.dart';
@@ -10,6 +11,8 @@ import '../../../string_extensions.dart';
 import '../../../size_config.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/helpers.dart';
+import '../../../view_models/business/business_dashboard_view_model.dart';
+import '../../../view_models/business/business_notifications_view_model.dart';
 import '../../../view_models/send_notification_view_model.dart';
 import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
@@ -29,11 +32,14 @@ class _PostsViewState extends State<PostsView> {
   @override
   void initState() {
     // sentFuture = context.read<SendNotificationViewModel>().getNotifications();
+    context.read<BusinessNotificationsViewModel>().getNotifications();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final notifications =
+        context.read<BusinessNotificationsViewModel>().notifations;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -61,256 +67,316 @@ class _PostsViewState extends State<PostsView> {
         ),
         // bottom: ThemeDetails.appBarDivider,
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              'Отправленные уведомления',
-              style: TextStyle(
-                fontSize: 22,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: EasyRefresh(
-                header: const MaterialHeader(),
-                onRefresh: () {
-                  setState(() {
-                    // sentFuture = context
-                    //     .read<SendNotificationViewModel>()
-                    //     .getNotifications();
-                  });
-                },
-                child: ListView.separated(
-                  itemCount: notifications.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigator.of(context).push(
-                        //   CupertinoPageRoute(
-                        //     builder: (context) => NotificationInfoView(
-                        //       sentNotification: notifications[index],
-                        //     ),
-                        //   ),
-                        // );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(20),
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          ),
-                          color: Color.fromRGBO(44, 45, 47, 1),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                ClipOval(
-                                  child: Image.asset(
-                                    'assets/images/notification/ak-3.png',
-                                    fit: BoxFit.cover,
-                                    height: getH(50),
-                                    width: getH(50),
-                                  ),
+      body: Column(
+        children: [
+          // const SizedBox(height: 20),
+          // const Text(
+          //   'Отправленные уведомления',
+          //   style: TextStyle(
+          //     fontSize: 22,
+          //   ),
+          // ),
+          // const SizedBox(height: 20),
+          Expanded(
+            child: EasyRefresh(
+              header: const MaterialHeader(),
+              onRefresh: () {
+                setState(() {
+                  context.read<BusinessNotificationsViewModel>();
+                });
+              },
+              child: context
+                      .watch<BusinessNotificationsViewModel>()
+                      .isLoadingNotifications
+                  ? LogoAnimatedWidget(size: 1.5)
+                  : ListView.separated(
+                      itemCount: notifications.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => NotificationInfoView(
+                                  sentNotification: notifications[index],
                                 ),
-                                SizedBox(width: getW(16)),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                              color: Color.fromRGBO(44, 45, 47, 1),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    ClipOval(
+                                      child: Image.asset(
+                                        // 'assets/images/notification/ak-3.png',
+                                        context
+                                                .read<
+                                                    BusinessDashboardViewModel>()
+                                                .businessCompany
+                                                ?.logo ??
+                                            '',
+                                        fit: BoxFit.cover,
+                                        height: getH(50),
+                                        width: getH(50),
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                Container(
+                                          height: getH(50),
+                                          width: getH(50),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white24,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              context
+                                                      .read<
+                                                          BusinessDashboardViewModel>()
+                                                      .businessCompany
+                                                      ?.name
+                                                      .substring(0, 1) ??
+                                                  'C',
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: getW(16)),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          notifications[index].title,
+                                          style: const TextStyle(
+                                            color: Color.fromRGBO(
+                                                103, 206, 103, 1),
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        Text(
+                                          notifications[index]
+                                              .updatedAt
+                                              .getLocaleDateTime(),
+                                          style: const TextStyle(
+                                            color: Color.fromRGBO(
+                                                147, 147, 147, 1),
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
                                 Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Dood',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(103, 206, 103, 1),
+                                      notifications[index].text,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    // const SizedBox(height: 4),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(
+                                    //     right: 4,
+                                    //   ),
+                                    //   child: Text(
+                                    //     notifications[index].content,
+                                    //     maxLines: 2,
+                                    //     overflow:
+                                    //         TextOverflow.ellipsis,
+                                    //     style: const TextStyle(
+                                    //       fontSize: 18,
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      notifications[index]
+                                          .updatedAt
+                                          .getLocaleDateTime(),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Container(
+                                      // child: notifications[index].status == 1
+                                      child: notifications[index].status ==
+                                              'pending'
+                                          ? const Text(
+                                              'Проверяется',
+                                              style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                  75,
+                                                  132,
+                                                  231,
+                                                  1,
+                                                ),
+                                              ),
+                                            )
+                                          // : notifications[index].status == 3
+                                          : notifications[index].status ==
+                                                  'approved'
+                                              ? DateTime.parse(
+                                                  '2023-06-06',
+                                                ).isAfter(
+                                                  DateTime.now().subtract(
+                                                    const Duration(
+                                                      days: 2,
+                                                    ),
+                                                  ),
+                                                )
+                                                  ? Row(
+                                                      children: [
+                                                        const Text(
+                                                          'Видимость: ',
+                                                          style: TextStyle(
+                                                            color: Colors.green,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          DateTime.parse(
+                                                                '2023-06-06',
+                                                              )
+                                                                  .add(
+                                                                    const Duration(
+                                                                      days: 2,
+                                                                    ),
+                                                                  )
+                                                                  .difference(
+                                                                    DateTime
+                                                                        .now(),
+                                                                  )
+                                                                  .inHours
+                                                                  .toString() +
+                                                              ' часов',
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.green,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : const Text(
+                                                      'Истекло',
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                      ),
+                                                    )
+                                              : const Text(
+                                                  'Отменен',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                    )
+                                  ],
+                                ),
+                                ClipRRect(
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    bottomLeft: Radius.circular(20),
+                                  ),
+                                  child: notifications[index].image != null
+                                      ? CachedNetworkImage(
+                                          imageUrl:
+                                              notifications[index].image ?? '',
+                                          fit: BoxFit.cover,
+                                          errorWidget: (context, url, error) {
+                                            return Image.asset(
+                                              Helpers.getLocalImage(
+                                                'assets/images/notification/ak-${index + 1}.png',
+                                              ),
+                                            );
+                                          },
+                                        )
+                                      : Image.asset(
+                                          Helpers.getLocalImage(
+                                            'assets/images/notification/ak-${index + 1}.png',
+                                          ),
+                                          // height: MediaQuery.of(context).size.width / 4,
+                                          // width: MediaQuery.of(context).size.width / 3,
+                                        ),
+                                  //   CachedNetworkImage(
+                                  //     fit: BoxFit.fitHeight,
+                                  //     height: MediaQuery.of(context)
+                                  //             .size
+                                  //             .width /
+                                  //         4,
+                                  //     width: MediaQuery.of(context)
+                                  //             .size
+                                  //             .width /
+                                  //         3,
+                                  //     imageUrl: Constants.media +
+                                  //         notifications[index].image,
+                                  //   ),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    const SizedBox(width: 10),
+                                    const Icon(
+                                      Icons.favorite_border_rounded,
+                                      color: Color.fromRGBO(164, 164, 164, 1),
+                                      size: 28,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      notifications[index].likeCount.toString(),
+                                      style: const TextStyle(
+                                        color: Color.fromRGBO(164, 164, 164, 1),
                                         fontSize: 18,
                                       ),
                                     ),
+                                    const Spacer(),
+                                    const Icon(
+                                      Icons.remove_red_eye_rounded,
+                                      color: Color.fromRGBO(164, 164, 164, 1),
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 4),
                                     Text(
-                                      'Dood',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(147, 147, 147, 1),
+                                      notifications[index]
+                                          .showedCount
+                                          .toString(),
+                                      style: const TextStyle(
+                                        color: Color.fromRGBO(164, 164, 164, 1),
                                         fontSize: 16,
                                       ),
                                     ),
+                                    const SizedBox(width: 14),
                                   ],
                                 )
                               ],
                             ),
-                            SizedBox(height: 20),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Lorem ipsum dolor sit amet, vide omnesque scaevola his in, nam et quas dicit solet, mei minimum repudiandae an.',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                // const SizedBox(height: 4),
-                                // Padding(
-                                //   padding: const EdgeInsets.only(
-                                //     right: 4,
-                                //   ),
-                                //   child: Text(
-                                //     notifications[index].content,
-                                //     maxLines: 2,
-                                //     overflow:
-                                //         TextOverflow.ellipsis,
-                                //     style: const TextStyle(
-                                //       fontSize: 18,
-                                //     ),
-                                //   ),
-                                // ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '2023-06-06'.getLocaleDateTime(),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Container(
-                                  // child: notifications[index].status == 1
-                                  child: 1 == 1
-                                      ? const Text(
-                                          'Проверяется',
-                                          style: TextStyle(
-                                              color: Color.fromRGBO(
-                                                  75, 132, 231, 1)),
-                                        )
-                                      // : notifications[index].status == 3
-                                      : 1 == 3
-                                          ? DateTime.parse(
-                                              '2023-06-06',
-                                            ).isAfter(
-                                              DateTime.now().subtract(
-                                                const Duration(
-                                                  days: 2,
-                                                ),
-                                              ),
-                                            )
-                                              ? Row(
-                                                  children: [
-                                                    const Text(
-                                                      'Видимость: ',
-                                                      style: TextStyle(
-                                                        color: Colors.green,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      DateTime.parse(
-                                                            '2023-06-06',
-                                                          )
-                                                              .add(
-                                                                const Duration(
-                                                                  days: 2,
-                                                                ),
-                                                              )
-                                                              .difference(
-                                                                DateTime.now(),
-                                                              )
-                                                              .inHours
-                                                              .toString() +
-                                                          ' часов',
-                                                      style: const TextStyle(
-                                                        color: Colors.green,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              : const Text(
-                                                  'Истекло',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                  ),
-                                                )
-                                          : const Text(
-                                              'Отменен',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                )
-                              ],
-                            ),
-                            ClipRRect(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                bottomLeft: Radius.circular(20),
-                              ),
-                              child: Image.asset(
-                                Helpers.getLocalImage(
-                                  'assets/images/notification/ak-${index + 1}.png',
-                                ),
-                                // height: MediaQuery.of(context).size.width / 4,
-                                // width: MediaQuery.of(context).size.width / 3,
-                              ),
-                              //   CachedNetworkImage(
-                              //     fit: BoxFit.fitHeight,
-                              //     height: MediaQuery.of(context)
-                              //             .size
-                              //             .width /
-                              //         4,
-                              //     width: MediaQuery.of(context)
-                              //             .size
-                              //             .width /
-                              //         3,
-                              //     imageUrl: Constants.media +
-                              //         notifications[index].image,
-                              //   ),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                SizedBox(width: 10),
-                                Icon(
-                                  Icons.favorite_border_rounded,
-                                  color: Color.fromRGBO(164, 164, 164, 1),
-                                  size: 28,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  '21',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(164, 164, 164, 1),
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                Spacer(),
-                                Icon(
-                                  Icons.remove_red_eye_rounded,
-                                  color: Color.fromRGBO(164, 164, 164, 1),
-                                  size: 20,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  '1',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(164, 164, 164, 1),
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                SizedBox(width: 14),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox(height: getH(10));
-                  },
-                ),
-              ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return SizedBox(height: getH(10));
+                      },
+                    ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

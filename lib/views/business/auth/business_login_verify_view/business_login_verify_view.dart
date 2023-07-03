@@ -123,19 +123,22 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               TextButtonWidget(
                 text: 'Не получили код. Отправить код еще раз',
                 method: () async {
-                  await context
-                      .read<BusinessLoginViewModel>()
-                      .onEnterButtonPressed(
-                        widget.phone.substring(3),
-                        'nickname',
-                        'firstName',
-                        'lastName',
-                        '59',
-                        'owner',
-                        'promo',
-                      );
-                  _animationController!.reset();
-                  _animationController!.forward();
+                  if (_animationController!.status ==
+                      AnimationStatus.completed) {
+                    await context
+                        .read<BusinessLoginViewModel>()
+                        .onEnterButtonPressed(
+                          widget.phone.substring(3),
+                          widget.phone.substring(3),
+                          widget.phone.substring(3),
+                          widget.phone.substring(3),
+                          '59',
+                          'owner',
+                          'promo',
+                        );
+                    _animationController!.reset();
+                    _animationController!.forward();
+                  }
                 },
               ),
               const SizedBox(height: 20),

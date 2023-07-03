@@ -3,25 +3,87 @@ import 'package:flutter/cupertino.dart';
 import '../../core/api/business_api.dart';
 import '../../domain/models/owner/business_company.dart';
 import '../../domain/models/owner/business_shop.dart';
+import '../../domain/models/owner/weekly_stat.dart';
 
 class BusinessDashboardViewModel extends ChangeNotifier {
   final BusinessApi _businessApi = BusinessApi();
 
   bool isLoading = false;
+  bool isGettingCompany = false;
+  bool isGettingShops = false;
+  bool isWeeklyLoading = false;
   BusinessCompany? businessCompany;
-  List<BusinessShop> businessShops = [];
+  List<BusinessShop>? businessShops = [];
+  List<WeeklyStat> weeklyStatistics = [];
+  double maxSum = 10;
+
+  bool hasCompany = false;
+  bool hasShops = false;
+
+  Future<void> clearData() async {
+    businessCompany = null;
+    businessShops = [];
+    weeklyStatistics = [];
+    maxSum = 10;
+    hasCompany = false;
+    hasShops = false;
+    isLoading = false;
+    isWeeklyLoading = false;
+    isGettingCompany = false;
+    isGettingShops = false;
+  }
 
   Future<void> getBusinessCompany() async {
-    isLoading = true;
-    businessCompany = await _businessApi.getBusinessCompany();
-    isLoading = false;
+    try {
+      isGettingCompany = true;
+      businessCompany = await _businessApi.getBusinessCompany();
+
+      hasCompany = true;
+    } on Exception catch (e) {
+      businessCompany = null;
+      hasCompany = false;
+    }
+
+    isGettingCompany = false;
+
+    // if (businessCompany == null) {
+    //   hasCompany = false;
+    // } else {
+    //   hasCompany = true;
+    // }
+    notifyListeners();
+  }
+
+  Future<void> getWeeklyStatistics(int shopId) async {
+    maxSum = 10;
+    isWeeklyLoading = true;
+    weeklyStatistics = await _businessApi.getWeeklyStatistics(shopId);
+    weeklyStatistics.forEach((e) {
+      maxSum += double.parse(e.totalCashback.toString());
+    });
+    isWeeklyLoading = false;
     notifyListeners();
   }
 
   Future<void> getBusinessShops() async {
-    isLoading = true;
-    businessShops = await _businessApi.getBusinessShops();
-    isLoading = false;
+    try {
+      isGettingShops = true;
+      businessShops = await _businessApi.getBusinessShops();
+      hasShops = true;
+    } on Exception catch (e) {
+      businessShops = [];
+      hasShops = false;
+    }
+    // if (businessShops == null) {
+    //   businessShops = [];
+    //   hasShops = false;
+    // } else {
+    //   hasShops = true;
+    // }
+    isGettingShops = false;
+
+    print('------------------');
+    print(isGettingShops);
     notifyListeners();
   }
 

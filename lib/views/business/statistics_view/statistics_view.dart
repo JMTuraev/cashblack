@@ -6,10 +6,13 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/owner/report_cashback.dart';
+import '../../../domain/models/owner/report_cashback_client.dart';
 import '../../../domain/models/sum_cashback.dart';
 import '../../../domain/models/sum_stat.dart';
 import '../../../string_extensions.dart';
 import '../../../size_config.dart';
+import '../../../view_models/business/business_statistics_view_model.dart';
 import '../../../view_models/statistics_view_model.dart';
 import '../../../widgets/active_switcher_widget.dart';
 import '../../../widgets/empty_widget.dart';
@@ -52,21 +55,17 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   @override
   Widget build(BuildContext context) {
-    var body = IndexedStack(
+    final body = IndexedStack(
       index: summa ? 0 : 1,
       children: [
-        // _SumWidget(
-        //   stats: statCashback,
-        // ),
-        // _CashbackWidget(
-        //   stats: statssum,
-        // ),
+        _CashbackListWidget(),
+        _ClientCashbackWidget(),
       ],
     );
 
-    final DateTime now = DateTime.now();
-    final DateFormat dateFormatter = DateFormat('yyyy-MM-dd');
-    final String today = dateFormatter.format(now);
+    final now = DateTime.now();
+    final dateFormatter = DateFormat('yyyy-MM-dd');
+    final today = dateFormatter.format(now);
 
     String returnDateInString(int days) {
       return dateFormatter.format(
@@ -160,79 +159,83 @@ class _StatisticsViewState extends State<StatisticsView> {
                           //       .watch<StatisticsViewModel>()
                           //       .withdrawSum,
                           // ),
-                          const SizedBox(height: 20),
-                          _FilterWidget(
-                            categoryItems: [
-                              _menuItem(context, 'Выберите', start, end, '0'),
-                              _menuItem(context, 'Сегодня', today, today, '1'),
-                              _menuItem(
-                                context,
-                                'Вчера',
-                                returnDateInString(1),
-                                returnDateInString(1),
-                                '2',
-                              ),
-                              _menuItem(
-                                context,
-                                'Позавчера',
-                                returnDateInString(2),
-                                returnDateInString(2),
-                                '3',
-                              ),
-                              _menuItem(
-                                context,
-                                'Эта неделя',
-                                returnDateInString(6),
-                                today,
-                                '4',
-                              ),
-                              _menuItem(
-                                context,
-                                'Прошлая неделя',
-                                returnDateInString(13),
-                                returnDateInString(7),
-                                '5',
-                              ),
-                              _menuItem(
-                                context,
-                                'Этот месяц',
-                                returnDateInString(30),
-                                today,
-                                '6',
-                              ),
-                              _menuItem(
-                                context,
-                                'Прошлый месяц',
-                                returnDateInString(60),
-                                returnDateInString(30),
-                                '7',
-                              ),
-                              _menuItem(
-                                context,
-                                'Этот месяц',
-                                returnDateInString(90),
-                                today,
-                                '8',
-                              ),
-                              _menuItem(
-                                context,
-                                'Этот год',
-                                dateFormatter.format(
-                                  DateTime(DateTime.now().year),
+                          // const SizedBox(height: 20),
+                          1 == 1
+                              ? SizedBox()
+                              : _FilterWidget(
+                                  categoryItems: [
+                                    _menuItem(
+                                        context, 'Выберите', start, end, '0'),
+                                    _menuItem(
+                                        context, 'Сегодня', today, today, '1'),
+                                    _menuItem(
+                                      context,
+                                      'Вчера',
+                                      returnDateInString(1),
+                                      returnDateInString(1),
+                                      '2',
+                                    ),
+                                    _menuItem(
+                                      context,
+                                      'Позавчера',
+                                      returnDateInString(2),
+                                      returnDateInString(2),
+                                      '3',
+                                    ),
+                                    _menuItem(
+                                      context,
+                                      'Эта неделя',
+                                      returnDateInString(6),
+                                      today,
+                                      '4',
+                                    ),
+                                    _menuItem(
+                                      context,
+                                      'Прошлая неделя',
+                                      returnDateInString(13),
+                                      returnDateInString(7),
+                                      '5',
+                                    ),
+                                    _menuItem(
+                                      context,
+                                      'Этот месяц',
+                                      returnDateInString(30),
+                                      today,
+                                      '6',
+                                    ),
+                                    _menuItem(
+                                      context,
+                                      'Прошлый месяц',
+                                      returnDateInString(60),
+                                      returnDateInString(30),
+                                      '7',
+                                    ),
+                                    _menuItem(
+                                      context,
+                                      'Этот месяц',
+                                      returnDateInString(90),
+                                      today,
+                                      '8',
+                                    ),
+                                    _menuItem(
+                                      context,
+                                      'Этот год',
+                                      dateFormatter.format(
+                                        DateTime(DateTime.now().year),
+                                      ),
+                                      today,
+                                      '9',
+                                    ),
+                                  ],
+                                  hint: 'Выберите',
+                                  onChanged: onFilterChanged,
+                                  selectedOption: _filter,
                                 ),
-                                today,
-                                '9',
-                              ),
-                            ],
-                            hint: 'Выберите',
-                            onChanged: onFilterChanged,
-                            selectedOption: _filter,
-                          ),
                         ],
                       )
                     : const SizedBox(),
               ),
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
               Expanded(
                 child: EasyRefresh(
                   header: const MaterialHeader(),
@@ -240,8 +243,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                     setState(() {
                       _filter = '0';
 
-                      String start = '2023-01-01';
-                      String end =
+                      final start = '2023-01-01';
+                      final end =
                           DateFormat('yyyy-MM-dd').format(DateTime.now());
                       // statCashback = context
                       //     .read<StatisticsViewModel>()
@@ -250,6 +253,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                       // statssum = context
                       //     .read<StatisticsViewModel>()
                       //     .getCashbackStats();
+                      context.read<BusinessStatisticsViewModel>().getStats();
+                      context.read<BusinessStatisticsViewModel>().getClients();
                     });
                   },
                   child: body,
@@ -270,173 +275,175 @@ class _StatisticsViewState extends State<StatisticsView> {
     String value,
   ) {
     return DropdownMenuItem(
-        value: value,
-        child: Text(
-          title,
-          style: TextStyle(
-            fontWeight: value == '0' ? FontWeight.bold : null,
-          ),
+      value: value,
+      child: Text(
+        title,
+        style: TextStyle(
+          fontWeight: value == '0' ? FontWeight.bold : null,
         ),
-        onTap: () async => start = start
-        // statCashback = context.read<StatisticsViewModel>().getSumStats(
-        //       start: today,
-        //       end: end,
-        //     ),
-        );
+      ),
+      onTap: () async => start = start,
+      // statCashback = context.read<StatisticsViewModel>().getSumStats(
+      //       start: today,
+      //       end: end,
+      //     ),
+    );
   }
 }
 
-class _SumWidget extends StatelessWidget {
-  const _SumWidget({
+class _CashbackListWidget extends StatelessWidget {
+  const _CashbackListWidget({
     Key? key,
-    required this.stats,
   }) : super(key: key);
-
-  final Future<List<SumStat>> stats;
 
   @override
   Widget build(BuildContext context) {
-    var textStyle = const TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 15,
-    );
-    return Column(
-      children: [
-        FutureBuilder(
-          future: stats,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              List<SumStat> sumStat = (snapshot.data as List<SumStat>);
-              // sumStat.sort((a, b) =>
-              //     DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
-              sumStat.sort((a, b) => a.date!.compareTo(b.date!));
+    final mergedList = context.read<BusinessStatisticsViewModel>().mergedList;
+    // sumStat.sort((a, b) =>
+    //     DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
+    // sumStat.sort((a, b) => a.date!.compareTo(b.date!));
 
-              if (sumStat.length > 0) {
-                final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
-                // final DateFormat sorter = DateFormat('dd MMMM yyyy');
-                return Expanded(
-                  child: GroupedListView<SumStat, String>(
-                    elements: sumStat,
-                    groupBy: (element) {
-                      DateTime dates = DateTime.parse(element.date!);
-                      return DateUtils.dateOnly(dates).toString();
-                      // return DateTime(dates.year, dates.month, dates.day,
-                      //         dates.hour, dates.minute)
-                      //     .toString();
-                    },
-                    groupSeparatorBuilder: (String groupByValue) {
-                      print(groupByValue);
-                      return Text(groupByValue);
-                    },
-                    // groupSeparatorBuilder: (String groupByValue) {
-                    //   print(groupByValue);
-                    //   DateTime dates = DateTime.parse(groupByValue);
-                    //   return Text(DateUtils.dateOnly(dates).toString());
-                    //   // return Text(
-                    //   //     formatter.format(DateTime.parse(groupByValue)));
-                    // },
-                    itemBuilder: (context, SumStat element) {
-                      if (!element.isWithdraw!) {
-                        return _CardCashback(sumStat: element);
-                      } else {
-                        return _CardWithdraw(sumStat: element);
-                      }
-                    },
-                    separator: SizedBox(height: getH(10)),
-                    groupHeaderBuilder: (SumStat element) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: getH(14)),
-                        child: Text(
-                          formatter.format(DateTime.parse(element.date!)),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      );
-                    },
-                    // groupHeaderBuilder: (SumStat element) => Center(
-                    //   child: Text(
-                    //     formatter.format(DateTime.parse(element.date!)),
-                    //     style: const TextStyle(
-                    //       fontSize: 20,
-                    //     ),
+    // List<InlineCashback> mergedList = sumStat.cashback;
+    // sumStat.withdraw.forEach((element) {
+    //   mergedList.add(
+    //     InlineCashback(
+    //       type: element.type,
+    //       companyName: element.companyName,
+    //       sellerId: element.sellerId,
+    //       sellerName: element.sellerName,
+    //       sellerPhone: element.sellerPhone,
+    //       sellerType: element.sellerType,
+    //       shopId: element.shopId,
+    //       shopName: element.shopName,
+    //       percent: '-1',
+    //       totalPrice: '-1',
+    //       amount: element.amount,
+    //       date: element.date,
+    //       clientId: element.clientId,
+    //       clientName: element.clientName,
+    //       clientPhone: element.clientPhone,
+    //     ),
+    //   );
+    // });
+    // mergedList.addAll(sumStat.withdraw as List<InlineCashback>);
+    if (context.watch<BusinessStatisticsViewModel>().isLoading) {
+      return LogoAnimatedWidget(size: 1.5);
+    } else {
+      if (mergedList.isNotEmpty) {
+        final formatter = DateFormat('dd MMMM yyyy, EEEE');
+        // final DateFormat sorter = DateFormat('dd MMMM yyyy');
+        return Column(
+          children: [
+            Expanded(
+              child: GroupedListView<InlineCashback, String>(
+                elements: mergedList,
+                groupBy: (element) {
+                  final dates = DateTime.parse(element.date!);
+                  return DateUtils.dateOnly(dates).toString();
+                  // return DateTime(dates.year, dates.month, dates.day,
+                  //         dates.hour, dates.minute)
+                  //     .toString();
+                },
+                groupSeparatorBuilder: (String groupByValue) {
+                  print(groupByValue);
+                  return Text(groupByValue);
+                },
+                // groupSeparatorBuilder: (String groupByValue) {
+                //   print(groupByValue);
+                //   DateTime dates = DateTime.parse(groupByValue);
+                //   return Text(DateUtils.dateOnly(dates).toString());
+                //   // return Text(
+                //   //     formatter.format(DateTime.parse(groupByValue)));
+                // },
+                itemBuilder: (context, InlineCashback element) {
+                  if (element.type == 'cashback') {
+                    return _CardCashback(sumStat: element);
+                    // return Text(
+                    //   'data',
+                    //   style: TextStyle(
+                    //     color: Colors.red,
                     //   ),
-                    // ),
-                    order: GroupedListOrder.DESC,
-                    groupComparator: (value1, value2) {
-                      // print(value1);
-                      return value1.compareTo(value2);
-                    },
-                  ),
-                );
-              } else {
-                return const Center(child: EmptyWidget());
-              }
-            } else {
-              return Column(
-                children: const [
-                  LogoAnimatedWidget(
-                    size: 1.5,
-                  ),
-                ],
-              );
-            }
-          },
-        ),
-      ],
-    );
+                    // );
+                  } else {
+                    return _CardWithdraw(sumStat: element);
+                    // return Text(
+                    //   'data 222',
+                    //   style: TextStyle(
+                    //     color: Colors.red,
+                    //   ),
+                    // );
+                  }
+                },
+                separator: SizedBox(height: getH(10)),
+                groupHeaderBuilder: (InlineCashback element) {
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: getH(14)),
+                    child: Text(
+                      // TODO 5 hours added
+                      formatter.format(DateTime.parse(element.date!)
+                          .add(Duration(hours: 5))),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  );
+                },
+                // groupHeaderBuilder: (SumStat element) => Center(
+                //   child: Text(
+                //     formatter.format(DateTime.parse(element.date!)),
+                //     style: const TextStyle(
+                //       fontSize: 20,
+                //     ),
+                //   ),
+                // ),
+                order: GroupedListOrder.DESC,
+                groupComparator: (value1, value2) {
+                  // print(value1);
+                  return value1.compareTo(value2);
+                },
+              ),
+            ),
+          ],
+        );
+      } else {
+        return const Center(child: EmptyWidget());
+      }
+    }
   }
 }
 
-class _CashbackWidget extends StatelessWidget {
-  const _CashbackWidget({
+class _ClientCashbackWidget extends StatelessWidget {
+  const _ClientCashbackWidget({
     Key? key,
-    required this.stats,
   }) : super(key: key);
-
-  final Future<List<SumCashback>> stats;
 
   @override
   Widget build(BuildContext context) {
-    var textStyle = const TextStyle(
+    final textStyle = const TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 15,
     );
     return Column(
       children: [
-        FutureBuilder(
-          future: stats,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              List<SumCashback> sumCashback =
-                  snapshot.data as List<SumCashback>;
-              if (sumCashback.length > 0) {
-                return Expanded(
-                  child: ListView.separated(
-                    itemCount: sumCashback.length,
-                    separatorBuilder: (context, index) =>
-                        SizedBox(height: getH(10)),
-                    itemBuilder: (context, index) => _CardClient(
-                      sumCashback: sumCashback[index],
-                    ),
+        context.watch<BusinessStatisticsViewModel>().isClientsLoading
+            ? LogoAnimatedWidget(size: 1.5)
+            : Expanded(
+                child: ListView.separated(
+                  itemCount: context
+                      .read<BusinessStatisticsViewModel>()
+                      .clients
+                      .length,
+                  separatorBuilder: (context, index) =>
+                      SizedBox(height: getH(10)),
+                  itemBuilder: (context, index) => _CardClient(
+                    sumCashback: context
+                        .read<BusinessStatisticsViewModel>()
+                        .clients[index],
                   ),
-                );
-              } else {
-                return const Center(child: EmptyWidget());
-              }
-            } else {
-              return Column(
-                children: const [
-                  LogoAnimatedWidget(
-                    size: 1.5,
-                  ),
-                ],
-              );
-            }
-          },
-        ),
+                ),
+              ),
       ],
     );
   }
@@ -509,11 +516,11 @@ class _CardCashback extends StatelessWidget {
     required this.sumStat,
   }) : super(key: key);
 
-  final SumStat sumStat;
+  final InlineCashback sumStat;
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat timeFormatter = DateFormat.Hm();
+    final timeFormatter = DateFormat.Hm();
 
     return Container(
       decoration: const BoxDecoration(
@@ -534,9 +541,9 @@ class _CardCashback extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    sumStat.fullName!.length > 2
-                        ? sumStat.fullName.toString()
-                        : sumStat.userName.phoneHiddenFormatter(),
+                    sumStat.clientName.length > 2
+                        ? sumStat.clientName.toString()
+                        : '998${sumStat.clientPhone}'.phoneHiddenFormatter(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -553,7 +560,9 @@ class _CardCashback extends StatelessWidget {
                 ),
                 SizedBox(width: getW(12)),
                 Text(
-                  timeFormatter.format(DateTime.parse(sumStat.date.toString())),
+                  // TODO 5
+                  timeFormatter.format(DateTime.parse(sumStat.date.toString())
+                      .add(Duration(hours: 5))),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 10,
@@ -569,7 +578,7 @@ class _CardCashback extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     Text(
-                      "Сумма:",
+                      'Сумма:',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 13,
@@ -577,7 +586,15 @@ class _CardCashback extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Кэшбэк:",
+                      'Кэшбэк:',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      'Магазин:',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 13,
@@ -591,12 +608,11 @@ class _CardCashback extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      NumberFormat.simpleCurrency(
-                            name: '',
-                            locale: 'ru_RU',
-                            decimalDigits: 0,
-                          ).format(sumStat.price) +
-                          'сум',
+                      '${NumberFormat.simpleCurrency(
+                        name: '',
+                        locale: 'ru_RU',
+                        decimalDigits: 0,
+                      ).format(double.parse(sumStat.totalPrice))}сум',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 13,
@@ -604,12 +620,19 @@ class _CardCashback extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      NumberFormat.simpleCurrency(
-                            name: '',
-                            locale: 'ru_RU',
-                            decimalDigits: 0,
-                          ).format(sumStat.cashback) +
-                          'сум',
+                      '${NumberFormat.simpleCurrency(
+                        name: '',
+                        locale: 'ru_RU',
+                        decimalDigits: 0,
+                      ).format(double.parse(sumStat.amount))}сум',
+                      style: const TextStyle(
+                        color: Color(0xff67ce67),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      sumStat.shopName,
                       style: const TextStyle(
                         color: Color(0xff67ce67),
                         fontSize: 13,
@@ -633,11 +656,11 @@ class _CardClient extends StatelessWidget {
     required this.sumCashback,
   }) : super(key: key);
 
-  final SumCashback sumCashback;
+  final ReportCashbackClient sumCashback;
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat timeFormatter = DateFormat.Hm();
+    final timeFormatter = DateFormat.Hm();
 
     return Container(
       decoration: const BoxDecoration(
@@ -679,7 +702,7 @@ class _CardClient extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     Text(
-                      "Сумма:",
+                      'Сумма:',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 13,
@@ -687,7 +710,7 @@ class _CardClient extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Кэшбэк:",
+                      'Кэшбэк:',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 13,
@@ -701,12 +724,7 @@ class _CardClient extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      NumberFormat.simpleCurrency(
-                            name: '',
-                            locale: 'ru_RU',
-                            decimalDigits: 0,
-                          ).format(sumCashback.sum) +
-                          'сум',
+                      sumCashback.totalCashback.toString().getAmountInSum(),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 13,
@@ -714,12 +732,7 @@ class _CardClient extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      NumberFormat.simpleCurrency(
-                            name: '',
-                            locale: 'ru_RU',
-                            decimalDigits: 0,
-                          ).format(sumCashback.cashback) +
-                          'сум',
+                      sumCashback.cashback.toString().getAmountInSum(),
                       style: const TextStyle(
                         color: Color(0xff67ce67),
                         fontSize: 13,
@@ -844,11 +857,11 @@ class _CardWithdraw extends StatelessWidget {
     required this.sumStat,
   }) : super(key: key);
 
-  final SumStat sumStat;
+  final InlineCashback sumStat;
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat timeFormatter = DateFormat.Hm();
+    final timeFormatter = DateFormat.Hm();
 
     return Container(
       decoration: const BoxDecoration(
@@ -869,9 +882,9 @@ class _CardWithdraw extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    sumStat.fullName!.length > 2
-                        ? sumStat.fullName.toString()
-                        : sumStat.userName.phoneHiddenFormatter(),
+                    sumStat.clientName!.length > 2
+                        ? sumStat.clientName.toString()
+                        : '998${sumStat.clientPhone}'.phoneHiddenFormatter(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -888,7 +901,9 @@ class _CardWithdraw extends StatelessWidget {
                 ),
                 SizedBox(width: getW(12)),
                 Text(
-                  timeFormatter.format(DateTime.parse(sumStat.date.toString())),
+                  //todo 5
+                  timeFormatter.format(DateTime.parse(sumStat.date.toString())
+                      .add(Duration(hours: 5))),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 10,
@@ -899,13 +914,11 @@ class _CardWithdraw extends StatelessWidget {
             ),
             SizedBox(height: getH(10)),
             Text(
-              '-' +
-                  NumberFormat.simpleCurrency(
-                    name: '',
-                    locale: 'ru_RU',
-                    decimalDigits: 0,
-                  ).format(sumStat.price) +
-                  'сум',
+              '-${NumberFormat.simpleCurrency(
+                name: '',
+                locale: 'ru_RU',
+                decimalDigits: 0,
+              ).format(double.parse(sumStat.amount))}сум',
               style: const TextStyle(
                 color: Color.fromRGBO(255, 144, 62, 1),
                 fontSize: 13,

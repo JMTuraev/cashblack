@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../../domain/models/owner/owner_notification.dart';
 import '../../../domain/models/sent_notification.dart';
 import '../../../string_extensions.dart';
 import '../../../utils/constants.dart';
@@ -12,13 +13,13 @@ class NotificationInfoView extends StatelessWidget {
     required this.sentNotification,
   }) : super(key: key);
 
-  final SentNotification sentNotification;
+  final OwnerNotification sentNotification;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(sentNotification.shop.name),
+        title: Text(sentNotification.title),
         // bottom: ThemeDetails.appBarDivider,
       ),
       body: SafeArea(
@@ -57,7 +58,7 @@ class NotificationInfoView extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      sentNotification.date.getLocaleDateTime(),
+                      sentNotification.updatedAt.getLocaleDateTime(),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -71,7 +72,7 @@ class NotificationInfoView extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  sentNotification.content,
+                  sentNotification.text,
                   textAlign: TextAlign.justify,
                   style: const TextStyle(
                     fontSize: 18,

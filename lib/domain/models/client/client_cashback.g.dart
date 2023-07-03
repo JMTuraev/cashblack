@@ -9,17 +9,17 @@ part of 'client_cashback.dart';
 ClientCashback _$ClientCashbackFromJson(Map<String, dynamic> json) =>
     ClientCashback(
       companyName: json['company_name'] as String,
-      companyLogo: json['company_logo'] as String,
+      companyLogo: json['company_logo'] as String?,
       sellerId: json['seller_id'] as int,
       sellerName: json['seller_name'] as String,
       sellerPhone: json['seller_phone'] as String,
       sellerType: json['seller_type'] as String,
       shopId: json['shop_id'] as int,
       shopName: json['shop_name'] as String,
-      shopLogo: json['shop_logo'] as String,
+      shopLogo: json['shop_logo'] as String?,
       percent: json['percent'] as String,
-      totalPrice: json['total_price'] as String,
-      amount: json['amount'] as String,
+      totalPrice: json['total_price'],
+      amount: json['amount'],
       date: json['date'] as String,
     );
 

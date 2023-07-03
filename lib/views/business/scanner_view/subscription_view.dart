@@ -2,9 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../string_extensions.dart';
+import '../../../view_models/business/business_notifications_view_model.dart';
+import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../settings_view/payment_view.dart';
+import 'payment_success_view.dart';
 
 class SubscriptionView extends StatelessWidget {
   const SubscriptionView({
@@ -22,6 +26,15 @@ class SubscriptionView extends StatelessWidget {
   Widget build(BuildContext context) {
     var balance = 12;
     bool isLoading = context.watch<BusinessViewModel>().isLoading;
+
+    final subPrice = context
+        .read<BusinessNotificationsViewModel>()
+        .prices
+        .where(
+          (element) => element.type == 'subscript' && element.month == 1,
+        )
+        .first
+        .price;
 
     return Scaffold(
       body: Scaffold(
@@ -43,12 +56,48 @@ class SubscriptionView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Text(
-                        '$subscribtionPrice сум',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 20,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Баланс: ',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                          Text(
+                            context
+                                .read<BusinessSettingsViewModel>()
+                                .businessProfile!
+                                .balance
+                                .getAmountInSum(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Абонентская плата: ',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                          Text(
+                            subPrice.getAmountInSum(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -60,9 +109,23 @@ class SubscriptionView extends StatelessWidget {
                             isLoading: isLoading,
                             text: 'Оплатить',
                             method: () async {
-                              // await context
-                              //     .read<BusinessHomeViewModel>()
-                              //     .paySubscription(context, true);
+                              await context
+                                  .read<BusinessSettingsViewModel>()
+                                  .subscribe(13)
+                                  .then((value) {
+                                if (value) {
+                                  context
+                                      .read<BusinessSettingsViewModel>()
+                                      .getOwnerProfile();
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (context) =>
+                                          PaymentSuccessView(title: 'Оплачено'),
+                                    ),
+                                  );
+                                }
+                                // Navigator.pop(context);
+                              });
                             },
                           )
                         : MainButtonWidget(

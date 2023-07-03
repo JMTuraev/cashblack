@@ -12,12 +12,58 @@ class BusinessSettingsViewModel extends ChangeNotifier {
   bool isGettingWorkers = false;
   BusinessProfile? businessProfile;
   List<SellerProfile> workers = [];
+  bool isEditing = true;
 
   Future<void> getOwnerProfile() async {
     isLoading = true;
     businessProfile = await _businessApi.getOwnerProfile();
     isLoading = false;
     notifyListeners();
+  }
+
+  Future<bool> subscribe(int priceId) async {
+    isLoading = true;
+    var res = await _businessApi.subscribe(priceId);
+    isLoading = false;
+    notifyListeners();
+    return res;
+  }
+
+  Future<bool> editOwnerProfile(
+    String firstName,
+    String lastName,
+    String phone,
+  ) async {
+    isEditing = true;
+    final res = await _businessApi.editOwnerProfile(firstName, lastName, phone);
+    isEditing = false;
+    notifyListeners();
+    return res;
+  }
+
+  Future<bool> editBusinessCompany(
+    String name,
+    String address,
+    String passwordSerial,
+    String passwordNumber,
+    String inn,
+    String pinfl,
+    // String provinceId,
+    String districtId,
+  ) async {
+    isEditing = true;
+    final res = await _businessApi.editBusinessCompany(
+      name,
+      address,
+      passwordSerial,
+      passwordNumber,
+      inn,
+      pinfl,
+      districtId,
+    );
+    isEditing = false;
+    notifyListeners();
+    return res;
   }
 
   Future<bool> createSeller(

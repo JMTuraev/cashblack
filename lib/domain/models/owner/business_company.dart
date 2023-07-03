@@ -8,7 +8,7 @@ part 'business_company.g.dart';
 class BusinessCompany {
   final int id;
   final String name;
-  final String logo;
+  final String? logo;
   final String inn;
   final String address;
   @JsonKey(name: 'p_seria')

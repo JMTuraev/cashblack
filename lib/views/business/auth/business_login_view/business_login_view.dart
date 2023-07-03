@@ -54,9 +54,9 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
         bool sendSMS =
             await context.read<BusinessLoginViewModel>().onEnterButtonPressed(
                   phone.substring(3),
-                  'nickname',
-                  'firstName',
-                  'lastName',
+                  phone.substring(3),
+                  phone.substring(3),
+                  phone.substring(3),
                   '59',
                   'owner',
                   promo,

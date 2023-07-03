@@ -16,7 +16,7 @@ class BusinessProfile extends ChangeNotifier {
   final String lastName;
   @JsonKey(name: 'district_id')
   final String? districtId;
-  // final int balance;
+  final String balance;
   @JsonKey(name: 'total_amount')
   final String totalAmount;
   @JsonKey(name: 'total_expense')
@@ -31,7 +31,7 @@ class BusinessProfile extends ChangeNotifier {
     required this.firstName,
     required this.lastName,
     this.districtId,
-    // required this.balance,
+    required this.balance,
     required this.totalAmount,
     required this.totalExpense,
     required this.type,

@@ -116,19 +116,22 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
               TextButtonWidget(
                 text: 'Не получили код. Отправить код еще раз',
                 method: () async {
-                  await context
-                      .read<ClientLoginViewModel>()
-                      .onEnterButtonPressed(
-                        textController.text,
-                        'nickname',
-                        'firstName',
-                        'lastName',
-                        '1',
-                        'client',
-                        '',
-                      );
-                  _animationController!.reset();
-                  _animationController!.forward();
+                  if (_animationController!.status ==
+                      AnimationStatus.completed) {
+                    await context
+                        .read<ClientLoginViewModel>()
+                        .onEnterButtonPressed(
+                          textController.text,
+                          textController.text,
+                          textController.text,
+                          textController.text,
+                          '1',
+                          'client',
+                          '',
+                        );
+                    _animationController!.reset();
+                    _animationController!.forward();
+                  }
                 },
               ),
               const SizedBox(height: 20),
