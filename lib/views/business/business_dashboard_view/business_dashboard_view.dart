@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'dart:math' as math;
 
-import '../../../domain/models/one_month_statistic.dart';
-import '../../../domain/models/owner/bonus_price.dart';
 import '../../../domain/models/owner/weekly_stat.dart';
 import '../../../size_config.dart';
 import '../../../string_extensions.dart';
@@ -23,6 +19,7 @@ import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/show_modal.dart';
 import '../create_company_view.dart';
 import '../create_store_view/create_store_view.dart';
+import '../create_store_view/edit_store_view.dart';
 import '../settings_view/payment_view.dart';
 import '../settings_view/payments_history_view.dart';
 
@@ -56,6 +53,19 @@ class _BusinessDashboardViewState extends State<BusinessDashboardView> {
         child: Column(
           children: const [
             _CashbackWidget(),
+            // Expanded(
+            //   child: ListView.separated(
+            //     // shrinkWrap: true,
+            //     itemCount: 10,
+            //     // physics: NeverScrollableScrollPhysics(),
+            //     separatorBuilder: (context, index) {
+            //       return SizedBox(height: 10);
+            //     },
+            //     itemBuilder: (context, index) {
+            //       return Text('data');
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -267,13 +277,27 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
           ),
           Column(
             children: [
-              Text(
-                businessShops.isNotEmpty
-                    ? businessShops[currentShopIndex].name
-                    : '',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
+              TextButton(
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => EditStoreView(
+                        shop: businessShops[currentShopIndex],
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  businessShops.isNotEmpty
+                      ? businessShops[currentShopIndex].name
+                      : '',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               // const SizedBox(height: 14),
@@ -1060,7 +1084,8 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                   minY: -widget.maxSum / 10,
                   lineTouchData: LineTouchData(
                     touchTooltipData: LineTouchTooltipData(
-                      tooltipBgColor: Colors.grey[900],
+                      // tooltipBgColor: Colors.grey[900],
+                      tooltipBgColor: Colors.grey.shade900,
                       showOnTopOfTheChartBoxArea: true,
                       fitInsideHorizontally: true,
                       fitInsideVertically: true,

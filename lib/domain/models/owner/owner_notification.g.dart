@@ -8,6 +8,7 @@ part of 'owner_notification.dart';
 
 OwnerNotification _$OwnerNotificationFromJson(Map<String, dynamic> json) =>
     OwnerNotification(
+      id: json['id'] as int,
       type: json['type'] as String,
       title: json['title'] as String,
       text: json['text'] as String,
@@ -17,14 +18,18 @@ OwnerNotification _$OwnerNotificationFromJson(Map<String, dynamic> json) =>
       adminId: json['admin_id'],
       status: json['status'] as String,
       remark: json['remark'],
-      showed: json['showed'] as bool,
+      showed: json['showed'],
       showedCount: json['showed_count'] as int,
-      like: json['like'] as bool,
+      like: json['like'],
       likeCount: json['like_count'] as int,
+      shop: json['shop'] == null
+          ? null
+          : BusinessShop.fromJson(json['shop'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$OwnerNotificationToJson(OwnerNotification instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'type': instance.type,
       'title': instance.title,
       'text': instance.text,
@@ -38,4 +43,5 @@ Map<String, dynamic> _$OwnerNotificationToJson(OwnerNotification instance) =>
       'showed_count': instance.showedCount,
       'like': instance.like,
       'like_count': instance.likeCount,
+      'shop': instance.shop,
     };

@@ -1,13 +1,16 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../size_config.dart';
 import '../../../utils/constants.dart';
+import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_notifications_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../widgets/active_switcher_widget.dart';
@@ -15,6 +18,7 @@ import '../../../widgets/inactive_switcher_widget.dart';
 import '../../../widgets/info_alert_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/multiline_text_field_widget.dart';
+import '../scanner_view/payment_phone_view.dart';
 
 class SendNotificationView extends StatefulWidget {
   const SendNotificationView({super.key});
@@ -26,6 +30,7 @@ class SendNotificationView extends StatefulWidget {
 class _SendNotificationViewState extends State<SendNotificationView> {
   // final ImagePicker _picker = ImagePicker();
   // List<File?> _fileList = [];
+  File? _file;
 
   // void dltImages(data) {
   //   setState(() {
@@ -46,7 +51,24 @@ class _SendNotificationViewState extends State<SendNotificationView> {
   //   });
   // }
 
-  final TextEditingController _titleController = TextEditingController();
+  Future<void> getFromGallery() async {
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 1080,
+      maxWidth: 1080,
+    );
+
+    if (pickedFile != null) {
+      print(pickedFile);
+      setState(() {
+        _file = File(pickedFile.path);
+      });
+    }
+  }
+
+  final TextEditingController _titleController = TextEditingController(
+    text: 'Бонус-3',
+  );
   final TextEditingController _contentController = TextEditingController();
 
   // late Future prices;
@@ -61,10 +83,20 @@ class _SendNotificationViewState extends State<SendNotificationView> {
 
   int selectedItem = 0;
 
+  String? selectedShop;
+
   @override
   Widget build(BuildContext context) {
-    String balance =
-        context.read<BusinessSettingsViewModel>().businessProfile!.totalAmount;
+    final balance =
+        context.read<BusinessSettingsViewModel>().businessProfile!.balance;
+    final subPrice = context
+        .read<BusinessNotificationsViewModel>()
+        .prices
+        .where(
+          (element) => element.type == 'subscript' && element.month == 1,
+        )
+        .first
+        .price;
     // String price = context.watch<SendNotificationViewModel>().notificationPrice;
 
     return SafeArea(
@@ -211,20 +243,52 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                   ),
                 ),
                 SizedBox(height: getH(20)),
+                _file == null
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: _BigImageCardWidget(
+                          image: selections[0] == true
+                              ? Constants.actionImages[selectedItem]
+                              : (selections[1] == true
+                                  ? Constants.cashbackImages[selectedItem]
+                                  : Constants.adImages[selectedItem]),
+                        ),
+                      )
+                    : _ImageViewWidget(
+                        file: _file!,
+                        onTap: () {
+                          setState(() {
+                            _file = null;
+                          });
+                        },
+                      ),
+                SizedBox(height: getH(20)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: _BigImageCardWidget(
-                    image: selections[0] == true
-                        ? Constants.actionImages[selectedItem]
-                        : (selections[1] == true
-                            ? Constants.cashbackImages[selectedItem]
-                            : Constants.adImages[selectedItem]),
+                  child: SelectCategoryWidget(
+                    categoryItems: context
+                        .read<BusinessDashboardViewModel>()
+                        .businessShops!
+                        .map(
+                          (e) => DropdownMenuItem<String>(
+                            value: e.id.toString(),
+                            child: Text(e.name),
+                          ),
+                        )
+                        .toList(),
+                    hint: 'Магазин',
+                    onChanged: (String value) {
+                      // print(value);
+                      selectedShop = value;
+                    },
+                    selectedOption: selectedShop,
                   ),
                 ),
                 SizedBox(height: getH(20)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: MultilineTextFieldWidget(
+                    onTap: getFromGallery,
                     hintText: 'Что у вас нового?',
                     controller: _contentController,
                   ),
@@ -293,13 +357,19 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                         text: 'Отправить',
                         isLoading: false,
                         method: () async {
+                          print(_titleController.text);
+                          print(_contentController.text);
+                          print(balance);
+                          print(subPrice);
                           if (
+
                               // _fileList.isNotEmpty &&
                               selectedItem != -1 &&
                                   _titleController.text != -1 &&
                                   _titleController.text.isNotEmpty &&
                                   _contentController.text.isNotEmpty) {
-                            if (int.parse(balance) < int.parse('233')) {
+                            if (double.parse(balance) <
+                                double.parse(subPrice)) {
                               // showCupertinoDialog(
                               //   context: context,
                               //   builder: (context) =>
@@ -315,23 +385,29 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                               );
                               // );
                             } else {
-                              // await context
-                              //     .read<SendNotificationViewModel>()
-                              //     .send(
-                              //       // _fileList[0]!,
-                              //       _titleController.text,
-                              //       _contentController.text,
-                              //     )
-                              //     .then(
-                              //       (value) => Navigator.of(context)
-                              //           .pushAndRemoveUntil(
-                              //         CupertinoPageRoute(
-                              //           builder: (context) =>
-                              //               const BusinessView(),
-                              //         ),
-                              //         (route) => false,
-                              //       ),
-                              //     );
+                              await context
+                                  .read<BusinessNotificationsViewModel>()
+                                  .postNotification(
+                                    // _fileList[0]!,
+                                    // _titleController.text,
+                                    // _contentController.text,
+                                    1,
+                                    _titleController.text,
+                                    _contentController.text,
+                                    _titleController.text,
+                                    selectedShop ?? '',
+                                    _file,
+                                  )
+                                  .then(
+                                (value) {
+                                  if (value) {
+                                    context
+                                        .read<BusinessNotificationsViewModel>()
+                                        .getNotifications();
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                              );
                             }
                           }
                         },
@@ -370,8 +446,8 @@ class _SendNotificationViewState extends State<SendNotificationView> {
     );
   }
 
-  Container cardBuilder(List imagesList, String type) {
-    return Container(
+  SizedBox cardBuilder(List imagesList, String type) {
+    return SizedBox(
       height: getH(52),
       width: double.infinity,
       child: ListView.separated(
@@ -382,7 +458,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
           onTap: () {
             setState(() {
               selectedItem = index;
-              var ind = imagesList[index]
+              final ind = imagesList[index]
                   .split('-')
                   .last
                   .toString()
@@ -412,10 +488,10 @@ class _SendNotificationViewState extends State<SendNotificationView> {
 
 class _ImageCardWidget extends StatelessWidget {
   const _ImageCardWidget({
-    Key? key,
+    super.key,
     required this.image,
     this.selectedIndex,
-  }) : super(key: key);
+  });
 
   final String image;
   final bool? selectedIndex;
@@ -487,10 +563,10 @@ class _ImageCardWidget extends StatelessWidget {
 
 class _BigImageCardWidget extends StatelessWidget {
   const _BigImageCardWidget({
-    Key? key,
+    super.key,
     required this.image,
     this.selectedIndex,
-  }) : super(key: key);
+  });
 
   final String image;
   final bool? selectedIndex;
@@ -498,7 +574,7 @@ class _BigImageCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: getH(200),
+      height: getH(300),
       // width: getH(300),
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -515,15 +591,13 @@ class _BigImageCardWidget extends StatelessWidget {
 }
 
 class _ImageViewWidget extends StatelessWidget {
+  final File file;
+  final VoidCallback onTap;
   const _ImageViewWidget({
-    Key? key,
-    required List<File?> fileList,
+    super.key,
+    required this.file,
     required this.onTap,
-  })  : _fileList = fileList,
-        super(key: key);
-
-  final List<File?> _fileList;
-  final Function onTap;
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -536,20 +610,20 @@ class _ImageViewWidget extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             SizedBox(
-              height: getH(200),
+              height: getH(300),
               width: double.infinity,
               child: Image.file(
-                File(_fileList.first!.path),
+                File(file.path),
                 fit: BoxFit.cover,
               ),
             ),
             Positioned(
               right: 2,
               child: GestureDetector(
-                onTap: () => onTap(),
+                onTap: onTap,
                 child: const Icon(Icons.cancel, color: Colors.redAccent),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -559,16 +633,17 @@ class _ImageViewWidget extends StatelessWidget {
 
 class _FilePickerWidget extends StatelessWidget {
   const _FilePickerWidget({
-    Key? key,
+    super.key,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final Function onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap(),
+      onTap: () {},
+      // onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(

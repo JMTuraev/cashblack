@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 
 import '../../core/api/business_api.dart';
@@ -8,6 +10,7 @@ class BusinessNotificationsViewModel extends ChangeNotifier {
   final BusinessApi _businessApi = BusinessApi();
 
   bool isLoading = false;
+  bool isSending = false;
   bool isLoadingNotifications = false;
   List<NotificationPrice> prices = [];
   List<OwnerNotification> notifations = [];
@@ -24,5 +27,27 @@ class BusinessNotificationsViewModel extends ChangeNotifier {
     notifations = await _businessApi.getNotifications();
     isLoadingNotifications = false;
     notifyListeners();
+  }
+
+  Future<bool> postNotification(
+    int priceId,
+    String title,
+    String text,
+    String avatarId,
+    String shopId,
+    File? image,
+  ) async {
+    isSending = true;
+    var res = await _businessApi.sendNotification(
+      priceId,
+      title,
+      text,
+      avatarId,
+      shopId,
+      image,
+    );
+    isSending = false;
+    notifyListeners();
+    return res;
   }
 }

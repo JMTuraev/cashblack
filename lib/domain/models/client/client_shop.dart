@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../owner/report_cashback.dart';
 import 'client_cashback.dart';
 
 part 'client_shop.g.dart';
@@ -17,7 +18,8 @@ class ClientShop {
   @JsonKey(name: 'company_id')
   final ClientCompany clientCompany;
   final dynamic amount;
-  final List<ClientCashback> cashback;
+  final List<InlineCashbackAndWithdraw> cashback;
+  final List<InlineCashbackAndWithdraw> withdraw;
   @JsonKey(name: 'withdraw_sum')
   final dynamic withdrawSum;
   @JsonKey(name: 'cashback_sum')
@@ -33,6 +35,7 @@ class ClientShop {
     required this.clientCompany,
     required this.amount,
     required this.cashback,
+    required this.withdraw,
     required this.withdrawSum,
     required this.cashbackSum,
   });

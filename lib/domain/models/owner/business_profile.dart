@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'business_license.dart';
+import 'business_shop.dart';
 
 part 'business_profile.g.dart';
 

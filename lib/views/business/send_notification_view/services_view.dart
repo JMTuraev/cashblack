@@ -65,31 +65,11 @@ class _ServicesViewState extends State<ServicesView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 28,
-                      vertical: 10,
-                    ),
-                    child: Text(
-                      'Мини-приложения',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
                   Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const _IconWidget(
-                            svg: 'assets/svg/service-chat.svg',
-                            title: 'Чат',
-                            color: Color.fromRGBO(40, 30, 29, 1),
-                            onTap: null,
-                          ),
                           _IconWidget(
                             svg: 'assets/svg/service-post.svg',
                             title: 'Посты',
@@ -101,6 +81,12 @@ class _ServicesViewState extends State<ServicesView> {
                                 ),
                               );
                             },
+                          ),
+                          const _IconWidget(
+                            svg: 'assets/svg/service-chat.svg',
+                            title: 'Чат',
+                            color: Color.fromRGBO(40, 30, 29, 1),
+                            onTap: null,
                           ),
                           const _IconWidget(
                             svg: 'assets/svg/service-schedule.svg',
@@ -120,7 +106,7 @@ class _ServicesViewState extends State<ServicesView> {
                       const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: const [
+                        children: [
                           _IconWidget(
                             svg: 'assets/svg/service-store.svg',
                             title: 'Склад',

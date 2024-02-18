@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import '../../domain/models/client/client_category.dart';
 import '../../domain/models/client/client_paying.dart';
 import '../../domain/models/client/client_profile.dart';
+import '../../domain/models/owner/client_notification.dart';
+import '../../domain/models/owner/owner_notification.dart';
 import '../../utils/constants.dart';
 
 class ClientApi {
@@ -85,5 +87,48 @@ class ClientApi {
     print('get client payings ${payings.length}');
 
     return payings;
+  }
+
+  Future<ClientNotification> getNotifications() async {
+    await _setDioHeader();
+
+    final response = await _dio.get('${Constants.path}/v1/adv');
+
+    final notification =
+        ClientNotification.fromJson(response.data as Map<String, Object?>);
+
+    print('owner notifs');
+
+    return notification;
+  }
+
+  Future<void> readNotifications(int id) async {
+    await _setDioHeader();
+
+    try {
+      final response = await _dio.get('${Constants.path}/v1/adv/$id');
+      print('read notif');
+    } on DioException catch (e) {
+      print(e.response!.data);
+    }
+  }
+
+  Future<void> likeNotifications(int id, int status) async {
+    await _setDioHeader();
+
+    try {
+      final response = await _dio.post(
+        '${Constants.path}/v1/adv/$id',
+        data: FormData.fromMap(
+          {
+            'name': status,
+          },
+        ),
+      );
+
+      print('like notif');
+    } on DioException catch (e) {
+      print(e.response!.data);
+    }
   }
 }

@@ -1,0 +1,253 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:provider/provider.dart';
+
+import '../../../string_extensions.dart';
+import '../../../utils/numberic_text_formatter.dart';
+import '../../../view_models/business/business_dashboard_view_model.dart';
+import '../../../view_models/business/business_payment_view_model.dart';
+import '../../../view_models/payment_client_view_model.dart';
+import '../../../widgets/main_button_widget.dart';
+import '../../view_models/seller/seller_view_model.dart';
+import '../business/scanner_view/payment_success_view.dart';
+import 'seller_payment_success_view.dart';
+
+class SellerPaymentPhoneView extends StatelessWidget {
+  SellerPaymentPhoneView({
+    super.key,
+    required this.shopId,
+  });
+
+  final int shopId;
+
+  final _formKey = GlobalKey<FormState>();
+
+  String? selectedShop;
+
+  TextEditingController priceController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+
+  MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
+    mask: '+### ## ### ## ##',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+
+  NumericTextFormatter numericTextFormatter = NumericTextFormatter();
+
+  @override
+  Widget build(BuildContext context) {
+    // bool isLoading = context.watch<PaymentClientViewModel>().isLoading;
+
+    void submit() async {
+      if (_formKey.currentState!.validate()) {
+        await context
+            .read<SellerViewModel>()
+            .payCashback(
+              maskFormatter.getUnmaskedText().substring(3),
+              priceController.text,
+            )
+            .then((value) {
+          if (value) {
+            Navigator.of(context).pushAndRemoveUntil(
+              CupertinoPageRoute(
+                builder: (context) => const SellerPaymentSuccessView(
+                  title: 'Оплачено',
+                ),
+              ),
+              (route) => false,
+            );
+          }
+        });
+        // await context.read<PaymentClientViewModel>().payPhone(
+        //     context,
+        //     priceController.text.removeWhitespaces(),
+        //     maskFormatter.getUnmaskedText(),
+        //     shopId);
+        // isLoading = true;
+        // await context
+        //     .read<PaymentClientViewModel>()
+        //     .sendCashbackWithPhone(
+        //       priceController.text.removeWhitespaces(),
+        //       maskFormatter.getUnmaskedText(),
+        //       shopId,
+        //     )
+        //     .then(
+        //   (value) {
+        //     isLoading = false;
+        //     return Navigator.of(context).pushAndRemoveUntil(
+        //       CupertinoPageRoute(
+        //         builder: (context) => const PaymentSuccessView(
+        //           title: 'Оплачено',
+        //         ),
+        //       ),
+        //       (route) => false,
+        //     );
+        //   },
+        // );
+      }
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Оплата по номеру'),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Form(
+            key: _formKey,
+            child: Align(
+              alignment: Alignment.center,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/cc.png',
+                      fit: BoxFit.contain,
+                      height: MediaQuery.of(context).size.width / 2.5,
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.parse(value.removeWhitespace()) <= 0) {
+                          return 'Введите номер телефона';
+                        }
+                        return null;
+                      },
+                      controller: phoneController,
+                      decoration: InputDecoration(
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        filled: false,
+                        hintText: "Телефон",
+                      ),
+                      inputFormatters: [maskFormatter],
+                      autocorrect: false,
+                      // autofocus: true,
+                      enableSuggestions: false,
+                      keyboardAppearance: Brightness.dark,
+                      showCursor: true,
+                      keyboardType: TextInputType.phone,
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.parse(value.removeWhitespace()) <= 0) {
+                          return 'Введите сумму';
+                        }
+                        return null;
+                      },
+                      inputFormatters: [numericTextFormatter],
+                      decoration: const InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                        ),
+                        hintText: 'Сумма покупки',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                        ),
+                      ),
+                      controller: priceController,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      keyboardAppearance: Brightness.dark,
+                      showCursor: true,
+                      keyboardType: TextInputType.number,
+                    ),
+                    const SizedBox(height: 20),
+                    MainButtonWidget(
+                      isLoading: false,
+                      text: 'Оплатит',
+                      method: submit,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SelectCategoryWidget extends StatelessWidget {
+  const _SelectCategoryWidget({
+    Key? key,
+    required String? selectedOption,
+    required this.categoryItems,
+    required this.onChanged,
+    required this.hint,
+  })  : _selectedOption = selectedOption,
+        super(key: key);
+
+  final String? _selectedOption;
+  final List<DropdownMenuItem<String>> categoryItems;
+  final Function onChanged;
+  final String hint;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      child: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
+        ),
+        child: DropdownButtonFormField<String>(
+          style: const TextStyle(
+            fontSize: 16,
+          ),
+          hint: Text(hint),
+          isExpanded: true,
+          value: _selectedOption,
+          items: categoryItems,
+          onChanged: (value) => onChanged(value),
+          decoration: const InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(20),
+              ),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(20),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

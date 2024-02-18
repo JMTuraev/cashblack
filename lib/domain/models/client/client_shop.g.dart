@@ -18,7 +18,12 @@ ClientShop _$ClientShopFromJson(Map<String, dynamic> json) => ClientShop(
           ClientCompany.fromJson(json['company_id'] as Map<String, dynamic>),
       amount: json['amount'],
       cashback: (json['cashback'] as List<dynamic>)
-          .map((e) => ClientCashback.fromJson(e as Map<String, dynamic>))
+          .map((e) =>
+              InlineCashbackAndWithdraw.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      withdraw: (json['withdraw'] as List<dynamic>)
+          .map((e) =>
+              InlineCashbackAndWithdraw.fromJson(e as Map<String, dynamic>))
           .toList(),
       withdrawSum: json['withdraw_sum'],
       cashbackSum: json['cashback_sum'],
@@ -36,6 +41,7 @@ Map<String, dynamic> _$ClientShopToJson(ClientShop instance) =>
       'company_id': instance.clientCompany,
       'amount': instance.amount,
       'cashback': instance.cashback,
+      'withdraw': instance.withdraw,
       'withdraw_sum': instance.withdrawSum,
       'cashback_sum': instance.cashbackSum,
     };

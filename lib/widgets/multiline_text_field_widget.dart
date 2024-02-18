@@ -5,9 +5,11 @@ class MultilineTextFieldWidget extends StatelessWidget {
     Key? key,
     required this.hintText,
     this.controller,
+    this.onTap,
   }) : super(key: key);
 
   final String hintText;
+  final VoidCallback? onTap;
   TextEditingController? controller;
 
   @override
@@ -16,6 +18,15 @@ class MultilineTextFieldWidget extends StatelessWidget {
 
     return TextFormField(
       decoration: InputDecoration(
+        suffixIcon: onTap != null
+            ? IconButton(
+                onPressed: onTap,
+                icon: const Icon(
+                  Icons.attachment,
+                  size: 30,
+                ),
+              )
+            : null,
         // counterStyle: TextStyle(
         //   color: controller!.text.length == maxLength ? Colors.red : null,
         // ),

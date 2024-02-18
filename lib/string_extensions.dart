@@ -56,39 +56,42 @@ extension StringExtensions on String {
     );
   }
 
-  String getLocaleDateTime() {
+  String getLocaleDateTime({int? addingHours}) {
     // final DateFormat formatter = DateFormat('dd MMMM yyyy, hh:mm');
-    final DateFormat formatter = DateFormat('dd MMMM yyyy,').add_Hm();
+    final formatter = DateFormat('dd MMMM yyyy,').add_Hm();
 
-    return formatter.format(DateTime.parse(this));
+    return addingHours == null
+        ? formatter.format(DateTime.parse(this))
+        : formatter
+            .format(DateTime.parse(this).add(Duration(hours: addingHours)));
   }
 
   String getDateForQuery() {
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final formatter = DateFormat('yyyy-MM-dd');
 
     return formatter.format(DateTime.parse(this));
   }
 
   String getLocaleDate() {
-    final DateFormat formatter = DateFormat('dd MMMM yyyy');
+    final formatter = DateFormat('dd MMMM yyyy');
 
     return formatter.format(DateTime.parse(this));
   }
 
   String getLocaleDateWithoutYear() {
-    final DateFormat formatter = DateFormat('dd.MM');
+    final formatter = DateFormat('dd.MM');
 
     return formatter.format(DateTime.parse(this));
   }
 
   String getLocaleDateWithYear() {
-    final DateFormat formatter = DateFormat('dd.MM.yyyy');
+    final formatter = DateFormat('dd.MM.yyyy');
 
     return formatter.format(DateTime.parse(this));
   }
 
   String getLocaleDateWithoutYearWithMont() {
-    final DateFormat formatter = DateFormat('dd-MMMM');
+    final formatter = DateFormat('dd-MMMM');
 
     return formatter.format(DateTime.parse(this));
   }

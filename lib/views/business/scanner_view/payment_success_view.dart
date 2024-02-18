@@ -43,7 +43,7 @@ class PaymentSuccessView extends StatelessWidget {
                       context.read<BusinessViewModel>().onChange(0);
                       Navigator.of(context).pushReplacement(
                         CupertinoPageRoute(
-                          builder: (context) => const BusinessView(),
+                          builder: (context) => BusinessView(),
                         ),
                       );
                     },

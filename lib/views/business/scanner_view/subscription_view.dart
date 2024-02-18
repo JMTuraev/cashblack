@@ -59,10 +59,10 @@ class SubscriptionView extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
+                          const Text(
                             'Баланс: ',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 20,
                             ),
                           ),
@@ -83,10 +83,10 @@ class SubscriptionView extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
+                          const Text(
                             'Абонентская плата: ',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 20,
                             ),
                           ),
@@ -104,7 +104,13 @@ class SubscriptionView extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 isBusiness
-                    ? int.parse('12') > int.parse(subscribtionPrice)
+                    ? double.parse(
+                              context
+                                  .read<BusinessSettingsViewModel>()
+                                  .businessProfile!
+                                  .balance,
+                            ) >
+                            double.parse(subscribtionPrice)
                         ? MainButtonWidget(
                             isLoading: isLoading,
                             text: 'Оплатить',
@@ -120,7 +126,9 @@ class SubscriptionView extends StatelessWidget {
                                   Navigator.of(context).push(
                                     CupertinoPageRoute(
                                       builder: (context) =>
-                                          PaymentSuccessView(title: 'Оплачено'),
+                                          const PaymentSuccessView(
+                                        title: 'Оплачено',
+                                      ),
                                     ),
                                   );
                                 }
@@ -136,7 +144,8 @@ class SubscriptionView extends StatelessWidget {
                                   builder: (context) => const PaymentView(),
                                 ),
                               );
-                            })
+                            },
+                          )
                     : const SizedBox(),
               ],
             ),

@@ -11,39 +11,27 @@ class BusinessStatisticsViewModel extends ChangeNotifier {
   bool isLoading = false;
   bool isClientsLoading = false;
   List<ReportCashback> cashbackAndWithdraws = [];
-  List<InlineCashback> mergedList = [];
+  List<InlineCashbackAndWithdraw> mergedList = [];
 
   List<ReportCashbackClient> clients = [];
 
   Future<void> getStats() async {
     isLoading = true;
     cashbackAndWithdraws = await _businessApi.getCashbackStatistics();
-    mergedList = cashbackAndWithdraws.first.cashback;
+    // mergedList = cashbackAndWithdraws.first.cashback;
     // cashbackAndWithdraws.forEach((element) {
     //   mergedList.addAll(element.cashback);
     // });
-    for (final element in cashbackAndWithdraws.first.withdraw) {
-      mergedList.add(
-        InlineCashback(
-          type: element.type,
-          companyName: element.companyName,
-          sellerId: element.sellerId,
-          sellerName: element.sellerName,
-          sellerPhone: element.sellerPhone,
-          sellerType: element.sellerType,
-          shopId: element.shopId,
-          shopName: element.shopName,
-          percent: '-1',
-          totalPrice: '-1',
-          amount: element.amount,
-          date: element.date,
-          clientId: element.clientId,
-          clientName: element.clientName,
-          clientPhone: element.clientPhone,
-        ),
-      );
-    }
-    print(mergedList.length);
+
+    cashbackAndWithdraws.forEach((element) {
+      mergedList
+        ..addAll(element.withdraw)
+        ..addAll(element.cashback);
+    });
+
+    mergedList.sort(
+        (a, b) => DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
+
     isLoading = false;
     notifyListeners();
   }

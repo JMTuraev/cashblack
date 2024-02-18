@@ -3,9 +3,11 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gradient_borders/gradient_borders.dart';
 import 'package:provider/provider.dart';
 // import 'package:provider/provider.dart';
 
+import '../../../domain/models/owner/owner_notification.dart';
 import '../../../domain/models/sent_notification.dart';
 import '../../../string_extensions.dart';
 import '../../../size_config.dart';
@@ -36,10 +38,16 @@ class _PostsViewState extends State<PostsView> {
     super.initState();
   }
 
+  int currentShopIndex = -1;
+  List<OwnerNotification> filteredNotifications = [];
+
   @override
   Widget build(BuildContext context) {
     final notifications =
         context.read<BusinessNotificationsViewModel>().notifations;
+    // filteredNotifications = notifications;
+    final businessShops =
+        context.read<BusinessDashboardViewModel>().businessShops!;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -69,6 +77,116 @@ class _PostsViewState extends State<PostsView> {
       ),
       body: Column(
         children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: getH(10)),
+            height: getH(85),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: businessShops.length,
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(width: 10);
+                    },
+                    itemBuilder: (context, index) {
+                      final shop = businessShops[index];
+                      return GestureDetector(
+                        onTap: () {
+                          // print(notifications
+                          //     .where(
+                          //       (element) => element.shop?.id == 12,
+                          //     )
+                          //     .toList());
+                          setState(() {
+                            // currentShopIndex =
+                            //     currentShopIndex == -1 ? index : -1;
+                            if (currentShopIndex != index) {
+                              currentShopIndex = index;
+                            } else {
+                              currentShopIndex = -1;
+                            }
+                            filteredNotifications = notifications
+                                .where(
+                                  (element) =>
+                                      element.shop?.id ==
+                                      businessShops[index].id,
+                                )
+                                .toList();
+                          });
+                        },
+                        child: Container(
+                          height: getH(65),
+                          width: getH(65),
+                          decoration: BoxDecoration(
+                            // border: Border.all(
+                            //   color: currentShopIndex == index
+                            //       ? const Color(0xff67ce67)
+                            //       : Colors.black,
+                            //   width: 3,
+                            // ),
+                            border: currentShopIndex == index
+                                ? GradientBoxBorder(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.green.shade500,
+                                        Colors.orange.shade500,
+                                      ],
+                                    ),
+                                    width: 3,
+                                  )
+                                : Border.all(
+                                    color: Colors.black,
+                                    width: 3,
+                                  ),
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 1,
+                                blurRadius: 1,
+                                // offset: Offset(0, 0),
+                              )
+                            ],
+                          ),
+                          child: businessShops[index].logo != null
+                              ? ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl: businessShops[index].logo!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : ClipOval(
+                                  child: Container(
+                                    // color: Color(
+                                    //   (math.Random().nextDouble() * 0xFFFF11)
+                                    //       .toInt(),
+                                    // ).withOpacity(1),
+                                    color: Colors.black38,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      shop.name.substring(0, 1),
+                                      style: const TextStyle(
+                                        fontSize: 30,
+                                      ),
+                                    ),
+                                  ),
+                                  // child: Image.asset(
+                                  //   'assets/images/notification/ak-1.png',
+                                  //   fit: BoxFit.cover,
+                                  // ),
+                                ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
           // const SizedBox(height: 20),
           // const Text(
           //   'Отправленные уведомления',
@@ -81,23 +199,31 @@ class _PostsViewState extends State<PostsView> {
             child: EasyRefresh(
               header: const MaterialHeader(),
               onRefresh: () {
-                setState(() {
-                  context.read<BusinessNotificationsViewModel>();
-                });
+                context
+                    .read<BusinessNotificationsViewModel>()
+                    .getNotifications();
+
+                // setState(() {
+                //   context.read<BusinessNotificationsViewModel>();
+                // });
               },
               child: context
                       .watch<BusinessNotificationsViewModel>()
                       .isLoadingNotifications
-                  ? LogoAnimatedWidget(size: 1.5)
+                  ? const LogoAnimatedWidget(size: 1.5)
                   : ListView.separated(
-                      itemCount: notifications.length,
+                      itemCount: currentShopIndex == -1
+                          ? notifications.length
+                          : filteredNotifications.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(
                               CupertinoPageRoute(
                                 builder: (context) => NotificationInfoView(
-                                  sentNotification: notifications[index],
+                                  sentNotification: currentShopIndex == -1
+                                      ? notifications[index]
+                                      : filteredNotifications[index],
                                 ),
                               ),
                             );
@@ -112,14 +238,14 @@ class _PostsViewState extends State<PostsView> {
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
                                     ClipOval(
-                                      child: Image.asset(
+                                      child: CachedNetworkImage(
                                         // 'assets/images/notification/ak-3.png',
-                                        context
+                                        imageUrl: context
                                                 .read<
                                                     BusinessDashboardViewModel>()
                                                 .businessCompany
@@ -128,7 +254,7 @@ class _PostsViewState extends State<PostsView> {
                                         fit: BoxFit.cover,
                                         height: getH(50),
                                         width: getH(50),
-                                        errorBuilder:
+                                        errorWidget:
                                             (context, error, stackTrace) =>
                                                 Container(
                                           height: getH(50),
@@ -159,20 +285,33 @@ class _PostsViewState extends State<PostsView> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          notifications[index].title,
+                                          notifications[index]
+                                              .title
+                                              .split('-')
+                                              .first,
                                           style: const TextStyle(
                                             color: Color.fromRGBO(
-                                                103, 206, 103, 1),
+                                              103,
+                                              206,
+                                              103,
+                                              1,
+                                            ),
                                             fontSize: 18,
                                           ),
                                         ),
                                         Text(
                                           notifications[index]
                                               .updatedAt
-                                              .getLocaleDateTime(),
+                                              .getLocaleDateTime(
+                                                addingHours: 5,
+                                              ),
                                           style: const TextStyle(
                                             color: Color.fromRGBO(
-                                                147, 147, 147, 1),
+                                              147,
+                                              147,
+                                              147,
+                                              1,
+                                            ),
                                             fontSize: 16,
                                           ),
                                         ),
@@ -212,7 +351,7 @@ class _PostsViewState extends State<PostsView> {
                                     Text(
                                       notifications[index]
                                           .updatedAt
-                                          .getLocaleDateTime(),
+                                          .getLocaleDateTime(addingHours: 5),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -235,13 +374,9 @@ class _PostsViewState extends State<PostsView> {
                                           : notifications[index].status ==
                                                   'approved'
                                               ? DateTime.parse(
-                                                  '2023-06-06',
+                                                  notifications[index].endAt,
                                                 ).isAfter(
-                                                  DateTime.now().subtract(
-                                                    const Duration(
-                                                      days: 2,
-                                                    ),
-                                                  ),
+                                                  DateTime.now(),
                                                 )
                                                   ? Row(
                                                       children: [
@@ -253,13 +388,10 @@ class _PostsViewState extends State<PostsView> {
                                                         ),
                                                         Text(
                                                           DateTime.parse(
-                                                                '2023-06-06',
+                                                                notifications[
+                                                                        index]
+                                                                    .endAt,
                                                               )
-                                                                  .add(
-                                                                    const Duration(
-                                                                      days: 2,
-                                                                    ),
-                                                                  )
                                                                   .difference(
                                                                     DateTime
                                                                         .now(),
@@ -289,11 +421,15 @@ class _PostsViewState extends State<PostsView> {
                                     )
                                   ],
                                 ),
+                                const SizedBox(height: 4),
                                 ClipRRect(
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    bottomLeft: Radius.circular(20),
+                                  // borderRadius: const BorderRadius.only(
+                                  //   topLeft: Radius.circular(20),
+                                  //   bottomLeft: Radius.circular(20),
+                                  // ),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(20),
                                   ),
                                   child: notifications[index].image != null
                                       ? CachedNetworkImage(
@@ -303,14 +439,16 @@ class _PostsViewState extends State<PostsView> {
                                           errorWidget: (context, url, error) {
                                             return Image.asset(
                                               Helpers.getLocalImage(
-                                                'assets/images/notification/ak-${index + 1}.png',
+                                                // 'assets/images/notification/ak-${index + 1}.png',
+                                                notifications[index].title,
                                               ),
                                             );
                                           },
                                         )
                                       : Image.asset(
                                           Helpers.getLocalImage(
-                                            'assets/images/notification/ak-${index + 1}.png',
+                                            // 'assets/images/notification/ak-${index + 1}.png',
+                                            notifications[index].title,
                                           ),
                                           // height: MediaQuery.of(context).size.width / 4,
                                           // width: MediaQuery.of(context).size.width / 3,

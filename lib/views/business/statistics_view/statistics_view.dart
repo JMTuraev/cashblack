@@ -10,8 +10,9 @@ import '../../../domain/models/owner/report_cashback.dart';
 import '../../../domain/models/owner/report_cashback_client.dart';
 import '../../../domain/models/sum_cashback.dart';
 import '../../../domain/models/sum_stat.dart';
-import '../../../string_extensions.dart';
 import '../../../size_config.dart';
+import '../../../string_extensions.dart';
+import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_statistics_view_model.dart';
 import '../../../view_models/statistics_view_model.dart';
 import '../../../widgets/active_switcher_widget.dart';
@@ -32,6 +33,8 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   String? _filter;
 
+  // List<InlineCashbackAndWithdraw> mergedList = [];
+
   // late Future<List<SumStat>> statCashback;
   // late Future<List<SumCashback>> statssum;
 
@@ -44,6 +47,21 @@ class _StatisticsViewState extends State<StatisticsView> {
   @override
   void initState() {
     super.initState();
+
+    // context
+    //     .read<BusinessStatisticsViewModel>()
+    //     .cashbackAndWithdraws
+    //     .forEach((element) {
+    //   mergedList
+    //     ..addAll(element.withdraw)
+    //     ..addAll(element.cashback);
+    // });
+
+    // mergedList.sort(
+    //     (a, b) => DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
+
+    // print(mergedList);
+
     // statCashback =
     //     context.read<StatisticsViewModel>().getSumStats(start: start, end: end);
     // // stats = context.watch<StatisticsViewModel>().sumStats;
@@ -58,8 +76,10 @@ class _StatisticsViewState extends State<StatisticsView> {
     final body = IndexedStack(
       index: summa ? 0 : 1,
       children: [
-        _CashbackListWidget(),
-        _ClientCashbackWidget(),
+        _CashbackListWidget(
+          mergedList: context.read<BusinessStatisticsViewModel>().mergedList,
+        ),
+        const _ClientCashbackWidget(),
       ],
     );
 
@@ -161,13 +181,23 @@ class _StatisticsViewState extends State<StatisticsView> {
                           // ),
                           // const SizedBox(height: 20),
                           1 == 1
-                              ? SizedBox()
+                              ? const SizedBox()
                               : _FilterWidget(
                                   categoryItems: [
                                     _menuItem(
-                                        context, 'Выберите', start, end, '0'),
+                                      context,
+                                      'Выберите',
+                                      start,
+                                      end,
+                                      '0',
+                                    ),
                                     _menuItem(
-                                        context, 'Сегодня', today, today, '1'),
+                                      context,
+                                      'Сегодня',
+                                      today,
+                                      today,
+                                      '1',
+                                    ),
                                     _menuItem(
                                       context,
                                       'Вчера',
@@ -294,13 +324,16 @@ class _StatisticsViewState extends State<StatisticsView> {
 class _CashbackListWidget extends StatelessWidget {
   const _CashbackListWidget({
     Key? key,
+    required this.mergedList,
   }) : super(key: key);
+
+  final List<InlineCashbackAndWithdraw> mergedList;
 
   @override
   Widget build(BuildContext context) {
-    final mergedList = context.read<BusinessStatisticsViewModel>().mergedList;
-    // sumStat.sort((a, b) =>
-    //     DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
+    // final mergedList = context.read<BusinessStatisticsViewModel>().mergedList;
+    // mergedList.sort(
+    //     (a, b) => DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
     // sumStat.sort((a, b) => a.date!.compareTo(b.date!));
 
     // List<InlineCashback> mergedList = sumStat.cashback;
@@ -327,7 +360,7 @@ class _CashbackListWidget extends StatelessWidget {
     // });
     // mergedList.addAll(sumStat.withdraw as List<InlineCashback>);
     if (context.watch<BusinessStatisticsViewModel>().isLoading) {
-      return LogoAnimatedWidget(size: 1.5);
+      return const LogoAnimatedWidget(size: 1.5);
     } else {
       if (mergedList.isNotEmpty) {
         final formatter = DateFormat('dd MMMM yyyy, EEEE');
@@ -335,7 +368,7 @@ class _CashbackListWidget extends StatelessWidget {
         return Column(
           children: [
             Expanded(
-              child: GroupedListView<InlineCashback, String>(
+              child: GroupedListView<InlineCashbackAndWithdraw, String>(
                 elements: mergedList,
                 groupBy: (element) {
                   final dates = DateTime.parse(element.date!);
@@ -345,7 +378,6 @@ class _CashbackListWidget extends StatelessWidget {
                   //     .toString();
                 },
                 groupSeparatorBuilder: (String groupByValue) {
-                  print(groupByValue);
                   return Text(groupByValue);
                 },
                 // groupSeparatorBuilder: (String groupByValue) {
@@ -355,7 +387,7 @@ class _CashbackListWidget extends StatelessWidget {
                 //   // return Text(
                 //   //     formatter.format(DateTime.parse(groupByValue)));
                 // },
-                itemBuilder: (context, InlineCashback element) {
+                itemBuilder: (context, InlineCashbackAndWithdraw element) {
                   if (element.type == 'cashback') {
                     return _CardCashback(sumStat: element);
                     // return Text(
@@ -375,13 +407,15 @@ class _CashbackListWidget extends StatelessWidget {
                   }
                 },
                 separator: SizedBox(height: getH(10)),
-                groupHeaderBuilder: (InlineCashback element) {
+                groupHeaderBuilder: (InlineCashbackAndWithdraw element) {
                   return Padding(
-                    padding: EdgeInsets.only(bottom: getH(14)),
+                    padding: const EdgeInsets.all(8.0),
                     child: Text(
                       // TODO 5 hours added
-                      formatter.format(DateTime.parse(element.date!)
-                          .add(Duration(hours: 5))),
+                      formatter.format(
+                        DateTime.parse(element.date!)
+                            .add(const Duration(hours: 5)),
+                      ),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -428,7 +462,7 @@ class _ClientCashbackWidget extends StatelessWidget {
     return Column(
       children: [
         context.watch<BusinessStatisticsViewModel>().isClientsLoading
-            ? LogoAnimatedWidget(size: 1.5)
+            ? const LogoAnimatedWidget(size: 1.5)
             : Expanded(
                 child: ListView.separated(
                   itemCount: context
@@ -516,7 +550,7 @@ class _CardCashback extends StatelessWidget {
     required this.sumStat,
   }) : super(key: key);
 
-  final InlineCashback sumStat;
+  final InlineCashbackAndWithdraw sumStat;
 
   @override
   Widget build(BuildContext context) {
@@ -561,8 +595,10 @@ class _CardCashback extends StatelessWidget {
                 SizedBox(width: getW(12)),
                 Text(
                   // TODO 5
-                  timeFormatter.format(DateTime.parse(sumStat.date.toString())
-                      .add(Duration(hours: 5))),
+                  timeFormatter.format(
+                    DateTime.parse(sumStat.date.toString())
+                        .add(const Duration(hours: 5)),
+                  ),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 10,
@@ -576,8 +612,8 @@ class _CardCashback extends StatelessWidget {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
+                  children: [
+                    const Text(
                       'Сумма:',
                       style: TextStyle(
                         color: Colors.white,
@@ -585,7 +621,7 @@ class _CardCashback extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    Text(
+                    const Text(
                       'Кэшбэк:',
                       style: TextStyle(
                         color: Colors.white,
@@ -593,7 +629,7 @@ class _CardCashback extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    Text(
+                    const Text(
                       'Магазин:',
                       style: TextStyle(
                         color: Colors.white,
@@ -601,6 +637,19 @@ class _CardCashback extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
+                    sumStat.sellerId ==
+                            context
+                                .read<BusinessSettingsViewModel>()
+                                .businessProfile!
+                                .id
+                        ? const SizedBox()
+                        : const Text(
+                            'Продавец:',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                   ],
                 ),
                 SizedBox(width: getW(10)),
@@ -608,11 +657,7 @@ class _CardCashback extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${NumberFormat.simpleCurrency(
-                        name: '',
-                        locale: 'ru_RU',
-                        decimalDigits: 0,
-                      ).format(double.parse(sumStat.totalPrice))}сум',
+                      sumStat.totalPrice.toString().getAmountInSum(),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 13,
@@ -624,7 +669,7 @@ class _CardCashback extends StatelessWidget {
                         name: '',
                         locale: 'ru_RU',
                         decimalDigits: 0,
-                      ).format(double.parse(sumStat.amount))}сум',
+                      ).format(double.parse(sumStat.amount.toString()))}сум',
                       style: const TextStyle(
                         color: Color(0xff67ce67),
                         fontSize: 13,
@@ -639,6 +684,20 @@ class _CardCashback extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
+                    sumStat.sellerId ==
+                            context
+                                .read<BusinessSettingsViewModel>()
+                                .businessProfile!
+                                .id
+                        ? const SizedBox()
+                        : Text(
+                            sumStat.sellerName,
+                            style: const TextStyle(
+                              color: Color(0xff67ce67),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                   ],
                 ),
               ],
@@ -857,7 +916,7 @@ class _CardWithdraw extends StatelessWidget {
     required this.sumStat,
   }) : super(key: key);
 
-  final InlineCashback sumStat;
+  final InlineCashbackAndWithdraw sumStat;
 
   @override
   Widget build(BuildContext context) {
@@ -902,8 +961,10 @@ class _CardWithdraw extends StatelessWidget {
                 SizedBox(width: getW(12)),
                 Text(
                   //todo 5
-                  timeFormatter.format(DateTime.parse(sumStat.date.toString())
-                      .add(Duration(hours: 5))),
+                  timeFormatter.format(
+                    DateTime.parse(sumStat.date.toString())
+                        .add(const Duration(hours: 5)),
+                  ),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 10,
@@ -912,18 +973,80 @@ class _CardWithdraw extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: getH(10)),
-            Text(
-              '-${NumberFormat.simpleCurrency(
-                name: '',
-                locale: 'ru_RU',
-                decimalDigits: 0,
-              ).format(double.parse(sumStat.amount))}сум',
-              style: const TextStyle(
-                color: Color.fromRGBO(255, 144, 62, 1),
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-              ),
+            SizedBox(height: getH(6)),
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Сумма:',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const Text(
+                      'Магазин:',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    sumStat.sellerId ==
+                            context
+                                .read<BusinessSettingsViewModel>()
+                                .businessProfile!
+                                .id
+                        ? const SizedBox()
+                        : const Text(
+                            'Продавец:',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                  ],
+                ),
+                SizedBox(width: getW(10)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '-${sumStat.amount.toString().getAmountInSum()}',
+                      style: const TextStyle(
+                        color: Color.fromRGBO(255, 144, 62, 1),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      sumStat.shopName,
+                      style: const TextStyle(
+                        color: Color(0xff67ce67),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    sumStat.sellerId ==
+                            context
+                                .read<BusinessSettingsViewModel>()
+                                .businessProfile!
+                                .id
+                        ? const SizedBox()
+                        : Text(
+                            sumStat.sellerName,
+                            style: const TextStyle(
+                              color: Color(0xff67ce67),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

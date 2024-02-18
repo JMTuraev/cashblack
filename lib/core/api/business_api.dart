@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
+import '../../domain/models/client/client_profile.dart';
 import '../../domain/models/common/category.dart';
 // import '../../domain/models/category.dart';
 import '../../domain/models/owner/bonus_price.dart';
@@ -61,16 +64,59 @@ class BusinessApi {
     await _setDioHeader();
 
     // final response =
-    // await _dio.get('http://cashblack.assist.uz/api/v1/owner/announcement');
+    // await _dio.get('${Constants.path}/v1/owner/announcement');
     final response = await _dio.get('${Constants.path}/v1/owner/announcement');
 
     // var bookingList = response.data as List;
     final notifs = (response.data['data'] as List)
         .map((x) => OwnerNotification.fromJson(x as Map<String, Object?>))
+        .toList()
+        .reversed
         .toList();
     print('owner notifs');
 
     return notifs;
+  }
+
+  Future<bool> sendNotification(
+    int priceId,
+    String title,
+    String text,
+    String avatarId,
+    String shopId,
+    File? image,
+  ) async {
+    await _setDioHeader();
+
+    var formData = FormData.fromMap({
+      'price_id': priceId,
+      'title': title,
+      'text': text,
+      'avatar_id': avatarId,
+      'shop_id': shopId,
+    });
+    if (image != null) {
+      formData = FormData.fromMap({
+        'price_id': priceId,
+        'title': title,
+        'text': text,
+        'avatar_id': avatarId,
+        'shop_id': shopId,
+        'image': await MultipartFile.fromFile(image.path),
+      });
+    }
+    try {
+      final response = await _dio.post(
+        '${Constants.path}/v1/owner/announcement',
+        data: formData,
+      );
+      print('send notif');
+
+      return true;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
   }
 
   Future<bool> subscribe(int priceId) async {
@@ -141,7 +187,7 @@ class BusinessApi {
   }
 
   Future<bool> updateWorkerStatus(int sellerId, int status) async {
-    String? token = await _flutterSecureStorage.read(key: 'token');
+    var token = await _flutterSecureStorage.read(key: 'token');
 
     final headers = <String, String>{
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -154,7 +200,7 @@ class BusinessApi {
     };
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    var response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
@@ -175,7 +221,7 @@ class BusinessApi {
     // String provinceId,
     String districtId,
   ) async {
-    String? token = await _flutterSecureStorage.read(key: 'token');
+    var token = await _flutterSecureStorage.read(key: 'token');
 
     _dio.options.headers['content-Type'] = 'application/x-www-form-urlencoded';
     _dio.options.headers['Authorization'] = token;
@@ -216,14 +262,14 @@ class BusinessApi {
     // String provinceId,
     String districtId,
   ) async {
-    String? token = await _flutterSecureStorage.read(key: 'token');
+    var token = await _flutterSecureStorage.read(key: 'token');
 
     final headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': token!
     };
-    final request = http.Request(
-        'PUT', Uri.parse('http://cashblack.assist.uz/api/v1/owner/company'));
+    final request =
+        http.Request('PUT', Uri.parse('${Constants.path}/v1/owner/company'));
     request.bodyFields = {
       'name': name,
       'address': address,
@@ -235,7 +281,45 @@ class BusinessApi {
     };
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    } else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
+
+  Future<bool> editBusinessShop(
+    int shopId,
+    String name,
+    String percent,
+    String waymark,
+    int category,
+    String districtId,
+    String address,
+  ) async {
+    var token = await _flutterSecureStorage.read(key: 'token');
+
+    final headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': token!
+    };
+    final request = http.Request(
+        'PUT', Uri.parse('${Constants.path}/v1/owner/shop/$shopId'));
+    request.bodyFields = {
+      'name': name,
+      'percent': percent,
+      'waymark': waymark,
+      'category_shop_id': category.toString(),
+      'district_id': districtId,
+      'address': address,
+    };
+    request.headers.addAll(headers);
+
+    var response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
@@ -254,7 +338,7 @@ class BusinessApi {
     String districtId,
     String shopId,
   ) async {
-    String? token = await _flutterSecureStorage.read(key: 'token');
+    var token = await _flutterSecureStorage.read(key: 'token');
 
     _dio.options.headers['content-Type'] = 'application/x-www-form-urlencoded';
     _dio.options.headers['Authorization'] = token;
@@ -291,7 +375,7 @@ class BusinessApi {
     String districtId,
     String address,
   ) async {
-    String? token = await _flutterSecureStorage.read(key: 'token');
+    var token = await _flutterSecureStorage.read(key: 'token');
 
     // _dio.options.headers['content-Type'] = 'application/x-www-form-urlencoded';
     _dio.options.headers['content-Type'] = 'multipart/form-data';
@@ -364,13 +448,12 @@ class BusinessApi {
     }
   }
 
-  Future<List<Cashback>> getCashbackAmountBeforePay() async {
+  Future<ClientProfile> getCashbackAmountBeforePay(String phone) async {
     await _setDioHeader();
 
-    final response = await _dio.get('${Constants.path}/v1/owner/cashback');
-    final cashbacks = (response.data['data'] as List)
-        .map((x) => Cashback.fromJson(x as Map<String, Object?>))
-        .toList();
+    final response = await _dio.get('${Constants.path}/v1/client?phone=$phone');
+    final cashbacks =
+        ClientProfile.fromJson(response.data['data'] as Map<String, Object?>);
 
     print('get before pay');
 
@@ -398,7 +481,7 @@ class BusinessApi {
         .map((x) => ReportCashbackClient.fromJson(x as Map<String, Object?>))
         .toList();
 
-    print('get cashback stats');
+    print('get cashback stats client');
 
     return cashbacks;
   }
@@ -412,7 +495,7 @@ class BusinessApi {
         .map((x) => WeeklyStat.fromJson(x as Map<String, Object?>))
         .toList();
 
-    print('get cashback stats');
+    print('get cashback stats weekly');
 
     return cashbacks;
   }
@@ -541,13 +624,51 @@ class BusinessApi {
     };
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    var response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
       return true;
     } else {
       print(response.reasonPhrase);
+      return false;
+    }
+  }
+
+  Future<bool> uploadShopAvatar(File file, int shopId) async {
+    // String fileName = file.path.split('/').last;
+    final formData = FormData.fromMap({
+      'logo': await MultipartFile.fromFile(file.path),
+    });
+    try {
+      final response = await _dio.post(
+        '${Constants.path}/v1/owner/shop/logo/$shopId',
+        data: formData,
+      );
+      print('upload avatar');
+
+      return true;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
+  }
+
+  Future<bool> uploadCompanyAvatar(File file) async {
+    // String fileName = file.path.split('/').last;
+    final formData = FormData.fromMap({
+      'logo': await MultipartFile.fromFile(file.path),
+    });
+    try {
+      final response = await _dio.post(
+        '${Constants.path}/v1/owner/company/logo',
+        data: formData,
+      );
+      print('upload avatar');
+
+      return true;
+    } on DioError catch (e) {
+      print(e.response!.data);
       return false;
     }
   }

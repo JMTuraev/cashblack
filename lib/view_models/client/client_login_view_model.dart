@@ -36,7 +36,7 @@ class ClientLoginViewModel extends ChangeNotifier {
     return result;
   }
 
-  Future<bool> onVerifyButtonPressed(
+  Future<String> onVerifyButtonPressed(
     String phone,
     String code,
   ) async {

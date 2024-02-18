@@ -1,28 +1,30 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/balance.dart';
-import '../../../domain/models/balance_shop.dart';
 import '../../../domain/models/owner/business_company.dart';
 import '../../../domain/models/owner/business_profile.dart';
-import '../../../string_extensions.dart';
 import '../../../size_config.dart';
+import '../../../string_extensions.dart';
 import '../../../utils/helpers.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_notifications_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
+import '../../../view_models/business/business_statistics_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'create_worker_view.dart';
+import 'edit_company_view.dart';
 import 'edit_name_view.dart';
-import 'edit_store_view.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  const SettingsView({super.key});
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -45,6 +47,25 @@ class _SettingsViewState extends State<SettingsView> {
     super.initState();
   }
 
+  Future<void> getFromGallery() async {
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 1080,
+      maxWidth: 1080,
+    );
+
+    if (pickedFile != null) {
+      await context
+          .read<BusinessSettingsViewModel>()
+          .uploadCompanyAvatar(File(pickedFile.path))
+          .then((value) {
+        if (value) {
+          context.read<BusinessDashboardViewModel>().getBusinessCompany();
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // var user = context.watch<BusinessHomeViewModel>().user;
@@ -64,6 +85,11 @@ class _SettingsViewState extends State<SettingsView> {
               context.read<BusinessDashboardViewModel>().maxSum = 10;
               await context.read<BusinessViewModel>().logout().then(
                 (value) {
+                  context
+                      .read<BusinessStatisticsViewModel>()
+                      .cashbackAndWithdraws
+                      .clear();
+
                   context.read<BusinessDashboardViewModel>().clearData();
 
                   return Navigator.of(context).pushAndRemoveUntil(
@@ -80,7 +106,7 @@ class _SettingsViewState extends State<SettingsView> {
               height: getH(24),
               width: getW(24),
             ),
-          )
+          ),
         ],
       ),
       body: SafeArea(
@@ -110,6 +136,7 @@ class _SettingsViewState extends State<SettingsView> {
                       ? const CupertinoActivityIndicator()
                       : (context.read<BusinessDashboardViewModel>().hasCompany
                           ? _BrandCardWidget(
+                              onTap: getFromGallery,
                               isBusiness: true,
                               company: context
                                   .read<BusinessDashboardViewModel>()
@@ -268,32 +295,40 @@ class _SettingsViewState extends State<SettingsView> {
 
 class _BrandCardWidget extends StatelessWidget {
   const _BrandCardWidget({
-    Key? key,
+    super.key,
     required this.company,
+    required this.onTap,
     required this.isBusiness,
-  }) : super(key: key);
+  });
 
   final BusinessCompany company;
   final bool isBusiness;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return _BorderContainerWidget(
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(20),
-            ),
-            child: SizedBox(
-              width: getW(60),
-              height: getH(60),
-              child: CachedNetworkImage(
-                imageUrl: company.logo ?? '',
-                errorWidget: (context, url, error) => const Icon(
-                  Icons.home_repair_service_rounded,
-                  size: 40,
-                ),
+          GestureDetector(
+            onTap: onTap,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(20),
+              ),
+              child: SizedBox(
+                width: getW(60),
+                height: getH(60),
+                child: context.watch<BusinessSettingsViewModel>().isUploading
+                    ? const CupertinoActivityIndicator()
+                    : CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: company.logo ?? '',
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.home_repair_service_rounded,
+                          size: 40,
+                        ),
+                      ),
               ),
             ),
           ),
@@ -321,7 +356,7 @@ class _BrandCardWidget extends StatelessWidget {
                       onTap: () {
                         Navigator.of(context).push(
                           CupertinoPageRoute(
-                            builder: (context) => const EditStoreView(),
+                            builder: (context) => const EditCompanyView(),
                           ),
                         );
                       },
@@ -331,7 +366,7 @@ class _BrandCardWidget extends StatelessWidget {
                         width: getW(24),
                       ),
                     )
-                  : const SizedBox()
+                  : const SizedBox(),
             ],
           ),
         ],
@@ -342,9 +377,9 @@ class _BrandCardWidget extends StatelessWidget {
 
 class _SubscriptionCardWidget extends StatelessWidget {
   const _SubscriptionCardWidget({
-    Key? key,
+    super.key,
     required this.profile,
-  }) : super(key: key);
+  });
 
   final BusinessProfile profile;
 
@@ -426,7 +461,7 @@ class _SubscriptionCardWidget extends StatelessWidget {
                   // Text(balance.balanceShop.createdDate.getLocaleDateTime()),
                   Text(
                     //todo active/deactive locense
-                    Helpers.subsctibedChecker(profile)
+                    Helpers.subsctibedChecker(profile.licence)
                         ? 'Активен'
                         : 'Не оплачен',
                     style: const TextStyle(
@@ -438,7 +473,7 @@ class _SubscriptionCardWidget extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               //todo active/deactive license
-              Helpers.subsctibedChecker(profile)
+              Helpers.subsctibedChecker(profile.licence)
                   ? Row(
                       children: [
                         const _SimpleTextWidget(
@@ -446,20 +481,20 @@ class _SubscriptionCardWidget extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          Helpers.subsctibedChecker(profile)
+                          Helpers.subsctibedChecker(profile.licence)
                               ? profile.licence.first.startAt.getLocaleDate()
                               : 'Не оплачен',
                           style: const TextStyle(
                             color: Color.fromRGBO(103, 206, 103, 1),
                             fontSize: 15,
                           ),
-                        )
+                        ),
                       ],
                     )
                   : const SizedBox(),
               const SizedBox(height: 6),
               //todo active/deactive license
-              Helpers.subsctibedChecker(profile)
+              Helpers.subsctibedChecker(profile.licence)
                   ? Row(
                       children: [
                         const _SimpleTextWidget(
@@ -467,19 +502,19 @@ class _SubscriptionCardWidget extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          Helpers.subsctibedChecker(profile)
+                          Helpers.subsctibedChecker(profile.licence)
                               ? profile.licence.first.endAt.getLocaleDate()
                               : 'Не оплачен',
                           style: const TextStyle(
                             color: Color.fromRGBO(103, 206, 103, 1),
                             fontSize: 15,
                           ),
-                        )
+                        ),
                       ],
                     )
                   : const SizedBox(),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -488,9 +523,9 @@ class _SubscriptionCardWidget extends StatelessWidget {
 
 class _ProfileCardWidget extends StatelessWidget {
   const _ProfileCardWidget({
-    Key? key,
+    super.key,
     required this.user,
-  }) : super(key: key);
+  });
 
   final BusinessProfile? user;
 
@@ -547,9 +582,9 @@ class _ProfileCardWidget extends StatelessWidget {
 
 class _SimpleTextWidget extends StatelessWidget {
   const _SimpleTextWidget({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   final String title;
 
@@ -566,8 +601,7 @@ class _SimpleTextWidget extends StatelessWidget {
 }
 
 class _BorderContainerWidget extends StatelessWidget {
-  const _BorderContainerWidget({Key? key, required this.child})
-      : super(key: key);
+  const _BorderContainerWidget({super.key, required this.child});
 
   final Widget child;
 

@@ -21,6 +21,7 @@ import 'view_models/client_home_view_model.dart';
 import 'view_models/client/client_login_view_model.dart';
 import 'view_models/create_store_view_view_model.dart';
 import 'view_models/payment_client_view_model.dart';
+import 'view_models/seller/seller_view_model.dart';
 import 'view_models/send_notification_view_model.dart';
 import 'view_models/statistics_view_model.dart';
 import 'views/business/auth/business_login_view/business_login_view.dart';
@@ -29,6 +30,7 @@ import 'views/business/create_store_view/create_store_view.dart';
 import 'views/client/auth/client_login_view/client_login_view.dart';
 import 'views/client/client_view.dart';
 import 'views/select_type_view/select_type_view.dart';
+import 'views/seller/seller_view.dart';
 import 'widgets/dismiss_keyboard_widget.dart';
 
 void main() async {
@@ -58,6 +60,7 @@ void main() async {
     MyApp(
       isLogged: prefs.getBool('isLogged') ?? false,
       isBusiness: prefs.getBool('isBusiness') ?? false,
+      isSeller: prefs.getBool('isSeller') ?? false,
     ),
   );
 }
@@ -67,10 +70,12 @@ class MyApp extends StatelessWidget {
     Key? key,
     required this.isLogged,
     required this.isBusiness,
+    required this.isSeller,
   }) : super(key: key);
 
   final bool isLogged;
   final bool isBusiness;
+  final bool isSeller;
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +138,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<BalanceViewModel>(
           create: (ctx) => BalanceViewModel(),
         ),
+        //seller
+        ChangeNotifierProvider<SellerViewModel>(
+          create: (ctx) => SellerViewModel(),
+        ),
       ],
       child: DismissKeyboardWidget(
         child: MaterialApp(
@@ -160,7 +169,9 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           home: isLogged
-              ? (isBusiness ? const BusinessView() : const ClientView())
+              ? (isBusiness
+                  ? (isSeller ? SellerView() : BusinessView())
+                  : const ClientView())
               : const SelectTypeView(),
         ),
       ),

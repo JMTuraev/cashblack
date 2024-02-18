@@ -1,14 +1,22 @@
 import 'package:url_launcher/url_launcher.dart';
 
+import '../domain/models/owner/business_license.dart';
 import '../domain/models/owner/business_profile.dart';
 import '../string_extensions.dart';
 
 mixin Helpers {
-  static bool subsctibedChecker(BusinessProfile profile) {
-    print(profile.balance);
-    return profile.licence.isNotEmpty &&
+  // static bool subsctibedChecker(BusinessProfile profile) {
+  //   print(profile.balance);
+  //   return profile.licence.isNotEmpty &&
+  //       DateTime.parse(
+  //         profile.licence.first.endAt.getDateForQuery(),
+  //       ).isAfter(DateTime.now());
+  // }
+
+  static bool subsctibedChecker(List<BusinessLicense> licence) {
+    return licence.isNotEmpty &&
         DateTime.parse(
-          profile.licence.first.endAt.getDateForQuery(),
+          licence.first.endAt.getDateForQuery(),
         ).isAfter(DateTime.now());
   }
 

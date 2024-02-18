@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/client/client_shop.dart';
 import '../../../domain/models/client_info.dart';
 import '../../../domain/models/client_statistics.dart';
+import '../../../domain/models/owner/report_cashback.dart';
 import '../../../domain/models/user_shop.dart';
 import '../../../size_config.dart';
 import '../../../string_extensions.dart';
@@ -28,6 +29,8 @@ class BusinessDetailsView extends StatefulWidget {
 class _BusinessDetailsViewState extends State<BusinessDetailsView> {
   bool summa = true;
 
+  List<InlineCashbackAndWithdraw> mergedList = [];
+
   // String? _filter;
 
   // onFilterChanged(value) {
@@ -43,49 +46,20 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
     // stats = context
     //     .read<ClientHomeViewModel>()
     //     .getShopStatistics(widget.userShop.id);
+    mergedList
+      ..addAll(widget.userShop.withdraw)
+      ..addAll(widget.userShop.cashback);
     super.initState();
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var stat = [
-      ClientInfo(
-        cashback: 1,
-        date: '2023-04-01',
-        fullName: 'kajnkja',
-        isWithdraw: true,
-        price: 12312,
-      ),
-      ClientInfo(
-        cashback: 1,
-        date: '2023-04-01',
-        fullName: 'kajnkja',
-        isWithdraw: true,
-        price: 12312,
-      ),
-      ClientInfo(
-        cashback: 1,
-        date: '2023-04-01',
-        fullName: 'kajnkja',
-        isWithdraw: true,
-        price: 12312,
-      ),
-      ClientInfo(
-        cashback: 1,
-        date: '2023-04-01',
-        fullName: 'kajnkja',
-        isWithdraw: false,
-        price: 12312,
-      ),
-      ClientInfo(
-        cashback: 1,
-        date: '2023-04-01',
-        fullName: 'kajnkja',
-        isWithdraw: true,
-        price: 12312,
-      ),
-    ];
-    stat.sort((a, b) => a.date!.compareTo(b.date!));
+    // stat.sort((a, b) => a.date!.compareTo(b.date!));
     final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
     final DateFormat sorter = DateFormat('dd MMMM yyyy');
     return Scaffold(
@@ -125,9 +99,7 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                           //       decimalDigits: 0,
                           //     ).format('asd') +
                           //     'сум',
-                          widget.userShop.cashbackSum
-                              .toString()
-                              .getAmountInSum(),
+                          widget.userShop.amount.toString().getAmountInSum(),
                           textAlign: TextAlign.end,
                           style: const TextStyle(
                             fontSize: 25,
@@ -177,7 +149,7 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                               ),
                               SizedBox(height: getH(6)),
                               Text(
-                                widget.userShop.amount
+                                widget.userShop.cashbackSum
                                     .toString()
                                     .getAmountInSum(),
                                 textAlign: TextAlign.start,
@@ -196,9 +168,10 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                 ),
                 const SizedBox(height: 20),
                 Expanded(
-                  child: GroupedListView<ClientInfo, String>(
-                    elements: [],
+                  child: GroupedListView<InlineCashbackAndWithdraw, String>(
+                    elements: mergedList,
                     groupBy: (element) {
+                      print(widget.userShop.cashback);
                       DateTime dates = DateTime.parse(element.date!);
                       return DateUtils.dateOnly(dates).toString();
                       // return DateTime(dates.year, dates.month, dates.day,
@@ -210,14 +183,14 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                       return Text(groupByValue);
                     },
                     separator: SizedBox(height: getH(10)),
-                    itemBuilder: (context, ClientInfo element) {
-                      if (element.isWithdraw) {
+                    itemBuilder: (context, InlineCashbackAndWithdraw element) {
+                      if (element.percent == null) {
                         return _CardOut(sumCashback: element);
                       } else {
                         return _CardIncome(sumCashback: element);
                       }
                     },
-                    groupHeaderBuilder: (ClientInfo element) {
+                    groupHeaderBuilder: (InlineCashbackAndWithdraw element) {
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: getH(14)),
                         child: Text(
@@ -252,7 +225,7 @@ class _CardIncome extends StatelessWidget {
     required this.sumCashback,
   }) : super(key: key);
 
-  final ClientInfo sumCashback;
+  final InlineCashbackAndWithdraw sumCashback;
 
   @override
   Widget build(BuildContext context) {
@@ -303,12 +276,7 @@ class _CardIncome extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      NumberFormat.simpleCurrency(
-                            name: '',
-                            locale: 'ru_RU',
-                            decimalDigits: 0,
-                          ).format(sumCashback.price) +
-                          'сум',
+                      sumCashback.totalPrice.toString().getAmountInSum(),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 13,
@@ -317,12 +285,7 @@ class _CardIncome extends StatelessWidget {
                     ),
                     SizedBox(height: getH(10)),
                     Text(
-                      NumberFormat.simpleCurrency(
-                            name: '',
-                            locale: 'ru_RU',
-                            decimalDigits: 0,
-                          ).format(sumCashback.cashback) +
-                          'сум',
+                      sumCashback.amount.toString().getAmountInSum(),
                       style: const TextStyle(
                         color: Color(0xff67ce67),
                         fontSize: 15,
@@ -363,7 +326,8 @@ class _CardIncome extends StatelessWidget {
                     SizedBox(height: getH(10)),
                     Text(
                       timeFormatter.format(
-                        DateTime.parse(sumCashback.date.toString()),
+                        DateTime.parse(sumCashback.date.toString())
+                            .add(const Duration(hours: 5)),
                       ),
                       style: TextStyle(
                         fontSize: 12,
@@ -387,7 +351,7 @@ class _CardOut extends StatelessWidget {
     required this.sumCashback,
   }) : super(key: key);
 
-  final ClientInfo sumCashback;
+  final InlineCashbackAndWithdraw sumCashback;
 
   @override
   Widget build(BuildContext context) {
@@ -411,14 +375,17 @@ class _CardOut extends StatelessWidget {
           children: [
             Row(
               children: [
+                const Text(
+                  'Сумма:',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(width: getW(10)),
                 Text(
-                  '-' +
-                      NumberFormat.simpleCurrency(
-                        name: '',
-                        locale: 'ru_RU',
-                        decimalDigits: 0,
-                      ).format(sumCashback.price) +
-                      'сум',
+                  '-${sumCashback.amount.toString().getAmountInSum()}',
                   style: const TextStyle(
                     color: Color.fromRGBO(255, 144, 62, 1),
                     fontSize: 15,
@@ -457,7 +424,8 @@ class _CardOut extends StatelessWidget {
                     SizedBox(height: getH(10)),
                     Text(
                       timeFormatter.format(
-                        DateTime.parse(sumCashback.date.toString()),
+                        DateTime.parse(sumCashback.date.toString())
+                            .add(const Duration(hours: 5)),
                       ),
                       style: TextStyle(
                         fontSize: 12,

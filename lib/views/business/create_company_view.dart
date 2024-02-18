@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -9,16 +8,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/category.dart';
-// import '../../../domain/models/city.dart';
-import '../../../string_extensions.dart';
 import '../../../size_config.dart';
-import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
-import '../../../view_models/business/business_view_model.dart';
-import '../../../view_models/create_store_view_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
-import 'business_view.dart';
 
 class CreateCompanyView extends StatefulWidget {
   const CreateCompanyView({super.key});
@@ -41,19 +34,19 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
   final ImagePicker _picker = ImagePicker();
   final List<File?> _fileList = [];
 
-  void getFromGallery() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
+  Future<void> getFromGallery() async {
+    final pickedFile = await ImagePicker().pickImage(
       source: ImageSource.gallery,
       maxHeight: 1080,
       maxWidth: 1080,
       // imageQuality: 75,
     );
-    _cropImage(pickedFile!.path);
+    await _cropImage(pickedFile!.path);
   }
 
-  void _cropImage(String filepath) async {
+  Future<void> _cropImage(String filepath) async {
     clearImages();
-    var croppedImage = await ImageCropper.platform.cropImage(
+    final croppedImage = await ImageCropper.platform.cropImage(
       sourcePath: filepath,
       maxHeight: 1080,
       maxWidth: 1080,
@@ -75,17 +68,15 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
   }
 
   void clearImages() {
-    setState(() {
-      _fileList.clear();
-    });
+    setState(_fileList.clear);
   }
 
-  void selectImage() async {
-    final XFile? image = await _picker.pickImage(
+  Future<void> selectImage() async {
+    final image = await _picker.pickImage(
       source: ImageSource.gallery,
     );
     setState(() {
-      File? file = File(image!.path);
+      final file = File(image!.path);
       _fileList.add(file);
     });
   }
@@ -196,7 +187,7 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                   const SizedBox(height: 20),
                   // _BrandNameWidget(controller: _brandName),
 
-                  _GenericTextFieldWidget(
+                  GenericTextFieldWidget(
                     controller: _brandName,
                     title: 'Название',
                   ),
@@ -274,12 +265,12 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                   //   },
                   // ),
                   const SizedBox(height: 20),
-                  _GenericTextFieldWidget(
+                  GenericTextFieldWidget(
                     controller: _address,
                     title: 'Адрес',
                   ),
                   const SizedBox(height: 20),
-                  _GenericTextFieldWidget(
+                  GenericTextFieldWidget(
                     controller: _passport,
                     title: 'Паспорт серия',
                     maxlength: 9,
@@ -302,11 +293,11 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                     children: [
                       Checkbox(
                         value: _isChecked,
-                        onChanged: ((value) {
+                        onChanged: (value) {
                           setState(() {
                             _isChecked = value!;
                           });
-                        }),
+                        },
                       ),
                       const Text(
                         'Я принимаю условия оферты',
@@ -343,16 +334,17 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                         //               ),
                         //               (route) => false),
                         //     );
-                        context
+                        await context
                             .read<BusinessDashboardViewModel>()
                             .createBusinessCompany(
-                                _brandName.text,
-                                _address.text,
-                                _passport.text.substring(0, 2),
-                                _passport.text.substring(2),
-                                _inn.text,
-                                _pinfl.text,
-                                '44')
+                              _brandName.text,
+                              _address.text,
+                              _passport.text.substring(0, 2),
+                              _passport.text.substring(2),
+                              _inn.text,
+                              _pinfl.text,
+                              '44',
+                            )
                             .then((value) {
                           if (value) {
                             context
@@ -363,8 +355,9 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                             print('Ошибка сервера');
                           }
                         });
-                      } else
+                      } else {
                         print('check');
+                      }
                     },
                   ),
                   const SizedBox(height: 20),
@@ -380,11 +373,11 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
 
 class _NumberTextFieldWidget extends StatelessWidget {
   const _NumberTextFieldWidget({
-    Key? key,
+    super.key,
     required this.controller,
     required this.title,
     required this.maxLength,
-  }) : super(key: key);
+  });
 
   final TextEditingController controller;
   final String title;
@@ -398,7 +391,7 @@ class _NumberTextFieldWidget extends StatelessWidget {
       controller: controller,
       // inputFormatters: [numericTextFormatter],
       decoration: InputDecoration(
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
             width: 2,
@@ -409,7 +402,7 @@ class _NumberTextFieldWidget extends StatelessWidget {
         ),
         counterText: '',
         hintText: title,
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),
           ),
@@ -427,16 +420,15 @@ class _NumberTextFieldWidget extends StatelessWidget {
 
 class _ImageViewWidget extends StatelessWidget {
   const _ImageViewWidget({
-    Key? key,
+    super.key,
     required List<File?> fileList,
     required this.onDelete,
     required this.onEdit,
-  })  : _fileList = fileList,
-        super(key: key);
+  }) : _fileList = fileList;
 
   final List<File?> _fileList;
-  final Function onDelete;
-  final Function onEdit;
+  final Function() onDelete;
+  final Function() onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -446,7 +438,7 @@ class _ImageViewWidget extends StatelessWidget {
         children: <Widget>[
           SizedBox(
             child: GestureDetector(
-              onTap: () => onEdit(),
+              onTap: onEdit,
               child: ClipRRect(
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 borderRadius: BorderRadius.circular(100),
@@ -462,7 +454,7 @@ class _ImageViewWidget extends StatelessWidget {
           Positioned(
             right: 1,
             child: GestureDetector(
-              onTap: () => onDelete(),
+              onTap: onDelete,
               child: const Icon(Icons.cancel, color: Colors.redAccent),
             ),
           ),
@@ -474,20 +466,20 @@ class _ImageViewWidget extends StatelessWidget {
 
 class _FilePickerWidget extends StatelessWidget {
   const _FilePickerWidget({
-    Key? key,
+    super.key,
     required this.onTap,
-  }) : super(key: key);
+  });
 
-  final Function onTap;
+  final Function() onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap(),
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          color: Color(0xff1c1c1d),
+          color: const Color(0xff1c1c1d),
         ),
         width: 120,
         height: 120,
@@ -514,13 +506,13 @@ class _FilePickerWidget extends StatelessWidget {
   }
 }
 
-class _GenericTextFieldWidget extends StatelessWidget {
-  const _GenericTextFieldWidget({
-    Key? key,
+class GenericTextFieldWidget extends StatelessWidget {
+  const GenericTextFieldWidget({
+    super.key,
     required this.controller,
     required this.title,
     this.maxlength,
-  }) : super(key: key);
+  });
 
   final TextEditingController controller;
   final String title;
@@ -561,13 +553,12 @@ class _GenericTextFieldWidget extends StatelessWidget {
 
 class _SelectCategoryWidget extends StatelessWidget {
   const _SelectCategoryWidget({
-    Key? key,
+    super.key,
     required String? selectedOption,
     required this.categoryItems,
     required this.onChanged,
     required this.hint,
-  })  : _selectedOption = selectedOption,
-        super(key: key);
+  }) : _selectedOption = selectedOption;
 
   final String? _selectedOption;
   final List<DropdownMenuItem<String>> categoryItems;
@@ -592,7 +583,7 @@ class _SelectCategoryWidget extends StatelessWidget {
           isExpanded: true,
           value: _selectedOption,
           items: categoryItems,
-          onChanged: (value) => onChanged(value),
+          onChanged: (v) {}, // onChanged,
           decoration: const InputDecoration(
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
@@ -617,9 +608,9 @@ class _SelectCategoryWidget extends StatelessWidget {
 
 class _DefaultSelectCategoryWidget extends StatelessWidget {
   const _DefaultSelectCategoryWidget({
-    Key? key,
+    super.key,
     required this.hint,
-  }) : super(key: key);
+  });
 
   final String hint;
 

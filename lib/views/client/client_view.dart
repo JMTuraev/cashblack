@@ -25,6 +25,7 @@ class _ClientViewState extends State<ClientView> {
   void initState() {
     context.read<ClientSettingsViewModel>().getClientProfile();
     context.read<ClientDashboardViewModel>().getClientCategories();
+    context.read<ClientDashboardViewModel>().getNotifications();
     super.initState();
   }
 

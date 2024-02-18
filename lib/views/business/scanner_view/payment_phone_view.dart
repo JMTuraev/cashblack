@@ -109,7 +109,7 @@ class PaymentPhoneView extends StatelessWidget {
                       height: MediaQuery.of(context).size.width / 2.5,
                     ),
                     const SizedBox(height: 20),
-                    _SelectCategoryWidget(
+                    SelectCategoryWidget(
                       categoryItems: context
                           .read<BusinessDashboardViewModel>()
                           .businessShops!
@@ -214,8 +214,8 @@ class PaymentPhoneView extends StatelessWidget {
   }
 }
 
-class _SelectCategoryWidget extends StatelessWidget {
-  const _SelectCategoryWidget({
+class SelectCategoryWidget extends StatelessWidget {
+  const SelectCategoryWidget({
     Key? key,
     required String? selectedOption,
     required this.categoryItems,

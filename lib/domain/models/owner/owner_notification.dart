@@ -1,10 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'business_shop.dart';
+
 part 'owner_notification.g.dart';
 
 @JsonSerializable()
 class OwnerNotification {
-// final int count;
+  final int id;
   final String type;
   final String title;
   final String text;
@@ -17,13 +19,17 @@ class OwnerNotification {
   final dynamic adminId;
   final String status;
   final dynamic remark;
-  final bool showed;
+  //1,true : 0,false
+  final dynamic showed;
   @JsonKey(name: 'showed_count')
   final int showedCount;
-  final bool like;
+  //1,true : 0,false
+  final dynamic like;
   @JsonKey(name: 'like_count')
   final int likeCount;
+  final BusinessShop? shop;
   OwnerNotification({
+    required this.id,
     required this.type,
     required this.title,
     required this.text,
@@ -37,6 +43,7 @@ class OwnerNotification {
     required this.showedCount,
     required this.like,
     required this.likeCount,
+    required this.shop,
   });
 
   /// Generate Class from Map<String, Object?>

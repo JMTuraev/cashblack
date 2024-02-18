@@ -55,8 +55,8 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
             await context.read<BusinessLoginViewModel>().onEnterButtonPressed(
                   phone.substring(3),
                   phone.substring(3),
-                  phone.substring(3),
-                  phone.substring(3),
+                  'Имя',
+                  'Фамилия',
                   '59',
                   'owner',
                   promo,

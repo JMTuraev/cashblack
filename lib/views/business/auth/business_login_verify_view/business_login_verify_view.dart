@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../../string_extensions.dart';
@@ -9,6 +10,7 @@ import '../../../../widgets/hero_title_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../../../../widgets/text_button_widget.dart';
+import '../../../seller/seller_view.dart';
 import '../../business_view.dart';
 import '../../create_store_view/create_store_view.dart';
 
@@ -77,6 +79,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -130,8 +133,8 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                         .onEnterButtonPressed(
                           widget.phone.substring(3),
                           widget.phone.substring(3),
-                          widget.phone.substring(3),
-                          widget.phone.substring(3),
+                          'Имя',
+                          'Фамилия',
                           '59',
                           'owner',
                           'promo',
@@ -165,10 +168,11 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                         otpCode ?? textController.text,
                       )
                       .then((value) async {
-                    if (value == true) {
+                    if (value != '') {
                       await Navigator.of(context).pushAndRemoveUntil(
                         CupertinoPageRoute(
-                          builder: (context) => const BusinessView(),
+                          builder: (context) =>
+                              value == 'seller' ? SellerView() : BusinessView(),
                         ),
                         (route) => false,
                       );

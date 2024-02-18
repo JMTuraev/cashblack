@@ -44,7 +44,7 @@ class BarcodeScannerView extends StatelessWidget {
                     onDetect: (barcode) {
                       final List<Barcode> codes = barcode.barcodes;
 
-                      // debugPrint('Barcode found! $code');
+                      // debugPrint('Barcode found! $codes');
                       for (final barcode in codes) {
                         if (barcode.rawValue != null) {
                           scannedTime += 1;

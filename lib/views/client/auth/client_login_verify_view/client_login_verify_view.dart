@@ -73,6 +73,7 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -123,8 +124,8 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                         .onEnterButtonPressed(
                           textController.text,
                           textController.text,
-                          textController.text,
-                          textController.text,
+                          'Имя',
+                          'Фамилия',
                           '1',
                           'client',
                           '',
@@ -154,7 +155,7 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                         otpCode ?? textController.text,
                       )
                       .then((value) async {
-                    if (value == true) {
+                    if (value != '') {
                       await Navigator.of(context).pushAndRemoveUntil(
                         CupertinoPageRoute(
                           builder: (context) => const ClientView(),

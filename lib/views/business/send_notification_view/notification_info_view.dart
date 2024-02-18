@@ -19,7 +19,7 @@ class NotificationInfoView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(sentNotification.title),
+        title: Text(sentNotification.title.split('-').first),
         // bottom: ThemeDetails.appBarDivider,
       ),
       body: SafeArea(
@@ -46,19 +46,33 @@ class NotificationInfoView extends StatelessWidget {
                     borderRadius: const BorderRadius.all(
                       Radius.circular(20),
                     ),
-                    child: Image.asset(
-                      Helpers.getLocalImage(
-                        sentNotification.title,
-                      ),
-                      fit: BoxFit.fitWidth,
-                    ),
+                    child: sentNotification.image != null
+                        ? CachedNetworkImage(
+                            imageUrl: sentNotification.image ?? '',
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, error) {
+                              return Image.asset(
+                                Helpers.getLocalImage(
+                                  // 'assets/images/notification/ak-${index + 1}.png',
+                                  sentNotification.title,
+                                ),
+                              );
+                            },
+                          )
+                        : Image.asset(
+                            Helpers.getLocalImage(
+                              sentNotification.title,
+                            ),
+                            fit: BoxFit.fitWidth,
+                          ),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
                     Text(
-                      sentNotification.updatedAt.getLocaleDateTime(),
+                      sentNotification.updatedAt
+                          .getLocaleDateTime(addingHours: 5),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

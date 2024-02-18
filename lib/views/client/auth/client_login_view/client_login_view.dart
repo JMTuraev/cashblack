@@ -52,8 +52,8 @@ class _ClientLoginViewState extends State<ClientLoginView> {
             await context.read<ClientLoginViewModel>().onEnterButtonPressed(
                   phone.substring(3),
                   phone.substring(3),
-                  phone.substring(3),
-                  phone.substring(3),
+                  'Имя',
+                  'Фамилия',
                   '59',
                   'client',
                   '',

@@ -1,25 +1,42 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../domain/models/received_notification.dart';
+import '../../../domain/models/owner/owner_notification.dart';
 import '../../../string_extensions.dart';
-import '../../../utils/constants.dart';
 import '../../../utils/helpers.dart';
-import '../../../widgets/medium_title_widget.dart';
+import '../../../view_models/client/client_dashboard_view_model.dart';
 
-class ClientNotificationInfoView extends StatelessWidget {
+class ClientNotificationInfoView extends StatefulWidget {
   const ClientNotificationInfoView({
     Key? key,
     required this.receivedNotification,
   }) : super(key: key);
 
-  final ReceivedNotification receivedNotification;
+  final OwnerNotification receivedNotification;
+
+  @override
+  State<ClientNotificationInfoView> createState() =>
+      _ClientNotificationInfoViewState();
+}
+
+class _ClientNotificationInfoViewState
+    extends State<ClientNotificationInfoView> {
+  @override
+  void initState() {
+    super.initState();
+
+    context
+        .read<ClientDashboardViewModel>()
+        .readNotification(widget.receivedNotification.id);
+  }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.receivedNotification.like);
     return Scaffold(
       appBar: AppBar(
-        title: Text(receivedNotification.name),
+        title: Text(widget.receivedNotification.title.split('-').first),
         // bottom: ThemeDetails.appBarDivider,
       ),
       body: SafeArea(
@@ -46,25 +63,114 @@ class ClientNotificationInfoView extends StatelessWidget {
                     borderRadius: const BorderRadius.all(
                       Radius.circular(20),
                     ),
-                    child: Image.asset(
-                      Helpers.getLocalImage(
-                        receivedNotification.title,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
+                    child: widget.receivedNotification.image != null
+                        ? CachedNetworkImage(
+                            imageUrl: widget.receivedNotification.image ?? '',
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, error) {
+                              return Image.asset(
+                                Helpers.getLocalImage(
+                                  widget.receivedNotification.title,
+                                ),
+                              );
+                            },
+                          )
+                        : Image.asset(
+                            Helpers.getLocalImage(
+                              widget.receivedNotification.title,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
+                    const SizedBox(width: 10),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          context
+                              .read<ClientDashboardViewModel>()
+                              .likeNotification(
+                                widget.receivedNotification.id,
+                                1,
+                              );
+                        });
+                      },
+                      icon: widget.receivedNotification.like == 0 ||
+                              widget.receivedNotification.like == false
+                          ? const Icon(
+                              Icons.favorite_border_rounded,
+                              color: Color.fromRGBO(
+                                164,
+                                164,
+                                164,
+                                1,
+                              ),
+                              size: 28,
+                            )
+                          : const Icon(
+                              Icons.favorite_rounded,
+                              color: Color.fromRGBO(
+                                164,
+                                164,
+                                164,
+                                1,
+                              ),
+                              size: 28,
+                            ),
+                    ),
+                    const SizedBox(width: 4),
                     Text(
-                      receivedNotification.date.getLocaleDateTime(),
+                      widget.receivedNotification.likeCount.toString(),
+                      style: const TextStyle(
+                        color: Color.fromRGBO(
+                          164,
+                          164,
+                          164,
+                          1,
+                        ),
+                        fontSize: 18,
+                      ),
+                    ),
+                    // const SizedBox(width: 14),
+                    const Spacer(),
+                    const Icon(
+                      Icons.remove_red_eye_rounded,
+                      color: Color.fromRGBO(164, 164, 164, 1),
+                      size: 26,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      widget.receivedNotification.showedCount.toString(),
+                      style: const TextStyle(
+                        color: Color.fromRGBO(
+                          164,
+                          164,
+                          164,
+                          1,
+                        ),
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                  ],
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      widget.receivedNotification.updatedAt
+                          .getLocaleDateTime(addingHours: 5),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const Spacer(),
                     Text(
-                      receivedNotification.category,
+                      widget.receivedNotification.shop?.name ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -72,7 +178,7 @@ class ClientNotificationInfoView extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  receivedNotification.content,
+                  widget.receivedNotification.text,
                   textAlign: TextAlign.justify,
                   style: const TextStyle(
                     fontSize: 18,

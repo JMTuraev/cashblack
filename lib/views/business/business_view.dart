@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../size_config.dart';
 import '../../utils/helpers.dart';
@@ -21,7 +22,9 @@ import 'settings_view/settings_view.dart';
 import 'statistics_view/statistics_view.dart';
 
 class BusinessView extends StatefulWidget {
-  const BusinessView({Key? key}) : super(key: key);
+  BusinessView({Key? key}) : super(key: key);
+
+  bool isSeller = false;
 
   @override
   State<BusinessView> createState() => _BusinessViewState();
@@ -31,11 +34,10 @@ class _BusinessViewState extends State<BusinessView>
     with WidgetsBindingObserver {
   @override
   void initState() {
+    // checkIsSeller() == true ? print('yes') : print('no');
     context.read<BusinessDashboardViewModel>().getBusinessCompany();
     context.read<BusinessDashboardViewModel>().getBusinessShops();
     context.read<BusinessNotificationsViewModel>().getPrices();
-    // context.read<BusinessNotificationsViewModel>().getNotifications();
-    // context.read<BusinessDashboardViewModel>().getWeeklyStatistics();
     context.read<BusinessSettingsViewModel>().getOwnerProfile();
     context.read<BusinessViewModel>().getCategories();
     context.read<BusinessSettingsViewModel>().getWorkers();
@@ -46,9 +48,15 @@ class _BusinessViewState extends State<BusinessView>
     WidgetsBinding.instance.addObserver(this);
   }
 
+  // Future<bool> checkIsSeller() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   var res = await prefs.getBool('isSeller')!;
+  //   return res;
+  //   // return widget.isSeller;
+  // }
+
   @override
   void dispose() {
-    print('Dispose');
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
@@ -59,18 +67,14 @@ class _BusinessViewState extends State<BusinessView>
     switch (state) {
       case AppLifecycleState.inactive:
         // Navigator.pop(context);
-        print('appLifeCycleState inactive');
         break;
       case AppLifecycleState.resumed:
-        context.read<BusinessSettingsViewModel>().getOwnerProfile;
-        print('appLifeCycleState resumed');
+        context.read<BusinessSettingsViewModel>().getOwnerProfile();
         break;
       case AppLifecycleState.paused:
         // Navigator.pop(context);
-        print('appLifeCycleState paused');
         break;
       case AppLifecycleState.detached:
-        print('appLifeCycleState detached');
         break;
     }
   }
@@ -177,7 +181,8 @@ class _BusinessViewState extends State<BusinessView>
                               Helpers.subsctibedChecker(
                                 context
                                     .read<BusinessSettingsViewModel>()
-                                    .businessProfile!,
+                                    .businessProfile!
+                                    .licence,
                               )
                           ? BarcodeScannerView(
                               shopId: 1,

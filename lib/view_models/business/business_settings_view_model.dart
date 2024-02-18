@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 
 import '../../core/api/business_api.dart';
@@ -12,7 +14,8 @@ class BusinessSettingsViewModel extends ChangeNotifier {
   bool isGettingWorkers = false;
   BusinessProfile? businessProfile;
   List<SellerProfile> workers = [];
-  bool isEditing = true;
+  bool isEditing = false;
+  bool isUploading = false;
 
   Future<void> getOwnerProfile() async {
     isLoading = true;
@@ -99,6 +102,22 @@ class BusinessSettingsViewModel extends ChangeNotifier {
     isDisabling = true;
     final res = await _businessApi.updateWorkerStatus(sellerId, status);
     isDisabling = false;
+    notifyListeners();
+    return res;
+  }
+
+  Future<bool> uploadCompanyAvatar(File file) async {
+    isUploading = true;
+    final res = await _businessApi.uploadCompanyAvatar(file);
+    isUploading = false;
+    notifyListeners();
+    return res;
+  }
+
+  Future<bool> uploadShopAvatar(File file, int shopId) async {
+    isUploading = true;
+    final res = await _businessApi.uploadShopAvatar(file, shopId);
+    isUploading = false;
     notifyListeners();
     return res;
   }

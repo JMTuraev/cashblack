@@ -145,4 +145,28 @@ class BusinessDashboardViewModel extends ChangeNotifier {
     notifyListeners();
     return res;
   }
+
+  Future<bool> editLocalStore(
+    int shopId,
+    String name,
+    String percent,
+    String waymark,
+    int category,
+    String districtId,
+    String address,
+  ) async {
+    isLoading = true;
+    var res = await _businessApi.editBusinessShop(
+      shopId,
+      name,
+      percent,
+      waymark,
+      category,
+      districtId,
+      address,
+    );
+    isLoading = false;
+    notifyListeners();
+    return res;
+  }
 }

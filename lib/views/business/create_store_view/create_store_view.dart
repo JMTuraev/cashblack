@@ -38,57 +38,57 @@ class _CreateStoreViewState extends State<CreateStoreView> {
 
   bool _isChecked = false;
 
-  final ImagePicker _picker = ImagePicker();
-  final List<File?> _fileList = [];
+  // final ImagePicker _picker = ImagePicker();
+  // final List<File?> _fileList = [];
 
-  void getFromGallery() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.gallery,
-      maxHeight: 1080,
-      maxWidth: 1080,
-      // imageQuality: 75,
-    );
-    _cropImage(pickedFile!.path);
-  }
+  // void getFromGallery() async {
+  //   PickedFile? pickedFile = await ImagePicker().getImage(
+  //     source: ImageSource.gallery,
+  //     maxHeight: 1080,
+  //     maxWidth: 1080,
+  //     // imageQuality: 75,
+  //   );
+  //   _cropImage(pickedFile!.path);
+  // }
 
-  void _cropImage(String filepath) async {
-    clearImages();
-    var croppedImage = await ImageCropper.platform.cropImage(
-      sourcePath: filepath,
-      maxHeight: 1080,
-      maxWidth: 1080,
-      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      cropStyle: CropStyle.circle,
-      uiSettings: <PlatformUiSettings>[],
-    );
-    if (croppedImage != null) {
-      setState(() {
-        _fileList.add(File(croppedImage.path));
-      });
-    }
-  }
+  // void _cropImage(String filepath) async {
+  //   clearImages();
+  //   var croppedImage = await ImageCropper.platform.cropImage(
+  //     sourcePath: filepath,
+  //     maxHeight: 1080,
+  //     maxWidth: 1080,
+  //     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+  //     cropStyle: CropStyle.circle,
+  //     uiSettings: <PlatformUiSettings>[],
+  //   );
+  //   if (croppedImage != null) {
+  //     setState(() {
+  //       _fileList.add(File(croppedImage.path));
+  //     });
+  //   }
+  // }
 
-  void dltImages(data) {
-    setState(() {
-      _fileList.remove(data);
-    });
-  }
+  // void dltImages(data) {
+  //   setState(() {
+  //     _fileList.remove(data);
+  //   });
+  // }
 
-  void clearImages() {
-    setState(() {
-      _fileList.clear();
-    });
-  }
+  // void clearImages() {
+  //   setState(() {
+  //     _fileList.clear();
+  //   });
+  // }
 
-  void selectImage() async {
-    final XFile? image = await _picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    setState(() {
-      File? file = File(image!.path);
-      _fileList.add(file);
-    });
-  }
+  // void selectImage() async {
+  //   final XFile? image = await _picker.pickImage(
+  //     source: ImageSource.gallery,
+  //   );
+  //   setState(() {
+  //     File? file = File(image!.path);
+  //     _fileList.add(file);
+  //   });
+  // }
 
   onCategoryChanged(String value) {
     setState(() {
@@ -96,21 +96,21 @@ class _CreateStoreViewState extends State<CreateStoreView> {
     });
   }
 
-  onProvinceChanged(String value) {
-    setState(() {
-      _selectedCity = null;
-      _selectedProvince = value;
-      // cityItems = context
-      //     .read<CreateStoreViewViewModel>()
-      //     .getCities(_selectedProvince!);
-    });
-  }
+  // onProvinceChanged(String value) {
+  //   setState(() {
+  //     _selectedCity = null;
+  //     _selectedProvince = value;
+  //     // cityItems = context
+  //     //     .read<CreateStoreViewViewModel>()
+  //     //     .getCities(_selectedProvince!);
+  //   });
+  // }
 
-  onCityChanged(String value) {
-    setState(() {
-      _selectedCity = value;
-    });
-  }
+  // onCityChanged(String value) {
+  //   setState(() {
+  //     _selectedCity = value;
+  //   });
+  // }
 
   @override
   void initState() {

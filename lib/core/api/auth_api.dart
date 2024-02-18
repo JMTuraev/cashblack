@@ -47,7 +47,8 @@ class AuthApi {
           },
         ),
       );
-      print('register $type ${response.data['code']}');
+      print(
+          'register ${response.data['type']} as $type ${response.data['code']}');
       return true;
     } on DioError catch (e) {
       print(e.response!.data);
@@ -55,7 +56,7 @@ class AuthApi {
     }
   }
 
-  Future<bool> login(String phone, String code, String userType) async {
+  Future<String> login(String phone, String code, String userType) async {
     _dio.options.headers['content-Type'] = 'application/json';
     _dio.options.headers['content-Type'] = 'multipart/form-data';
     // _dio.options.headers['Authorization'] = token;
@@ -70,18 +71,24 @@ class AuthApi {
           },
         ),
       );
-      print('login $code ${response.data['token']}');
+      // print('login $code ${response.data['token']}');
+      print('logined as ${response.data['type']}');
       await _flutterSecureStorage.write(
         key: 'token',
         value: 'Bearer ${response.data['token']}',
       );
+      final type = response.data['type'].toString();
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLogged', true);
       await prefs.setBool('isBusiness', userType != 'client' ? true : false);
-      return true;
+      await prefs.setBool(
+        'isSeller',
+        type == 'seller' ? true : false,
+      );
+      return type;
     } on DioError catch (e) {
       print(e.response!.data);
-      return false;
+      return '';
     }
   }
 }
