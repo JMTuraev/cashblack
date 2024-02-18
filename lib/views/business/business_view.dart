@@ -2,16 +2,15 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../size_config.dart';
 import '../../utils/helpers.dart';
 import '../../view_models/business/business_dashboard_view_model.dart';
 import '../../view_models/business/business_notifications_view_model.dart';
 import '../../view_models/business/business_payment_view_model.dart';
+import '../../view_models/business/business_settings_view_model.dart';
 import '../../view_models/business/business_statistics_view_model.dart';
 import '../../view_models/business/business_view_model.dart';
-import '../../view_models/business/business_settings_view_model.dart';
 import '../../widgets/logo_animated_widget.dart';
 import 'business_dashboard_view/business_dashboard_view.dart';
 import 'scanner_view/barcode_scanner_view.dart';
@@ -22,7 +21,7 @@ import 'settings_view/settings_view.dart';
 import 'statistics_view/statistics_view.dart';
 
 class BusinessView extends StatefulWidget {
-  BusinessView({Key? key}) : super(key: key);
+  BusinessView({super.key});
 
   bool isSeller = false;
 
@@ -70,12 +69,13 @@ class _BusinessViewState extends State<BusinessView>
         break;
       case AppLifecycleState.resumed:
         context.read<BusinessSettingsViewModel>().getOwnerProfile();
-        break;
       case AppLifecycleState.paused:
         // Navigator.pop(context);
         break;
       case AppLifecycleState.detached:
         break;
+      case AppLifecycleState.hidden:
+      // TODO: Handle this case.
     }
   }
 
@@ -83,11 +83,11 @@ class _BusinessViewState extends State<BusinessView>
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    int currentIndex = context.watch<BusinessViewModel>().currentIndex;
+    final currentIndex = context.watch<BusinessViewModel>().currentIndex;
 
-    double iconSize = 34;
+    const iconSize = 34.0;
 
-    List<SvgPicture> items = [
+    final items = <SvgPicture>[
       SvgPicture.asset(
         'assets/svg/home-2.svg',
         color: Colors.white,
@@ -120,7 +120,7 @@ class _BusinessViewState extends State<BusinessView>
       ),
     ];
 
-    List<SvgPicture> itemsForWorkers = [
+    final itemsForWorkers = <SvgPicture>[
       // SvgPicture.asset(
       //   'assets/svg/home-2.svg',
       //   color: Colors.white,
@@ -148,7 +148,7 @@ class _BusinessViewState extends State<BusinessView>
     ];
 
     return context.watch<BusinessSettingsViewModel>().isLoading
-        ? LogoAnimatedWidget(size: 1.5)
+        ? const LogoAnimatedWidget(size: 1.5)
         : Scaffold(
             // extendBody: true,
             bottomNavigationBar: CurvedNavigationBar(
@@ -187,7 +187,7 @@ class _BusinessViewState extends State<BusinessView>
                           ? BarcodeScannerView(
                               shopId: 1,
                             )
-                          : SubscriptionView(
+                          : const SubscriptionView(
                               isBusiness: true,
                               subscribtionPrice: '1',
                               shopId: 1,
