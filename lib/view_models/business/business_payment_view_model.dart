@@ -7,6 +7,8 @@ import '../../domain/models/owner/bonus_price.dart';
 class BusinessPaymentViewModel extends ChangeNotifier {
   final BusinessApi _businessApi = BusinessApi();
   bool isLoading = false;
+  bool isCheckProfileLoading = false;
+  ClientProfile? clientProfile;
   bool isPriceLoading = false;
   List<BonusPrice> bonusPrices = [];
 
@@ -22,12 +24,25 @@ class BusinessPaymentViewModel extends ChangeNotifier {
     return result;
   }
 
+  Future<bool> payWithdraw(
+    String shopId,
+    String clientPhone,
+    String price,
+  ) async {
+    isLoading = true;
+    final result = await _businessApi.payWithdraw(shopId, clientPhone, price);
+    isLoading = false;
+    notifyListeners();
+    return result;
+  }
+
   Future<ClientProfile> getCashbackAmountBeforePay(
     String phone,
   ) async {
-    isLoading = true;
+    isCheckProfileLoading = true;
     final result = await _businessApi.getCashbackAmountBeforePay(phone);
-    isLoading = false;
+    clientProfile = result;
+    isCheckProfileLoading = false;
     notifyListeners();
     return result;
   }
@@ -36,6 +51,6 @@ class BusinessPaymentViewModel extends ChangeNotifier {
     isPriceLoading = true;
     bonusPrices = await _businessApi.getBonusPrices();
     isPriceLoading = false;
-    notifyListeners();
+    // notifyListeners();
   }
 }

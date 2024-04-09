@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 
-import '../../../../string_extensions.dart';
 import '../../../../size_config.dart';
+import '../../../../string_extensions.dart';
 import '../../../../view_models/client/client_login_view_model.dart';
 import '../../../../widgets/connect_widget.dart';
 import '../../../../widgets/info_alert_widget.dart';
@@ -14,44 +13,46 @@ import '../../../../widgets/public_offer_widget.dart';
 import '../client_login_verify_view/client_login_verify_view.dart';
 
 class ClientLoginView extends StatefulWidget {
-  ClientLoginView({super.key});
+  const ClientLoginView({super.key});
 
   @override
   State<ClientLoginView> createState() => _ClientLoginViewState();
 }
 
 class _ClientLoginViewState extends State<ClientLoginView> {
-  TextEditingController phoneController = TextEditingController(text: '');
+  TextEditingController phoneController = TextEditingController(text: '+998');
 
   bool checked = false;
   bool show = false;
 
   MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
-    mask: '+### ## ### ## ##',
-    filter: {'#': RegExp(r'[0-9]')},
-    type: MaskAutoCompletionType.lazy,
+    mask: '+998 ## ### ## ##',
+    filter: {'#': RegExp('[0-9]')},
   );
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    var provider = context.read<ClientLoginViewModel>();
+    final provider = context.read<ClientLoginViewModel>();
+    if (phoneController.text.length < 3) {
+      phoneController.text = '+998';
+    }
 
-    void submit() async {
+    Future<void> submit() async {
       print('submit');
       if (maskFormatter.isFill()) {
-        var phone = maskFormatter.unmaskText(phoneController.text);
+        final phone = maskFormatter.unmaskText(phoneController.text);
         print('phone');
 
         // bool sendSMS = false;
 
         // phone = '998973000225';
 
-        bool sendSMS =
+        final sendSMS =
             await context.read<ClientLoginViewModel>().onEnterButtonPressed(
-                  phone.substring(3),
-                  phone.substring(3),
+                  phone,
+                  phone,
                   'Имя',
                   'Фамилия',
                   '59',
@@ -115,7 +116,7 @@ class _ClientLoginViewState extends State<ClientLoginView> {
                 borderRadius: BorderRadius.circular(20),
               ),
               filled: false,
-              hintText: 'Телефон',
+              hintText: '+998',
             ),
             inputFormatters: [maskFormatter],
             controller: phoneController,

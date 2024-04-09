@@ -3,6 +3,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../size_config.dart';
+import '../../../string_extensions.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
@@ -17,10 +18,8 @@ class CreateWorkerView extends StatefulWidget {
 }
 
 class _CreateWorkerViewState extends State<CreateWorkerView> {
-  @override
-  Widget build(BuildContext context) {
-    MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
-        mask: '+### ## ### ## ##',
+MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
+        mask: '+998 ## ### ## ##',
         filter: {"#": RegExp(r'[0-9]')},
         type: MaskAutoCompletionType.lazy);
 
@@ -29,6 +28,15 @@ class _CreateWorkerViewState extends State<CreateWorkerView> {
     TextEditingController nickNameController = TextEditingController();
 
     String? selectedShop;
+
+      TextEditingController phoneController = TextEditingController(text: '+998');
+
+
+  @override
+  Widget build(BuildContext context) {
+    if (phoneController.text.length < 3) {
+      phoneController.text = '+998';
+    }
 
     return SafeArea(
         child: Scaffold(
@@ -55,7 +63,7 @@ class _CreateWorkerViewState extends State<CreateWorkerView> {
                         Radius.circular(20),
                       ),
                     ),
-                    hintText: 'Телефон',
+                    hintText: '+998',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(20),
@@ -68,6 +76,7 @@ class _CreateWorkerViewState extends State<CreateWorkerView> {
                   keyboardAppearance: Brightness.dark,
                   showCursor: true,
                   keyboardType: TextInputType.phone,
+                  controller: phoneController,
                 ),
                 // SizedBox(height: getH(20)),
                 // TextFieldWidget(
@@ -110,9 +119,10 @@ class _CreateWorkerViewState extends State<CreateWorkerView> {
                     await context
                         .read<BusinessSettingsViewModel>()
                         .createSeller(
-                            maskFormatter.getUnmaskedText().substring(3),
+                            // maskFormatter.getUnmaskedText(),
+                            phoneController.text.phoneFormatterForCall().removeForPhone(),
                             // nickNameController.text,
-                            maskFormatter.getUnmaskedText().substring(3),
+                            maskFormatter.getUnmaskedText(),
                             fistNameController.text,
                             lastNameController.text,
                             '44',

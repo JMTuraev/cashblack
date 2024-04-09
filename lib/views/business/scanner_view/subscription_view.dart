@@ -3,20 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../string_extensions.dart';
+import '../../../utils/helpers.dart';
+import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_notifications_view_model.dart';
+import '../../../view_models/business/business_payment_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
-import '../settings_view/payment_view.dart';
+import '../../../widgets/show_modal.dart';
 import 'payment_success_view.dart';
 
 class SubscriptionView extends StatelessWidget {
   const SubscriptionView({
-    Key? key,
+    super.key,
     required this.isBusiness,
     required this.subscribtionPrice,
     required this.shopId,
-  }) : super(key: key);
+  });
 
   final String subscribtionPrice;
   final bool isBusiness;
@@ -24,8 +27,8 @@ class SubscriptionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var balance = 12;
-    bool isLoading = context.watch<BusinessViewModel>().isLoading;
+    const balance = 12;
+    final isLoading = context.watch<BusinessViewModel>().isLoading;
 
     final subPrice = context
         .read<BusinessNotificationsViewModel>()
@@ -43,7 +46,6 @@ class SubscriptionView extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Center(
                   child: Column(
@@ -138,12 +140,147 @@ class SubscriptionView extends StatelessWidget {
                           )
                         : MainButtonWidget(
                             text: 'Пополнить баланс',
-                            method: () {
-                              Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                  builder: (context) => const PaymentView(),
-                                ),
-                              );
+                            method: () async {
+                              // Navigator.of(context).push(
+                              //   CupertinoPageRoute(
+                              //     builder: (context) => const PaymentView(),
+                              //   ),
+                              // );
+
+                              final bonusPrices = context
+                                  .read<BusinessPaymentViewModel>()
+                                  .bonusPrices;
+                              // Navigator.of(context).push(
+                              //   CupertinoPageRoute<dynamic>(
+                              //     builder: (context) => const PaymentView(),
+                              //   ),
+                              // );
+                              context
+                                      .read<BusinessPaymentViewModel>()
+                                      .isPriceLoading
+                                  ? () {}
+                                  : showModal(context, [
+                                      Column(
+                                        children: [
+                                          const Text(
+                                            'Пополнить счёт',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          GridView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              // childAspectRatio: 3 / 1,
+                                              crossAxisSpacing: 10,
+                                              mainAxisSpacing: 10,
+                                              mainAxisExtent: 100,
+                                            ),
+                                            itemCount: bonusPrices.length,
+                                            itemBuilder: (
+                                              BuildContext context,
+                                              int index,
+                                            ) {
+                                              return GestureDetector(
+                                                onTap: () async {
+                                                  await context
+                                                      .read<
+                                                          BusinessDashboardViewModel>()
+                                                      .payment(
+                                                        bonusPrices[index]
+                                                            .id
+                                                            .toString(),
+                                                      )
+                                                      .then(
+                                                        (value) =>
+                                                            Helpers.toWeb(
+                                                          value,
+                                                          'telegram',
+                                                        ),
+                                                      );
+                                                },
+                                                child: Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                    // horizontal: 10,
+                                                    vertical: 6,
+                                                  ),
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: Colors.black26,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(10),
+                                                    ),
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        bonusPrices[index]
+                                                            .amount
+                                                            .getAmountInSum(),
+                                                        style: const TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      double.parse(
+                                                                bonusPrices[
+                                                                        index]
+                                                                    .bonus,
+                                                              ) <
+                                                              1
+                                                          ? const SizedBox()
+                                                          : Column(
+                                                              children: [
+                                                                Text(
+                                                                  '+${bonusPrices[index].bonus.getAmountInSum()}',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: Colors
+                                                                        .greenAccent,
+                                                                  ),
+                                                                ),
+                                                                const Text(
+                                                                  'бонус',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: Colors
+                                                                        .greenAccent,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ]);
                             },
                           )
                     : const SizedBox(),

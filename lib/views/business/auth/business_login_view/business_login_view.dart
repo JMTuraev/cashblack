@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 
-import '../../../../string_extensions.dart';
 import '../../../../size_config.dart';
+import '../../../../string_extensions.dart';
 import '../../../../view_models/business/business_login_view_model.dart';
 import '../../../../widgets/connect_widget.dart';
 import '../../../../widgets/info_alert_widget.dart';
@@ -14,21 +13,20 @@ import '../../../../widgets/public_offer_widget.dart';
 import '../business_login_verify_view/business_login_verify_view.dart';
 
 class BusinessLoginView extends StatefulWidget {
-  BusinessLoginView({super.key});
+  const BusinessLoginView({super.key});
 
   @override
   State<BusinessLoginView> createState() => _BusinessLoginViewState();
 }
 
 class _BusinessLoginViewState extends State<BusinessLoginView> {
-  TextEditingController phoneController = TextEditingController(text: '');
+  TextEditingController phoneController = TextEditingController(text: '+998');
 
   TextEditingController promoCodeController = TextEditingController(text: '');
 
   MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
-    mask: '+### ## ### ## ##',
-    filter: {"#": RegExp(r'[0-9]')},
-    type: MaskAutoCompletionType.lazy,
+    mask: '+998 ## ### ## ##',
+    filter: {'#': RegExp('[0-9]')},
   );
 
   bool checked = false;
@@ -39,22 +37,25 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
 
   @override
   Widget build(BuildContext context) {
-    var provider = context.read<BusinessLoginViewModel>();
+    final provider = context.read<BusinessLoginViewModel>();
+    if (phoneController.text.length < 3) {
+      phoneController.text = '+998';
+    }
 
     Future<void> submit() async {
       if (maskFormatter.isFill()) {
-        var phone = maskFormatter.unmaskText(phoneController.text);
+        final phone = maskFormatter.unmaskText(phoneController.text);
 
-        var promo = promoCodeController.text;
+        final promo = promoCodeController.text;
 
         // phone = '998973000225';
 
         // bool sendSMS = false;
 
-        bool sendSMS =
+        final sendSMS =
             await context.read<BusinessLoginViewModel>().onEnterButtonPressed(
-                  phone.substring(3),
-                  phone.substring(3),
+                  phone,
+                  phone,
                   'Имя',
                   'Фамилия',
                   '59',
@@ -120,7 +121,7 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 filled: false,
-                hintText: "Телефон",
+                hintText: '+998',
               ),
               inputFormatters: [maskFormatter],
               controller: phoneController,
@@ -204,7 +205,7 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           filled: false,
-                          hintText: "Промокод",
+                          hintText: 'Промокод',
                         ),
                         controller: promoCodeController,
                         autocorrect: false,

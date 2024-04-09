@@ -270,12 +270,15 @@ class _StatisticsViewState extends State<StatisticsView> {
                 child: EasyRefresh(
                   header: const MaterialHeader(),
                   onRefresh: () {
+                    // context.read<BusinessStatisticsViewModel>().mergedList.clear();
                     setState(() {
                       _filter = '0';
 
                       final start = '2023-01-01';
                       final end =
                           DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+                          
                       // statCashback = context
                       //     .read<StatisticsViewModel>()
                       //     .getSumStats(start: start, end: end);
@@ -463,7 +466,10 @@ class _ClientCashbackWidget extends StatelessWidget {
       children: [
         context.watch<BusinessStatisticsViewModel>().isClientsLoading
             ? const LogoAnimatedWidget(size: 1.5)
-            : Expanded(
+            : (context
+                      .read<BusinessStatisticsViewModel>()
+                      .clients
+                      .isEmpty ?  const Center(child: EmptyWidget()): Expanded(
                 child: ListView.separated(
                   itemCount: context
                       .read<BusinessStatisticsViewModel>()
@@ -477,7 +483,7 @@ class _ClientCashbackWidget extends StatelessWidget {
                         .clients[index],
                   ),
                 ),
-              ),
+              )),
       ],
     );
   }
@@ -577,7 +583,7 @@ class _CardCashback extends StatelessWidget {
                   child: Text(
                     sumStat.clientName.length > 2
                         ? sumStat.clientName.toString()
-                        : '998${sumStat.clientPhone}'.phoneHiddenFormatter(),
+                        : '${sumStat.clientPhone}'.phoneHiddenFormatter(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -943,7 +949,7 @@ class _CardWithdraw extends StatelessWidget {
                   child: Text(
                     sumStat.clientName!.length > 2
                         ? sumStat.clientName.toString()
-                        : '998${sumStat.clientPhone}'.phoneHiddenFormatter(),
+                        : '${sumStat.clientPhone}'.phoneHiddenFormatter(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(

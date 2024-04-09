@@ -9,9 +9,9 @@ import '../../../view_models/client/client_dashboard_view_model.dart';
 
 class ClientNotificationInfoView extends StatefulWidget {
   const ClientNotificationInfoView({
-    Key? key,
+    super.key,
     required this.receivedNotification,
-  }) : super(key: key);
+  });
 
   final OwnerNotification receivedNotification;
 
@@ -56,7 +56,7 @@ class _ClientNotificationInfoViewState
                 //   ),
                 // ),
                 // const SizedBox(height: 20),
-                Container(
+                SizedBox(
                   height: MediaQuery.of(context).size.width / 1.5,
                   width: double.infinity,
                   child: ClipRRect(
@@ -94,6 +94,7 @@ class _ClientNotificationInfoViewState
                               .read<ClientDashboardViewModel>()
                               .likeNotification(
                                 widget.receivedNotification.id,
+                                //  widget.receivedNotification.like.toString() == '1' ? 0 : 1,
                                 1,
                               );
                         });
@@ -183,7 +184,7 @@ class _ClientNotificationInfoViewState
                   style: const TextStyle(
                     fontSize: 18,
                   ),
-                )
+                ),
               ],
             ),
           ),

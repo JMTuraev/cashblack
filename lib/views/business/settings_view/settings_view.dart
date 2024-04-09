@@ -152,14 +152,25 @@ class _SettingsViewState extends State<SettingsView> {
               //   },
               // ),
               const SizedBox(height: 15),
+              //TODO apple
               context.watch<BusinessSettingsViewModel>().isLoading
                   ? const SizedBox()
-                  : _SubscriptionCardWidget(
-                      profile: context
-                          .read<BusinessSettingsViewModel>()
-                          .businessProfile!,
-                    ),
-              SizedBox(height: getH(20)),
+                  : context
+                              .read<BusinessSettingsViewModel>()
+                              .businessProfile!
+                              .status ==
+                          1
+                      ? (Column(
+                          children: [
+                            _SubscriptionCardWidget(
+                              profile: context
+                                  .read<BusinessSettingsViewModel>()
+                                  .businessProfile!,
+                            ),
+                            SizedBox(height: getH(15)),
+                          ],
+                        ))
+                      : const SizedBox(),
               1 == 1
                   ? Row(
                       children: [
@@ -170,16 +181,25 @@ class _SettingsViewState extends State<SettingsView> {
                           ),
                         ),
                         const Spacer(),
-                        GestureDetector(
-                          child: SvgPicture.asset('assets/svg/user-add.svg'),
-                          onTap: () {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                builder: (context) => const CreateWorkerView(),
-                              ),
-                            );
-                          },
-                        ),
+                        (context
+                                    .read<BusinessDashboardViewModel>()
+                                    .hasCompany &&
+                                context
+                                    .read<BusinessDashboardViewModel>()
+                                    .hasShops)
+                            ? GestureDetector(
+                                child:
+                                    SvgPicture.asset('assets/svg/user-add.svg'),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (context) =>
+                                          const CreateWorkerView(),
+                                    ),
+                                  );
+                                },
+                              )
+                            : const SizedBox(),
                       ],
                     )
                   : const SizedBox(),
@@ -211,7 +231,8 @@ class _SettingsViewState extends State<SettingsView> {
                                         ),
                                         SizedBox(height: getH(4)),
                                         Text(
-                                          '998${allWorkers[index].phone}'
+                                          allWorkers[index]
+                                              .phone
                                               .phoneFormatter(),
                                           style: const TextStyle(
                                             color: Color.fromRGBO(
@@ -283,7 +304,19 @@ class _SettingsViewState extends State<SettingsView> {
                             },
                           ),
                         )
-                      : const Center(child: Text('У вас нет сотрудников'))
+                      : ((context
+                                  .read<BusinessDashboardViewModel>()
+                                  .hasCompany &&
+                              context
+                                  .read<BusinessDashboardViewModel>()
+                                  .hasShops)
+                          ? const Center(child: Text('У вас нет сотрудников'))
+                          : const Center(
+                              child: Text(
+                                'Создайте компанию и магазин чтобы добавить сотрудников',
+                                textAlign: TextAlign.center,
+                              ),
+                            ))
                   : const SizedBox(),
             ],
           ),
@@ -546,7 +579,8 @@ class _ProfileCardWidget extends StatelessWidget {
                     ),
               const SizedBox(height: 10),
               Text(
-                '998${user?.phone}'.phoneFormatter(),
+                // '998${user?.phone}'.phoneFormatter(),
+                '${user?.phone}'.phoneFormatter(),
                 style: const TextStyle(
                   color: Color(0xffa3a3a3),
                 ),

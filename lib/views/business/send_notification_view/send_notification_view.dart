@@ -361,6 +361,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                           print(_contentController.text);
                           print(balance);
                           print(subPrice);
+
                           if (
 
                               // _fileList.isNotEmpty &&
@@ -401,6 +402,9 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                                   .then(
                                 (value) {
                                   if (value) {
+                                    context
+                                        .read<BusinessSettingsViewModel>()
+                                        .getOwnerProfile(); // profil
                                     context
                                         .read<BusinessNotificationsViewModel>()
                                         .getNotifications();

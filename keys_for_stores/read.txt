@@ -1,0 +1,8 @@
+Name:Cashblack push service
+Key ID:5KS97BQV7X
+Services:Apple Push Notifications service (APNs)
+
+
+Name:Dacha 24 push service
+Key ID:3X74K4A9SN
+Services:Apple Push Notifications service (APNs)

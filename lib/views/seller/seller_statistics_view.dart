@@ -562,7 +562,7 @@ class _CardCashback extends StatelessWidget {
                   child: Text(
                     sumStat.clientName.length > 2
                         ? sumStat.clientName.toString()
-                        : '998${sumStat.clientPhone}'.phoneHiddenFormatter(),
+                        : '${sumStat.clientPhone}'.phoneHiddenFormatter(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(

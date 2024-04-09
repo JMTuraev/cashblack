@@ -36,7 +36,7 @@ class _EditStoreViewState extends State<EditStoreView> {
 
   Future<List<Category>>? categoryItems;
 
-  void onCategoryChanged(String value) {
+  void onCategoryChanged(String? value) {
     setState(() {
       _selectedCategory = value;
     });
@@ -106,8 +106,8 @@ class _EditStoreViewState extends State<EditStoreView> {
                                   ),
                                 )
                                 .toList(),
-                    onChanged: () {},
-                    // onChanged: onCategoryChanged,
+                    // onChanged: () {}
+                    onChanged: onCategoryChanged,
                   ),
                   const SizedBox(height: 20),
                   _CashbackWidget(controller: _cashback),
@@ -403,18 +403,18 @@ class _AddressNameWidget extends StatelessWidget {
 }
 
 class _SelectCategoryWidget extends StatelessWidget {
+  final String? selectedOption;
+  final List<DropdownMenuItem<String>> categoryItems;
+  final Function(String?)? onChanged;
+  final String hint;
+
   const _SelectCategoryWidget({
     super.key,
-    required String? selectedOption,
+    this.selectedOption,
     required this.categoryItems,
     required this.onChanged,
     required this.hint,
-  }) : _selectedOption = selectedOption;
-
-  final String? _selectedOption;
-  final List<DropdownMenuItem<String>> categoryItems;
-  final Function onChanged;
-  final String hint;
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -432,10 +432,10 @@ class _SelectCategoryWidget extends StatelessWidget {
           ),
           hint: Text(hint),
           isExpanded: true,
-          value: _selectedOption,
+          value: selectedOption,
           items: categoryItems,
-          onChanged: (v) {},
-          // onChanged: onChanged,
+          // onChanged: (v) {},
+          onChanged: onChanged,
           decoration: const InputDecoration(
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(

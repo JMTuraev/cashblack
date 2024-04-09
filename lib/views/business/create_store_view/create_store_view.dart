@@ -14,6 +14,8 @@ import '../../../string_extensions.dart';
 import '../../../size_config.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
+import '../../../view_models/business/business_settings_view_model.dart';
+import '../../../view_models/business/business_statistics_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
 import '../../../view_models/create_store_view_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
@@ -116,13 +118,17 @@ class _CreateStoreViewState extends State<CreateStoreView> {
   void initState() {
     super.initState();
     loadUser();
-    setState(() {});
+     
   }
 
   Future<void> loadUser() async {
     // categoryItems = context.read<CreateStoreViewViewModel>().getCategories();
     // provinceItems = context.read<CreateStoreViewViewModel>().getProvincies();
     // cityItems = context.read<CreateStoreViewViewModel>().getCities('1');
+   await  context
+            .read<BusinessViewModel>()
+            .getCategories(); 
+    setState(() {});
   }
 
   final TextEditingController _brandName = TextEditingController();
@@ -331,7 +337,18 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                             if (value) {
                               context
                                   .read<BusinessDashboardViewModel>()
-                                  .getBusinessShops();
+                                  .getBusinessShops().then((value) {
+                                    context
+                .read<BusinessSettingsViewModel>()
+                .getWorkers(); // shop yoki magazin bo'lmasa call qilmasin, xatosi bor
+            // context
+            //     .read<BusinessViewModel>()
+            //     .getCategories(); // firma tuzishda kategoriya
+            context.read<BusinessStatisticsViewModel>().getStats(); //stat
+            context
+                .read<BusinessStatisticsViewModel>()
+                .getClients(); //clientlar
+                                  });
                               Navigator.pop(context);
                             } else {
                               print('xato');

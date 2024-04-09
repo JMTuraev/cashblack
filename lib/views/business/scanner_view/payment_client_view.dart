@@ -1,37 +1,42 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/barcode_scan.dart';
 import '../../../string_extensions.dart';
 import '../../../utils/numberic_text_formatter.dart';
-import '../../../view_models/business/business_view_model.dart';
-import '../../../view_models/payment_client_view_model.dart';
-import '../../../widgets/empty_widget.dart';
+import '../../../view_models/business/business_dashboard_view_model.dart';
+import '../../../view_models/business/business_payment_view_model.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/main_button_widget.dart';
+import 'payment_phone_view.dart';
+import 'payment_success_view.dart';
 
 class PaymentClientView extends StatefulWidget {
   const PaymentClientView({
-    Key? key,
+    super.key,
     required this.code,
     required this.shopId,
-  }) : super(key: key);
+    required this.isSeller,
+  });
 
   final String code;
   final int shopId;
+  final bool isSeller;
 
   @override
   State<PaymentClientView> createState() => _PaymentClientViewState();
 }
 
 class _PaymentClientViewState extends State<PaymentClientView> {
-  late final Future profile;
+  // late final Future<ClientProfile> profile;
   @override
   void initState() {
     // profile = context
     //     .read<PaymentClientViewModel>()
     //     .getUserFromBarcode(widget.code, widget.shopId);
+    context
+        .read<BusinessPaymentViewModel>()
+        .getCashbackAmountBeforePay(widget.code);
     super.initState();
   }
 
@@ -45,13 +50,18 @@ class _PaymentClientViewState extends State<PaymentClientView> {
 
   String percent = '';
 
+  String? selectedShop;
+  int cashbackPercentage = 0;
+
+  bool isLoading = false;
+  bool isSmallLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    int cashbackPercentage = 0;
-
-    bool isLoading = false;
-    bool isSmallLoading = false;
-
+    final remainSumma = double.parse(
+      (context.read<BusinessPaymentViewModel>().clientProfile?.amount ?? '0')
+          .replaceAll(',', ''),
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Оплата через QR'),
@@ -60,178 +70,256 @@ class _PaymentClientViewState extends State<PaymentClientView> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              Column(
-                children: [
-                  Text(
-                    // 'fullname',
-                    '',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    // name
-                    ''.toString().phoneFormatter(),
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 30),
-                  Text(
-                    'Все кэшбеки ' + '0 ' + 'сум',
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Center(
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            maxLength: 12,
-                            onChanged: (value) {
-                              print(value);
-                              setState(() {
-                                if (value.isEmpty || value == null) {
-                                  percent = '';
-                                } else {
-                                  double a =
-                                      double.parse(value.removeWhitespace()) /
-                                          100 *
-                                          cashbackPercentage;
-                                  percent = a.toStringAsFixed(0);
-                                }
-                              });
-                            },
-                            validator: (value) {
-                              // print('val ' + value.toString());
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  int.parse(value.removeWhitespace()) <= 0) {
-                                print('Введите сумму');
-                                return 'Введите сумму';
-                              } else if (int.parse(
-                                        value.removeWhitespace(),
-                                      ) >
-                                      // user.cashback!.toInt()
-                                      110 &&
-                                  isWithdraw) {
-                                return 'Введите сумму меньше кэшбека';
-                              }
-                              return null;
-                            },
-                            inputFormatters: [numericTextFormatter],
-                            decoration: const InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2,
+          child: context.watch<BusinessPaymentViewModel>().isCheckProfileLoading
+              ? const Center(
+                  child: LogoAnimatedWidget(size: 1.5),
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Text(
+                          // 'fullname',
+                          '${context.read<BusinessPaymentViewModel>().clientProfile?.firstName ?? ''} ${context.read<BusinessPaymentViewModel>().clientProfile?.lastName ?? ''}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          context
+                              .read<BusinessPaymentViewModel>()
+                              .clientProfile!
+                              .phone
+                              .phoneFormatter(),
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(height: 30),
+                        Text(
+                          'Все кэшбеки ${remainSumma.toString().getFormattedNumber()} сум',
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        Center(
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                !widget.isSeller
+                                    ? SelectCategoryWidget(
+                                        categoryItems: context
+                                            .read<BusinessDashboardViewModel>()
+                                            .businessShops!
+                                            .map(
+                                              (e) => DropdownMenuItem<String>(
+                                                value: e.id.toString(),
+                                                child: Text(e.name),
+                                              ),
+                                            )
+                                            .toList(),
+                                        hint: 'Магазин',
+                                        onChanged: (String value) {
+                                          // print(value);
+                                          selectedShop = value;
+                                        },
+                                        selectedOption: selectedShop,
+                                      )
+                                    : const SizedBox(),
+                                SizedBox(height: widget.isSeller ? 0 : 20),
+                                TextFormField(
+                                  maxLength: 12,
+                                  onChanged: (value) {
+                                    print(value);
+                                    setState(() {
+                                      if (value.isEmpty) {
+                                        percent = '';
+                                      } else {
+                                        final a = double.parse(
+                                              value.removeWhitespace(),
+                                            ) /
+                                            100 *
+                                            cashbackPercentage;
+                                        percent = a.toStringAsFixed(0);
+                                      }
+                                    });
+                                  },
+                                  validator: (value) {
+                                    // print('val ' + value.toString());
+                                    if (value == null ||
+                                        value.isEmpty ||
+                                        int.parse(value.removeWhitespace()) <=
+                                            0) {
+                                      print('Введите сумму');
+                                      return 'Введите сумму';
+                                    } else if (int.parse(
+                                              value.removeWhitespace(),
+                                            ) >
+                                            // user.cashback!.toInt()
+                                            remainSumma &&
+                                        isWithdraw) {
+                                      return 'Введите сумму меньше кэшбека';
+                                    }
+                                    return null;
+                                  },
+                                  inputFormatters: [numericTextFormatter],
+                                  decoration: const InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    counterText: '',
+                                    hintText: 'Сумма покупки',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                  ),
+                                  controller: priceController,
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  keyboardAppearance: Brightness.dark,
+                                  showCursor: true,
+                                  keyboardType: TextInputType.number,
                                 ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: MainButtonWidget(
+                                        isLoading: isLoading,
+                                        percent: percent.isEmpty
+                                            ? null
+                                            : int.parse(percent),
+                                        text: 'Кэшбек',
+                                        method: () async {
+                                          isWithdraw = false;
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            print('Кэшбек');
+                                            print(isWithdraw);
+
+                                            await context
+                                                .read<
+                                                    BusinessPaymentViewModel>()
+                                                .payCashback(
+                                                  widget.isSeller
+                                                      ? widget.shopId.toString()
+                                                      : selectedShop.toString(),
+                                                  // maskFormatter.getUnmaskedText(),
+                                                  // phoneController.text.phoneFormatterForCall().removeForPhone(),
+                                                  widget.code
+                                                      .removeWhitespace()
+                                                      .removeForPhone(),
+                                                  priceController.text,
+                                                )
+                                                .then((value) {
+                                              if (value) {
+                                                Navigator.of(context)
+                                                    .pushAndRemoveUntil(
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        const PaymentSuccessView(
+                                                      title: 'Оплачено',
+                                                    ),
+                                                  ),
+                                                  (route) => false,
+                                                );
+                                              }
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: MainButtonWidget(
+                                        isLoading: isSmallLoading,
+                                        text: 'Оплата',
+                                        method: () async {
+                                          isWithdraw = true;
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            print('Оплата');
+                                            print(isWithdraw);
+                                            // return true;
+                                            await context
+                                                .read<
+                                                    BusinessPaymentViewModel>()
+                                                .payWithdraw(
+                                                  widget.isSeller
+                                                      ? widget.shopId.toString()
+                                                      : selectedShop.toString(),
+                                                  // maskFormatter.getUnmaskedText(),
+                                                  // phoneController.text.phoneFormatterForCall().removeForPhone(),
+                                                  widget.code
+                                                      .removeWhitespace()
+                                                      .removeForPhone(),
+                                                  priceController.text,
+                                                )
+                                                .then((value) {
+                                              if (value) {
+                                                Navigator.of(context)
+                                                    .pushAndRemoveUntil(
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        const PaymentSuccessView(
+                                                      title: 'Оплачено',
+                                                    ),
+                                                  ),
+                                                  (route) => false,
+                                                );
+                                              }
+                                            });
+                                            // await context
+                                            //     .read<
+                                            //         PaymentClientViewModel>()
+                                            //     .payForGoods(
+                                            //       context,
+                                            //       priceController.text
+                                            //           .removeWhitespaces(),
+                                            //       widget.code,
+                                            //       widget.shopId,
+                                            //     );
+                                            // .then(
+                                            //   (value) =>
+                                            //       Navigator.of(context)
+                                            //           .pushAndRemoveUntil(
+                                            //     CupertinoPageRoute(
+                                            //       builder: (context) =>
+                                            //           const PaymentSuccessView(
+                                            //         title: 'Оплачено',
+                                            //       ),
+                                            //     ),
+                                            //     (route) => false,
+                                            //   ),
+                                            // );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              counterText: '',
-                              hintText: 'Сумма покупки',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
-                                ),
-                              ),
+                              ],
                             ),
-                            controller: priceController,
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            keyboardAppearance: Brightness.dark,
-                            showCursor: true,
-                            keyboardType: TextInputType.number,
                           ),
-                          const SizedBox(height: 20),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: MainButtonWidget(
-                                  isLoading: isLoading,
-                                  percent: percent.isEmpty
-                                      ? null
-                                      : int.parse(percent),
-                                  text: 'Кэшбек',
-                                  method: () async {
-                                    isWithdraw = false;
-                                    if (_formKey.currentState!.validate()) {
-                                      print('Кэшбек');
-                                      print(isWithdraw);
-                                      // await context
-                                      //     .read<
-                                      //         PaymentClientViewModel>()
-                                      //     .sendCashback(
-                                      //       context,
-                                      //       priceController.text
-                                      //           .removeWhitespaces(),
-                                      //       widget.code,
-                                      //       widget.shopId,
-                                      //     );
-                                    }
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                flex: 1,
-                                child: MainButtonWidget(
-                                  isLoading: isSmallLoading,
-                                  text: 'Оплата',
-                                  method: () async {
-                                    isWithdraw = true;
-                                    if (_formKey.currentState!.validate()) {
-                                      print('Оплата');
-                                      print(isWithdraw);
-                                      // return true;
-                                      // await context
-                                      //     .read<
-                                      //         PaymentClientViewModel>()
-                                      //     .payForGoods(
-                                      //       context,
-                                      //       priceController.text
-                                      //           .removeWhitespaces(),
-                                      //       widget.code,
-                                      //       widget.shopId,
-                                      //     );
-                                      // .then(
-                                      //   (value) =>
-                                      //       Navigator.of(context)
-                                      //           .pushAndRemoveUntil(
-                                      //     CupertinoPageRoute(
-                                      //       builder: (context) =>
-                                      //           const PaymentSuccessView(
-                                      //         title: 'Оплачено',
-                                      //       ),
-                                      //     ),
-                                      //     (route) => false,
-                                      //   ),
-                                      // );
-                                    }
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 30),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                ],
-              )
-            ],
-          ),
+                  ],
+                ),
         ),
       ),
     );

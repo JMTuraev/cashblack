@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../../string_extensions.dart';
-import '../../../../view_models/client_home_view_model.dart';
 import '../../../../view_models/client/client_login_view_model.dart';
 import '../../../../widgets/hero_title_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
@@ -14,10 +13,10 @@ import '../../client_view.dart';
 
 class ClientLoginVerifyView extends StatefulWidget {
   const ClientLoginVerifyView({
-    Key? key,
+    super.key,
     required this.phone,
     required this.appsign,
-  }) : super(key: key);
+  });
 
   final String phone;
   final String appsign;
@@ -39,7 +38,7 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
   @override
   void codeUpdated() {
     setState(() {
-      otpCode = code!;
+      otpCode = code;
     });
   }
 
@@ -96,7 +95,6 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
               PinFieldAutoFill(
                 controller: textController,
                 autoFocus: true,
-                codeLength: 6,
                 decoration: UnderlineDecoration(
                   gapSpace: 40,
                   textStyle: const TextStyle(
@@ -151,7 +149,7 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
                       .read<ClientLoginViewModel>()
                       .onVerifyButtonPressed(
                         // context.read<BusinessLoginViewModel>().phone,
-                        widget.phone.substring(3),
+                        widget.phone,
                         otpCode ?? textController.text,
                       )
                       .then((value) async {
@@ -194,16 +192,16 @@ class _ClientLoginVerifyViewState extends State<ClientLoginVerifyView>
 }
 
 class _Countdown extends AnimatedWidget {
-  _Countdown({Key? key, required this.animation})
-      : super(key: key, listenable: animation);
+  _Countdown({super.key, required this.animation})
+      : super(listenable: animation);
   Animation<int> animation;
 
   @override
-  build(BuildContext context) {
-    Duration clockTimer = Duration(seconds: animation.value);
+  Center build(BuildContext context) {
+    final clockTimer = Duration(seconds: animation.value);
 
-    String timerText =
-        '${clockTimer.inMinutes.remainder(60).toString()}:${clockTimer.inSeconds.remainder(60).toString().padLeft(2, '0')}';
+    final timerText =
+        '${clockTimer.inMinutes.remainder(60)}:${clockTimer.inSeconds.remainder(60).toString().padLeft(2, '0')}';
     return Center(
       child: Text(
         timerText,

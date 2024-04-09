@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -31,19 +33,60 @@ class BusinessView extends StatefulWidget {
 
 class _BusinessViewState extends State<BusinessView>
     with WidgetsBindingObserver {
+  Timer? timer;
+
   @override
   void initState() {
-    // checkIsSeller() == true ? print('yes') : print('no');
-    context.read<BusinessDashboardViewModel>().getBusinessCompany();
-    context.read<BusinessDashboardViewModel>().getBusinessShops();
-    context.read<BusinessNotificationsViewModel>().getPrices();
-    context.read<BusinessSettingsViewModel>().getOwnerProfile();
-    context.read<BusinessViewModel>().getCategories();
-    context.read<BusinessSettingsViewModel>().getWorkers();
-    context.read<BusinessPaymentViewModel>().getBonusPrices();
-    context.read<BusinessStatisticsViewModel>().getStats();
-    context.read<BusinessStatisticsViewModel>().getClients();
     super.initState();
+
+    timer = Timer.periodic(
+      const Duration(seconds: 30),
+      (Timer t) => context.read<BusinessSettingsViewModel>().getOwnerProfile(),
+    );
+
+    // checkIsSeller() == true ? print('yes') : print('no');
+    context.read<BusinessSettingsViewModel>().getOwnerProfile(); // profil
+    context.read<BusinessNotificationsViewModel>().getPrices(); // balansi
+    context
+        .read<BusinessPaymentViewModel>()
+        .getBonusPrices(); //abonent to'lovlar
+
+    context
+        .read<BusinessDashboardViewModel>()
+        .getBusinessCompany()
+        .then((value) {
+      if (context.read<BusinessDashboardViewModel>().hasCompany) {
+        context
+            .read<BusinessViewModel>()
+            .getCategories(); // firma tuzishda kategoriya
+        context
+            .read<BusinessDashboardViewModel>()
+            .getBusinessShops()
+            .then((value) {
+          if (context.read<BusinessDashboardViewModel>().hasShops) {
+//
+            context.read<BusinessDashboardViewModel>().getWeeklyStatistics(
+                  context
+                      .read<BusinessDashboardViewModel>()
+                      .businessShops!
+                      .first
+                      .id,
+                );
+//
+
+            context
+                .read<BusinessSettingsViewModel>()
+                .getWorkers(); // shop yoki magazin bo'lmasa call qilmasin, xatosi bor
+
+            context.read<BusinessStatisticsViewModel>().getStats(); //stat
+            context
+                .read<BusinessStatisticsViewModel>()
+                .getClients(); //clientlar
+          }
+        });
+      }
+    }); //xato agar bo'lmasa
+
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -56,8 +99,9 @@ class _BusinessViewState extends State<BusinessView>
 
   @override
   void dispose() {
-    super.dispose();
+    timer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override

@@ -17,7 +17,7 @@ class SellerBarcodeScannerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int scannedTime = 0;
+    var scannedTime = 0;
 
     return Scaffold(
       appBar: AppBar(
@@ -26,7 +26,6 @@ class SellerBarcodeScannerView extends StatelessWidget {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Spacer(),
           ClipRRect(
@@ -42,7 +41,7 @@ class SellerBarcodeScannerView extends StatelessWidget {
                     controller: controller,
                     // allowDuplicates: false,
                     onDetect: (barcode) {
-                      final List<Barcode> codes = barcode.barcodes;
+                      final codes = barcode.barcodes;
 
                       // debugPrint('Barcode found! $code');
                       for (final barcode in codes) {
@@ -58,6 +57,7 @@ class SellerBarcodeScannerView extends StatelessWidget {
                               builder: (context) => PaymentClientView(
                                 code: barcode.rawValue!,
                                 shopId: shopId,
+                                isSeller: true,
                               ),
                             ),
                           );
@@ -103,11 +103,13 @@ class SellerBarcodeScannerView extends StatelessWidget {
                           child: SizedBox(
                             height: 1,
                             child: Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      colors: [Colors.white, Colors.black],
-                                      begin: Alignment.centerRight,
-                                      end: Alignment.centerLeft)),
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.white, Colors.black],
+                                  begin: Alignment.centerRight,
+                                  end: Alignment.centerLeft,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -139,11 +141,11 @@ class SellerBarcodeScannerView extends StatelessWidget {
                           child: SizedBox(
                             height: 1,
                             child: Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      colors: [Colors.white, Colors.black],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight)),
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.white, Colors.black],
+                                ),
+                              ),
                             ),
                           ),
                         ),

@@ -10,6 +10,7 @@ class BusinessSettingsViewModel extends ChangeNotifier {
   final BusinessApi _businessApi = BusinessApi();
 
   bool isLoading = false;
+  // bool isLoadingProfile = false;
   bool isDisabling = false;
   bool isGettingWorkers = false;
   BusinessProfile? businessProfile;
@@ -26,7 +27,7 @@ class BusinessSettingsViewModel extends ChangeNotifier {
 
   Future<bool> subscribe(int priceId) async {
     isLoading = true;
-    var res = await _businessApi.subscribe(priceId);
+    final res = await _businessApi.subscribe(priceId);
     isLoading = false;
     notifyListeners();
     return res;

@@ -1,27 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 
-import '../../../domain/models/sent_notification.dart';
 import '../../../size_config.dart';
-import '../../../string_extensions.dart';
-import '../../../utils/constants.dart';
-import '../../../utils/helpers.dart';
-import '../../../view_models/send_notification_view_model.dart';
-import '../../../widgets/empty_widget.dart';
-import '../../../widgets/logo_animated_widget.dart';
-import '../services/kassa/kassa_view.dart';
-import '../services/staff/staff_view.dart';
 import '../services/store/store_view.dart';
-import '../services/tabel/tabel_view.dart';
 import '../services/task/tasks_view.dart';
-import 'notification_info_view.dart';
 import 'posts_view.dart';
-import 'send_notification_view.dart';
 import 'task_item_widget.dart';
 
 class ServicesView extends StatefulWidget {
@@ -110,23 +95,23 @@ class _ServicesViewState extends State<ServicesView> {
                           _IconWidget(
                             svg: 'assets/svg/service-store.svg',
                             title: 'Склад',
-                            color: Color.fromRGBO(30, 37, 30, 1),
-                            // onTap: () {
-                            //   Navigator.of(context).push(
-                            //     CupertinoPageRoute(
-                            //       builder: (context) => const StoreView(),
-                            //     ),
-                            //   );
-                            // },
-                            onTap: null,
+                            color: const Color.fromRGBO(30, 37, 30, 1),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) => const StoreView(),
+                                ),
+                              );
+                            },
+                            // onTap: null,
                           ),
-                          _IconWidget(
+                          const _IconWidget(
                             svg: 'assets/svg/service-shop.svg',
                             title: 'Продажа',
                             color: Color.fromRGBO(53, 30, 38, 1),
                             onTap: null,
                           ),
-                          _IconWidget(
+                          const _IconWidget(
                             svg: 'assets/svg/service-calculator.svg',
                             title: 'Касса',
                             color: Color.fromRGBO(23, 36, 53, 1),
@@ -164,7 +149,7 @@ class _ServicesViewState extends State<ServicesView> {
                               right: 6,
                             ),
                             padding: const EdgeInsets.all(18),
-                            child: Container(
+                            child: const SizedBox(
                               width: 30,
                               height: 30,
                             ),
@@ -175,15 +160,15 @@ class _ServicesViewState extends State<ServicesView> {
                               right: 6,
                             ),
                             padding: const EdgeInsets.all(18),
-                            child: Container(
+                            child: const SizedBox(
                               width: 30,
                               height: 30,
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -262,12 +247,12 @@ class _ServicesViewState extends State<ServicesView> {
 
 class _IconWidget extends StatelessWidget {
   const _IconWidget({
-    Key? key,
+    super.key,
     required this.svg,
     required this.title,
     required this.color,
     required this.onTap,
-  }) : super(key: key);
+  });
   final String svg;
   final String title;
   final Color color;
@@ -341,7 +326,7 @@ class _IconWidget extends StatelessWidget {
                     ),
                   ),
                 )
-              : const SizedBox()
+              : const SizedBox(),
         ],
       ),
     );

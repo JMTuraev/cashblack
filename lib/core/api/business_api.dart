@@ -11,7 +11,6 @@ import '../../domain/models/owner/bonus_price.dart';
 import '../../domain/models/owner/business_company.dart';
 import '../../domain/models/owner/business_profile.dart';
 import '../../domain/models/owner/business_shop.dart';
-import '../../domain/models/owner/cashback.dart';
 import '../../domain/models/owner/notification_price.dart';
 import '../../domain/models/owner/owner_notification.dart';
 import '../../domain/models/owner/report_cashback.dart';
@@ -161,7 +160,8 @@ class BusinessApi {
     // var bookingList = response.data as List;
     try {
       final businessCompany = BusinessCompany.fromJson(
-          response.data['data'] as Map<String, Object?>);
+        response.data['data'] as Map<String, Object?>,
+      );
       print('get business comapny');
 
       return businessCompany;
@@ -187,20 +187,22 @@ class BusinessApi {
   }
 
   Future<bool> updateWorkerStatus(int sellerId, int status) async {
-    var token = await _flutterSecureStorage.read(key: 'token');
+    final token = await _flutterSecureStorage.read(key: 'token');
 
     final headers = <String, String>{
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': token.toString(),
     };
     final request = http.Request(
-        'PUT', Uri.parse('${Constants.path}/v1/owner/users/$sellerId'));
+      'PUT',
+      Uri.parse('${Constants.path}/v1/owner/users/$sellerId'),
+    );
     request.bodyFields = {
       'status': status.toString(),
     };
     request.headers.addAll(headers);
 
-    var response = await request.send();
+    final response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
@@ -221,7 +223,7 @@ class BusinessApi {
     // String provinceId,
     String districtId,
   ) async {
-    var token = await _flutterSecureStorage.read(key: 'token');
+    final token = await _flutterSecureStorage.read(key: 'token');
 
     _dio.options.headers['content-Type'] = 'application/x-www-form-urlencoded';
     _dio.options.headers['Authorization'] = token;
@@ -262,11 +264,11 @@ class BusinessApi {
     // String provinceId,
     String districtId,
   ) async {
-    var token = await _flutterSecureStorage.read(key: 'token');
+    final token = await _flutterSecureStorage.read(key: 'token');
 
     final headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': token!
+      'Authorization': token!,
     };
     final request =
         http.Request('PUT', Uri.parse('${Constants.path}/v1/owner/company'));
@@ -277,11 +279,11 @@ class BusinessApi {
       'inn': inn,
       'p_number': passwordNumber,
       'pinfl': pinfl,
-      'district_id': '59'
+      'district_id': '59',
     };
     request.headers.addAll(headers);
 
-    var response = await request.send();
+    final response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
@@ -301,14 +303,16 @@ class BusinessApi {
     String districtId,
     String address,
   ) async {
-    var token = await _flutterSecureStorage.read(key: 'token');
+    final token = await _flutterSecureStorage.read(key: 'token');
 
     final headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': token!
+      'Authorization': token!,
     };
     final request = http.Request(
-        'PUT', Uri.parse('${Constants.path}/v1/owner/shop/$shopId'));
+      'PUT',
+      Uri.parse('${Constants.path}/v1/owner/shop/$shopId'),
+    );
     request.bodyFields = {
       'name': name,
       'percent': percent,
@@ -319,7 +323,7 @@ class BusinessApi {
     };
     request.headers.addAll(headers);
 
-    var response = await request.send();
+    final response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
@@ -338,7 +342,7 @@ class BusinessApi {
     String districtId,
     String shopId,
   ) async {
-    var token = await _flutterSecureStorage.read(key: 'token');
+    final token = await _flutterSecureStorage.read(key: 'token');
 
     _dio.options.headers['content-Type'] = 'application/x-www-form-urlencoded';
     _dio.options.headers['Authorization'] = token;
@@ -375,7 +379,7 @@ class BusinessApi {
     String districtId,
     String address,
   ) async {
-    var token = await _flutterSecureStorage.read(key: 'token');
+    final token = await _flutterSecureStorage.read(key: 'token');
 
     // _dio.options.headers['content-Type'] = 'application/x-www-form-urlencoded';
     _dio.options.headers['content-Type'] = 'multipart/form-data';
@@ -529,6 +533,35 @@ class BusinessApi {
     }
   }
 
+  Future<bool> payWithdraw(
+    String shopId,
+    String clientPhone,
+    String price,
+  ) async {
+    await _setDioHeader();
+
+    try {
+      final response = await _dio.post(
+        '${Constants.path}/v1/owner/withdraw',
+        data: FormData.fromMap(
+          {
+            'shop_id': shopId,
+            'client_phone': clientPhone,
+            'price': price.removeWhitespace(),
+          },
+        ),
+      );
+      final result = response.data;
+
+      print('$result');
+      // return 'checkout.paycom.uz/$result';
+      return true;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
+  }
+
   Future<List<Category>> getCategories() async {
     await _setDioHeader();
 
@@ -568,7 +601,7 @@ class BusinessApi {
             'last_name': lastName,
             'district_id': districtId,
             'type': type,
-            'promo_code': promoCode
+            'promo_code': promoCode,
             // date == null ? '' : 'date_at': date,
           },
         ),
@@ -620,11 +653,11 @@ class BusinessApi {
       'nickname': phone,
       'first_name': firstName,
       'last_name': lastName,
-      'district_id': '59'
+      'district_id': '59',
     };
     request.headers.addAll(headers);
 
-    var response = await request.send();
+    final response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());

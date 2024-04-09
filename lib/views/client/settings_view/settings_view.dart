@@ -1,5 +1,3 @@
-import 'dart:convert' show utf8, base64;
-
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,21 +5,17 @@ import 'package:flutter_svg/svg.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/user.dart';
-import '../../../string_extensions.dart';
 import '../../../size_config.dart';
-import '../../../view_models/business/business_dashboard_view_model.dart';
+import '../../../string_extensions.dart';
 import '../../../view_models/client/client_settings_view_model.dart';
 import '../../../view_models/client/client_view_model.dart';
-import '../../../view_models/client_home_view_model.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/small_title_widget.dart';
-import '../../../widgets/text_button_widget.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'edit_name_view.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  const SettingsView({super.key});
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -38,7 +32,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    var client = context.read<ClientSettingsViewModel>().clientProfile;
+    final client = context.read<ClientSettingsViewModel>().clientProfile;
     // print(base64.encode(utf8.encode(client!.phone)));
     return Scaffold(
       appBar: AppBar(
@@ -61,13 +55,13 @@ class _SettingsViewState extends State<SettingsView> {
               height: getH(24),
               width: getW(24),
             ),
-          )
+          ),
         ],
       ),
       body: SafeArea(
         child: Center(
           child: context.watch<ClientSettingsViewModel>().isLoading
-              ? LogoAnimatedWidget(
+              ? const LogoAnimatedWidget(
                   size: 1.5,
                 )
               : Column(
@@ -93,7 +87,7 @@ class _SettingsViewState extends State<SettingsView> {
                       barcode: Barcode.qrCode(),
                     ),
                     // Text(base64.encode(utf8.encode(client!.phone))),
-                    SizedBox(height: 60),
+                    const SizedBox(height: 60),
                     GestureDetector(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -103,12 +97,12 @@ class _SettingsViewState extends State<SettingsView> {
                             // style: GoogleFonts.abrilFatface(
                             //   fontSize: 26,
                             // ),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 26,
                             ),
                           ),
-                          SizedBox(width: 6),
-                          Icon(
+                          const SizedBox(width: 6),
+                          const Icon(
                             Icons.edit,
                             size: 14,
                           ),
@@ -118,15 +112,16 @@ class _SettingsViewState extends State<SettingsView> {
                         Navigator.of(context).push(
                           CupertinoPageRoute(
                             builder: (context) => EditNameView(
-                              user: client!,
+                              user: client,
                             ),
                           ),
                         );
                       },
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     SmallTitleWidget(
-                      text: '998${client.phone}'.phoneFormatter(),
+                      // text: '998${client.phone}'.phoneFormatter(),
+                      text: client.phone.phoneFormatter(),
                     ),
                   ],
                 ),
@@ -236,9 +231,9 @@ class _SettingsViewState extends State<SettingsView> {
 
 class _SimpleTextWidget extends StatelessWidget {
   const _SimpleTextWidget({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   final String title;
 
@@ -255,8 +250,7 @@ class _SimpleTextWidget extends StatelessWidget {
 }
 
 class _BorderContainerWidget extends StatelessWidget {
-  const _BorderContainerWidget({Key? key, required this.child})
-      : super(key: key);
+  const _BorderContainerWidget({super.key, required this.child});
 
   final Widget child;
 
@@ -267,7 +261,6 @@ class _BorderContainerWidget extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         border: Border.all(
-          width: 1,
           color: Colors.white24,
         ),
         borderRadius: const BorderRadius.all(

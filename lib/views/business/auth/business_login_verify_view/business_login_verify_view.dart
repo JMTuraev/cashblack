@@ -16,11 +16,11 @@ import '../../create_store_view/create_store_view.dart';
 
 class BusinessLoginVerifyView extends StatefulWidget {
   const BusinessLoginVerifyView({
-    Key? key,
+    super.key,
     required this.phone,
     required this.appsign,
     required this.promo,
-  }) : super(key: key);
+  });
 
   final String phone;
   final String appsign;
@@ -45,7 +45,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
   void codeUpdated() {
     print('update');
     setState(() {
-      otpCode = code!;
+      otpCode = code;
     });
   }
 
@@ -85,7 +85,6 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const HeroTitleWidget(
                 text: 'Верификационный код',
@@ -105,7 +104,6 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
               PinFieldAutoFill(
                 controller: textController,
                 autoFocus: true,
-                codeLength: 6,
                 decoration: UnderlineDecoration(
                   gapSpace: 40,
                   textStyle: const TextStyle(
@@ -131,8 +129,8 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                     await context
                         .read<BusinessLoginViewModel>()
                         .onEnterButtonPressed(
-                          widget.phone.substring(3),
-                          widget.phone.substring(3),
+                          widget.phone,
+                          widget.phone,
                           'Имя',
                           'Фамилия',
                           '59',
@@ -164,7 +162,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                       .read<BusinessLoginViewModel>()
                       .onVerifyButtonPressed(
                         // context.read<BusinessLoginViewModel>().phone,
-                        widget.phone.substring(3),
+                        widget.phone,
                         otpCode ?? textController.text,
                       )
                       .then((value) async {
@@ -207,16 +205,16 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
 }
 
 class _Countdown extends AnimatedWidget {
-  _Countdown({Key? key, required this.animation})
-      : super(key: key, listenable: animation);
+  _Countdown({super.key, required this.animation})
+      : super(listenable: animation);
   Animation<int> animation;
 
   @override
-  build(BuildContext context) {
-    Duration clockTimer = Duration(seconds: animation.value);
+  Center build(BuildContext context) {
+    final clockTimer = Duration(seconds: animation.value);
 
-    String timerText =
-        '${clockTimer.inMinutes.remainder(60).toString()}:${clockTimer.inSeconds.remainder(60).toString().padLeft(2, '0')}';
+    final timerText =
+        '${clockTimer.inMinutes.remainder(60)}:${clockTimer.inSeconds.remainder(60).toString().padLeft(2, '0')}';
     return Center(
       child: Text(
         timerText,

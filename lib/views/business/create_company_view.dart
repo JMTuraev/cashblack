@@ -118,9 +118,12 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
 
   final TextEditingController _brandName = TextEditingController();
   final TextEditingController _passport = TextEditingController();
+  final TextEditingController _passportNumber = TextEditingController();
   final TextEditingController _address = TextEditingController();
   final TextEditingController _inn = TextEditingController();
   final TextEditingController _pinfl = TextEditingController();
+
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +142,7 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
+          key: formKey,
           child: Align(
             alignment: Alignment.topCenter,
             child: SingleChildScrollView(
@@ -190,6 +194,12 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                   GenericTextFieldWidget(
                     controller: _brandName,
                     title: 'Название',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Заполните поле';
+                      }
+                      return null;
+                    },
                   ),
                   // const SizedBox(height: 20),
                   // _SelectCategoryWidget(
@@ -268,24 +278,74 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                   GenericTextFieldWidget(
                     controller: _address,
                     title: 'Адрес',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Заполните поле';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
-                  GenericTextFieldWidget(
-                    controller: _passport,
-                    title: 'Паспорт серия',
-                    maxlength: 9,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GenericTextFieldWidget(
+                          controller: _passport,
+                          textCapitalization: TextCapitalization.characters,
+                          title: 'Серия',
+                          maxlength: 2,
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.length < 2) {
+                              return 'Заполните';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        flex: 3,
+                        child: GenericTextFieldWidget(
+                          controller: _passportNumber,
+                          title: 'Номер паспорта',
+                          maxlength: 7,
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.length < 7) {
+                              return 'Должен быть 7 знаков';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
                   _NumberTextFieldWidget(
                     controller: _inn,
                     title: 'ИНН',
                     maxLength: 9,
+                    validator: (value) {
+                      if (value == null || value.isEmpty || value.length < 9) {
+                        return 'Должен быть 9 знаков';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   _NumberTextFieldWidget(
                     controller: _pinfl,
-                    title: 'ПИГФЛ',
+                    title: 'ПИНФЛ',
                     maxLength: 13,
+                    validator: (value) {
+                      if (value == null || value.isEmpty || value.length < 13) {
+                        return 'Должен быть 13 знаков';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -312,7 +372,7 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                     text: 'OK',
                     isLoading: false,
                     method: () async {
-                      if (_isChecked
+                      if (_isChecked && formKey.currentState!.validate()
                           //  && _fileList.isNotEmpty
                           ) {
                         // context
@@ -339,8 +399,8 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                             .createBusinessCompany(
                               _brandName.text,
                               _address.text,
-                              _passport.text.substring(0, 2),
-                              _passport.text.substring(2),
+                              _passport.text,
+                              _passportNumber.text,
                               _inn.text,
                               _pinfl.text,
                               '44',
@@ -377,17 +437,20 @@ class _NumberTextFieldWidget extends StatelessWidget {
     required this.controller,
     required this.title,
     required this.maxLength,
+    this.validator,
   });
 
   final TextEditingController controller;
   final String title;
   final int maxLength;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     // NumericTextFormatter numericTextFormatter = NumericTextFormatter();
 
     return TextFormField(
+      validator: validator,
       controller: controller,
       // inputFormatters: [numericTextFormatter],
       decoration: InputDecoration(
@@ -512,16 +575,29 @@ class GenericTextFieldWidget extends StatelessWidget {
     required this.controller,
     required this.title,
     this.maxlength,
+    this.validator,
+    this.textCapitalization,
   });
 
   final TextEditingController controller;
   final String title;
   final int? maxlength;
+  final String? Function(String?)? validator;
+  final TextCapitalization? textCapitalization;
 
   @override
   Widget build(BuildContext context) {
+    // final maskFormatterPassport = MaskTextInputFormatter(
+    //   mask: 'AA #######',
+    //   filter: {'#': RegExp('[0-9]')},
+    // );
+
     return TextFormField(
+      validator: validator,
       controller: controller,
+      // inputFormatters: [
+      //   maskFormatterPassport,
+      // ],
       decoration: InputDecoration(
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
@@ -541,7 +617,7 @@ class GenericTextFieldWidget extends StatelessWidget {
         counterText: '',
       ),
       maxLength: maxlength,
-      textCapitalization: TextCapitalization.sentences,
+      textCapitalization: textCapitalization ?? TextCapitalization.sentences,
       autocorrect: false,
       enableSuggestions: false,
       keyboardAppearance: Brightness.dark,

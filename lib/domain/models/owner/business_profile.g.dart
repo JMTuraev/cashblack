@@ -18,6 +18,7 @@ BusinessProfile _$BusinessProfileFromJson(Map<String, dynamic> json) =>
       totalAmount: json['total_amount'] as String,
       totalExpense: json['total_expense'] as String,
       type: json['type'] as String,
+      status: json['status'] as int,
       licence: (json['licence'] as List<dynamic>)
           .map((e) => BusinessLicense.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -35,5 +36,6 @@ Map<String, dynamic> _$BusinessProfileToJson(BusinessProfile instance) =>
       'total_amount': instance.totalAmount,
       'total_expense': instance.totalExpense,
       'type': instance.type,
+      'status': instance.status,
       'licence': instance.licence,
     };

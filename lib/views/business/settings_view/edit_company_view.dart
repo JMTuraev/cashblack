@@ -68,7 +68,7 @@ class _EditCompanyViewState extends State<EditCompanyView> {
                   const SizedBox(height: 20),
                   NumberTextFieldWidget(
                     controller: _pinfl,
-                    title: 'ПИГФЛ',
+                    title: 'ПИНФЛ',
                     maxLength: 13,
                   ),
                   const SizedBox(height: 20),

@@ -58,9 +58,9 @@ class BusinessDashboardViewModel extends ChangeNotifier {
     maxSum = 10;
     isWeeklyLoading = true;
     weeklyStatistics = await _businessApi.getWeeklyStatistics(shopId);
-    weeklyStatistics.forEach((e) {
+    for (final e in weeklyStatistics) {
       maxSum += double.parse(e.totalCashback.toString());
-    });
+    }
     isWeeklyLoading = false;
     notifyListeners();
   }
@@ -110,7 +110,7 @@ class BusinessDashboardViewModel extends ChangeNotifier {
     String districtId,
   ) async {
     isLoading = true;
-    var res = await _businessApi.createBusinessCompany(
+    final res = await _businessApi.createBusinessCompany(
       name,
       address,
       passwordSerial,
@@ -133,7 +133,7 @@ class BusinessDashboardViewModel extends ChangeNotifier {
     String address,
   ) async {
     isLoading = true;
-    var res = await _businessApi.createStore(
+    final res = await _businessApi.createStore(
       name,
       percent,
       waymark,
@@ -156,7 +156,7 @@ class BusinessDashboardViewModel extends ChangeNotifier {
     String address,
   ) async {
     isLoading = true;
-    var res = await _businessApi.editBusinessShop(
+    final res = await _businessApi.editBusinessShop(
       shopId,
       name,
       percent,

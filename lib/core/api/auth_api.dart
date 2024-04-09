@@ -42,13 +42,17 @@ class AuthApi {
             'last_name': lastName,
             'district_id': districtId,
             'type': type,
-            'promo_code': promoCode
+            'promo_code': promoCode,
             // date == null ? '' : 'date_at': date,
           },
         ),
       );
+      if (response.data['type'] != type) {
+        return false;
+      }
       print(
-          'register ${response.data['type']} as $type ${response.data['code']}');
+        'register ${response.data['type']} as $type ${response.data['code']}',
+      );
       return true;
     } on DioError catch (e) {
       print(e.response!.data);

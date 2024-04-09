@@ -2,10 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../core/api/business_api.dart';
 import '../../core/api/seller_api.dart';
-import '../../domain/models/common/category.dart';
-import '../../domain/models/owner/business_profile.dart';
 import '../../domain/models/owner/report_cashback.dart';
 import '../../domain/models/seller/seller_owner_profile.dart';
 // import '../../domain/models/category.dart';
@@ -58,6 +55,7 @@ class SellerViewModel extends ChangeNotifier {
 
   Future<void> getSellerCashbackStatistics() async {
     isLoadingStats = true;
+    mergedList.clear();
     sellerCashbackAndWithdraws = await _sellerApi.getSellerCashbackStatistics();
     // mergedList = cashbackAndWithdraws.first.cashback;
     // cashbackAndWithdraws.forEach((element) {
@@ -69,7 +67,8 @@ class SellerViewModel extends ChangeNotifier {
       ..addAll(sellerCashbackAndWithdraws!.cashback);
 
     mergedList.sort(
-        (a, b) => DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
+      (a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)),
+    );
 
     isLoadingStats = false;
     notifyListeners();

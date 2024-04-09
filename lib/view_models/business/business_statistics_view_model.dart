@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 import '../../core/api/business_api.dart';
-import '../../domain/models/owner/notification_price.dart';
 import '../../domain/models/owner/report_cashback.dart';
 import '../../domain/models/owner/report_cashback_client.dart';
 
@@ -17,20 +16,22 @@ class BusinessStatisticsViewModel extends ChangeNotifier {
 
   Future<void> getStats() async {
     isLoading = true;
+    mergedList.clear();
     cashbackAndWithdraws = await _businessApi.getCashbackStatistics();
     // mergedList = cashbackAndWithdraws.first.cashback;
     // cashbackAndWithdraws.forEach((element) {
     //   mergedList.addAll(element.cashback);
     // });
 
-    cashbackAndWithdraws.forEach((element) {
+    for (final element in cashbackAndWithdraws) {
       mergedList
         ..addAll(element.withdraw)
         ..addAll(element.cashback);
-    });
+    }
 
     mergedList.sort(
-        (a, b) => DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
+      (a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)),
+    );
 
     isLoading = false;
     notifyListeners();

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'business_license.dart';
-import 'business_shop.dart';
 
 part 'business_profile.g.dart';
 
@@ -23,6 +22,7 @@ class BusinessProfile extends ChangeNotifier {
   @JsonKey(name: 'total_expense')
   final String totalExpense;
   final String type;
+  final int status;
   final List<BusinessLicense> licence;
 
   BusinessProfile({
@@ -36,6 +36,7 @@ class BusinessProfile extends ChangeNotifier {
     required this.totalAmount,
     required this.totalExpense,
     required this.type,
+    required this.status,
     required this.licence,
   });
 

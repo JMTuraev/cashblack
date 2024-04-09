@@ -48,7 +48,7 @@ class _SettingsViewState extends State<SettingsView> {
               height: getH(24),
               width: getW(24),
             ),
-          )
+          ),
         ],
       ),
       body: SafeArea(
@@ -89,9 +89,9 @@ class _SettingsViewState extends State<SettingsView> {
 
 class _ShopCardWidget extends StatelessWidget {
   const _ShopCardWidget({
-    Key? key,
+    super.key,
     required this.company,
-  }) : super(key: key);
+  });
 
   final BusinessShop company;
 
@@ -141,9 +141,9 @@ class _ShopCardWidget extends StatelessWidget {
 
 class _SubscriptionCardWidget extends StatelessWidget {
   const _SubscriptionCardWidget({
-    Key? key,
+    super.key,
     required this.profile,
-  }) : super(key: key);
+  });
 
   final SellerOwnerProfile profile;
 
@@ -213,7 +213,7 @@ class _SubscriptionCardWidget extends StatelessWidget {
                             color: Color.fromRGBO(103, 206, 103, 1),
                             fontSize: 15,
                           ),
-                        )
+                        ),
                       ],
                     )
                   : const SizedBox(),
@@ -233,12 +233,12 @@ class _SubscriptionCardWidget extends StatelessWidget {
                             color: Color.fromRGBO(103, 206, 103, 1),
                             fontSize: 15,
                           ),
-                        )
+                        ),
                       ],
                     )
                   : const SizedBox(),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -247,9 +247,9 @@ class _SubscriptionCardWidget extends StatelessWidget {
 
 class _ProfileCardWidget extends StatelessWidget {
   const _ProfileCardWidget({
-    Key? key,
+    super.key,
     required this.user,
-  }) : super(key: key);
+  });
 
   final SellerOwnerProfile? user;
 
@@ -270,7 +270,7 @@ class _ProfileCardWidget extends StatelessWidget {
                     ),
               const SizedBox(height: 10),
               Text(
-                '998${user?.phone}'.phoneFormatter(),
+                '${user?.phone}'.phoneFormatter(),
                 style: const TextStyle(
                   color: Color(0xffa3a3a3),
                 ),
@@ -306,9 +306,9 @@ class _ProfileCardWidget extends StatelessWidget {
 
 class _SimpleTextWidget extends StatelessWidget {
   const _SimpleTextWidget({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   final String title;
 
@@ -325,8 +325,7 @@ class _SimpleTextWidget extends StatelessWidget {
 }
 
 class _BorderContainerWidget extends StatelessWidget {
-  const _BorderContainerWidget({Key? key, required this.child})
-      : super(key: key);
+  const _BorderContainerWidget({super.key, required this.child});
 
   final Widget child;
 

@@ -44,14 +44,14 @@ class _BusinessDashboardViewState extends State<BusinessDashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       // appBar: AppBar(
       //   title: const Text('Ваш баланс'),
       //   // bottom: ThemeDetails.appBarDivider,
       // ),
       body: SafeArea(
         child: Column(
-          children: const [
+          children: [
             _CashbackWidget(),
             // Expanded(
             //   child: ListView.separated(
@@ -89,8 +89,6 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
   @override
   void initState() {
     super.initState();
-    // context.read<BusinessDashboardViewModel>().getWeeklyStatistics(
-    //     context.read<BusinessDashboardViewModel>().businessShops!.first.id);
   }
 
   double maxSum = 0;
@@ -149,7 +147,7 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
 
     final businessShops =
         context.read<BusinessDashboardViewModel>().businessShops!;
-    var profile = context.read<BusinessSettingsViewModel>().businessProfile;
+    final profile = context.read<BusinessSettingsViewModel>().businessProfile;
     return Container(
       // header: const CupertinoHeader(),
       // onRefresh: () {
@@ -183,95 +181,135 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                   child: const _AddStoreWidget(),
                 ),
                 const SizedBox(width: 10),
-                context.watch<BusinessDashboardViewModel>().isGettingShops
-                    ? const CupertinoActivityIndicator()
-                    : Expanded(
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: businessShops.length,
-                          separatorBuilder: (context, index) {
-                            return const SizedBox(width: 10);
-                          },
-                          itemBuilder: (context, index) {
-                            final shop = businessShops[index];
-                            return GestureDetector(
-                              onTap: () {
-                                context
-                                    .read<BusinessDashboardViewModel>()
-                                    .getWeeklyStatistics(shop.id);
-                                setState(() {
-                                  currentShopIndex = index;
-                                });
-                              },
-                              child: Container(
-                                height: getH(65),
-                                width: getH(65),
-                                decoration: BoxDecoration(
-                                  // border: Border.all(
-                                  //   color: currentShopIndex == index
-                                  //       ? const Color(0xff67ce67)
-                                  //       : Colors.black,
-                                  //   width: 3,
-                                  // ),
-                                  border: currentShopIndex == index
-                                      ? GradientBoxBorder(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: [
-                                              Colors.green.shade500,
-                                              Colors.orange.shade500,
-                                            ],
-                                          ),
-                                          width: 3,
-                                        )
-                                      : Border.all(
-                                          color: Colors.black,
-                                          width: 3,
-                                        ),
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 1,
-                                      blurRadius: 1,
-                                      // offset: Offset(0, 0),
-                                    )
-                                  ],
-                                ),
-                                child: businessShops[index].logo != null
-                                    ? ClipOval(
-                                        child: CachedNetworkImage(
-                                          imageUrl: businessShops[index].logo!,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                    : ClipOval(
-                                        child: Container(
-                                          // color: Color(
-                                          //   (math.Random().nextDouble() * 0xFFFF11)
-                                          //       .toInt(),
-                                          // ).withOpacity(1),
-                                          color: Colors.black38,
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            shop.name.substring(0, 1),
-                                            style: const TextStyle(
-                                              fontSize: 30,
-                                            ),
-                                          ),
-                                        ),
-                                        // child: Image.asset(
-                                        //   'assets/images/notification/ak-1.png',
-                                        //   fit: BoxFit.cover,
-                                        // ),
-                                      ),
-                              ),
-                            );
-                          },
+                context.read<BusinessDashboardViewModel>().hasCompany
+                    ? const SizedBox()
+                    : GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            CupertinoPageRoute(
+                              builder: (context) => const CreateCompanyView(),
+                            ),
+                          );
+                        },
+                        child: const FittedBox(
+                          child: Text(
+                            'У вас нет компания.\nСоздать компанию?',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
+                context.watch<BusinessDashboardViewModel>().isGettingShops
+                    ? const CupertinoActivityIndicator()
+                    : (businessShops.isEmpty &&
+                            context
+                                .read<BusinessDashboardViewModel>()
+                                .hasCompany
+                        ? GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) => const CreateStoreView(),
+                                ),
+                              );
+                            },
+                            child: const FittedBox(
+                              child: Text(
+                                'У вас нет магазинов.\nСоздать магазин?',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: businessShops.length,
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(width: 10);
+                              },
+                              itemBuilder: (context, index) {
+                                final shop = businessShops[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    context
+                                        .read<BusinessDashboardViewModel>()
+                                        .getWeeklyStatistics(shop.id);
+                                    setState(() {
+                                      currentShopIndex = index;
+                                    });
+                                  },
+                                  child: Container(
+                                    height: getH(65),
+                                    width: getH(65),
+                                    decoration: BoxDecoration(
+                                      // border: Border.all(
+                                      //   color: currentShopIndex == index
+                                      //       ? const Color(0xff67ce67)
+                                      //       : Colors.black,
+                                      //   width: 3,
+                                      // ),
+                                      border: currentShopIndex == index
+                                          ? GradientBoxBorder(
+                                              gradient: LinearGradient(
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                                colors: [
+                                                  Colors.green.shade500,
+                                                  Colors.orange.shade500,
+                                                ],
+                                              ),
+                                              width: 3,
+                                            )
+                                          : Border.all(
+                                              width: 3,
+                                            ),
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 1,
+                                          blurRadius: 1,
+                                          // offset: Offset(0, 0),
+                                        ),
+                                      ],
+                                    ),
+                                    child: businessShops[index].logo != null
+                                        ? ClipOval(
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  businessShops[index].logo!,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                        : ClipOval(
+                                            child: Container(
+                                              // color: Color(
+                                              //   (math.Random().nextDouble() * 0xFFFF11)
+                                              //       .toInt(),
+                                              // ).withOpacity(1),
+                                              color: Colors.black38,
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                shop.name.substring(0, 1),
+                                                style: const TextStyle(
+                                                  fontSize: 30,
+                                                ),
+                                              ),
+                                            ),
+                                            // child: Image.asset(
+                                            //   'assets/images/notification/ak-1.png',
+                                            //   fit: BoxFit.cover,
+                                            // ),
+                                          ),
+                                  ),
+                                );
+                              },
+                            ),
+                          )),
               ],
             ),
           ),
@@ -312,192 +350,209 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
 
               // SizedBox(height: getH(18)),
               //TODO apple
-              1 == 1
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+              // 1 == 1
+
+              !context.watch<BusinessSettingsViewModel>().isLoading
+                  ? Column(
                       children: [
-                        GestureDetector(
-                          onTap: () async {
-                            final bonusPrices = context
-                                .read<BusinessPaymentViewModel>()
-                                .bonusPrices;
-                            // Navigator.of(context).push(
-                            //   CupertinoPageRoute<dynamic>(
-                            //     builder: (context) => const PaymentView(),
-                            //   ),
-                            // );
-                            context
-                                    .read<BusinessPaymentViewModel>()
-                                    .isPriceLoading
-                                ? () {}
-                                : showModal(context, [
-                                    Column(
-                                      children: [
-                                        const Text(
-                                          'Пополнить счёт',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        GridView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 2,
-                                            // childAspectRatio: 3 / 1,
-                                            crossAxisSpacing: 10,
-                                            mainAxisSpacing: 10,
-                                            mainAxisExtent: 100,
-                                          ),
-                                          itemCount: bonusPrices.length,
-                                          itemBuilder: (
-                                            BuildContext context,
-                                            int index,
-                                          ) {
-                                            return GestureDetector(
-                                              onTap: () async {
-                                                await context
-                                                    .read<
-                                                        BusinessDashboardViewModel>()
-                                                    .payment(
-                                                      bonusPrices[index]
-                                                          .id
-                                                          .toString(),
-                                                    )
-                                                    .then(
-                                                      (value) => Helpers.toWeb(
-                                                        value,
-                                                        'telegram',
-                                                      ),
-                                                    );
-                                              },
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  // horizontal: 10,
-                                                  vertical: 6,
-                                                ),
-                                                decoration: const BoxDecoration(
-                                                  color: Colors.black26,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                    Radius.circular(10),
-                                                  ),
-                                                ),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      bonusPrices[index]
-                                                          .amount
-                                                          .getAmountInSum(),
-                                                      style: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
+                        profile!.status == 1
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () async {
+                                      final bonusPrices = context
+                                          .read<BusinessPaymentViewModel>()
+                                          .bonusPrices;
+                                      // Navigator.of(context).push(
+                                      //   CupertinoPageRoute<dynamic>(
+                                      //     builder: (context) => const PaymentView(),
+                                      //   ),
+                                      // );
+                                      context
+                                              .read<BusinessPaymentViewModel>()
+                                              .isPriceLoading
+                                          ? () {}
+                                          : showModal(context, [
+                                              Column(
+                                                children: [
+                                                  const Text(
+                                                    'Пополнить счёт',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                     ),
-                                                    double.parse(
-                                                              bonusPrices[index]
-                                                                  .bonus,
-                                                            ) <
-                                                            1
-                                                        ? const SizedBox()
-                                                        : Column(
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  GridView.builder(
+                                                    shrinkWrap: true,
+                                                    physics:
+                                                        const NeverScrollableScrollPhysics(),
+                                                    gridDelegate:
+                                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 2,
+                                                      // childAspectRatio: 3 / 1,
+                                                      crossAxisSpacing: 10,
+                                                      mainAxisSpacing: 10,
+                                                      mainAxisExtent: 100,
+                                                    ),
+                                                    itemCount:
+                                                        bonusPrices.length,
+                                                    itemBuilder: (
+                                                      BuildContext context,
+                                                      int index,
+                                                    ) {
+                                                      return GestureDetector(
+                                                        onTap: () async {
+                                                          await context
+                                                              .read<
+                                                                  BusinessDashboardViewModel>()
+                                                              .payment(
+                                                                bonusPrices[
+                                                                        index]
+                                                                    .id
+                                                                    .toString(),
+                                                              )
+                                                              .then(
+                                                                (value) =>
+                                                                    Helpers
+                                                                        .toWeb(
+                                                                  value,
+                                                                  'telegram',
+                                                                ),
+                                                              );
+                                                        },
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            // horizontal: 10,
+                                                            vertical: 6,
+                                                          ),
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                            color:
+                                                                Colors.black26,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(
+                                                              Radius.circular(
+                                                                10,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
                                                             children: [
                                                               Text(
-                                                                '+' +
-                                                                    bonusPrices[
-                                                                            index]
-                                                                        .bonus
-                                                                        .getAmountInSum(),
+                                                                bonusPrices[
+                                                                        index]
+                                                                    .amount
+                                                                    .getAmountInSum(),
                                                                 style:
                                                                     const TextStyle(
-                                                                  fontSize: 14,
+                                                                  fontSize: 18,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
-                                                                  color: Colors
-                                                                      .greenAccent,
                                                                 ),
                                                               ),
-                                                              const Text(
-                                                                'бонус',
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .greenAccent,
-                                                                ),
-                                                              ),
+                                                              double.parse(
+                                                                        bonusPrices[index]
+                                                                            .bonus,
+                                                                      ) <
+                                                                      1
+                                                                  ? const SizedBox()
+                                                                  : Column(
+                                                                      children: [
+                                                                        Text(
+                                                                          '+${bonusPrices[index].bonus.getAmountInSum()}',
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                            color:
+                                                                                Colors.greenAccent,
+                                                                          ),
+                                                                        ),
+                                                                        const Text(
+                                                                          'бонус',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                            color:
+                                                                                Colors.greenAccent,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
                                                             ],
                                                           ),
-                                                  ],
-                                                ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ],
                                               ),
-                                            );
-                                          },
+                                            ]);
+                                    },
+                                    child: Column(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/svg/add-square.svg',
+                                          width: getW(20),
+                                          height: getH(20),
+                                        ),
+                                        const Text(
+                                          'Пополнить',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  ]);
-                          },
-                          child: Column(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/svg/add-square.svg',
-                                width: getW(20),
-                                height: getH(20),
-                              ),
-                              const Text(
-                                'Пополнить',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: getW(50)),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute<dynamic>(
-                                builder: (context) =>
-                                    const PaymentsHistoryView(),
-                              ),
-                            );
-                          },
-                          child: Column(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/svg/clock.svg',
-                                width: getW(20),
-                                height: getH(20),
-                              ),
-                              const Text(
-                                'История',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                                  ),
+                                  SizedBox(width: getW(50)),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        CupertinoPageRoute<dynamic>(
+                                          builder: (context) =>
+                                              const PaymentsHistoryView(),
+                                        ),
+                                      );
+                                    },
+                                    child: Column(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/svg/clock.svg',
+                                          width: getW(20),
+                                          height: getH(20),
+                                        ),
+                                        const Text(
+                                          'История',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const Center(child: SizedBox()),
                       ],
                     )
-                  : const Center(child: SizedBox()),
+                  : const SizedBox(),
               SizedBox(height: getH(10)),
               const Text(
                 'Количество клиентов',
@@ -537,11 +592,11 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
           ),
           const SizedBox(height: 20),
           // _LineInfoWidget(),
-          Container(
+          SizedBox(
             // width: 300,
             height: getW(300),
             child: context.watch<BusinessDashboardViewModel>().isWeeklyLoading
-                ? LogoAnimatedWidget(size: 1)
+                ? const LogoAnimatedWidget(size: 1)
                 : (context
                         .watch<BusinessDashboardViewModel>()
                         .weeklyStatistics
@@ -597,7 +652,7 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                 child: const Icon(Icons.add),
               ),
               SizedBox(width: getW(20)),
-              Container(
+              SizedBox(
                 height: 100,
                 width: double.infinity,
                 child: ListView.builder(
@@ -823,6 +878,9 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
 
   bool showCashback = true;
 
+//TODO farqi graphda
+  final cashbackDifferenceForGraph = 5;
+
   @override
   Widget build(BuildContext context) {
     final formatter = DateFormat('dd-MM-yyyy');
@@ -838,7 +896,6 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
       belowBarData: BarAreaData(
         show: true,
         applyCutOffY: true,
-        cutOffY: 0,
         spotsLine: BarAreaSpotsLine(
           checkToShowSpotLine: (spot) {
             return spot.y > 0 ? true : false;
@@ -852,7 +909,6 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
         ),
       ),
       dotData: FlDotData(
-        show: true,
         checkToShowDot: (spot, barData) {
           return spot.y <= 0 ? false : true;
         },
@@ -875,7 +931,7 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                     widget.aWeekStatistics[index].totalCashback.toString(),
                   ),
                 ),
-              )
+              ),
 
               // FlSpot(
               //   0,
@@ -930,7 +986,6 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
           colors: [color2, color2.withOpacity(0.1)],
         ),
         applyCutOffY: true,
-        cutOffY: 0,
         spotsLine: BarAreaSpotsLine(
           checkToShowSpotLine: (spot) {
             return spot.y > 0 ? true : false;
@@ -938,7 +993,6 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
         ),
       ),
       dotData: FlDotData(
-        show: true,
         checkToShowDot: (spot, barData) {
           return spot.y <= 0 ? false : true;
         },
@@ -967,9 +1021,9 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                   double.parse(
                         widget.aWeekStatistics[index].cashback.toString(),
                       ) *
-                      5,
+                      cashbackDifferenceForGraph,
                 ),
-              )
+              ),
 
               // ...widget.aWeekStatistics.map(
               //   (e) => FlSpot(
@@ -1109,8 +1163,9 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                                     locale: 'ru_RU',
                                     decimalDigits: 0,
                                   ).format(
-                                    // barSpot.y / 5,
-                                    barSpot.y,
+                                    barSpot.y /
+                                        cashbackDifferenceForGraph, // bu yerda faqat qiyamti 5 ga bo'linadi, haqiqiysi
+                                    // barSpot.y,
                                   ),
                                   TextStyle(
                                     color: barSpot.bar.color,
@@ -1136,13 +1191,8 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                     ),
                   ),
                   titlesData: FlTitlesData(
-                    show: true,
-                    rightTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    topTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
+                    rightTitles: const AxisTitles(),
+                    topTitles: const AxisTitles(),
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         getTitlesWidget: (value, meta) {
@@ -1191,8 +1241,7 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                       ),
                     ),
                   ),
-                  gridData: FlGridData(
-                    show: true,
+                  gridData: const FlGridData(
                     verticalInterval: 1,
                   ),
                   lineBarsData: [

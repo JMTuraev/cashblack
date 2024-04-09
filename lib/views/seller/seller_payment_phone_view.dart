@@ -26,10 +26,10 @@ class SellerPaymentPhoneView extends StatelessWidget {
   String? selectedShop;
 
   TextEditingController priceController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController phoneController = TextEditingController(text: '+998');
 
   MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
-    mask: '+### ## ### ## ##',
+    mask: '+998 ## ### ## ##',
     filter: {"#": RegExp(r'[0-9]')},
     type: MaskAutoCompletionType.lazy,
   );
@@ -38,6 +38,9 @@ class SellerPaymentPhoneView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (phoneController.text.length < 3) {
+      phoneController.text = '+998';
+    }
     // bool isLoading = context.watch<PaymentClientViewModel>().isLoading;
 
     void submit() async {
@@ -45,7 +48,9 @@ class SellerPaymentPhoneView extends StatelessWidget {
         await context
             .read<SellerViewModel>()
             .payCashback(
-              maskFormatter.getUnmaskedText().substring(3),
+              // maskFormatter.getUnmaskedText(),
+                            phoneController.text.phoneFormatterForCall().removeForPhone(),
+
               priceController.text,
             )
             .then((value) {
@@ -134,7 +139,7 @@ class SellerPaymentPhoneView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         filled: false,
-                        hintText: "Телефон",
+                        hintText: "+998",
                       ),
                       inputFormatters: [maskFormatter],
                       autocorrect: false,

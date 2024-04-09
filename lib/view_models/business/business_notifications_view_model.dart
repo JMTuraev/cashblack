@@ -19,7 +19,7 @@ class BusinessNotificationsViewModel extends ChangeNotifier {
     isLoading = true;
     prices = await _businessApi.getPrices();
     isLoading = false;
-    notifyListeners();
+    // notifyListeners();
   }
 
   Future<void> getNotifications() async {
@@ -38,7 +38,7 @@ class BusinessNotificationsViewModel extends ChangeNotifier {
     File? image,
   ) async {
     isSending = true;
-    var res = await _businessApi.sendNotification(
+    final res = await _businessApi.sendNotification(
       priceId,
       title,
       text,
