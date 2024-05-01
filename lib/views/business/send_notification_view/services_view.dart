@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../size_config.dart';
-import '../services/store/store_view.dart';
+import '../services/store/store_categories_view.dart';
 import '../services/task/tasks_view.dart';
 import 'posts_view.dart';
 import 'task_item_widget.dart';
@@ -99,7 +99,8 @@ class _ServicesViewState extends State<ServicesView> {
                             onTap: () {
                               Navigator.of(context).push(
                                 CupertinoPageRoute(
-                                  builder: (context) => const StoreView(),
+                                  builder: (context) =>
+                                      const StoreCategoriesView(),
                                 ),
                               );
                             },

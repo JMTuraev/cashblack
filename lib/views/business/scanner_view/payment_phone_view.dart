@@ -228,6 +228,7 @@ class SelectCategoryWidget extends StatelessWidget {
     required this.categoryItems,
     required this.onChanged,
     required this.hint,
+     this.validator,
   })  : _selectedOption = selectedOption,
         super(key: key);
 
@@ -235,6 +236,7 @@ class SelectCategoryWidget extends StatelessWidget {
   final List<DropdownMenuItem<String>> categoryItems;
   final Function onChanged;
   final String hint;
+    final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -247,6 +249,7 @@ class SelectCategoryWidget extends StatelessWidget {
           ),
         ),
         child: DropdownButtonFormField<String>(
+          validator: validator,
           style: const TextStyle(
             fontSize: 16,
           ),

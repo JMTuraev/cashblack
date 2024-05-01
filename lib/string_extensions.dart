@@ -1,10 +1,10 @@
 import 'package:intl/intl.dart';
 
 extension MyIterable<E> on Iterable<E> {
-  Iterable<E> sortedBy(Comparable key(E e)) =>
+  Iterable<E> sortedBy(Comparable Function(E e) key) =>
       toList()..sort((a, b) => key(a).compareTo(key(b)));
 
-  Iterable<E> reversedBy(Comparable key(E e)) =>
+  Iterable<E> reversedBy(Comparable Function(E e) key) =>
       toList()..sort((a, b) => key(b).compareTo(key(a)));
 }
 
@@ -41,12 +41,16 @@ extension StringExtensions on String {
     return replaceAll(RegExp(r'\s+'), '');
   }
 
+  String removeAllSymbols() {
+    return replaceAll(RegExp(r'[^\d]+'), '');
+  }
+
   String removeCommas() {
     return replaceAll(RegExp(r'\,+'), '');
   }
 
   String removeForPhone() {
-    return replaceAll(RegExp(r'[+()]'), '');
+    return replaceAll(RegExp('[+()]'), '');
   }
 
   String cardHiddenFormatter() {
@@ -101,7 +105,7 @@ extension StringExtensions on String {
       name: 'сум',
       locale: 'ru_RU',
       decimalDigits: 0,
-    ).format(double.parse(this.removeCommas()));
+    ).format(double.parse(removeCommas()));
   }
 
   String getFormattedNumber() {
@@ -109,6 +113,6 @@ extension StringExtensions on String {
       name: '',
       locale: 'ru_RU',
       decimalDigits: 0,
-    ).format(double.parse(this));
+    ).format(double.parse(this)).trim();
   }
 }

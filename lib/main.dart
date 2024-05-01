@@ -8,21 +8,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'theme/app_bar_style.dart';
 import 'view_models/balance_view_model.dart';
 import 'view_models/business/business_dashboard_view_model.dart';
+import 'view_models/business/business_login_view_model.dart';
 import 'view_models/business/business_notifications_view_model.dart';
 import 'view_models/business/business_payment_view_model.dart';
+import 'view_models/business/business_settings_view_model.dart';
 import 'view_models/business/business_statistics_view_model.dart';
 import 'view_models/business/business_view_model.dart';
-import 'view_models/business/business_login_view_model.dart';
-import 'view_models/business/business_settings_view_model.dart';
 import 'view_models/client/client_dashboard_view_model.dart';
+import 'view_models/client/client_login_view_model.dart';
 import 'view_models/client/client_settings_view_model.dart';
 import 'view_models/client/client_view_model.dart';
 import 'view_models/client_home_view_model.dart';
-import 'view_models/client/client_login_view_model.dart';
 import 'view_models/create_store_view_view_model.dart';
 import 'view_models/payment_client_view_model.dart';
 import 'view_models/seller/seller_view_model.dart';
 import 'view_models/send_notification_view_model.dart';
+import 'view_models/sklad/sklad_view_model.dart';
 import 'view_models/statistics_view_model.dart';
 import 'views/business/auth/business_login_view/business_login_view.dart';
 import 'views/business/business_view.dart';
@@ -34,7 +35,7 @@ import 'views/seller/seller_view.dart';
 import 'widgets/dismiss_keyboard_widget.dart';
 
 void main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   // await SystemChrome.setEnabledSystemUIOverlays(
   //     [SystemUiOverlay.bottom, SystemUiOverlay.top]);
@@ -47,7 +48,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
 
   Intl.defaultLocale = 'ru_RU';
-  await initializeDateFormatting('ru_RU', null);
+  await initializeDateFormatting('ru_RU');
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -68,11 +69,11 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({
-    Key? key,
+    super.key,
     required this.isLogged,
     required this.isBusiness,
     required this.isSeller,
-  }) : super(key: key);
+  });
 
   final bool isLogged;
   final bool isBusiness;
@@ -85,7 +86,7 @@ class MyApp extends StatelessWidget {
         //business
         ChangeNotifierProvider<BusinessLoginViewModel>(
           create: (ctx) => BusinessLoginViewModel(),
-          child: BusinessLoginView(),
+          child: const BusinessLoginView(),
         ),
         ChangeNotifierProvider<BusinessViewModel>(
           create: (ctx) => BusinessViewModel(),
@@ -125,7 +126,7 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<ClientLoginViewModel>(
           create: (ctx) => ClientLoginViewModel(),
-          child: ClientLoginView(),
+          child: const ClientLoginView(),
         ),
         ChangeNotifierProvider<ClientHomeViewModel>(
           create: (ctx) => ClientHomeViewModel(),
@@ -143,6 +144,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SellerViewModel>(
           create: (ctx) => SellerViewModel(),
         ),
+        // sklad
+        ChangeNotifierProvider<SkladViewModel>(
+          create: (ctx) => SkladViewModel(),
+        ),
       ],
       child: DismissKeyboardWidget(
         child: MaterialApp(
@@ -150,7 +155,6 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             brightness: Brightness.dark,
-            backgroundColor: Colors.black,
             scaffoldBackgroundColor: Colors.black,
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.black,

@@ -39,10 +39,11 @@ class _BusinessViewState extends State<BusinessView>
   void initState() {
     super.initState();
 
-    timer = Timer.periodic(
-      const Duration(seconds: 30),
-      (Timer t) => context.read<BusinessSettingsViewModel>().getOwnerProfile(),
-    );
+    //auto check
+    // timer = Timer.periodic(
+    //   const Duration(seconds: 30),
+    //   (Timer t) => context.read<BusinessSettingsViewModel>().getOwnerProfile(),
+    // );
 
     // checkIsSeller() == true ? print('yes') : print('no');
     context.read<BusinessSettingsViewModel>().getOwnerProfile(); // profil

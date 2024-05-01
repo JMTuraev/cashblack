@@ -1,22 +1,44 @@
 import 'package:flutter/material.dart';
 
+import '../utils/numberic_text_formatter.dart';
+
 class TextFieldWidget extends StatelessWidget {
   TextFieldWidget({
-    Key? key,
+    super.key,
     required this.hintText,
     this.controller,
     this.radius,
-  }) : super(key: key);
+    this.showLabel,
+    this.isReadOnly,
+    this.textType,
+    this.validator,
+    this.onChanged,
+  });
 
   final String hintText;
   TextEditingController? controller;
   double? radius;
+  bool? showLabel;
+  bool? isReadOnly;
+  TextInputType? textType;
+  final String? Function(String?)? validator;
+  Function(String)? onChanged;
+  // NumericTextFormatter numericTextFormatter = NumericTextFormatter();
+  // NumericRangeFormatter numericRangeFormatter = NumericRangeFormatter();
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      inputFormatters: textType == TextInputType.number
+          ? [
+              NumericTextFormatter(),
+            ]
+          : [],
       controller: controller,
+      onChanged: onChanged,
+      validator: validator,
       decoration: InputDecoration(
+        enabled: isReadOnly == true ? false : true,
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.grey,
@@ -26,10 +48,19 @@ class TextFieldWidget extends StatelessWidget {
             Radius.circular(radius ?? 20),
           ),
         ),
-        hintText: hintText,
+        hintText: showLabel == true ? null : hintText,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(radius ?? 20),
+          ),
+        ),
+        labelText: showLabel == true ? hintText : null,
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(radius ?? 20),
+          ),
+          borderSide: const BorderSide(
+            color: Colors.grey,
           ),
         ),
       ),
@@ -38,7 +69,7 @@ class TextFieldWidget extends StatelessWidget {
       enableSuggestions: false,
       keyboardAppearance: Brightness.dark,
       showCursor: true,
-      keyboardType: TextInputType.text,
+      keyboardType: textType ?? TextInputType.text,
     );
   }
 }
