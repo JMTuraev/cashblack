@@ -1,7 +1,6 @@
 import 'package:url_launcher/url_launcher.dart';
 
 import '../domain/models/owner/business_license.dart';
-import '../domain/models/owner/business_profile.dart';
 import '../string_extensions.dart';
 
 mixin Helpers {
@@ -20,15 +19,15 @@ mixin Helpers {
         ).isAfter(DateTime.now());
   }
 
-  static void toCall(String phone) async {
-    Uri url = Uri.parse('tel:$phone');
+  static Future<void> toCall(String phone) async {
+    final url = Uri.parse('tel:$phone');
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     }
   }
 
   static String getLocalImage(String text) {
-    String index = text.split('-').last;
+    final index = text.split('-').last;
     if (text.contains('Акция')) {
       return 'assets/images/notification/ak-$index.png';
     } else if (text.contains('Бонус')) {
@@ -39,8 +38,8 @@ mixin Helpers {
     return text;
   }
 
-  static void toWeb(String web, String type) async {
-    Uri url = Uri.parse(web);
+  static Future<void> toWeb(String web, String type) async {
+    final url = Uri.parse(web);
     if (await canLaunchUrl(url)) {
       if (type == 'telegram' || type == 'instagram') {
         // await launch(
@@ -78,5 +77,29 @@ mixin Helpers {
         );
       }
     }
+  }
+
+  static Future<void> toMail() async {
+    String? encodeQueryParameters(Map<String, String> params) {
+      return params.entries
+          .map(
+            (MapEntry<String, String> e) =>
+                '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}',
+          )
+          .join('&');
+    }
+
+    final emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'jafaralituraev@gmail.com',
+      query: encodeQueryParameters(<String, String>{
+        'subject': 'Удалить аккаунт',
+        'body': 'Удалить аккаунт',
+      }),
+    );
+
+    if (await canLaunchUrl(emailLaunchUri)) {
+      await launchUrl(emailLaunchUri);
+    } else {}
   }
 }

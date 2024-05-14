@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 
 class MultilineTextFieldWidget extends StatelessWidget {
   MultilineTextFieldWidget({
-    Key? key,
+    super.key,
     required this.hintText,
     this.controller,
     this.onTap,
-  }) : super(key: key);
+    this.validator,
+  });
 
   final String hintText;
   final VoidCallback? onTap;
   TextEditingController? controller;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
-    int maxLength = 200;
+    const maxLength = 200;
 
     return TextFormField(
+      validator: validator,
       decoration: InputDecoration(
         suffixIcon: onTap != null
             ? IconButton(

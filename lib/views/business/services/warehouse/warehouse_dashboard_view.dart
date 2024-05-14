@@ -1,14 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'prixod_history_list_view.dart';
-import 'prixod_view.dart';
-import 'rasxod_view.dart';
+import '../../../../view_models/sklad/sklad_view_model.dart';
+import 'category/warehouse_categories_list_view.dart';
+import 'invoice/prixod_history_list_view.dart';
+import 'invoice/prixod_view.dart';
+import 'invoice/rasxod_view.dart';
+import 'provider/warehouse_providers_list_view.dart';
+import 'warehouse/warehouses_list_view.dart';
 
-class StoreCategoriesView extends StatelessWidget {
-  const StoreCategoriesView({
+class WarehouseDashboardView extends StatefulWidget {
+  const WarehouseDashboardView({
     super.key,
   });
+
+  @override
+  State<WarehouseDashboardView> createState() => _WarehouseDashboardViewState();
+}
+
+class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
+  @override
+  void initState() {
+    context.read<SkladViewModel>().getWarehouses();
+    context.read<SkladViewModel>().getWarehouseUnits();
+    context.read<SkladViewModel>().getWarehouseProviders();
+    context.read<SkladViewModel>().getWarehouseCategories();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +48,36 @@ class StoreCategoriesView extends StatelessWidget {
         'icon': const FittedBox(
           child: Icon(
             Icons.remove,
+            size: 100,
+          ),
+        ),
+      },
+      {
+        'name': 'Склады',
+        'page': const WarehouesesListView(),
+        'icon': const FittedBox(
+          child: Icon(
+            Icons.store,
+            size: 100,
+          ),
+        ),
+      },
+      {
+        'name': 'Категории',
+        'page': const WarehoueseCategoriesListView(),
+        'icon': const FittedBox(
+          child: Icon(
+            Icons.store,
+            size: 100,
+          ),
+        ),
+      },
+      {
+        'name': 'Поставщики',
+        'page': const WarehoueseProvidersListView(),
+        'icon': const FittedBox(
+          child: Icon(
+            Icons.person,
             size: 100,
           ),
         ),

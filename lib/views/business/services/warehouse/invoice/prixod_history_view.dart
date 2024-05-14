@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../domain/models/services/sklad_item.dart';
-import '../../../../string_extensions.dart';
-import '../../../../view_models/sklad/sklad_view_model.dart';
+import '../../../../../domain/models/services/sklad_item.dart';
+import '../../../../../string_extensions.dart';
+import '../../../../../view_models/sklad/sklad_view_model.dart';
 
 class PrixodHistoryView extends StatefulWidget {
   final SkladItem skladItem;
@@ -97,10 +97,10 @@ class _PrixodHistoryViewState extends State<PrixodHistoryView> {
             ),
             const Divider(),
             Text(
-              model.skladDelievers
+              model.warehouseProviders
                   .where(
                     (element) =>
-                        element.value == widget.skladItem.skladDeliever,
+                        element.id.toString() == widget.skladItem.skladDeliever,
                   )
                   .first
                   .name,

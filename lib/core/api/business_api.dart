@@ -614,28 +614,28 @@ class BusinessApi {
     }
   }
 
-  Future<bool> login(String phone, String code, String userType) async {
-    _dio.options.headers['content-Type'] = 'application/json';
-    _dio.options.headers['content-Type'] = 'multipart/form-data';
-    // _dio.options.headers['Authorization'] = token;
+  // Future<bool> login(String phone, String code, String userType) async {
+  //   _dio.options.headers['content-Type'] = 'application/json';
+  //   _dio.options.headers['content-Type'] = 'multipart/form-data';
+  //   // _dio.options.headers['Authorization'] = token;
 
-    try {
-      final response = await _dio.post(
-        '${Constants.path}/auth/login',
-        data: FormData.fromMap(
-          {
-            'phone': phone,
-            'sms_code': code,
-          },
-        ),
-      );
-      print('login $code ${response.data['token']}');
-      return true;
-    } on DioError catch (e) {
-      print(e.response!.data);
-      return false;
-    }
-  }
+  //   try {
+  //     final response = await _dio.post(
+  //       '${Constants.path}/auth/login',
+  //       data: FormData.fromMap(
+  //         {
+  //           'phone': phone,
+  //           'sms_code': code,
+  //         },
+  //       ),
+  //     );
+  //     print('login $code ${response.data['token']}');
+  //     return true;
+  //   } on DioError catch (e) {
+  //     print(e.response!.data);
+  //     return false;
+  //   }
+  // }
 
   Future<bool> editOwnerProfile(
     String firstName,

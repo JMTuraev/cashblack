@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/owner/business_profile.dart';
-import '../../../domain/models/user.dart';
+import '../../../utils/helpers.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
-import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/text_field_widget.dart';
 
@@ -18,8 +17,8 @@ class EditNameView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController firstNameController = TextEditingController();
-    TextEditingController lastNameController = TextEditingController();
+    final firstNameController = TextEditingController();
+    final lastNameController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -30,7 +29,6 @@ class EditNameView extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Form(
             child: Align(
-              alignment: Alignment.center,
               child: Column(
                 children: [
                   const SizedBox(height: 20),
@@ -51,7 +49,7 @@ class EditNameView extends StatelessWidget {
                     hintText: ' Фамилия',
                     controller: lastNameController,
                   ),
-                  Spacer(),
+                  const Spacer(),
                   MainButtonWidget(
                     text: 'OK',
                     method: () async {
@@ -73,6 +71,11 @@ class EditNameView extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 20),
+                  const TextButton(
+                    onPressed: Helpers.toMail,
+                    child: Text('Удалить аккаунт'),
+                  ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -85,9 +88,9 @@ class EditNameView extends StatelessWidget {
 
 class _SimpleTextWidget extends StatelessWidget {
   const _SimpleTextWidget({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   final String title;
 

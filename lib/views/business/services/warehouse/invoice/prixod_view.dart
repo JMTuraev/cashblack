@@ -3,29 +3,29 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../string_extensions.dart';
-import '../../../../view_models/sklad/sklad_view_model.dart';
-import '../../../../widgets/date_picker_widget.dart';
-import '../../../../widgets/main_button_widget.dart';
-import '../../../../widgets/show_modal.dart';
-import '../../../../widgets/text_field_widget.dart';
-import '../../scanner_view/payment_phone_view.dart';
+import '../../../../../string_extensions.dart';
+import '../../../../../view_models/sklad/sklad_view_model.dart';
+import '../../../../../widgets/date_picker_widget.dart';
+import '../../../../../widgets/main_button_widget.dart';
+import '../../../../../widgets/show_modal.dart';
+import '../../../../../widgets/text_field_widget.dart';
+import '../../../scanner_view/payment_phone_view.dart';
 
-class RasxodView extends StatefulWidget {
-  const RasxodView({
+class PrixodView extends StatefulWidget {
+  const PrixodView({
     super.key,
   });
 
   @override
-  State<RasxodView> createState() => _RasxodViewState();
+  State<PrixodView> createState() => _PrixodViewState();
 }
 
-class _RasxodViewState extends State<RasxodView> {
+class _PrixodViewState extends State<PrixodView> {
   final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    context.read<SkladViewModel>().clearRasxodFields();
+    context.read<SkladViewModel>().clearFields();
     super.initState();
   }
 
@@ -40,7 +40,7 @@ class _RasxodViewState extends State<RasxodView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Расход'),
+        title: const Text('Приход'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -84,9 +84,21 @@ class _RasxodViewState extends State<RasxodView> {
                       ? Column(
                           children: [
                             TextFieldWidget(
-                              hintText: 'Клиент',
+                              hintText: 'Наименование товара',
                               showLabel: true,
-                              controller: model.clientNameController,
+                              controller: model.nameController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Заполните поле';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            TextFieldWidget(
+                              hintText: 'Аттрибут',
+                              showLabel: true,
+                              controller: model.attributeController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Заполните поле';
@@ -102,221 +114,60 @@ class _RasxodViewState extends State<RasxodView> {
                                 }
                                 return null;
                               },
-                              selectedOption: model.selectedSkladItem,
+                              selectedOption: model.selectedCategory,
                               categoryItems: [
                                 const DropdownMenuItem(
                                   value: '0',
                                   enabled: false,
-                                  child: Text('Выберите товар'),
+                                  child: Text('Выберите категорию'),
                                 ),
-                                ...model.skladItems.map(
+                                ...model.warehouseCategories.map(
                                   (e) => DropdownMenuItem(
-                                    value: e.id,
-                                    child: Column(
-                                      children: [
-                                        Text(e.name),
-                                      ],
-                                    ),
+                                    value: e.id.toString(),
+                                    child: Text(e.name),
                                   ),
                                 ),
                               ],
                               onChanged: (String value) {
-                                model.selectedSkladItem = value;
-                                model.priceRasxodController.text = model
-                                    .skladItems
-                                    .where((element) => element.id == value)
-                                    .first
-                                    .priceSell
-                                    .getFormattedNumber();
-                                setState(() {});
+                                model.selectedCategory = value;
                               },
-                              hint: 'Выберите товар',
+                              hint: 'Категория',
                             ),
                             const SizedBox(height: 10),
-                            model.selectedSkladItem != null
-                                ? Column(
-                                    children: [
-                                      const Text(
-                                        'Остаток',
-                                        style: TextStyle(
-                                          color: Color(0xff667084),
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      Text(
-                                        // 'Серия',
-                                        '${model.skladItems.where(
-                                              (element) =>
-                                                  element.id ==
-                                                  model.selectedSkladItem,
-                                            ).first.quantity.getFormattedNumber()} ${model.skladItems.where(
-                                              (element) =>
-                                                  element.id ==
-                                                  model.selectedSkladItem,
-                                            ).first.attribute}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      const Divider(),
-                                      const Text(
-                                        'Серия',
-                                        style: TextStyle(
-                                          color: Color(0xff667084),
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      Text(
-                                        model.skladItems
-                                            .where(
-                                              (element) =>
-                                                  element.id ==
-                                                  model.selectedSkladItem,
-                                            )
-                                            .first
-                                            .serialNumber,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      const Divider(),
-                                      const Text(
-                                        'Цена прихода',
-                                        style: TextStyle(
-                                          color: Color(0xff667084),
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      Text(
-                                        model.skladItems
-                                            .where(
-                                              (element) =>
-                                                  element.id ==
-                                                  model.selectedSkladItem,
-                                            )
-                                            .first
-                                            .pricePrixod
-                                            .getFormattedNumber(),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      const Divider(),
-                                      const Text(
-                                        'Цена продажи',
-                                        style: TextStyle(
-                                          color: Color(0xff667084),
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      Text(
-                                        model.skladItems
-                                            .where(
-                                              (element) =>
-                                                  element.id ==
-                                                  model.selectedSkladItem,
-                                            )
-                                            .first
-                                            .priceSell
-                                            .getFormattedNumber(),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                    ],
-                                  )
-                                : const SizedBox(),
-                            TextFieldWidget(
-                              onChanged: (value) {
-                                if (value.isEmpty) {
-                                  model.priceSumOfRasxodController.clear();
-                                } else {
-                                  model.priceSumOfRasxodController
-                                      .text = (int.parse(
-                                            model.priceRasxodController.text
-                                                .removeWhitespace(),
-                                          ) *
-                                          int.parse(value.removeWhitespace()))
-                                      .toString()
-                                      .getFormattedNumber();
-                                }
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Заполните поле';
-                                } else if (int.parse(value.removeWhitespace()) >
-                                    int.parse(
-                                      model.skladItems
-                                          .where(
-                                            (element) =>
-                                                element.id ==
-                                                model.selectedSkladItem,
-                                          )
-                                          .first
-                                          .quantity
-                                          .removeWhitespace(),
-                                    )) {
-                                  return 'Количество больше чем на складе';
-                                }
-                                return null;
-                              },
-                              hintText: 'Количество',
-                              showLabel: true,
-                              textType: TextInputType.number,
-                              controller: model.quantityRasxodController,
-                            ),
-                            const SizedBox(height: 10),
-                            TextFieldWidget(
-                              onChanged: (value) {
-                                if (value.isEmpty) {
-                                  model.priceSumOfRasxodController.clear();
-                                } else {
-                                  model.priceSumOfRasxodController
-                                      .text = (int.parse(
-                                            model.quantityRasxodController.text
-                                                .removeWhitespace(),
-                                          ) *
-                                          int.parse(value.removeWhitespace()))
-                                      .toString()
-                                      .getFormattedNumber();
-                                }
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Заполните поле';
-                                }
-                                return null;
-                              },
-                              hintText: 'Цена продажи одной единицы',
-                              showLabel: true,
-                              textType: TextInputType.number,
-                              controller: model.priceRasxodController,
-                            ),
-                            const SizedBox(height: 10),
-                            TextFieldWidget(
-                              hintText:
-                                  'Общая цена (Количество * Цена продажи)',
-                              showLabel: true,
-                              isReadOnly: true,
-                              controller: model.priceSumOfRasxodController,
-                            ),
-                            const SizedBox(height: 10),
+                            // SelectCategoryWidget(
+                            //   selectedOption: model.selectedSubCategory,
+                            //   validator: (value) {
+                            //     if (value == null || value == '0') {
+                            //       return 'Выберите поле';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   categoryItems: [
+                            //     const DropdownMenuItem(
+                            //       value: '0',
+                            //       enabled: false,
+                            //       child: Text('Выберите cубкатегорию'),
+                            //     ),
+                            //     ...model.skladSubcatogies.map(
+                            //       (e) => DropdownMenuItem(
+                            //         value: e.value,
+                            //         child: Text(e.name),
+                            //       ),
+                            //     ),
+                            //   ],
+                            //   onChanged: (String value) {
+                            //     model.selectedSubCategory = value;
+                            //   },
+                            //   hint: 'Субкатегория',
+                            // ),
+                            // const SizedBox(height: 10),
                             DatePickerWidget(
                               isDark: true,
                               title:
-                                  context.watch<SkladViewModel>().raxsodDate ==
+                                  context.watch<SkladViewModel>().createdDate ==
                                           null
-                                      ? 'Дата и время продажи'
-                                      : model.raxsodDate
+                                      ? 'Дата и время прихода'
+                                      : model.createdDate
                                           .toString()
                                           .getLocaleDateTime(),
                               onTap: () async {
@@ -335,7 +186,7 @@ class _RasxodViewState extends State<RasxodView> {
                                     ).then((value) {
                                       if (value != null) {
                                         setState(() {
-                                          model.raxsodDate = date
+                                          model.createdDate = date
                                               .add(
                                                 Duration(
                                                   hours: value.hour,
@@ -352,45 +203,194 @@ class _RasxodViewState extends State<RasxodView> {
                               },
                             ),
                             const SizedBox(height: 10),
+                            TextFieldWidget(
+                              onChanged: (value) {
+                                if (value.isEmpty) {
+                                  model.priceSumOfAllController.clear();
+                                } else {
+                                  model.priceSumOfAllController
+                                      .text = (int.parse(
+                                            model.priceSellController.text
+                                                .removeWhitespace(),
+                                          ) *
+                                          int.parse(value.removeWhitespace()))
+                                      .toString()
+                                      .getFormattedNumber();
+                                }
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Заполните поле';
+                                }
+                                return null;
+                              },
+                              hintText: 'Общее количество',
+                              showLabel: true,
+                              textType: TextInputType.number,
+                              controller: model.quantityController,
+                            ),
+                            const SizedBox(height: 10),
+                            TextFieldWidget(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Заполните поле';
+                                }
+                                return null;
+                              },
+                              hintText: 'Цена прихода одной единицы',
+                              showLabel: true,
+                              textType: TextInputType.number,
+                              controller: model.pricePrixodController,
+                            ),
+                            const SizedBox(height: 10),
+                            TextFieldWidget(
+                              onChanged: (value) {
+                                if (value.isEmpty) {
+                                  model.priceSumOfAllController.clear();
+                                } else {
+                                  model.priceSumOfAllController
+                                      .text = (int.parse(
+                                            model.quantityController.text
+                                                .removeWhitespace(),
+                                          ) *
+                                          int.parse(value.removeWhitespace()))
+                                      .toString()
+                                      .getFormattedNumber();
+                                }
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Заполните поле';
+                                }
+                                return null;
+                              },
+                              hintText: 'Цена продажи одной единицы',
+                              showLabel: true,
+                              textType: TextInputType.number,
+                              controller: model.priceSellController,
+                            ),
+                            const SizedBox(height: 10),
+                            TextFieldWidget(
+                              hintText:
+                                  'Общая цена (Количество * Цена продажи)',
+                              showLabel: true,
+                              isReadOnly: true,
+                              controller: model.priceSumOfAllController,
+                            ),
+                            const SizedBox(height: 10),
+                            TextFieldWidget(
+                              hintText: 'Серия',
+                              showLabel: true,
+                              isReadOnly: true,
+                              controller: model.serialNumberController,
+                            ),
+                            const SizedBox(height: 10),
+                            TextFieldWidget(
+                              hintText: 'Партия',
+                              showLabel: true,
+                              isReadOnly: true,
+                              controller: model.partyNumberController,
+                            ),
+                            const SizedBox(height: 10),
+                            SelectCategoryWidget(
+                              validator: (value) {
+                                if (value == null || value == '0') {
+                                  return 'Выберите поле';
+                                }
+                                return null;
+                              },
+                              selectedOption: model.selectedDeliever,
+                              categoryItems: [
+                                const DropdownMenuItem(
+                                  value: '0',
+                                  enabled: false,
+                                  child: Text('Выберите поставщик'),
+                                ),
+                                ...model.warehouseProviders.map(
+                                  (e) => DropdownMenuItem(
+                                    value: e.id.toString(),
+                                    child: Text(e.name),
+                                  ),
+                                ),
+                              ],
+                              onChanged: (String value) {
+                                model.selectedDeliever = value;
+                              },
+                              hint: 'Поставщик',
+                            ),
+                            const SizedBox(height: 10),
+                            SelectCategoryWidget(
+                              validator: (value) {
+                                if (value == null || value == '0') {
+                                  return 'Выберите поле';
+                                }
+                                return null;
+                              },
+                              selectedOption: model.selectedSkladItemStatus,
+                              categoryItems: [
+                                const DropdownMenuItem(
+                                  value: '0',
+                                  enabled: false,
+                                  child: Text('Выберите cтатус товара'),
+                                ),
+                                ...model.skladItemStatuses.map(
+                                  (e) => DropdownMenuItem(
+                                    value: e.value,
+                                    child: Text(e.name),
+                                  ),
+                                ),
+                              ],
+                              onChanged: (String value) {
+                                model.selectedSkladItemStatus = value;
+                              },
+                              hint: 'Статус товара',
+                            ),
+                            const SizedBox(height: 10),
+                            TextFieldWidget(
+                              hintText: 'Порог оповещения о количестве',
+                              showLabel: true,
+                              textType: TextInputType.number,
+                              controller: model.minQuantityController,
+                            ),
                             const SizedBox(height: 10),
                             MainButtonWidget(
                               text: 'Сохранить',
                               method: () {
-                                // if (formKey.currentState!.validate()) {
-                                //   model.addToSklad();
-                                //   showModal(context, [
-                                //     const SizedBox(
-                                //       width: double.infinity,
-                                //       child: Center(
-                                //         child: Text(
-                                //           'Товар добавлено в список',
-                                //           style: TextStyle(
-                                //             fontSize: 20,
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     ),
-                                //     // const SizedBox(height: 10),
-                                //     // TextButton(
-                                //     //   onPressed: () {
-                                //     //     Navigator.pop(context);
-                                //     //     selectedIndex = 1;
-                                //     //     setState(() {});
-                                //     //   },
-                                //     //   child: const Text('Показать список'),
-                                //     // ),
-                                //     const SizedBox(height: 10),
-                                //     MainButtonWidget(
-                                //       text: 'OK',
-                                //       method: () {
-                                //         model.clearFields();
-                                //         Navigator.pop(context);
-                                //         Navigator.pop(context);
-                                //       },
-                                //     ),
-                                //     const SizedBox(height: 40),
-                                //   ]);
-                                // }
+                                if (formKey.currentState!.validate()) {
+                                  model.addToSklad();
+                                  showModal(context, [
+                                    const SizedBox(
+                                      width: double.infinity,
+                                      child: Center(
+                                        child: Text(
+                                          'Товар добавлено в список',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    // const SizedBox(height: 10),
+                                    // TextButton(
+                                    //   onPressed: () {
+                                    //     Navigator.pop(context);
+                                    //     selectedIndex = 1;
+                                    //     setState(() {});
+                                    //   },
+                                    //   child: const Text('Показать список'),
+                                    // ),
+                                    const SizedBox(height: 10),
+                                    MainButtonWidget(
+                                      text: 'OK',
+                                      method: () {
+                                        model.clearFields();
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    const SizedBox(height: 40),
+                                  ]);
+                                }
                               },
                             ),
                             const SizedBox(height: 40),
@@ -440,10 +440,10 @@ class _RasxodViewState extends State<RasxodView> {
                                             ),
                                           ),
                                           Text(
-                                            model.skladCategories
+                                            model.warehouseCategories
                                                 .where(
                                                   (element) =>
-                                                      element.value ==
+                                                      element.id.toString() ==
                                                       model.skladItems[index]
                                                           .category,
                                                 )

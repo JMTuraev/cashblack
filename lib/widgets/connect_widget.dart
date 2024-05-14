@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
 // import 'package:google_fonts/google_fonts.dart';
 
 import '../size_config.dart';
@@ -14,7 +15,7 @@ class ConnectWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Center(
+        const Center(
           child: Text(
             'Связаться с нами',
             // style: GoogleFonts.inter(
@@ -23,7 +24,7 @@ class ConnectWidget extends StatelessWidget {
             //   fontWeight: FontWeight.w500,
             // ),
             style: TextStyle(
-              color: const Color(0xff575758),
+              color: Color(0xff575758),
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
@@ -38,7 +39,7 @@ class ConnectWidget extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
-                  color: Color(0xff262629),
+                  color: const Color(0xff262629),
                 ),
                 height: getH(44),
                 width: getH(44),
@@ -54,7 +55,7 @@ class ConnectWidget extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
-                  color: Color(0xff262629),
+                  color: const Color(0xff262629),
                 ),
                 height: getH(44),
                 width: getH(44),

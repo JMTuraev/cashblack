@@ -33,6 +33,7 @@
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
 			<string>tel</string>
+			<string>mailto</string>
 		</array>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>

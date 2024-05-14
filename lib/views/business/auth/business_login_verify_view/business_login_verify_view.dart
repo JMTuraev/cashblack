@@ -1,18 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../../string_extensions.dart';
 import '../../../../view_models/business/business_login_view_model.dart';
 import '../../../../widgets/hero_title_widget.dart';
+import '../../../../widgets/info_alert_widget.dart';
 import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/small_title_widget.dart';
 import '../../../../widgets/text_button_widget.dart';
 import '../../../seller/seller_view.dart';
 import '../../business_view.dart';
-import '../../create_store_view/create_store_view.dart';
 
 class BusinessLoginVerifyView extends StatefulWidget {
   const BusinessLoginVerifyView({
@@ -173,6 +172,15 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                               value == 'seller' ? SellerView() : BusinessView(),
                         ),
                         (route) => false,
+                      );
+                    } else {
+                      showCupertinoDialog(
+                        context: context,
+                        builder: (context) {
+                          return const InfoAlertWidget(
+                            title: 'Неправильно введена код подтверждения смс',
+                          );
+                        },
                       );
                     }
                   });

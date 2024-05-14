@@ -7,6 +7,7 @@ import '../../size_config.dart';
 import '../../view_models/client/client_dashboard_view_model.dart';
 import '../../view_models/client/client_settings_view_model.dart';
 import '../../view_models/client/client_view_model.dart';
+import '../../widgets/logo_animated_widget.dart';
 import 'client_notifications_view/client_notifications_view.dart';
 import 'client_dashboard_view.dart/client_dashboard_view.dart';
 import 'settings_view/settings_view.dart';

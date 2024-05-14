@@ -32,6 +32,7 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
   bool checked = false;
   bool show = false;
   bool hasPromocode = false;
+  bool isSeller = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -59,7 +60,7 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
                   'Имя',
                   'Фамилия',
                   '59',
-                  'owner',
+                  isSeller ? 'seller' : 'owner',
                   promo,
                 );
         sendSMS
@@ -132,17 +133,35 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
               showCursor: true,
               keyboardType: TextInputType.phone,
             ),
-            SizedBox(
-              height: 30,
-              child: Center(
-                child: show && maskFormatter.isFill()
-                    ? const Text(
-                        'Принимайте условия оферты',
-                        style: TextStyle(color: Colors.red),
-                      )
-                    : const Text(''),
-              ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Checkbox(
+                  activeColor: const Color.fromRGBO(52, 200, 90, 1),
+                  value: isSeller,
+                  onChanged: (value) {
+                    setState(() {
+                      isSeller = value!;
+                    });
+                  },
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isSeller = !isSeller;
+                    });
+                  },
+                  child: const Text(
+                    'Сотрудник?',
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
             ),
+
             MainButtonWidget(
               text: 'Вход',
               isLoading: context.watch<BusinessLoginViewModel>().isLoading,
@@ -158,6 +177,20 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
                         show = true;
                       });
                     },
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            SizedBox(
+              // height: 30,
+              child: Center(
+                child: show && maskFormatter.isFill()
+                    ? const Text(
+                        'Принимайте условия оферты',
+                        style: TextStyle(color: Colors.red),
+                      )
+                    : const Text(' '),
+              ),
             ),
             SizedBox(
               height: getH(35),

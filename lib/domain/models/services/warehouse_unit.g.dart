@@ -1,19 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sklad_deliever.dart';
+part of 'warehouse_unit.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SkladDeliever _$SkladDelieverFromJson(Map<String, dynamic> json) =>
-    SkladDeliever(
-      value: json['value'] as String,
+WarehouseUnit _$WarehouseUnitFromJson(Map<String, dynamic> json) =>
+    WarehouseUnit(
+      id: json['id'] as int,
       name: json['name'] as String,
+      title: json['title'] as String,
     );
 
-Map<String, dynamic> _$SkladDelieverToJson(SkladDeliever instance) =>
+Map<String, dynamic> _$WarehouseUnitToJson(WarehouseUnit instance) =>
     <String, dynamic>{
-      'value': instance.value,
+      'id': instance.id,
       'name': instance.name,
+      'title': instance.title,
     };

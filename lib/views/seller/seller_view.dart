@@ -84,7 +84,7 @@ class _SellerViewState extends State<SellerView> {
     ];
 
     return context.watch<SellerViewModel>().isLoading
-        ? const LogoAnimatedWidget(size: 1.5)
+        ? const Scaffold(body: LogoAnimatedWidget(size: 1.5))
         : Scaffold(
             // extendBody: true,
             bottomNavigationBar: CurvedNavigationBar(

@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../size_config.dart';
-import '../../../../string_extensions.dart';
-import '../../../../view_models/sklad/sklad_view_model.dart';
+import '../../../../../size_config.dart';
+import '../../../../../string_extensions.dart';
+import '../../../../../view_models/sklad/sklad_view_model.dart';
 import 'prixod_history_view.dart';
 
 class PrixodHistoryListView extends StatefulWidget {
