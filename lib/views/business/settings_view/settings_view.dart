@@ -68,13 +68,17 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    // var user = context.watch<BusinessHomeViewModel>().user;
+    final user = context.watch<BusinessSettingsViewModel>().businessProfile;
     // var isBusiness = user!.groups.first.name == 'Biznes';
     // var balans = context.watch<BusinessHomeViewModel>().balance;
 
     // List<Worker> workersList = [];
 
-    final allWorkers = context.read<BusinessSettingsViewModel>().workers;
+    final allWorkers = context
+        .read<BusinessSettingsViewModel>()
+        .workers
+        .where((element) => element.id != user!.id)
+        .toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Настройки'),
@@ -142,7 +146,7 @@ class _SettingsViewState extends State<SettingsView> {
                                   .read<BusinessDashboardViewModel>()
                                   .businessCompany!,
                             )
-                          : const Text('Создайте компания')),
+                          : const Text('Создайте компанию')),
                 ],
               ),
               // ;

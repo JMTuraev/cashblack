@@ -48,24 +48,33 @@ class PaymentPhoneView extends StatelessWidget {
       if (_formKey.currentState!.validate()) {
         await context
             .read<BusinessPaymentViewModel>()
-            .payCashback(
-              selectedShop.toString(),
-              // maskFormatter.getUnmaskedText(),
-              phoneController.text.phoneFormatterForCall().removeForPhone(),
-              priceController.text,
-            )
-            .then((value) {
-          if (value) {
-            Navigator.of(context).pushAndRemoveUntil(
-              CupertinoPageRoute(
-                builder: (context) => const PaymentSuccessView(
-                  title: 'Оплачено',
+            .setShopBeforeCashbackOrWithdraw(selectedShop.toString()).then((value) async {
+              if (value) {
+                
+          await context
+              .read<BusinessPaymentViewModel>()
+              .payCashback(
+                // selectedShop.toString(),
+                // maskFormatter.getUnmaskedText(),
+                phoneController.text.phoneFormatterForCall().removeForPhone(),
+                priceController.text,
+              )
+              .then((value) {
+            if (value) {
+              Navigator.of(context).pushAndRemoveUntil(
+                CupertinoPageRoute(
+                  builder: (context) => const PaymentSuccessView(
+                    title: 'Оплачено',
+                  ),
                 ),
-              ),
-              (route) => false,
-            );
-          }
-        });
+                (route) => false,
+              );
+            }
+          });
+        
+              }
+            });
+        
         // await context.read<PaymentClientViewModel>().payPhone(
         //     context,
         //     priceController.text.removeWhitespaces(),
@@ -228,7 +237,7 @@ class SelectCategoryWidget extends StatelessWidget {
     required this.categoryItems,
     required this.onChanged,
     required this.hint,
-     this.validator,
+    this.validator,
   })  : _selectedOption = selectedOption,
         super(key: key);
 
@@ -236,7 +245,7 @@ class SelectCategoryWidget extends StatelessWidget {
   final List<DropdownMenuItem<String>> categoryItems;
   final Function onChanged;
   final String hint;
-    final String? Function(String?)? validator;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {

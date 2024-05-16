@@ -22,6 +22,7 @@ class SellerOwnerProfile extends ChangeNotifier {
   final dynamic withdraw;
   final dynamic amount;
   final String type;
+  final int status;
   final List<BusinessLicense> licence;
   @JsonKey(name: 'shop_id')
   final BusinessShop shop;
@@ -39,6 +40,7 @@ class SellerOwnerProfile extends ChangeNotifier {
     required this.type,
     required this.licence,
     required this.shop,
+    required this.status,
   });
 
   /// Generate Class from Map<String, Object?>

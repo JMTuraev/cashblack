@@ -4,9 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../view_models/sklad/sklad_view_model.dart';
 import 'category/warehouse_categories_list_view.dart';
-import 'invoice/prixod_history_list_view.dart';
-import 'invoice/prixod_view.dart';
-import 'invoice/rasxod_view.dart';
+import 'item/warehouse_items_list_view.dart';
 import 'provider/warehouse_providers_list_view.dart';
 import 'warehouse/warehouses_list_view.dart';
 
@@ -26,6 +24,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
     context.read<SkladViewModel>().getWarehouseUnits();
     context.read<SkladViewModel>().getWarehouseProviders();
     context.read<SkladViewModel>().getWarehouseCategories();
+    context.read<SkladViewModel>().getWarehouseItems();
     super.initState();
   }
 
@@ -34,7 +33,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
     final selections = <Map<String, dynamic>>[
       {
         'name': 'Приход',
-        'page': const PrixodView(),
+        // 'page': const PrixodView(),
         'icon': const FittedBox(
           child: Icon(
             Icons.add,
@@ -44,10 +43,20 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
       },
       {
         'name': 'Расход',
-        'page': const RasxodView(),
+        // 'page': const RasxodView(),
         'icon': const FittedBox(
           child: Icon(
             Icons.remove,
+            size: 100,
+          ),
+        ),
+      },
+      {
+        'name': 'Номенклатура',
+        'page': const WarehoueseItemsListView(),
+        'icon': const FittedBox(
+          child: Icon(
+            Icons.store,
             size: 100,
           ),
         ),
@@ -84,7 +93,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
       },
       {
         'name': 'Остаток',
-        'page': const PrixodHistoryListView(),
+        // 'page': const PrixodHistoryListView(),
         'icon': const FittedBox(
           child: Icon(
             Icons.store,
@@ -94,7 +103,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
       },
       {
         'name': 'История приходов',
-        'page': const PrixodHistoryListView(),
+        // 'page': const PrixodHistoryListView(),
         'icon': const FittedBox(
           child: Icon(
             Icons.history,
@@ -104,7 +113,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
       },
       {
         'name': 'История расходов',
-        'page': const PrixodHistoryListView(),
+        // 'page': const PrixodHistoryListView(),
         'icon': const FittedBox(
           child: Icon(
             Icons.history,
@@ -114,7 +123,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
       },
       {
         'name': 'Инвентаризация',
-        'page': const PrixodHistoryListView(),
+        // 'page': const PrixodHistoryListView(),
         'icon': const FittedBox(
           child: Icon(
             Icons.inventory,

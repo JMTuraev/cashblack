@@ -6,7 +6,7 @@ part 'warehouse_category.g.dart';
 class WarehouseCategory {
   final int id;
   final String name;
-  final String title;
+  // final String title;
   // final WarehouseCategory? parent;
   // @JsonKey(name: 'childrens')
   // final List<WarehouseCategory> children;
@@ -14,7 +14,7 @@ class WarehouseCategory {
   WarehouseCategory({
     required this.id,
     required this.name,
-    required this.title,
+    // required this.title,
     // required this.parent,
     // required this.children,
   });

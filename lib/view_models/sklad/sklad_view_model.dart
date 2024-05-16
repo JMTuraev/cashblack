@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../core/api/warehouse_api.dart';
-import '../../domain/models/services/sklad_item.dart';
 import '../../domain/models/services/sklad_item_status.dart';
 import '../../domain/models/services/sklad_prixod.dart';
 import '../../domain/models/services/warehouse.dart';
 import '../../domain/models/services/warehouse_category.dart';
+import '../../domain/models/services/warehouse_item.dart';
 import '../../domain/models/services/warehouse_provider.dart';
 import '../../domain/models/services/warehouse_unit.dart';
 import '../../string_extensions.dart';
@@ -130,6 +129,45 @@ class SkladViewModel extends ChangeNotifier {
     // selectedWarehouseCategoryParentId = null;
   }
 
+  //nomenklatura
+  List<WarehouseItem> warehouseItems = [];
+  bool isGettingWarehouseItems = false;
+  bool isCreatingWarehouseItem = false;
+  String? selectedWarehouseItemCategoryId;
+  TextEditingController warehouseItemNameController = TextEditingController();
+  TextEditingController warehouseItemBarcodeController =
+      TextEditingController();
+  // TextEditingController warehouseItemRemarkController =
+  //     TextEditingController();
+  TextEditingController warehouseItemLowerController = TextEditingController();
+
+  Future<bool> createWarehouseItem() async {
+    isCreatingWarehouseItem = true;
+    final res = await _warehousesApi.createWarehouseItem(
+      categoryId: selectedWarehouseItemCategoryId.toString(),
+      barCode: warehouseItemBarcodeController.text,
+      name: warehouseItemNameController.text,
+      lower: warehouseItemLowerController.text,
+    );
+    isCreatingWarehouseItem = false;
+    notifyListeners();
+    return res;
+  }
+
+  Future<void> getWarehouseItems() async {
+    isGettingWarehouseItems = true;
+    warehouseItems = await _warehousesApi.getWarehouseItems();
+    isGettingWarehouseItems = false;
+    notifyListeners();
+  }
+
+  void clearWarehouseItemCreating() {
+    warehouseItemNameController.clear();
+    warehouseItemBarcodeController.clear();
+    warehouseItemLowerController.clear();
+    selectedWarehouseItemCategoryId = null;
+  }
+
   //prixod
   TextEditingController nameController = TextEditingController();
   TextEditingController attributeController = TextEditingController();
@@ -170,50 +208,49 @@ class SkladViewModel extends ChangeNotifier {
     SkladItemStatus(value: '3', name: 'Ожидается'),
   ];
 
-  List<SkladItem> skladItems = [];
   List<SkladPrixod> skladPrixods = [];
 
   void addToSklad() {
-    skladItems.add(
-      SkladItem(
-        id: const Uuid().v4(),
-        name: nameController.text.trim(),
-        attribute: attributeController.text.trim(),
-        category: selectedCategory!.trim().removeWhitespace(),
-        subCategory: selectedSubCategory!.trim().removeWhitespace(),
-        createdDate: createdDate!.trim(),
-        quantity: quantityController.text.trim().removeWhitespace(),
-        pricePrixod: pricePrixodController.text.trim().removeWhitespace(),
-        priceSell: priceSellController.text.trim().removeWhitespace(),
-        priceSumOfAll: priceSumOfAllController.text.trim().removeWhitespace(),
-        serialNumber: serialNumberController.text.trim().removeWhitespace(),
-        partyNumber: partyNumberController.text.trim().removeWhitespace(),
-        skladDeliever: selectedDeliever!.trim().removeWhitespace(),
-        skladItemStatus: selectedSkladItemStatus!.trim().removeWhitespace(),
-        minimumQuantity: minQuantityController.text.trim().removeWhitespace(),
-      ),
-    );
+    // skladItems.add(
+    //   SkladItem(
+    //     id: const Uuid().v4(),
+    //     name: nameController.text.trim(),
+    //     attribute: attributeController.text.trim(),
+    //     category: selectedCategory!.trim().removeWhitespace(),
+    //     subCategory: selectedSubCategory!.trim().removeWhitespace(),
+    //     createdDate: createdDate!.trim(),
+    //     quantity: quantityController.text.trim().removeWhitespace(),
+    //     pricePrixod: pricePrixodController.text.trim().removeWhitespace(),
+    //     priceSell: priceSellController.text.trim().removeWhitespace(),
+    //     priceSumOfAll: priceSumOfAllController.text.trim().removeWhitespace(),
+    //     serialNumber: serialNumberController.text.trim().removeWhitespace(),
+    //     partyNumber: partyNumberController.text.trim().removeWhitespace(),
+    //     skladDeliever: selectedDeliever!.trim().removeWhitespace(),
+    //     skladItemStatus: selectedSkladItemStatus!.trim().removeWhitespace(),
+    //     minimumQuantity: minQuantityController.text.trim().removeWhitespace(),
+    //   ),
+    // );
     notifyListeners();
   }
 
   void addPrixod() {
-    print(skladItems.length);
-    if (skladItems.isEmpty) {
-      print('object');
-      return;
-    } else {
-      skladPrixods.add(
-        SkladPrixod(
-          dateTime: DateTime.now().toString(),
-          skladItems: [...skladItems],
-        ),
-      );
-      notifyListeners();
-    }
+    // print(skladItems.length);
+    // if (skladItems.isEmpty) {
+    //   print('object');
+    //   return;
+    // } else {
+    //   skladPrixods.add(
+    //     SkladPrixod(
+    //       dateTime: DateTime.now().toString(),
+    //       skladItems: [...skladItems],
+    //     ),
+    //   );
+    //   notifyListeners();
+    // }
   }
 
   void clearSkladItems() {
-    skladItems.clear();
+    // skladItems.clear();
   }
 
 //rasxod

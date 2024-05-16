@@ -6,7 +6,6 @@ import '../../domain/models/client/client_category.dart';
 import '../../domain/models/client/client_paying.dart';
 import '../../domain/models/client/client_profile.dart';
 import '../../domain/models/owner/client_notification.dart';
-import '../../domain/models/owner/owner_notification.dart';
 import '../../utils/constants.dart';
 
 class ClientApi {
@@ -32,6 +31,19 @@ class ClientApi {
     return owner;
   }
 
+  Future<bool> deleteClientProfile() async {
+    await _setDioHeader();
+
+    try {
+      await _dio.delete('${Constants.path}/v1/client/account_delete');
+      print('delete clientprofile');
+
+      return true;
+    } on DioException catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> editClientProfile(
     String firstName,
     String lastName,
@@ -48,11 +60,11 @@ class ClientApi {
       'nickname': phone,
       'first_name': firstName,
       'last_name': lastName,
-      'district_id': '59'
+      'district_id': '59',
     };
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    final response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());

@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../domain/models/services/warehouse.dart';
 import '../../domain/models/services/warehouse_category.dart';
+import '../../domain/models/services/warehouse_item.dart';
 import '../../domain/models/services/warehouse_provider.dart';
 import '../../domain/models/services/warehouse_unit.dart';
 import '../../utils/constants.dart';
@@ -158,6 +159,54 @@ class WarehousesApi {
             // 'parent_id': '', // nullable
             'name': name,
             'title': title,
+          },
+        ),
+      );
+      final result = response.data;
+
+      print('$result');
+      return true;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
+  }
+
+  Future<List<WarehouseItem>> getWarehouseItems() async {
+    await _setDioHeader();
+
+    final response =
+        await _dio.get('${Constants.path}/v1/owner/warehouse/product');
+    // var bookingList = response.data as List;
+
+    final warehouseItems = (response.data['data'] as List)
+        .map((x) => WarehouseItem.fromJson(x as Map<String, Object?>))
+        .toList();
+
+    print('get warehouse items');
+
+    return warehouseItems;
+  }
+
+  Future<bool> createWarehouseItem({
+    required String categoryId,
+    required String barCode,
+    required String name,
+    required String lower,
+    String remark = '',
+  }) async {
+    await _setDioHeader();
+
+    try {
+      final response = await _dio.post(
+        '${Constants.path}/v1/owner/warehouse/product',
+        data: FormData.fromMap(
+          {
+            'category_id': categoryId,
+            'bar_code': barCode,
+            'name': name,
+            'remark': remark,
+            'lower': lower,
           },
         ),
       );

@@ -213,29 +213,39 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                             await context
                                                 .read<
                                                     BusinessPaymentViewModel>()
-                                                .payCashback(
-                                                  widget.isSeller
-                                                      ? widget.shopId.toString()
-                                                      : selectedShop.toString(),
-                                                  // maskFormatter.getUnmaskedText(),
-                                                  // phoneController.text.phoneFormatterForCall().removeForPhone(),
-                                                  widget.code
-                                                      .removeWhitespace()
-                                                      .removeForPhone(),
-                                                  priceController.text,
+                                                .setShopBeforeCashbackOrWithdraw(
+                                                  selectedShop.toString(),
                                                 )
-                                                .then((value) {
+                                                .then((value) async {
                                               if (value) {
-                                                Navigator.of(context)
-                                                    .pushAndRemoveUntil(
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        const PaymentSuccessView(
-                                                      title: 'Оплачено',
-                                                    ),
-                                                  ),
-                                                  (route) => false,
-                                                );
+                                                await context
+                                                    .read<
+                                                        BusinessPaymentViewModel>()
+                                                    .payCashback(
+                                                      // widget.isSeller
+                                                      //     ? widget.shopId.toString()
+                                                      //     : selectedShop.toString(),
+                                                      // maskFormatter.getUnmaskedText(),
+                                                      // phoneController.text.phoneFormatterForCall().removeForPhone(),
+                                                      widget.code
+                                                          .removeWhitespace()
+                                                          .removeForPhone(),
+                                                      priceController.text,
+                                                    )
+                                                    .then((value) {
+                                                  if (value) {
+                                                    Navigator.of(context)
+                                                        .pushAndRemoveUntil(
+                                                      CupertinoPageRoute(
+                                                        builder: (context) =>
+                                                            const PaymentSuccessView(
+                                                          title: 'Оплачено',
+                                                        ),
+                                                      ),
+                                                      (route) => false,
+                                                    );
+                                                  }
+                                                });
                                               }
                                             });
                                           }
@@ -257,29 +267,39 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                             await context
                                                 .read<
                                                     BusinessPaymentViewModel>()
-                                                .payWithdraw(
-                                                  widget.isSeller
-                                                      ? widget.shopId.toString()
-                                                      : selectedShop.toString(),
-                                                  // maskFormatter.getUnmaskedText(),
-                                                  // phoneController.text.phoneFormatterForCall().removeForPhone(),
-                                                  widget.code
-                                                      .removeWhitespace()
-                                                      .removeForPhone(),
-                                                  priceController.text,
+                                                .setShopBeforeCashbackOrWithdraw(
+                                                  selectedShop.toString(),
                                                 )
-                                                .then((value) {
+                                                .then((value) async {
                                               if (value) {
-                                                Navigator.of(context)
-                                                    .pushAndRemoveUntil(
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        const PaymentSuccessView(
-                                                      title: 'Оплачено',
-                                                    ),
-                                                  ),
-                                                  (route) => false,
-                                                );
+                                                await context
+                                                    .read<
+                                                        BusinessPaymentViewModel>()
+                                                    .payWithdraw(
+                                                      // widget.isSeller
+                                                      //     ? widget.shopId.toString()
+                                                      //     : selectedShop.toString(),
+                                                      // maskFormatter.getUnmaskedText(),
+                                                      // phoneController.text.phoneFormatterForCall().removeForPhone(),
+                                                      widget.code
+                                                          .removeWhitespace()
+                                                          .removeForPhone(),
+                                                      priceController.text,
+                                                    )
+                                                    .then((value) {
+                                                  if (value) {
+                                                    Navigator.of(context)
+                                                        .pushAndRemoveUntil(
+                                                      CupertinoPageRoute(
+                                                        builder: (context) =>
+                                                            const PaymentSuccessView(
+                                                          title: 'Оплачено',
+                                                        ),
+                                                      ),
+                                                      (route) => false,
+                                                    );
+                                                  }
+                                                });
                                               }
                                             });
                                             // await context

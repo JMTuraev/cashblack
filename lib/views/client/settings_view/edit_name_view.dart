@@ -1,11 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/client/client_profile.dart';
-import '../../../utils/helpers.dart';
 import '../../../view_models/client/client_settings_view_model.dart';
+import '../../../view_models/client/client_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
+import '../../../widgets/show_modal.dart';
 import '../../../widgets/text_field_widget.dart';
+import '../../select_type_view/select_type_view.dart';
 
 class EditNameView extends StatelessWidget {
   const EditNameView({
@@ -72,9 +75,58 @@ class EditNameView extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 20),
-                  const TextButton(
-                    onPressed: Helpers.toMail,
-                    child: Text('Удалить аккаунт'),
+                  TextButton(
+                    // onPressed: Helpers.toMail,
+                    onPressed: () async {
+                      await showModal(context, [
+                        const SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Удалить аккаунт?',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        MainButtonWidget(
+                          color: Colors.blue,
+                          text: 'Отмена',
+                          method: () async {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        MainButtonWidget(
+                          color: Colors.red,
+                          text: 'Удалить',
+                          method: () async {
+                            final res = await context
+                                .read<ClientSettingsViewModel>()
+                                .deleteClientProfile();
+                            if (res) {
+                              await context
+                                  .read<ClientViewModel>()
+                                  .logout()
+                                  .then(
+                                    (value) => Navigator.of(context)
+                                        .pushAndRemoveUntil(
+                                      CupertinoPageRoute(
+                                        builder: (context) =>
+                                            const SelectTypeView(),
+                                      ),
+                                      (route) => false,
+                                    ),
+                                  );
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 40),
+                      ]);
+                    },
+                    child: const Text('Удалить аккаунт'),
                   ),
                   const SizedBox(height: 20),
                 ],

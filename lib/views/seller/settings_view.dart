@@ -73,10 +73,14 @@ class _SettingsViewState extends State<SettingsView> {
                               .shop,
                         ),
                         const SizedBox(height: 15),
-                        _SubscriptionCardWidget(
-                          profile:
-                              context.read<SellerViewModel>().sellerProfile!,
-                        ),
+                        context.read<SellerViewModel>().sellerProfile!.status ==
+                                0
+                            ? const SizedBox()
+                            : _SubscriptionCardWidget(
+                                profile: context
+                                    .read<SellerViewModel>()
+                                    .sellerProfile!,
+                              ),
                       ],
                     ),
                   ],

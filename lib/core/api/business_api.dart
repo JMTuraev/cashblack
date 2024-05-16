@@ -46,6 +46,19 @@ class BusinessApi {
     return owner;
   }
 
+  Future<bool> deleteBusinessProfile() async {
+    await _setDioHeader();
+
+    try {
+      await _dio.delete('${Constants.path}/v1/owner/account_delete');
+      print('delete ownerprofile');
+
+      return true;
+    } on DioException catch (e) {
+      return false;
+    }
+  }
+
   Future<List<NotificationPrice>> getPrices() async {
     _dio.options.headers['content-Type'] = 'application/json';
 
@@ -504,8 +517,33 @@ class BusinessApi {
     return cashbacks;
   }
 
-  Future<bool> payCashback(
+  Future<bool> setShopBeforeCashbackOrWithdraw(
     String shopId,
+  ) async {
+    await _setDioHeader();
+
+    try {
+      final response = await _dio.post(
+        '${Constants.path}/v1/owner/change_shop',
+        data: FormData.fromMap(
+          {
+            'shop_id': shopId,
+          },
+        ),
+      );
+      final result = response.data;
+
+      print('$result');
+      // return 'checkout.paycom.uz/$result';
+      return true;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
+  }
+
+  Future<bool> payCashback(
+    // String shopId,
     String clientPhone,
     String price,
   ) async {
@@ -513,10 +551,10 @@ class BusinessApi {
 
     try {
       final response = await _dio.post(
-        '${Constants.path}/v1/owner/cashback',
+        '${Constants.path}/v1/owner/seller/cashback',
         data: FormData.fromMap(
           {
-            'shop_id': shopId,
+            // 'shop_id': shopId,
             'client_phone': clientPhone,
             'price': price.removeWhitespace(),
           },
@@ -534,7 +572,7 @@ class BusinessApi {
   }
 
   Future<bool> payWithdraw(
-    String shopId,
+    // String shopId,
     String clientPhone,
     String price,
   ) async {
@@ -542,10 +580,10 @@ class BusinessApi {
 
     try {
       final response = await _dio.post(
-        '${Constants.path}/v1/owner/withdraw',
+        '${Constants.path}/v1/owner/seller/withdraw',
         data: FormData.fromMap(
           {
-            'shop_id': shopId,
+            // 'shop_id': shopId,
             'client_phone': clientPhone,
             'price': price.removeWhitespace(),
           },

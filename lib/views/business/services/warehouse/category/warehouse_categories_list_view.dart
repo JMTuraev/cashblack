@@ -75,14 +75,14 @@ class _WarehoueseCategoriesListViewState
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        Text(
-                          // skladPrixods[index].dateTime.getLocaleDateTime(),
-                          model.warehouseCategories[index].title,
-                          style: const TextStyle(
-                            color: Color(0xff667084),
-                            fontSize: 14,
-                          ),
-                        ),
+                        // Text(
+                        //   // skladPrixods[index].dateTime.getLocaleDateTime(),
+                        //   model.warehouseCategories[index].title,
+                        //   style: const TextStyle(
+                        //     color: Color(0xff667084),
+                        //     fontSize: 14,
+                        //   ),
+                        // ),
                         // Text(
                         //   // skladPrixods[index].model.warehouses.length.toString(),
                         //   model.warehouses[index].shop.name,

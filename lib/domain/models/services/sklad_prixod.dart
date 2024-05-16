@@ -1,13 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'sklad_item.dart';
+import 'warehouse_item.dart';
 
 part 'sklad_prixod.g.dart';
 
 @JsonSerializable()
 class SkladPrixod {
   final String dateTime;
-  final List<SkladItem> skladItems;
+  final List<WarehouseItem> skladItems;
 
   SkladPrixod({
     required this.dateTime,

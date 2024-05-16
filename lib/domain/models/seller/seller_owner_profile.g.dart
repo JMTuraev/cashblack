@@ -23,6 +23,7 @@ SellerOwnerProfile _$SellerOwnerProfileFromJson(Map<String, dynamic> json) =>
           .map((e) => BusinessLicense.fromJson(e as Map<String, dynamic>))
           .toList(),
       shop: BusinessShop.fromJson(json['shop_id'] as Map<String, dynamic>),
+      status: json['status'] as int,
     );
 
 Map<String, dynamic> _$SellerOwnerProfileToJson(SellerOwnerProfile instance) =>
@@ -38,6 +39,7 @@ Map<String, dynamic> _$SellerOwnerProfileToJson(SellerOwnerProfile instance) =>
       'withdraw': instance.withdraw,
       'amount': instance.amount,
       'type': instance.type,
+      'status': instance.status,
       'licence': instance.licence,
       'shop_id': instance.shop,
     };

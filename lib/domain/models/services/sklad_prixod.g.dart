@@ -9,7 +9,7 @@ part of 'sklad_prixod.dart';
 SkladPrixod _$SkladPrixodFromJson(Map<String, dynamic> json) => SkladPrixod(
       dateTime: json['dateTime'] as String,
       skladItems: (json['skladItems'] as List<dynamic>)
-          .map((e) => SkladItem.fromJson(e as Map<String, dynamic>))
+          .map((e) => WarehouseItem.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

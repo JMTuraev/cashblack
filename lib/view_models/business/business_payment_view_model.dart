@@ -12,25 +12,35 @@ class BusinessPaymentViewModel extends ChangeNotifier {
   bool isPriceLoading = false;
   List<BonusPrice> bonusPrices = [];
 
-  Future<bool> payCashback(
+  Future<bool> setShopBeforeCashbackOrWithdraw(
     String shopId,
+  ) async {
+    isLoading = true;
+    final result = await _businessApi.setShopBeforeCashbackOrWithdraw(shopId);
+    isLoading = false;
+    notifyListeners();
+    return result;
+  }
+
+  Future<bool> payCashback(
+    // String shopId,
     String clientPhone,
     String price,
   ) async {
     isLoading = true;
-    final result = await _businessApi.payCashback(shopId, clientPhone, price);
+    final result = await _businessApi.payCashback(clientPhone, price);
     isLoading = false;
     notifyListeners();
     return result;
   }
 
   Future<bool> payWithdraw(
-    String shopId,
+    // String shopId,
     String clientPhone,
     String price,
   ) async {
     isLoading = true;
-    final result = await _businessApi.payWithdraw(shopId, clientPhone, price);
+    final result = await _businessApi.payWithdraw(clientPhone, price);
     isLoading = false;
     notifyListeners();
     return result;

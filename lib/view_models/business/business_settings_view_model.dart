@@ -25,6 +25,14 @@ class BusinessSettingsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> deleteBusinessProfile() async {
+    isLoading = true;
+    final res = await _businessApi.deleteBusinessProfile();
+    isLoading = false;
+    notifyListeners();
+    return res;
+  }
+
   Future<bool> subscribe(int priceId) async {
     isLoading = true;
     final res = await _businessApi.subscribe(priceId);
