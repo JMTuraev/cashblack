@@ -49,7 +49,7 @@ class SellerPaymentPhoneView extends StatelessWidget {
             .read<SellerViewModel>()
             .payCashback(
               // maskFormatter.getUnmaskedText(),
-                            phoneController.text.phoneFormatterForCall().removeForPhone(),
+              phoneController.text.phoneFormatterForCall().removeForPhone(),
 
               priceController.text,
             )
@@ -121,6 +121,17 @@ class SellerPaymentPhoneView extends StatelessWidget {
                             value.isEmpty ||
                             int.parse(value.removeWhitespace()) <= 0) {
                           return 'Введите номер телефона';
+                        }
+                        if ( value.removeWhitespace().length < 13) {
+                          return 'Введите правылный номер телефона';
+                        }
+                        if (
+                            context
+                                    .read<SellerViewModel>()
+                                    .sellerProfile!
+                                    .phone ==
+                                value.removeWhitespace().removeAllSymbols()) {
+                          return 'Введите правылный номер телефона';
                         }
                         return null;
                       },

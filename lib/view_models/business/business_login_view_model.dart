@@ -12,7 +12,7 @@ class BusinessLoginViewModel extends ChangeNotifier {
 
   bool isLoading = false;
 
-  Future<bool> onEnterButtonPressed(
+  Future<String> onEnterButtonPressed(
     String phone,
     String nickname,
     String firstName,
@@ -22,6 +22,7 @@ class BusinessLoginViewModel extends ChangeNotifier {
     String? promoCode,
   ) async {
     isLoading = true;
+    notifyListeners();
     final result = await _authApi.enterAuthDetails(
       phone,
       nickname,
@@ -39,9 +40,11 @@ class BusinessLoginViewModel extends ChangeNotifier {
   Future<String> onVerifyButtonPressed(
     String phone,
     String code,
+    String type,
   ) async {
     isLoading = true;
-    final result = await _authApi.login(phone, code, 'owner');
+    notifyListeners();
+    final result = await _authApi.login(phone, code, type);
     isLoading = false;
     notifyListeners();
     return result;

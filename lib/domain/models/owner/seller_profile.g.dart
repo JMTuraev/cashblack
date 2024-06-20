@@ -14,7 +14,7 @@ SellerProfile _$SellerProfileFromJson(Map<String, dynamic> json) =>
       firstName: json['first_name'] as String,
       lastName: json['last_name'] as String,
       districtId: json['district_id'] as String?,
-      shop: BusinessShop.fromJson(json['shop_id'] as Map<String, dynamic>),
+      shop: BusinessShopLite.fromJson(json['shop'] as Map<String, dynamic>),
       type: json['type'] as String,
       status: json['status'] as int,
     );
@@ -27,7 +27,7 @@ Map<String, dynamic> _$SellerProfileToJson(SellerProfile instance) =>
       'first_name': instance.firstName,
       'last_name': instance.lastName,
       'district_id': instance.districtId,
-      'shop_id': instance.shop,
+      'shop': instance.shop,
       'type': instance.type,
       'status': instance.status,
     };

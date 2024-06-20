@@ -21,7 +21,7 @@ class SellerOwnerProfile extends ChangeNotifier {
   final dynamic total;
   final dynamic withdraw;
   final dynamic amount;
-  final String type;
+  // final String type;
   final int status;
   final List<BusinessLicense> licence;
   @JsonKey(name: 'shop_id')
@@ -37,7 +37,7 @@ class SellerOwnerProfile extends ChangeNotifier {
     required this.total,
     required this.withdraw,
     required this.amount,
-    required this.type,
+    // required this.type,
     required this.licence,
     required this.shop,
     required this.status,

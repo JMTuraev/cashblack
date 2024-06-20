@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'business_shop.dart';
+import 'business_shop_lite.dart';
 
 part 'seller_profile.g.dart';
 
@@ -16,8 +16,7 @@ class SellerProfile extends ChangeNotifier {
   final String lastName;
   @JsonKey(name: 'district_id')
   final String? districtId;
-  @JsonKey(name: 'shop_id')
-  final BusinessShop shop;
+  final BusinessShopLite shop;
   final String type;
   final int status;
 

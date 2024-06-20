@@ -3,25 +3,18 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 
 import '../../../domain/models/client/client_category.dart';
 import '../../../domain/models/client/client_shop.dart';
-import '../../../domain/models/user_category.dart';
-import '../../../domain/models/user_shop.dart';
 import '../../../size_config.dart';
-import '../../../utils/constants.dart';
-import '../../../view_models/client_home_view_model.dart';
-import '../../../widgets/empty_widget.dart';
-import '../../../widgets/logo_animated_widget.dart';
 import 'business_details_view.dart';
 
 class BusinessListView extends StatefulWidget {
   final ClientCategory clientCategory;
   const BusinessListView({
-    Key? key,
+    super.key,
     required this.clientCategory,
-  }) : super(key: key);
+  });
 
   @override
   State<BusinessListView> createState() => _BusinessListViewState();
@@ -63,6 +56,10 @@ class _BusinessListViewState extends State<BusinessListView> {
     //     cashback: List.empty(),
     //   ),
     // ];
+    // final shopsList = widget.clientCategory.shops.where(
+    // (element) => element.cashback.isNotEmpty || element.withdraw.isNotEmpty,
+    // );
+    final shopsList = widget.clientCategory.shops;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.clientCategory.name),
@@ -81,8 +78,8 @@ class _BusinessListViewState extends State<BusinessListView> {
           child: Container(
             child: ListView.separated(
               // shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: widget.clientCategory.shops.length,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: shopsList.length,
               separatorBuilder: (context, index) {
                 return SizedBox(
                   height: getH(10),
@@ -90,7 +87,9 @@ class _BusinessListViewState extends State<BusinessListView> {
               },
               itemBuilder: (context, index) {
                 return _ItemWidget(
-                    shops: widget.clientCategory.shops, index: index);
+                  shops: widget.clientCategory.shops,
+                  index: index,
+                );
                 // return Text(widget.clientCategory.shops[index].name);
               },
             ),
@@ -188,7 +187,7 @@ class _ItemWidget extends StatelessWidget {
                       ),
                       SizedBox(width: getW(4)),
                       Text(
-                        shops[index].percent.toString() + '%',
+                        '${shops[index].percent}%',
                         style: const TextStyle(
                           fontSize: 16,
                           color: Color.fromRGBO(201, 247, 158, 1),
@@ -198,7 +197,7 @@ class _ItemWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -209,9 +208,9 @@ class _ItemWidget extends StatelessWidget {
 
 class _SimpleTextWidget extends StatelessWidget {
   const _SimpleTextWidget({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   final String title;
 

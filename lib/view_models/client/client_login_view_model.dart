@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/api/auth_api.dart';
-import '../../core/api/client.dart';
 
 class ClientLoginViewModel extends ChangeNotifier {
   final AuthApi _authApi = AuthApi();
@@ -12,7 +11,7 @@ class ClientLoginViewModel extends ChangeNotifier {
 
   bool isLoading = false;
 
-  Future<bool> onEnterButtonPressed(
+  Future<String> onEnterButtonPressed(
     String phone,
     String nickname,
     String firstName,
@@ -22,7 +21,7 @@ class ClientLoginViewModel extends ChangeNotifier {
     String? promoCode,
   ) async {
     isLoading = true;
-    var result = await _authApi.enterAuthDetails(
+    final result = await _authApi.enterAuthDetails(
       phone,
       nickname,
       firstName,
@@ -41,7 +40,7 @@ class ClientLoginViewModel extends ChangeNotifier {
     String code,
   ) async {
     isLoading = true;
-    var result = await _authApi.login(phone, code, 'client');
+    final result = await _authApi.login(phone, code, 'client');
     isLoading = false;
     notifyListeners();
     return result;

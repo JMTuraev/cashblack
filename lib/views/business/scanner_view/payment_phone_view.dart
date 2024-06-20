@@ -7,6 +7,7 @@ import '../../../string_extensions.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_payment_view_model.dart';
+import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/payment_client_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import 'payment_success_view.dart';
@@ -148,8 +149,19 @@ class PaymentPhoneView extends StatelessWidget {
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
-                            int.parse(value.removeWhitespace()) <= 0) {
+                            int.parse(value.removeWhitespace()) <= 0 ) {
                           return 'Введите номер телефона';
+                        }
+                        if ( value.removeWhitespace().length < 13) {
+                          return 'Введите правылный номер телефона';
+                        }
+                        if (
+                            context
+                                    .read<BusinessSettingsViewModel>()
+                                    .businessProfile!
+                                    .phone ==
+                                value.removeWhitespace().removeAllSymbols()) {
+                          return 'Введите правылный номер телефона';
                         }
                         return null;
                       },
@@ -264,7 +276,7 @@ class SelectCategoryWidget extends StatelessWidget {
           ),
           hint: Text(hint),
           isExpanded: true,
-          value: _selectedOption,
+          // value: _selectedOption,
           items: categoryItems,
           onChanged: (value) => onChanged(value),
           decoration: const InputDecoration(

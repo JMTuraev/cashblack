@@ -18,7 +18,7 @@ class AuthApi {
     _dio.options.headers['Authorization'] = token;
   }
 
-  Future<bool> enterAuthDetails(
+  Future<String> enterAuthDetails(
     String phone,
     String nickname,
     String firstName,
@@ -47,16 +47,31 @@ class AuthApi {
           },
         ),
       );
+      if (response.data['message'] == 'sms code error') {
+        return 'sms_error';
+      }
+      if (response.data['message'] == 'User error') {
+        return 'type_error';
+      }
       if (response.data['type'] != type) {
-        return false;
+        return 'type_error';
       }
       print(
         'register ${response.data['type']} as $type ${response.data['code']}',
       );
-      return true;
+      return 'true';
     } on DioError catch (e) {
       print(e.response!.data);
-      return false;
+      if (e.response?.data['message'] == 'sms code error') {
+        return 'sms_error';
+      }
+      if (e.response?.data['message'] == 'User error') {
+        return 'type_error';
+      }
+      if (e.response?.data['type'] != type) {
+        return 'type_error';
+      }
+      return 'false';
     }
   }
 
@@ -65,22 +80,23 @@ class AuthApi {
     _dio.options.headers['content-Type'] = 'multipart/form-data';
     // _dio.options.headers['Authorization'] = token;
 
-    var smsCode = code;
+    final smsCode = code;
 
-    if (phone == '000000050') {
-      smsCode = '456123';
-    }
-    if (phone == '000000051') {
-      smsCode = '789456';
-    }
+    // if (phone == '000000050') {
+    //   smsCode = '400000';
+    // }
+    // if (phone == '000000051') {
+    //   smsCode = '400000';
+    // }
 
     try {
       final response = await _dio.post(
         '${Constants.path}/auth/login',
         data: FormData.fromMap(
           {
-            'phone': phone,
+            'phone': '998$phone',
             'sms_code': smsCode,
+            'type': userType,
           },
         ),
       );

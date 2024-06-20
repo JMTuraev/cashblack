@@ -6,13 +6,13 @@ import '../size_config.dart';
 
 class MainButtonWidget extends StatelessWidget {
   const MainButtonWidget({
-    Key? key,
+    super.key,
     required this.text,
     required this.method,
     this.color,
     this.percent,
     this.isLoading,
-  }) : super(key: key);
+  });
 
   final String text;
   final VoidCallback? method;
@@ -53,7 +53,7 @@ class MainButtonWidget extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Spacer(),
+                    const Spacer(),
                     Container(
                       // height: getH(26),
                       child: Text(
@@ -66,7 +66,7 @@ class MainButtonWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                   ],
                 ),
                 isLoading == true
@@ -97,10 +97,11 @@ class MainButtonWidget extends StatelessWidget {
             right: 3,
             child: Container(
               decoration: const BoxDecoration(
-                  // color: Colors.green[300],
-                  borderRadius: BorderRadius.all(
-                Radius.circular(20),
-              )),
+                // color: Colors.green[300],
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20),
+                ),
+              ),
               padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
               child: Text(
                 '${NumberFormat.simpleCurrency(

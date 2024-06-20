@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../core/api/warehouse_api.dart';
 import '../../domain/models/services/sklad_item_status.dart';
-import '../../domain/models/services/sklad_prixod.dart';
 import '../../domain/models/services/warehouse.dart';
 import '../../domain/models/services/warehouse_category.dart';
 import '../../domain/models/services/warehouse_item.dart';
+import '../../domain/models/services/warehouse_prixod.dart';
+import '../../domain/models/services/warehouse_prixod_create.dart';
 import '../../domain/models/services/warehouse_provider.dart';
 import '../../domain/models/services/warehouse_unit.dart';
 import '../../string_extensions.dart';
@@ -169,37 +170,34 @@ class SkladViewModel extends ChangeNotifier {
   }
 
   //prixod
-  TextEditingController nameController = TextEditingController();
-  TextEditingController attributeController = TextEditingController();
-  String? selectedCategory;
-  String? selectedSubCategory;
-  String? createdDate;
-  TextEditingController quantityController = TextEditingController();
-  TextEditingController pricePrixodController = TextEditingController();
-  TextEditingController priceSellController = TextEditingController();
-  TextEditingController priceSumOfAllController = TextEditingController();
-  TextEditingController serialNumberController = TextEditingController();
-  TextEditingController partyNumberController = TextEditingController();
-  String? selectedDeliever;
-  String? selectedSkladItemStatus;
-  TextEditingController minQuantityController = TextEditingController();
+  String? selectedPrixodProductItem;
+  String? selectedPrixodUnit;
+  String? selectedPrixodCategory;
+  String? selectedPrixodWarehouse;
+  // String? selectedSubCategory;
+  String? prixodCreatedDate;
+  TextEditingController prixodQuantityController = TextEditingController();
+  TextEditingController prixodPriceBuyController = TextEditingController();
+  TextEditingController prixodPriceSellController = TextEditingController();
+  TextEditingController prixodPriceSumOfAllController = TextEditingController();
+  TextEditingController prixodSerialNumberController = TextEditingController();
+  // TextEditingController partyNumberController = TextEditingController();
+  String? selectedPrixodProvider;
+  // String? selectedSkladItemStatus;
+  // TextEditingController minQuantityController = TextEditingController();
 
   void clearFields() {
-    // return;
-    nameController.clear();
-    attributeController.clear();
-    selectedCategory = null;
-    selectedSubCategory = null;
-    createdDate = null;
-    quantityController.clear();
-    pricePrixodController.clear();
-    priceSellController.clear();
-    priceSumOfAllController.clear();
-    serialNumberController.clear();
-    partyNumberController.clear();
-    selectedDeliever = null;
-    selectedSkladItemStatus = null;
-    minQuantityController.clear();
+    selectedPrixodProductItem = null;
+    selectedPrixodUnit = null;
+    selectedPrixodCategory = null;
+    selectedPrixodWarehouse = null;
+    prixodCreatedDate = null;
+    prixodQuantityController.clear();
+    prixodPriceBuyController.clear();
+    prixodPriceSellController.clear();
+    prixodPriceSumOfAllController.clear();
+    prixodSerialNumberController.clear();
+    selectedPrixodProvider = null;
   }
 
   List<SkladItemStatus> skladItemStatuses = [
@@ -208,28 +206,18 @@ class SkladViewModel extends ChangeNotifier {
     SkladItemStatus(value: '3', name: 'Ожидается'),
   ];
 
-  List<SkladPrixod> skladPrixods = [];
+  List<WarehousePrixodCreate> prixodItemsForCreate = [];
 
   void addToSklad() {
-    // skladItems.add(
-    //   SkladItem(
-    //     id: const Uuid().v4(),
-    //     name: nameController.text.trim(),
-    //     attribute: attributeController.text.trim(),
-    //     category: selectedCategory!.trim().removeWhitespace(),
-    //     subCategory: selectedSubCategory!.trim().removeWhitespace(),
-    //     createdDate: createdDate!.trim(),
-    //     quantity: quantityController.text.trim().removeWhitespace(),
-    //     pricePrixod: pricePrixodController.text.trim().removeWhitespace(),
-    //     priceSell: priceSellController.text.trim().removeWhitespace(),
-    //     priceSumOfAll: priceSumOfAllController.text.trim().removeWhitespace(),
-    //     serialNumber: serialNumberController.text.trim().removeWhitespace(),
-    //     partyNumber: partyNumberController.text.trim().removeWhitespace(),
-    //     skladDeliever: selectedDeliever!.trim().removeWhitespace(),
-    //     skladItemStatus: selectedSkladItemStatus!.trim().removeWhitespace(),
-    //     minimumQuantity: minQuantityController.text.trim().removeWhitespace(),
-    //   ),
-    // );
+    prixodItemsForCreate.add(
+      WarehousePrixodCreate(
+        productiId: selectedPrixodProductItem.toString(),
+        quantity: prixodQuantityController.text.removeWhitespace(),
+        unitId: selectedPrixodUnit.toString(),
+        price: prixodPriceBuyController.text.removeWhitespace(),
+        priceSell: prixodPriceSellController.text.removeWhitespace(),
+      ),
+    );
     notifyListeners();
   }
 
@@ -251,6 +239,15 @@ class SkladViewModel extends ChangeNotifier {
 
   void clearSkladItems() {
     // skladItems.clear();
+  }
+
+  WarehousePrixod? warehousePrixodItems;
+  bool isGettingWarehousePrixodItems = false;
+  Future<void> getWarehousePrixodItems() async {
+    isGettingWarehouseUnits = true;
+    warehousePrixodItems = await _warehousesApi.getWarehousePrixodItems();
+    isGettingWarehousePrixodItems = false;
+    notifyListeners();
   }
 
 //rasxod

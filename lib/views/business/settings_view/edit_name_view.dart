@@ -12,19 +12,31 @@ import '../../../widgets/show_modal.dart';
 import '../../../widgets/text_field_widget.dart';
 import '../../select_type_view/select_type_view.dart';
 
-class EditNameView extends StatelessWidget {
-  const EditNameView({
+class EditNameView extends StatefulWidget {
+  EditNameView({
     super.key,
     required this.user,
   });
 
   final BusinessProfile user;
 
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+
+  @override
+  State<EditNameView> createState() => _EditNameViewState();
+}
+
+class _EditNameViewState extends State<EditNameView> {
+  @override
+  void initState() {
+    super.initState();
+    widget.firstNameController.text = widget.user.firstName;
+    widget.lastNameController.text = widget.user.lastName;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final firstNameController = TextEditingController();
-    final lastNameController = TextEditingController();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Редактировать профиль'),
@@ -37,22 +49,23 @@ class EditNameView extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  user.firstName.isEmpty && user.lastName.isEmpty
+                  widget.user.firstName.isEmpty && widget.user.lastName.isEmpty
                       ? const _SimpleTextWidget(
                           title: '',
                         )
                       : _SimpleTextWidget(
-                          title: '${user.firstName} ${user.lastName}',
+                          title:
+                              '${widget.user.firstName} ${widget.user.lastName}',
                         ),
                   const SizedBox(height: 40),
                   TextFieldWidget(
                     hintText: 'Имя',
-                    controller: firstNameController,
+                    controller: widget.firstNameController,
                   ),
                   const SizedBox(height: 20),
                   TextFieldWidget(
                     hintText: ' Фамилия',
-                    controller: lastNameController,
+                    controller: widget.lastNameController,
                   ),
                   const Spacer(),
                   MainButtonWidget(
@@ -61,9 +74,9 @@ class EditNameView extends StatelessWidget {
                       await context
                           .read<BusinessSettingsViewModel>()
                           .editOwnerProfile(
-                            firstNameController.text,
-                            lastNameController.text,
-                            user.phone,
+                            widget.firstNameController.text,
+                            widget.lastNameController.text,
+                            widget.user.phone,
                           )
                           .then((value) {
                         if (value) {

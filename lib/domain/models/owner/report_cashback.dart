@@ -55,14 +55,14 @@ class InlineCashbackAndWithdraw {
   final String companyName;
   @JsonKey(name: 'company_logo')
   final String? companyLogo;
-  @JsonKey(name: 'seller_id')
-  final int sellerId;
+  // @JsonKey(name: 'seller_id')
+  // final int sellerId;
   @JsonKey(name: 'seller_name')
   final String sellerName;
   @JsonKey(name: 'seller_phone')
   final String sellerPhone;
-  @JsonKey(name: 'seller_type')
-  final String sellerType;
+  // @JsonKey(name: 'seller_type')
+  // final String sellerType;
   @JsonKey(name: 'shop_id')
   final int shopId;
   @JsonKey(name: 'shop_name')
@@ -84,10 +84,10 @@ class InlineCashbackAndWithdraw {
     required this.type,
     required this.companyName,
     this.companyLogo,
-    required this.sellerId,
+    // required this.sellerId,
     required this.sellerName,
     required this.sellerPhone,
-    required this.sellerType,
+    // required this.sellerType,
     required this.shopId,
     required this.shopName,
     this.shopLogo,

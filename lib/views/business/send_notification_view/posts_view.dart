@@ -5,18 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:provider/provider.dart';
+
 // import 'package:provider/provider.dart';
 
 import '../../../domain/models/owner/owner_notification.dart';
-import '../../../domain/models/sent_notification.dart';
-import '../../../string_extensions.dart';
 import '../../../size_config.dart';
-import '../../../utils/constants.dart';
+import '../../../string_extensions.dart';
 import '../../../utils/helpers.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_notifications_view_model.dart';
-import '../../../view_models/send_notification_view_model.dart';
-import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import 'notification_info_view.dart';
 import 'send_notification_view.dart';
@@ -138,7 +135,6 @@ class _PostsViewState extends State<PostsView> {
                                     width: 3,
                                   )
                                 : Border.all(
-                                    color: Colors.black,
                                     width: 3,
                                   ),
                             borderRadius: BorderRadius.circular(50),
@@ -149,7 +145,7 @@ class _PostsViewState extends State<PostsView> {
                                 spreadRadius: 1,
                                 blurRadius: 1,
                                 // offset: Offset(0, 0),
-                              )
+                              ),
                             ],
                           ),
                           child: businessShops[index].logo != null
@@ -237,7 +233,6 @@ class _PostsViewState extends State<PostsView> {
                               color: Color.fromRGBO(44, 45, 47, 1),
                             ),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
@@ -316,7 +311,7 @@ class _PostsViewState extends State<PostsView> {
                                           ),
                                         ),
                                       ],
-                                    )
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 20),
@@ -387,18 +382,12 @@ class _PostsViewState extends State<PostsView> {
                                                           ),
                                                         ),
                                                         Text(
-                                                          DateTime.parse(
-                                                                notifications[
-                                                                        index]
-                                                                    .endAt,
-                                                              )
-                                                                  .difference(
-                                                                    DateTime
-                                                                        .now(),
-                                                                  )
-                                                                  .inHours
-                                                                  .toString() +
-                                                              ' часов',
+                                                          '${DateTime.parse(
+                                                            notifications[index]
+                                                                .endAt,
+                                                          ).difference(
+                                                                DateTime.now(),
+                                                              ).inHours} часов',
                                                           style:
                                                               const TextStyle(
                                                             color: Colors.green,
@@ -418,7 +407,7 @@ class _PostsViewState extends State<PostsView> {
                                                     color: Colors.red,
                                                   ),
                                                 ),
-                                    )
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 4),
@@ -502,7 +491,7 @@ class _PostsViewState extends State<PostsView> {
                                     ),
                                     const SizedBox(width: 14),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                           ),

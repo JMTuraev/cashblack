@@ -63,21 +63,27 @@ class _BusinessLoginViewState extends State<BusinessLoginView> {
                   isSeller ? 'seller' : 'owner',
                   promo,
                 );
-        sendSMS
+        print(sendSMS);
+        sendSMS == 'true'
             ? Navigator.of(context).push(
                 CupertinoPageRoute(
                   builder: (context) => BusinessLoginVerifyView(
                     appsign: provider.appSignature,
                     phone: phone,
                     promo: promo,
+                    typeUser: isSeller ? 'seller' : 'owner',
                   ),
                 ),
               )
             : showCupertinoDialog(
                 context: context,
                 builder: (context) {
-                  return const InfoAlertWidget(
-                    title: 'Это аккаунт клиента, проверьте номер телефона',
+                  return InfoAlertWidget(
+                    title: sendSMS == 'sms_error'
+                        ? 'Ошибка при отправке СМС, попробуйте позже'
+                        : (sendSMS == 'type_error'
+                            ? 'Это аккаунт клиента, проверьте номер телефона'
+                            : 'Сервер недоступен, попробуйте позже'),
                   );
                 },
               );

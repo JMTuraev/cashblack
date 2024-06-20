@@ -68,6 +68,16 @@ class _EditStoreViewState extends State<EditStoreView> {
   final TextEditingController _cashback = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _brandName.text = widget.shop.name;
+    _waymark.text = widget.shop.waymark;
+    _address.text = widget.shop.address;
+    _cashback.text = double.parse(widget.shop.percent).toInt().toString();
+    _selectedCategory = widget.shop.categoryShopId.toString();
+  }
+
+  @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 

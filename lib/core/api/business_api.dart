@@ -468,7 +468,8 @@ class BusinessApi {
   Future<ClientProfile> getCashbackAmountBeforePay(String phone) async {
     await _setDioHeader();
 
-    final response = await _dio.get('${Constants.path}/v1/client?phone=$phone');
+    final response =
+        await _dio.get('${Constants.path}/v1/owner/seller/client?phone=$phone');
     final cashbacks =
         ClientProfile.fromJson(response.data['data'] as Map<String, Object?>);
 
@@ -581,6 +582,35 @@ class BusinessApi {
     try {
       final response = await _dio.post(
         '${Constants.path}/v1/owner/seller/withdraw',
+        data: FormData.fromMap(
+          {
+            // 'shop_id': shopId,
+            'client_phone': clientPhone,
+            'price': price.removeWhitespace(),
+          },
+        ),
+      );
+      final result = response.data;
+
+      print('$result');
+      // return 'checkout.paycom.uz/$result';
+      return true;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
+  }
+
+  Future<bool> payWithdrawForSeller(
+    // String shopId,
+    String clientPhone,
+    String price,
+  ) async {
+    await _setDioHeader();
+
+    try {
+      final response = await _dio.post(
+        '${Constants.path}/v1/seller/withdraw',
         data: FormData.fromMap(
           {
             // 'shop_id': shopId,

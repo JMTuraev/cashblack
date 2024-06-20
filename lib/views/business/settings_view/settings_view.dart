@@ -19,6 +19,7 @@ import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_statistics_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
 import '../../select_type_view/select_type_view.dart';
+import 'companies_list_view.dart';
 import 'create_worker_view.dart';
 import 'edit_company_view.dart';
 import 'edit_name_view.dart';
@@ -344,69 +345,84 @@ class _BrandCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _BorderContainerWidget(
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: onTap,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(20),
-              ),
-              child: SizedBox(
-                width: getW(60),
-                height: getH(60),
-                child: context.watch<BusinessSettingsViewModel>().isUploading
-                    ? const CupertinoActivityIndicator()
-                    : CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        imageUrl: company.logo ?? '',
-                        errorWidget: (context, url, error) => const Icon(
-                          Icons.home_repair_service_rounded,
-                          size: 40,
-                        ),
-                      ),
-              ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: (context) => CompaniesListView(
+              shops: context.read<BusinessDashboardViewModel>().businessShops ??
+                  [],
             ),
           ),
-          SizedBox(width: getW(18)),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _SimpleTextWidget(
-                title: company.name,
-              ),
-              SizedBox(height: getH(4)),
-              Text(
-                company.address,
-                style: const TextStyle(fontSize: 15),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              isBusiness
-                  ? GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          CupertinoPageRoute(
-                            builder: (context) => const EditCompanyView(),
+        );
+      },
+      child: _BorderContainerWidget(
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: onTap,
+              onDoubleTap: () {},
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(20),
+                ),
+                child: SizedBox(
+                  width: getW(60),
+                  height: getH(60),
+                  child: context.watch<BusinessSettingsViewModel>().isUploading
+                      ? const CupertinoActivityIndicator()
+                      : CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: company.logo ?? '',
+                          errorWidget: (context, url, error) => const Icon(
+                            Icons.home_repair_service_rounded,
+                            size: 40,
                           ),
-                        );
-                      },
-                      child: SvgPicture.asset(
-                        'assets/svg/edit.svg',
-                        height: getH(24),
-                        width: getW(24),
-                      ),
-                    )
-                  : const SizedBox(),
-            ],
-          ),
-        ],
+                        ),
+                ),
+              ),
+            ),
+            SizedBox(width: getW(18)),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _SimpleTextWidget(
+                  title: company.name,
+                ),
+                SizedBox(height: getH(4)),
+                Text(
+                  company.address,
+                  style: const TextStyle(fontSize: 15),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                isBusiness
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            CupertinoPageRoute(
+                              builder: (context) => EditCompanyView(
+                                company: company,
+                              ),
+                            ),
+                          );
+                        },
+                        child: SvgPicture.asset(
+                          'assets/svg/edit.svg',
+                          height: getH(24),
+                          width: getW(24),
+                        ),
+                      )
+                    : const SizedBox(),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

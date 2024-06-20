@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../size_config.dart';
+import '../../../string_extensions.dart';
 import '../../../utils/constants.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_notifications_view_model.dart';
@@ -93,12 +94,13 @@ class _SendNotificationViewState extends State<SendNotificationView> {
         .read<BusinessNotificationsViewModel>()
         .prices
         .where(
-          (element) => element.type == 'subscript' && element.month == 1,
+          (element) => element.id == 2,
         )
         .first
         .price;
     // String price = context.watch<SendNotificationViewModel>().notificationPrice;
 
+    final prices2 = context.read<BusinessNotificationsViewModel>().prices;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -347,6 +349,10 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                   ),
                 ),
                 SizedBox(height: getH(20)),
+                Text(
+                  'Цена ${subPrice.getAmountInSum()}',
+                ),
+                SizedBox(height: getH(20)),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -392,7 +398,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                                     // _fileList[0]!,
                                     // _titleController.text,
                                     // _contentController.text,
-                                    1,
+                                    2,
                                     _titleController.text,
                                     _contentController.text,
                                     _titleController.text,
@@ -408,6 +414,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                                     context
                                         .read<BusinessNotificationsViewModel>()
                                         .getNotifications();
+                                    Navigator.of(context).pop();
                                     Navigator.of(context).pop();
                                   }
                                 },

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
-import '../business/scanner_view/payment_client_view.dart';
+import '../business/scanner_view/payment_client_for_seller.view.dart';
 import 'seller_payment_phone_view.dart';
 
 class SellerBarcodeScannerView extends StatelessWidget {
@@ -50,11 +50,12 @@ class SellerBarcodeScannerView extends StatelessWidget {
                         }
 
                         if (scannedTime == 1) {
+                          print('object');
                           // context.read<BusinessViewModel>().currentIndex = 0;
                           context.read<BusinessViewModel>().setindex(0);
                           Navigator.of(context).push(
                             CupertinoPageRoute(
-                              builder: (context) => PaymentClientView(
+                              builder: (context) => PaymentClientViewForSeller(
                                 code: barcode.rawValue!,
                                 shopId: shopId,
                                 isSeller: true,

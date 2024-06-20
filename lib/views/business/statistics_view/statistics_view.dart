@@ -643,11 +643,11 @@ class _CardCashback extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    sumStat.sellerId ==
+                    sumStat.sellerPhone ==
                             context
                                 .read<BusinessSettingsViewModel>()
                                 .businessProfile!
-                                .id
+                                .phone
                         ? const SizedBox()
                         : const Text(
                             'Продавец:',
@@ -690,11 +690,11 @@ class _CardCashback extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    sumStat.sellerId ==
+                    sumStat.sellerPhone ==
                             context
                                 .read<BusinessSettingsViewModel>()
                                 .businessProfile!
-                                .id
+                                .phone
                         ? const SizedBox()
                         : Text(
                             sumStat.sellerName,
@@ -1001,11 +1001,11 @@ class _CardWithdraw extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    sumStat.sellerId ==
+                    sumStat.sellerPhone ==
                             context
                                 .read<BusinessSettingsViewModel>()
                                 .businessProfile!
-                                .id
+                                .phone
                         ? const SizedBox()
                         : const Text(
                             'Продавец:',
@@ -1036,11 +1036,11 @@ class _CardWithdraw extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    sumStat.sellerId ==
+                    sumStat.sellerPhone ==
                             context
                                 .read<BusinessSettingsViewModel>()
                                 .businessProfile!
-                                .id
+                                .phone
                         ? const SizedBox()
                         : Text(
                             sumStat.sellerName,

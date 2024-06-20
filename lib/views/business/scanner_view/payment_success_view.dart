@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../size_config.dart';
@@ -11,9 +10,9 @@ import '../business_view.dart';
 
 class PaymentSuccessView extends StatelessWidget {
   const PaymentSuccessView({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   final String title;
 
@@ -25,7 +24,6 @@ class PaymentSuccessView extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.asset(
                     'assets/images/success.png',

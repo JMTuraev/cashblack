@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/owner/business_profile.dart';
-import '../../../domain/models/user.dart';
-import '../../../view_models/business/business_settings_view_model.dart';
-import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/text_field_widget.dart';
 import '../../domain/models/seller/seller_owner_profile.dart';
 import '../../view_models/seller/seller_view_model.dart';
 
-class EditSellerNameView extends StatelessWidget {
-  const EditSellerNameView({
+class EditSellerNameView extends StatefulWidget {
+  EditSellerNameView({
     super.key,
     required this.user,
   });
 
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+
   final SellerOwnerProfile user;
 
   @override
-  Widget build(BuildContext context) {
-    TextEditingController firstNameController = TextEditingController();
-    TextEditingController lastNameController = TextEditingController();
+  State<EditSellerNameView> createState() => _EditSellerNameViewState();
+}
 
+class _EditSellerNameViewState extends State<EditSellerNameView> {
+  @override
+  void initState() {
+    super.initState();
+    widget.firstNameController.text = widget.user.firstName;
+    widget.lastNameController.text = widget.user.lastName;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Редактировать профиль'),
@@ -32,37 +40,37 @@ class EditSellerNameView extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Form(
             child: Align(
-              alignment: Alignment.center,
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  user.firstName.isEmpty && user.lastName.isEmpty
+                  widget.user.firstName.isEmpty && widget.user.lastName.isEmpty
                       ? const _SimpleTextWidget(
                           title: '',
                         )
                       : _SimpleTextWidget(
-                          title: '${user.firstName} ${user.lastName}',
+                          title:
+                              '${widget.user.firstName} ${widget.user.lastName}',
                         ),
                   const SizedBox(height: 40),
                   TextFieldWidget(
                     hintText: 'Имя',
-                    controller: firstNameController,
+                    controller: widget.firstNameController,
                   ),
                   const SizedBox(height: 20),
                   TextFieldWidget(
                     hintText: ' Фамилия',
-                    controller: lastNameController,
+                    controller: widget.lastNameController,
                   ),
-                  Spacer(),
+                  const Spacer(),
                   MainButtonWidget(
                     text: 'OK',
                     method: () async {
                       await context
                           .read<SellerViewModel>()
                           .editSellerProfile(
-                            firstNameController.text,
-                            lastNameController.text,
-                            user.phone,
+                            widget.firstNameController.text,
+                            widget.lastNameController.text,
+                            widget.user.phone,
                           )
                           .then((value) {
                         if (value) {
@@ -85,9 +93,9 @@ class EditSellerNameView extends StatelessWidget {
 
 class _SimpleTextWidget extends StatelessWidget {
   const _SimpleTextWidget({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   final String title;
 

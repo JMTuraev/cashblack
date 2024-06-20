@@ -620,8 +620,8 @@ class _CardCashback extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    sumStat.sellerId ==
-                            context.read<SellerViewModel>().sellerProfile!.id
+                    sumStat.sellerPhone ==
+                            context.read<SellerViewModel>().sellerProfile!.phone
                         ? const SizedBox()
                         : const Text(
                             'Продавец:',
@@ -664,8 +664,8 @@ class _CardCashback extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    sumStat.sellerId ==
-                            context.read<SellerViewModel>().sellerProfile!.id
+                    sumStat.sellerPhone ==
+                            context.read<SellerViewModel>().sellerProfile!.phone
                         ? const SizedBox()
                         : Text(
                             sumStat.sellerName,
@@ -970,8 +970,8 @@ class _CardWithdraw extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    sumStat.sellerId ==
-                            context.read<SellerViewModel>().sellerProfile!.id
+                    sumStat.sellerPhone ==
+                            context.read<SellerViewModel>().sellerProfile!.phone
                         ? const SizedBox()
                         : const Text(
                             'Продавец:',
@@ -1002,8 +1002,8 @@ class _CardWithdraw extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    sumStat.sellerId ==
-                            context.read<SellerViewModel>().sellerProfile!.id
+                    sumStat.sellerPhone ==
+                            context.read<SellerViewModel>().sellerProfile!.phone
                         ? const SizedBox()
                         : Text(
                             sumStat.sellerName,

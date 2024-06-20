@@ -2,18 +2,11 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import '../../../domain/models/client/client_shop.dart';
-import '../../../domain/models/client_info.dart';
-import '../../../domain/models/client_statistics.dart';
 import '../../../domain/models/owner/report_cashback.dart';
-import '../../../domain/models/user_shop.dart';
 import '../../../size_config.dart';
 import '../../../string_extensions.dart';
-import '../../../view_models/client_home_view_model.dart';
-import '../../../widgets/empty_widget.dart';
-import '../../../widgets/logo_animated_widget.dart';
 
 class BusinessDetailsView extends StatefulWidget {
   @override
@@ -21,9 +14,9 @@ class BusinessDetailsView extends StatefulWidget {
 
   final ClientShop userShop;
   const BusinessDetailsView({
-    Key? key,
+    super.key,
     required this.userShop,
-  }) : super(key: key);
+  });
 }
 
 class _BusinessDetailsViewState extends State<BusinessDetailsView> {
@@ -60,8 +53,8 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
   @override
   Widget build(BuildContext context) {
     // stat.sort((a, b) => a.date!.compareTo(b.date!));
-    final DateFormat formatter = DateFormat('dd MMMM yyyy, EEEE');
-    final DateFormat sorter = DateFormat('dd MMMM yyyy');
+    final formatter = DateFormat('dd MMMM yyyy, EEEE');
+    final sorter = DateFormat('dd MMMM yyyy');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.userShop.name),
@@ -172,7 +165,7 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                     elements: mergedList,
                     groupBy: (element) {
                       print(widget.userShop.cashback);
-                      DateTime dates = DateTime.parse(element.date!);
+                      final dates = DateTime.parse(element.date);
                       return DateUtils.dateOnly(dates).toString();
                       // return DateTime(dates.year, dates.month, dates.day,
                       //         dates.hour, dates.minute)
@@ -194,7 +187,7 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: getH(14)),
                         child: Text(
-                          formatter.format(DateTime.parse(element.date!)),
+                          formatter.format(DateTime.parse(element.date)),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,
@@ -221,15 +214,15 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
 
 class _CardIncome extends StatelessWidget {
   const _CardIncome({
-    Key? key,
+    super.key,
     required this.sumCashback,
-  }) : super(key: key);
+  });
 
   final InlineCashbackAndWithdraw sumCashback;
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat timeFormatter = DateFormat.Hm();
+    final timeFormatter = DateFormat.Hm();
 
     return Container(
       // margin: EdgeInsets.symmetric(vertical: getW(6)),
@@ -307,11 +300,10 @@ class _CardIncome extends StatelessWidget {
                         horizontal: 10,
                         vertical: 3,
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             'Покупка',
                             style: TextStyle(
@@ -326,7 +318,7 @@ class _CardIncome extends StatelessWidget {
                     SizedBox(height: getH(10)),
                     Text(
                       timeFormatter.format(
-                        DateTime.parse(sumCashback.date.toString())
+                        DateTime.parse(sumCashback.date)
                             .add(const Duration(hours: 5)),
                       ),
                       style: TextStyle(
@@ -347,15 +339,15 @@ class _CardIncome extends StatelessWidget {
 
 class _CardOut extends StatelessWidget {
   const _CardOut({
-    Key? key,
+    super.key,
     required this.sumCashback,
-  }) : super(key: key);
+  });
 
   final InlineCashbackAndWithdraw sumCashback;
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat timeFormatter = DateFormat.Hm();
+    final timeFormatter = DateFormat.Hm();
 
     return Container(
       // margin: EdgeInsets.symmetric(vertical: getW(6)),
@@ -399,17 +391,16 @@ class _CardOut extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
-                        color: Color.fromRGBO(255, 144, 62, 1),
+                        color: const Color.fromRGBO(255, 144, 62, 1),
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
                         vertical: 3,
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             'Оплата',
                             style: TextStyle(
@@ -424,7 +415,7 @@ class _CardOut extends StatelessWidget {
                     SizedBox(height: getH(10)),
                     Text(
                       timeFormatter.format(
-                        DateTime.parse(sumCashback.date.toString())
+                        DateTime.parse(sumCashback.date)
                             .add(const Duration(hours: 5)),
                       ),
                       style: TextStyle(

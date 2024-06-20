@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../core/api/business_api.dart';
+import '../../core/api/seller_api.dart';
 import '../../domain/models/client/client_profile.dart';
 import '../../domain/models/owner/bonus_price.dart';
 
 class BusinessPaymentViewModel extends ChangeNotifier {
   final BusinessApi _businessApi = BusinessApi();
+  final SellerApi _sellerApi = SellerApi();
   bool isLoading = false;
   bool isCheckProfileLoading = false;
   ClientProfile? clientProfile;
@@ -40,7 +42,23 @@ class BusinessPaymentViewModel extends ChangeNotifier {
     String price,
   ) async {
     isLoading = true;
+    notifyListeners();
+
     final result = await _businessApi.payWithdraw(clientPhone, price);
+    isLoading = false;
+    notifyListeners();
+    return result;
+  }
+
+  Future<bool> payWithdrawForSeller(
+    // String shopId,
+    String clientPhone,
+    String price,
+  ) async {
+    isLoading = true;
+    notifyListeners();
+
+    final result = await _businessApi.payWithdrawForSeller(clientPhone, price);
     isLoading = false;
     notifyListeners();
     return result;
@@ -51,6 +69,18 @@ class BusinessPaymentViewModel extends ChangeNotifier {
   ) async {
     isCheckProfileLoading = true;
     final result = await _businessApi.getCashbackAmountBeforePay(phone);
+    clientProfile = result;
+    isCheckProfileLoading = false;
+    notifyListeners();
+    return result;
+  }
+
+  Future<ClientProfile> getCashbackAmountBeforePayForSeller(
+    String phone,
+  ) async {
+    isCheckProfileLoading = true;
+    notifyListeners();
+    final result = await _sellerApi.prepareForCashback(phone);
     clientProfile = result;
     isCheckProfileLoading = false;
     notifyListeners();

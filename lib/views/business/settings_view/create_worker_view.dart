@@ -85,11 +85,13 @@ MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
                 // ),
                 SizedBox(height: getH(20)),
                 TextFieldWidget(
+                  showLabel: true,
                   hintText: 'Имя',
                   controller: fistNameController,
                 ),
                 SizedBox(height: getH(20)),
                 TextFieldWidget(
+                  showLabel: true,
                   hintText: 'Фамилия',
                   controller: lastNameController,
                 ),

@@ -4,8 +4,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../domain/models/services/warehouse.dart';
 import '../../domain/models/services/warehouse_category.dart';
 import '../../domain/models/services/warehouse_item.dart';
+import '../../domain/models/services/warehouse_prixod.dart';
+import '../../domain/models/services/warehouse_prixod_create.dart';
 import '../../domain/models/services/warehouse_provider.dart';
 import '../../domain/models/services/warehouse_unit.dart';
+import '../../string_extensions.dart';
 import '../../utils/constants.dart';
 
 class WarehousesApi {
@@ -206,9 +209,66 @@ class WarehousesApi {
             'bar_code': barCode,
             'name': name,
             'remark': remark,
-            'lower': lower,
+            'lower': lower.removeWhitespace(),
           },
         ),
+      );
+      final result = response.data;
+
+      print('$result');
+      return true;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
+  }
+
+//prixod
+  Future<WarehousePrixod> getWarehousePrixodItems() async {
+    await _setDioHeader();
+
+    final response =
+        await _dio.get('${Constants.path}/v1/owner/warehouse/invoice');
+    // var bookingList = response.data as List;
+
+    final warehousePrixodItems =
+        WarehousePrixod.fromJson(response.data as Map<String, Object?>);
+
+    print('get warehouse prixod items');
+
+    return warehousePrixodItems;
+  }
+
+  Future<bool> createWarehousePrixod({
+    required String number,
+    required String date,
+    required String warehouseId,
+    required String providerId,
+    required List<WarehousePrixodCreate> products,
+  }) async {
+    await _setDioHeader();
+
+    final productsToSend = <String, String>{
+      'number': number.removeWhitespace(),
+      'date_at': date,
+      'warehouse_id': warehouseId,
+      'provider_id': providerId,
+    };
+
+    for (var i = 0; i < products.length; i++) {
+      productsToSend.addAll({
+        'product[$i][id]': products[i].productiId,
+        'product[$i][qty]': products[i].quantity,
+        'product[$i][unit_id]': products[i].unitId,
+        'product[$i][price]': products[i].price,
+        'product[$i][sell_price]': products[i].priceSell,
+      });
+    }
+
+    try {
+      final response = await _dio.post(
+        '${Constants.path}/v1/owner/warehouse/product',
+        data: FormData.fromMap(productsToSend),
       );
       final result = response.data;
 

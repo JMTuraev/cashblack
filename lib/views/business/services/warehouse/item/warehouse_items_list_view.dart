@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../string_extensions.dart';
 import '../../../../../view_models/sklad/sklad_view_model.dart';
 import '../../../../../widgets/logo_animated_widget.dart';
 import 'create_warehouse_item_view.dart';
@@ -105,7 +106,30 @@ class _WarehoueseItemsListViewState extends State<WarehoueseItemsListView> {
                             ),
                             Text(
                               // skladPrixods[index].model.warehouses.length.toString(),
-                              model.warehouseItems[index].lower.toString(),
+                              model.warehouseItems[index].lower
+                                  .toString()
+                                  .getFormattedNumber(),
+                              style: const TextStyle(
+                                color: Color(0xff34c85a),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              // skladPrixods[index].model.warehouses.length.toString(),
+                              'Баркод ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              // skladPrixods[index].model.warehouses.length.toString(),
+                              model.warehouseItems[index].barCode,
                               style: const TextStyle(
                                 color: Color(0xff34c85a),
                                 fontSize: 14,

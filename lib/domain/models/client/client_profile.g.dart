@@ -13,12 +13,13 @@ ClientProfile _$ClientProfileFromJson(Map<String, dynamic> json) =>
       nickname: json['nickname'] as String,
       firstName: json['first_name'] as String,
       lastName: json['last_name'] as String,
-      districtId: json['district_id'] as String?,
+      districtId: json['district_id'] == null
+          ? null
+          : District.fromJson(json['district_id'] as Map<String, dynamic>),
       total: json['total'] as String,
       balance: json['balance'] as String,
       withdraw: json['withdraw'] as String,
       amount: json['amount'] as String,
-      type: json['type'] as String,
     );
 
 Map<String, dynamic> _$ClientProfileToJson(ClientProfile instance) =>
@@ -33,5 +34,4 @@ Map<String, dynamic> _$ClientProfileToJson(ClientProfile instance) =>
       'balance': instance.balance,
       'withdraw': instance.withdraw,
       'amount': instance.amount,
-      'type': instance.type,
     };

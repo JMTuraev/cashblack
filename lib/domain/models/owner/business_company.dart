@@ -12,8 +12,8 @@ class BusinessCompany {
   final String inn;
   final String address;
   @JsonKey(name: 'p_seria')
-  final String passwordId;
-  final String pinfl;
+  final String? passwordId;
+  final String? pinfl;
   final District district;
   BusinessCompany({
     required this.id,

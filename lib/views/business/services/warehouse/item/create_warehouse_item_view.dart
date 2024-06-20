@@ -22,10 +22,19 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
+    final random = Random();
+    const min = 100000000;
+    const max = 999999999;
+    const min2 = 1000;
+    const max2 = 9999;
+    //  min + random.nextInt(max - min + 1);
     context.read<SkladViewModel>().clearWarehouseItemCreating();
     context.read<SkladViewModel>().warehouseItemBarcodeController.text =
-        Random().nextInt(999999999).toString() +
-            Random().nextInt(9999).toString();
+        // Random().nextInt(999999999).toString() +
+        //     Random().nextInt(9999).toString();
+        (min + random.nextInt(max - min + 1)).toString() +
+            (min2 + random.nextInt(max2 - min2 + 1)).toString();
+
     super.initState();
   }
 

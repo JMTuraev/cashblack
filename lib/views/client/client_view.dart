@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,13 +24,23 @@ class ClientView extends StatefulWidget {
 class _ClientViewState extends State<ClientView> {
   // int currentIndex = 0;
 
+  Timer? timer;
+
+
   @override
   void initState() {
     context.read<ClientSettingsViewModel>().getClientProfile();
     context.read<ClientDashboardViewModel>().getClientCategories();
     context.read<ClientDashboardViewModel>().getNotifications();
+
+     //auto check
+    // timer = Timer.periodic(
+    //   const Duration(seconds: 15),
+    //   (Timer t) => context.read<ClientSettingsViewModel>().getClientProfile(),
+    // );
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {

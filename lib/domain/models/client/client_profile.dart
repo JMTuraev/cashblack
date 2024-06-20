@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../common/district.dart';
+
 part 'client_profile.g.dart';
 
 @JsonSerializable()
@@ -13,12 +15,12 @@ class ClientProfile extends ChangeNotifier {
   @JsonKey(name: 'last_name')
   final String lastName;
   @JsonKey(name: 'district_id')
-  final String? districtId;
+  final District? districtId;
   final String total;
   final String balance;
   final String withdraw;
   final String amount;
-  final String type;
+  // final String type;
   ClientProfile({
     required this.id,
     required this.phone,
@@ -30,7 +32,7 @@ class ClientProfile extends ChangeNotifier {
     required this.balance,
     required this.withdraw,
     required this.amount,
-    required this.type,
+    // required this.type,
   });
 
   /// Generate Class from Map<String, Object?>

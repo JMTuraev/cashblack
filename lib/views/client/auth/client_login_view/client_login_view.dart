@@ -59,7 +59,7 @@ class _ClientLoginViewState extends State<ClientLoginView> {
                   'client',
                   '',
                 );
-        sendSMS
+        sendSMS == 'true'
             ? Navigator.of(context).push(
                 CupertinoPageRoute(
                   builder: (context) => ClientLoginVerifyView(
@@ -71,8 +71,12 @@ class _ClientLoginViewState extends State<ClientLoginView> {
             : showCupertinoDialog(
                 context: context,
                 builder: (context) {
-                  return const InfoAlertWidget(
-                    title: 'Это аккаунт сотрудника, проверьте номер телефона',
+                  return InfoAlertWidget(
+                    title: sendSMS == 'sms_error'
+                        ? 'Ошибка при отправке СМС, попробуйте позже'
+                        : (sendSMS == 'type_error'
+                            ? 'Это аккаунт сотрудника, проверьте номер телефона'
+                            : 'Сервер недоступен, попробуйте позже'),
                   );
                 },
               );
@@ -128,7 +132,7 @@ class _ClientLoginViewState extends State<ClientLoginView> {
             keyboardType: TextInputType.phone,
           ),
           SizedBox(
-            height: 30,
+            height: getH(48),
             child: Center(
               child: show && maskFormatter.isFill()
                   ? const Text(

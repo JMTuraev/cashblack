@@ -19,11 +19,13 @@ class BusinessLoginVerifyView extends StatefulWidget {
     required this.phone,
     required this.appsign,
     required this.promo,
+    required this.typeUser,
   });
 
   final String phone;
   final String appsign;
   final String promo;
+  final String typeUser;
 
   @override
   State<BusinessLoginVerifyView> createState() =>
@@ -133,7 +135,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                           'Имя',
                           'Фамилия',
                           '59',
-                          'owner',
+                          widget.typeUser,
                           'promo',
                         );
                     _animationController!.reset();
@@ -163,6 +165,7 @@ class _BusinessLoginVerifyViewState extends State<BusinessLoginVerifyView>
                         // context.read<BusinessLoginViewModel>().phone,
                         widget.phone,
                         otpCode ?? textController.text,
+                        widget.typeUser,
                       )
                       .then((value) async {
                     if (value != '') {

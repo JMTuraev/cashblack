@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/owner/business_company.dart';
 import '../../../size_config.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
@@ -13,8 +14,9 @@ import '../../../widgets/main_button_widget.dart';
 import '../create_company_view.dart';
 
 class EditCompanyView extends StatefulWidget {
-  const EditCompanyView({super.key});
+  final BusinessCompany company;
 
+  const EditCompanyView({super.key, required this.company});
   @override
   State<EditCompanyView> createState() => _EditCompanyViewState();
 }
@@ -27,6 +29,16 @@ class _EditCompanyViewState extends State<EditCompanyView> {
   final TextEditingController _address = TextEditingController();
   final TextEditingController _inn = TextEditingController();
   final TextEditingController _pinfl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _brandName.text = widget.company.name;
+    _passport.text = widget.company.passwordId ?? '';
+    _address.text = widget.company.address;
+    _inn.text = widget.company.inn;
+    _pinfl.text = widget.company.pinfl?? '';
+  }
 
   @override
   Widget build(BuildContext context) {

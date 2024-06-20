@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -12,6 +13,7 @@ import '../../../size_config.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
+import 'create_store_view/create_store_view.dart';
 
 class CreateCompanyView extends StatefulWidget {
   const CreateCompanyView({super.key});
@@ -294,14 +296,14 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                           textCapitalization: TextCapitalization.characters,
                           title: 'Серия',
                           maxlength: 2,
-                          validator: (value) {
-                            if (value == null ||
-                                value.isEmpty ||
-                                value.length < 2) {
-                              return 'Заполните';
-                            }
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   if (value == null ||
+                          //       value.isEmpty ||
+                          //       value.length < 2) {
+                          //     return 'Заполните';
+                          //   }
+                          //   return null;
+                          // },
                         ),
                       ),
                       const SizedBox(width: 6),
@@ -311,14 +313,14 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                           controller: _passportNumber,
                           title: 'Номер паспорта',
                           maxlength: 7,
-                          validator: (value) {
-                            if (value == null ||
-                                value.isEmpty ||
-                                value.length < 7) {
-                              return 'Должен быть 7 знаков';
-                            }
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   if (value == null ||
+                          //       value.isEmpty ||
+                          //       value.length < 7) {
+                          //     return 'Должен быть 7 знаков';
+                          //   }
+                          //   return null;
+                          // },
                         ),
                       ),
                     ],
@@ -340,12 +342,12 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                     controller: _pinfl,
                     title: 'ПИНФЛ',
                     maxLength: 13,
-                    validator: (value) {
-                      if (value == null || value.isEmpty || value.length < 13) {
-                        return 'Должен быть 13 знаков';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value == null || value.isEmpty || value.length < 13) {
+                    //     return 'Должен быть 13 знаков';
+                    //   }
+                    //   return null;
+                    // },
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -411,6 +413,11 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                                 .read<BusinessDashboardViewModel>()
                                 .getBusinessCompany();
                             Navigator.pop(context);
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => const CreateStoreView(),
+                              ),
+                            );
                           } else {
                             print('Ошибка сервера');
                           }

@@ -8,11 +8,12 @@ import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_payment_view_model.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/main_button_widget.dart';
+import '../../seller/seller_payment_success_view.dart';
 import 'payment_phone_view.dart';
 import 'payment_success_view.dart';
 
-class PaymentClientView extends StatefulWidget {
-  const PaymentClientView({
+class PaymentClientViewForSeller extends StatefulWidget {
+  const PaymentClientViewForSeller({
     super.key,
     required this.code,
     required this.shopId,
@@ -24,19 +25,21 @@ class PaymentClientView extends StatefulWidget {
   final bool isSeller;
 
   @override
-  State<PaymentClientView> createState() => _PaymentClientViewState();
+  State<PaymentClientViewForSeller> createState() =>
+      _PaymentClientViewForSellerState();
 }
 
-class _PaymentClientViewState extends State<PaymentClientView> {
+class _PaymentClientViewForSellerState
+    extends State<PaymentClientViewForSeller> {
   // late final Future<ClientProfile> profile;
   @override
   void initState() {
     // profile = context
-    //     .read<PaymentClientViewModel>()
+    //     .read<PaymentClientViewForSellerModel>()
     //     .getUserFromBarcode(widget.code, widget.shopId);
     context
         .read<BusinessPaymentViewModel>()
-        .getCashbackAmountBeforePay(widget.code);
+        .getCashbackAmountBeforePayForSeller(widget.code);
     super.initState();
   }
 
@@ -255,9 +258,13 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                     Container(
                                       child: MainButtonWidget(
                                         color: const Color.fromRGBO(
-                                            255, 144, 62, 1),
+                                          255,
+                                          144,
+                                          62,
+                                          1,
+                                        ),
                                         isLoading: isSmallLoading,
-                                        text: 'Использовать кэшбек',
+                                        text: 'Использовать кэшбекs',
                                         method: () async {
                                           isWithdraw = true;
                                           if (_formKey.currentState!
@@ -266,44 +273,34 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                             await context
                                                 .read<
                                                     BusinessPaymentViewModel>()
-                                                .setShopBeforeCashbackOrWithdraw(
-                                                  selectedShop.toString(),
+                                                .payWithdrawForSeller(
+                                                  // widget.isSeller
+                                                  //     ? widget.shopId.toString()
+                                                  //     : selectedShop.toString(),
+                                                  // maskFormatter.getUnmaskedText(),
+                                                  // phoneController.text.phoneFormatterForCall().removeForPhone(),
+                                                  widget.code
+                                                      .removeWhitespace()
+                                                      .removeForPhone(),
+                                                  priceController.text,
                                                 )
-                                                .then((value) async {
+                                                .then((value) {
                                               if (value) {
-                                                await context
-                                                    .read<
-                                                        BusinessPaymentViewModel>()
-                                                    .payWithdraw(
-                                                      // widget.isSeller
-                                                      //     ? widget.shopId.toString()
-                                                      //     : selectedShop.toString(),
-                                                      // maskFormatter.getUnmaskedText(),
-                                                      // phoneController.text.phoneFormatterForCall().removeForPhone(),
-                                                      widget.code
-                                                          .removeWhitespace()
-                                                          .removeForPhone(),
-                                                      priceController.text,
-                                                    )
-                                                    .then((value) {
-                                                  if (value) {
-                                                    Navigator.of(context)
-                                                        .pushAndRemoveUntil(
-                                                      CupertinoPageRoute(
-                                                        builder: (context) =>
-                                                            const PaymentSuccessView(
-                                                          title: 'Оплачено',
-                                                        ),
-                                                      ),
-                                                      (route) => false,
-                                                    );
-                                                  }
-                                                });
+                                                Navigator.of(context)
+                                                    .pushAndRemoveUntil(
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        const SellerPaymentSuccessView(
+                                                      title: 'Оплачено',
+                                                    ),
+                                                  ),
+                                                  (route) => false,
+                                                );
                                               }
                                             });
                                             // await context
                                             //     .read<
-                                            //         PaymentClientViewModel>()
+                                            //         PaymentClientViewForSellerModel>()
                                             //     .payForGoods(
                                             //       context,
                                             //       priceController.text

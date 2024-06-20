@@ -19,7 +19,6 @@ import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/show_modal.dart';
 import '../create_company_view.dart';
 import '../create_store_view/create_store_view.dart';
-import '../create_store_view/edit_store_view.dart';
 import '../settings_view/payment_view.dart';
 import '../settings_view/payments_history_view.dart';
 
@@ -320,38 +319,49 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                   foregroundColor: MaterialStateProperty.all(Colors.white),
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => EditStoreView(
-                        shop: businessShops[currentShopIndex],
+                  // Navigator.of(context).push(
+                  //   CupertinoPageRoute(
+                  //     builder: (context) => EditStoreView(
+                  //       shop: businessShops[currentShopIndex],
+                  //     ),
+                  //   ),
+                  // );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      businessShops.isNotEmpty
+                          ? businessShops[currentShopIndex].name
+                          : '',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  );
-                },
-                child: Text(
-                  businessShops.isNotEmpty
-                      ? businessShops[currentShopIndex].name
-                      : '',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
+                    const SizedBox(
+                      width: 6,
+                    ),
+                    businessShops.isNotEmpty
+                        ? Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 2,
+                              horizontal: 4,
+                            ),
+                            decoration: const BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            child: Text(
+                              '${double.parse(businessShops[currentShopIndex].percent).toStringAsFixed(0)}%',
+                            ),
+                          )
+                        : const SizedBox(),
+                  ],
                 ),
               ),
-              // const SizedBox(height: 14),
-              // const Text(
-              //   'Ваш баланс',
-              //   style: TextStyle(
-              //     fontSize: 16,
-              //     fontWeight: FontWeight.w500,
-              //   ),
-              // ),
-              // const SizedBox(height: 14),
-
-              // SizedBox(height: getH(18)),
-              //TODO apple
-              // 1 == 1
-
               !context.watch<BusinessSettingsViewModel>().isLoading
                   ? Column(
                       children: [
