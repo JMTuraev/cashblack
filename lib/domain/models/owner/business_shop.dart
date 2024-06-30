@@ -18,6 +18,7 @@ class BusinessShop {
   @JsonKey(name: 'company_id')
   final BusinessCompanyLite businessCompanyLite;
   final List<Seller> sellers;
+  final bool status;
 
   BusinessShop({
     required this.id,
@@ -30,6 +31,7 @@ class BusinessShop {
     required this.businessCompanyLite,
     required this.amount,
     required this.sellers,
+    required this.status,
   });
 
   /// Generate Class from Map<String, Object?>

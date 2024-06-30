@@ -75,10 +75,38 @@ class ClientApi {
     }
   }
 
-  Future<List<ClientCategory>> getPaidCategories() async {
+  Future<List<ClientCategory>> getPaidCategoriesOld() async {
     await _setDioHeader();
 
     final response = await _dio.get('${Constants.path}/v1/report/by-category');
+    final clientCategories = (response.data['data'] as List)
+        .map((x) => ClientCategory.fromJson(x as Map<String, Object?>))
+        .toList();
+
+    print('get client categories ${clientCategories.length}');
+
+    return clientCategories;
+  }
+
+  Future<List<ClientCategory>> getPaidCategoriesNew() async {
+    await _setDioHeader();
+
+    final response =
+        await _dio.get('${Constants.path}/v1/client/report/by_category');
+    final clientCategories = (response.data['data'] as List)
+        .map((x) => ClientCategory.fromJson(x as Map<String, Object?>))
+        .toList();
+
+    print('get client categories ${clientCategories.length}');
+
+    return clientCategories;
+  }
+
+  Future<List<ClientCategory>> getPaidShopsNew() async {
+    await _setDioHeader();
+
+    final response =
+        await _dio.get('${Constants.path}/v1/client/report/by_shops');
     final clientCategories = (response.data['data'] as List)
         .map((x) => ClientCategory.fromJson(x as Map<String, Object?>))
         .toList();

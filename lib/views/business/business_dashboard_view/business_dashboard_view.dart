@@ -15,10 +15,12 @@ import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_payment_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_statistics_view_model.dart';
+import '../../../widgets/info_alert_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/show_modal.dart';
 import '../create_company_view.dart';
 import '../create_store_view/create_store_view.dart';
+import '../create_store_view/edit_store_view.dart';
 import '../settings_view/payment_view.dart';
 import '../settings_view/payments_history_view.dart';
 
@@ -240,6 +242,121 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                                       currentShopIndex = index;
                                     });
                                   },
+                                  onLongPress: () {
+                                    showModal(context, [
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              shop.name,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            GestureDetector(
+                                              onTap: () {
+                                                if (!context
+                                                    .read<
+                                                        BusinessStatisticsViewModel>()
+                                                    .shopIdsForHideOrShow
+                                                    .contains(shop.id)) {
+                                                  currentShopIndex = 0;
+                                                  Navigator.pop(context);
+                                                  context
+                                                      .read<
+                                                          BusinessDashboardViewModel>()
+                                                      .hideOrShowShop(
+                                                        shop.id,
+                                                        0,
+                                                      )
+                                                      .then((value) {
+                                                    context
+                                                        .read<
+                                                            BusinessDashboardViewModel>()
+                                                        .getBusinessShops();
+                                                  });
+                                                } else {
+                                                  showCupertinoDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return const InfoAlertWidget(
+                                                        title:
+                                                            'Это магазин с клиентами, скрытие не предусмотрено',
+                                                      );
+                                                    },
+                                                  );
+                                                }
+                                              },
+                                              onDoubleTap: () {},
+                                              child: Container(
+                                                width: double.infinity,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 30,
+                                                  vertical: 15,
+                                                ),
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.blueGrey,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(
+                                                      10,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: const Text(
+                                                  'Скрыть магазин',
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 20),
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                Navigator.of(context).push(
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        EditStoreView(
+                                                      shop: shop,
+                                                      fromShortcut: true,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              onDoubleTap: () {},
+                                              child: Container(
+                                                width: double.infinity,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 30,
+                                                  vertical: 15,
+                                                ),
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.green,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(
+                                                      10,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: const Text(
+                                                  'Изменить магазин',
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 50),
+                                          ],
+                                        ),
+                                      ),
+                                    ]);
+                                  },
                                   child: Container(
                                     height: getH(65),
                                     width: getH(65),
@@ -318,15 +435,16 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                 style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all(Colors.white),
                 ),
-                onPressed: () {
-                  // Navigator.of(context).push(
-                  //   CupertinoPageRoute(
-                  //     builder: (context) => EditStoreView(
-                  //       shop: businessShops[currentShopIndex],
-                  //     ),
-                  //   ),
-                  // );
-                },
+                // onPressed: () {
+                // Navigator.of(context).push(
+                //   CupertinoPageRoute(
+                //     builder: (context) => EditStoreView(
+                //       shop: businessShops[currentShopIndex],
+                //     ),
+                //   ),
+                // );
+                // },
+                onPressed: null,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

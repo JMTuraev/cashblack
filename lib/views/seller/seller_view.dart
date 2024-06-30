@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -25,9 +27,18 @@ class SellerView extends StatefulWidget {
   State<SellerView> createState() => _SellerViewState();
 }
 
-class _SellerViewState extends State<SellerView> {
+class _SellerViewState extends State<SellerView>with WidgetsBindingObserver {
+ Timer? timer;
+  
   @override
   void initState() {
+
+ //todo auto check
+    timer = Timer.periodic(
+      const Duration(seconds: 15),
+      (Timer t) => context.read<SellerViewModel>().getSellerProfile(),
+    );
+
     // context.read<BusinessDashboardViewModel>().getBusinessCompany();
     // context.read<BusinessDashboardViewModel>().getBusinessShops();
     context.read<BusinessNotificationsViewModel>().getPrices();

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,6 +21,7 @@ import '../../../view_models/business/business_view_model.dart';
 import '../../../view_models/create_store_view_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
+import '../../../widgets/public_offer_widget.dart';
 import '../business_view.dart';
 
 class CreateStoreView extends StatefulWidget {
@@ -290,11 +292,12 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                         }),
                       ),
                       const Text(
-                        'Я принимаю условия оферты',
+                        'Я принимаю',
                         style: TextStyle(
                           fontSize: 16,
                         ),
                       ),
+                      const PublicOfferWidget(fontSize: 16,),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -395,6 +398,7 @@ class _CashbackWidget extends StatelessWidget {
           ),
           counterText: '',
           hintText: 'Кэшбек',
+          labelText: 'Кэшбек',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(20),
@@ -522,6 +526,7 @@ class _BrandNameWidget extends StatelessWidget {
           ),
         ),
         hintText: 'Бренд',
+        labelText: 'Бренд',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),
@@ -561,6 +566,7 @@ class _WaymarkNameWidget extends StatelessWidget {
           ),
         ),
         hintText: 'Ориентир',
+        labelText: 'Ориентир',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),
@@ -600,6 +606,7 @@ class _AddressNameWidget extends StatelessWidget {
           ),
         ),
         hintText: 'Адрес',
+        labelText: 'Адрес',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),

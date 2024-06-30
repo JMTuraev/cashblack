@@ -14,6 +14,7 @@ class BusinessDashboardViewModel extends ChangeNotifier {
   bool isWeeklyLoading = false;
   BusinessCompany? businessCompany;
   List<BusinessShop>? businessShops = [];
+  List<BusinessShop>? businessShopsAll = [];
   List<WeeklyStat> weeklyStatistics = [];
   double maxSum = 10;
 
@@ -23,6 +24,7 @@ class BusinessDashboardViewModel extends ChangeNotifier {
   Future<void> clearData() async {
     businessCompany = null;
     businessShops = [];
+    businessShopsAll = [];
     weeklyStatistics = [];
     maxSum = 10;
     hasCompany = false;
@@ -69,9 +71,13 @@ class BusinessDashboardViewModel extends ChangeNotifier {
     try {
       isGettingShops = true;
       businessShops = await _businessApi.getBusinessShops();
+      businessShopsAll = [...businessShops ?? []];
+      businessShops =
+          businessShops?.where((element) => element.status == true).toList();
       hasShops = true;
     } on Exception catch (e) {
       businessShops = [];
+      businessShopsAll = [];
       hasShops = false;
     }
     // if (businessShops == null) {
@@ -164,6 +170,20 @@ class BusinessDashboardViewModel extends ChangeNotifier {
       category,
       districtId,
       address,
+    );
+    isLoading = false;
+    notifyListeners();
+    return res;
+  }
+
+  Future<bool> hideOrShowShop(
+    int shopId,
+    int status,
+  ) async {
+    isLoading = true;
+    final res = await _businessApi.hideOrShowShop(
+      shopId,
+      status,
     );
     isLoading = false;
     notifyListeners();

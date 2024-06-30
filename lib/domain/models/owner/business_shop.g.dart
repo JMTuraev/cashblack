@@ -20,6 +20,7 @@ BusinessShop _$BusinessShopFromJson(Map<String, dynamic> json) => BusinessShop(
       sellers: (json['sellers'] as List<dynamic>)
           .map((e) => Seller.fromJson(e as Map<String, dynamic>))
           .toList(),
+      status: json['status'] as bool,
     );
 
 Map<String, dynamic> _$BusinessShopToJson(BusinessShop instance) =>
@@ -34,6 +35,7 @@ Map<String, dynamic> _$BusinessShopToJson(BusinessShop instance) =>
       'category_shop_id': instance.categoryShopId,
       'company_id': instance.businessCompanyLite,
       'sellers': instance.sellers,
+      'status': instance.status,
     };
 
 BusinessCompanyLite _$BusinessCompanyLiteFromJson(Map<String, dynamic> json) =>

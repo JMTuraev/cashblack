@@ -54,7 +54,8 @@ class TextFieldWidget extends StatelessWidget {
             Radius.circular(radius ?? 20),
           ),
         ),
-        labelText: showLabel == true ? hintText : null,
+        // labelText: showLabel == true ? hintText : null,
+        labelText: hintText,
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(radius ?? 20),

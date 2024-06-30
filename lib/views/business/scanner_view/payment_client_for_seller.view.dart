@@ -182,6 +182,7 @@ class _PaymentClientViewForSellerState
                                     ),
                                     counterText: '',
                                     hintText: 'Сумма покупки',
+                                    labelText: 'Сумма покупки',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(20),

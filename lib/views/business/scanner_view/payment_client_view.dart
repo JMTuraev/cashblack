@@ -179,6 +179,7 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                     ),
                                     counterText: '',
                                     hintText: 'Сумма покупки',
+                                    labelText: 'Сумма покупки',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(20),
@@ -255,7 +256,11 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                     Container(
                                       child: MainButtonWidget(
                                         color: const Color.fromRGBO(
-                                            255, 144, 62, 1),
+                                          255,
+                                          144,
+                                          62,
+                                          1,
+                                        ),
                                         isLoading: isSmallLoading,
                                         text: 'Использовать кэшбек',
                                         method: () async {

@@ -13,6 +13,7 @@ import '../../../size_config.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
+import '../../widgets/public_offer_widget.dart';
 import 'create_store_view/create_store_view.dart';
 
 class CreateCompanyView extends StatefulWidget {
@@ -362,11 +363,12 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                         },
                       ),
                       const Text(
-                        'Я принимаю условия оферты',
+                        'Я принимаю',
                         style: TextStyle(
                           fontSize: 16,
                         ),
                       ),
+                       const PublicOfferWidget(fontSize: 16,),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -472,6 +474,7 @@ class _NumberTextFieldWidget extends StatelessWidget {
         ),
         counterText: '',
         hintText: title,
+        labelText: title,
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),
@@ -616,6 +619,7 @@ class GenericTextFieldWidget extends StatelessWidget {
           ),
         ),
         hintText: title,
+        labelText: title,
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),

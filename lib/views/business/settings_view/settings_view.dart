@@ -350,8 +350,9 @@ class _BrandCardWidget extends StatelessWidget {
         Navigator.of(context).push(
           CupertinoPageRoute(
             builder: (context) => CompaniesListView(
-              shops: context.read<BusinessDashboardViewModel>().businessShops ??
-                  [],
+              shops:
+                  context.read<BusinessDashboardViewModel>().businessShopsAll ??
+                      [],
             ),
           ),
         );
@@ -383,20 +384,22 @@ class _BrandCardWidget extends StatelessWidget {
               ),
             ),
             SizedBox(width: getW(18)),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _SimpleTextWidget(
-                  title: company.name,
-                ),
-                SizedBox(height: getH(4)),
-                Text(
-                  company.address,
-                  style: const TextStyle(fontSize: 15),
-                ),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _SimpleTextWidget(
+                    title: company.name,
+                  ),
+                  SizedBox(height: getH(4)),
+                  Text(
+                    company.address,
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
             ),
-            const Spacer(),
+            SizedBox(width: getW(10)),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.end,

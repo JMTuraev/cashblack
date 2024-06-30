@@ -43,6 +43,7 @@ class MultilineTextFieldWidget extends StatelessWidget {
           ),
         ),
         hintText: hintText,
+        labelText: hintText,
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),

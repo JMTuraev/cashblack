@@ -149,6 +149,7 @@ class NumberTextFieldWidget extends StatelessWidget {
         ),
         counterText: '',
         hintText: title,
+        labelText: title,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),

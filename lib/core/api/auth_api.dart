@@ -80,14 +80,14 @@ class AuthApi {
     _dio.options.headers['content-Type'] = 'multipart/form-data';
     // _dio.options.headers['Authorization'] = token;
 
-    final smsCode = code;
+    var smsCode = code;
 
-    // if (phone == '000000050') {
-    //   smsCode = '400000';
-    // }
-    // if (phone == '000000051') {
-    //   smsCode = '400000';
-    // }
+    if (phone == '000000050') {
+      smsCode = '400000';
+    }
+    if (phone == '000000051') {
+      smsCode = '400000';
+    }
 
     try {
       final response = await _dio.post(

@@ -11,8 +11,8 @@ class ClientCategory {
   final String title;
   final dynamic logo;
   @JsonKey(name: 'shop_count')
-  final int count;
-  final List<ClientShop> shops;
+  int count;
+  List<ClientShop> shops;
   ClientCategory({
     required this.id,
     required this.name,

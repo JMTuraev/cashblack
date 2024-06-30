@@ -19,27 +19,38 @@ class ImageViewWidget extends StatelessWidget {
       child: SizedBox(
         child: GestureDetector(
           onTap: onTap,
-          child: ClipRRect(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            borderRadius: BorderRadius.circular(100),
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
-              fit: BoxFit.cover,
-              height: 150,
-              width: 150,
-              errorWidget: (context, url, error) => DottedBorder(
-                borderType: BorderType.RRect,
-                radius: const Radius.circular(100),
-                dashPattern: const [3, 3, 3, 3],
-                color: Colors.white,
-                child: const Center(
-                  child: Icon(
-                    Icons.home_repair_service_rounded,
-                    size: 100,
+          child: Stack(
+            children: [
+              ClipRRect(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                borderRadius: BorderRadius.circular(100),
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.cover,
+                  height: 150,
+                  width: 150,
+                  errorWidget: (context, url, error) => DottedBorder(
+                    borderType: BorderType.RRect,
+                    radius: const Radius.circular(100),
+                    dashPattern: const [3, 3, 3, 3],
+                    color: Colors.white,
+                    child: const Center(
+                      child: Icon(
+                        Icons.home_repair_service_rounded,
+                        size: 100,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+              const Positioned(
+                right: 0,
+                bottom: 0,
+                child: Icon(
+                  Icons.edit,
+                ),
+              ),
+            ],
           ),
         ),
       ),

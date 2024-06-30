@@ -33,11 +33,11 @@ class _ClientViewState extends State<ClientView> {
     context.read<ClientDashboardViewModel>().getClientCategories();
     context.read<ClientDashboardViewModel>().getNotifications();
 
-     //auto check
-    // timer = Timer.periodic(
-    //   const Duration(seconds: 15),
-    //   (Timer t) => context.read<ClientSettingsViewModel>().getClientProfile(),
-    // );
+     //todo auto check
+    timer = Timer.periodic(
+      const Duration(seconds: 15),
+      (Timer t) => context.read<ClientSettingsViewModel>().getClientProfile(),
+    );
     super.initState();
   }
 

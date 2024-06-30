@@ -14,10 +14,13 @@ class BusinessStatisticsViewModel extends ChangeNotifier {
 
   List<ReportCashbackClient> clients = [];
 
+  List shopIdsForHideOrShow = [];
+
   Future<void> getStats() async {
     isLoading = true;
     mergedList.clear();
     cashbackAndWithdraws = await _businessApi.getCashbackStatistics();
+
     // mergedList = cashbackAndWithdraws.first.cashback;
     // cashbackAndWithdraws.forEach((element) {
     //   mergedList.addAll(element.cashback);
@@ -27,7 +30,13 @@ class BusinessStatisticsViewModel extends ChangeNotifier {
       mergedList
         ..addAll(element.withdraw)
         ..addAll(element.cashback);
+
+      for (final el in element.cashback) {
+        shopIdsForHideOrShow.add(el.shopId);
+      }
     }
+
+    print(shopIdsForHideOrShow);
 
     mergedList.sort(
       (a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)),

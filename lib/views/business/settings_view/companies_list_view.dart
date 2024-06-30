@@ -1,10 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../domain/models/owner/business_shop.dart';
 import '../../../size_config.dart';
+import '../../../view_models/business/business_dashboard_view_model.dart';
+import '../../../view_models/business/business_statistics_view_model.dart';
+import '../../../widgets/info_alert_widget.dart';
 import '../create_store_view/edit_store_view.dart';
 
 /// {@template companies_list_view}
@@ -57,10 +60,19 @@ class ShopCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _BorderContainerWidget(
-      child: GestureDetector(
-        onTap: () {},
-        onDoubleTap: () {},
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: (context) => EditStoreView(
+              shop: shop,
+              fromShortcut: false,
+            ),
+          ),
+        );
+      },
+      onDoubleTap: () {},
+      child: _BorderContainerWidget(
         child: Row(
           children: [
             ClipRRect(
@@ -81,40 +93,88 @@ class ShopCardWidget extends StatelessWidget {
               ),
             ),
             SizedBox(width: getW(18)),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _SimpleTextWidget(
-                  title: shop.name,
-                ),
-                SizedBox(height: getH(4)),
-                Text(
-                  shop.address,
-                  style: const TextStyle(fontSize: 15),
-                ),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _SimpleTextWidget(
+                    title: shop.name,
+                  ),
+                  SizedBox(height: getH(4)),
+                  Text(
+                    shop.address,
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
             ),
-            const Spacer(),
+            SizedBox(width: getW(10)),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 isBusiness
-                    ? GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              builder: (context) => EditStoreView(
-                                shop: shop,
-                              ),
-                            ),
-                          );
-                        },
-                        child: SvgPicture.asset(
-                          'assets/svg/edit.svg',
-                          height: getH(24),
-                          width: getW(24),
+                    ? CupertinoSwitch(
+                        activeColor: const Color.fromRGBO(
+                          103,
+                          206,
+                          103,
+                          1,
                         ),
+                        thumbColor: Colors.white,
+                        trackColor: const Color.fromRGBO(57, 57, 61, 1),
+                        value: shop.status,
+                        // value: true,
+                        onChanged: (value) {
+                          print(value);
+                          if ((!value &&
+                                  !context
+                                      .read<BusinessStatisticsViewModel>()
+                                      .shopIdsForHideOrShow
+                                      .contains(shop.id)) ||
+                              value) {
+                            context
+                                .read<BusinessDashboardViewModel>()
+                                .hideOrShowShop(
+                                  shop.id,
+                                  value == true ? 1 : 0,
+                                )
+                                .then((value) {
+                              context
+                                  .read<BusinessDashboardViewModel>()
+                                  .getBusinessShops()
+                                  .then((value) {
+                                Navigator.pop(context);
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation1, animation2) =>
+                                            CompaniesListView(
+                                      shops: context
+                                              .read<
+                                                  BusinessDashboardViewModel>()
+                                              .businessShopsAll ??
+                                          [],
+                                    ),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
+                                  ),
+                                );
+                              });
+                            });
+                          } else {
+                            showCupertinoDialog(
+                              context: context,
+                              builder: (context) {
+                                return const InfoAlertWidget(
+                                  title:
+                                      'Это магазин с клиентами, скрытие не предусмотрено',
+                                );
+                              },
+                            );
+                          }
+                        },
                       )
                     : const SizedBox(),
               ],

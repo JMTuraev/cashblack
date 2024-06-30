@@ -181,6 +181,7 @@ class PaymentPhoneView extends StatelessWidget {
                         ),
                         filled: false,
                         hintText: "+998",
+                        labelText: "Телефон",
                       ),
                       inputFormatters: [maskFormatter],
                       autocorrect: false,
@@ -212,6 +213,7 @@ class PaymentPhoneView extends StatelessWidget {
                           ),
                         ),
                         hintText: 'Сумма покупки',
+                        labelText: 'Сумма покупки',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(
                             Radius.circular(20),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 
 import '../../core/api/client_api.dart';
@@ -22,14 +24,17 @@ class ClientDashboardViewModel extends ChangeNotifier {
 
   Future<void> getClientCategories() async {
     isLoading = true;
-    clientCategories = await _clientApi.getPaidCategories();
+    // await _clientApi.getPaidCategoriesNew();
+    // await _clientApi.getPaidShopsNew();
+
+    clientCategories = await _clientApi.getPaidCategoriesOld();
     final filteredData = clientCategories.map((category) {
       final filteredShops = category.shops.where((shop) {
-        return shop.cashback.isNotEmpty;
+        return shop.cashback.isNotEmpty || shop.withdraw.isNotEmpty;
       }).toList();
 
       if (filteredShops.isNotEmpty) {
-        return ClientCategory(
+        final cc = ClientCategory(
           id: category.id,
           name: category.name,
           title: category.title,
@@ -37,6 +42,11 @@ class ClientDashboardViewModel extends ChangeNotifier {
           count: category.count,
           shops: category.shops,
         );
+        cc
+          ..shops =
+              cc.shops.where((element) => element.cashback.isNotEmpty).toList()
+          ..count = cc.shops.length;
+        return cc;
       }
       return ClientCategory(
         id: -1,
@@ -50,6 +60,8 @@ class ClientDashboardViewModel extends ChangeNotifier {
 
     clientCategories =
         filteredData.where((element) => element.id != -1).toList();
+
+    inspect(clientCategories);
 
     isLoading = false;
     notifyListeners();

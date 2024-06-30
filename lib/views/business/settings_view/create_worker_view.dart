@@ -64,6 +64,7 @@ MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
                       ),
                     ),
                     hintText: '+998',
+                    labelText: 'Телефон',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(20),

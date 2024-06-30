@@ -347,6 +347,36 @@ class BusinessApi {
     }
   }
 
+  Future<bool> hideOrShowShop(
+    int shopId,
+    int status,
+  ) async {
+    final token = await _flutterSecureStorage.read(key: 'token');
+
+    final headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': token!,
+    };
+    final request = http.Request(
+      'PUT',
+      Uri.parse('${Constants.path}/v1/owner/shop/$shopId'),
+    );
+    request.bodyFields = {
+      'status': status.toString(),
+    };
+    request.headers.addAll(headers);
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    } else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
+
   Future<bool> createSeller(
     String phone,
     String nickname,

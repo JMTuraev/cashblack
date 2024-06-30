@@ -16,14 +16,17 @@ import '../../../view_models/business/business_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/image_view_widget.dart';
 import '../../../widgets/main_button_widget.dart';
+import '../settings_view/companies_list_view.dart';
 
 class EditStoreView extends StatefulWidget {
   const EditStoreView({
     super.key,
     required this.shop,
+    required this.fromShortcut,
   });
 
   final BusinessShop shop;
+  final bool fromShortcut;
 
   @override
   State<EditStoreView> createState() => _EditStoreViewState();
@@ -55,8 +58,33 @@ class _EditStoreViewState extends State<EditStoreView> {
           .uploadShopAvatar(File(pickedFile.path), widget.shop.id)
           .then((value) {
         if (value) {
-          context.read<BusinessDashboardViewModel>().getBusinessShops();
-          Navigator.pop(context);
+          // context.read<BusinessDashboardViewModel>().getBusinessShops();
+          // Navigator.pop(context);
+
+          context
+              .read<BusinessDashboardViewModel>()
+              .getBusinessShops()
+              .then((value) {
+            Navigator.pop(context);
+            if (!widget.fromShortcut) {
+              print('shortuc bilan emas');
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      CompaniesListView(
+                    shops: context
+                            .read<BusinessDashboardViewModel>()
+                            .businessShopsAll ??
+                        [],
+                  ),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            }
+          });
         }
       });
     }
@@ -145,8 +173,40 @@ class _EditStoreViewState extends State<EditStoreView> {
                         if (value) {
                           context
                               .read<BusinessDashboardViewModel>()
-                              .getBusinessShops();
-                          Navigator.pop(context);
+                              .getBusinessShops()
+                              .then((value) {
+                            Navigator.pop(context);
+                            if (!widget.fromShortcut) {
+                              print('shortuc bilan emas');
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation1, animation2) =>
+                                          CompaniesListView(
+                                    shops: context
+                                            .read<BusinessDashboardViewModel>()
+                                            .businessShopsAll ??
+                                        [],
+                                  ),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
+                                ),
+                              );
+                            }
+                          });
+
+                          // Navigator.of(context).push(
+                          //   CupertinoPageRoute(
+                          //     builder: (context) => CompaniesListView(
+                          //       shops: context
+                          //               .read<BusinessDashboardViewModel>()
+                          //               .businessShops ??
+                          //           [],
+                          //     ),
+                          //   ),
+                          // );
                         } else {
                           print('xato');
                         }
@@ -191,6 +251,7 @@ class _CashbackWidget extends StatelessWidget {
         ),
         counterText: '',
         hintText: 'Кэшбек',
+        labelText: 'Кэшбек',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),
@@ -318,6 +379,7 @@ class _BrandNameWidget extends StatelessWidget {
           ),
         ),
         hintText: 'Бренд',
+        labelText: 'Бренд',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),
@@ -357,6 +419,7 @@ class _WaymarkNameWidget extends StatelessWidget {
           ),
         ),
         hintText: 'Ориентир',
+        labelText: 'Ориентир',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),
@@ -396,6 +459,7 @@ class _AddressNameWidget extends StatelessWidget {
           ),
         ),
         hintText: 'Адрес',
+        labelText: 'Адрес',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20),

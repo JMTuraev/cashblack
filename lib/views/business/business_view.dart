@@ -40,10 +40,10 @@ class _BusinessViewState extends State<BusinessView>
     super.initState();
 
     //todo auto check
-    // timer = Timer.periodic(
-    //   const Duration(seconds: 15),
-    //   (Timer t) => context.read<BusinessSettingsViewModel>().getOwnerProfile(),
-    // );
+    timer = Timer.periodic(
+      const Duration(seconds: 15),
+      (Timer t) => context.read<BusinessSettingsViewModel>().getOwnerProfile(),
+    );
 
     // checkIsSeller() == true ? print('yes') : print('no');
     context.read<BusinessSettingsViewModel>().getOwnerProfile(); // profil
@@ -64,7 +64,11 @@ class _BusinessViewState extends State<BusinessView>
             .read<BusinessDashboardViewModel>()
             .getBusinessShops()
             .then((value) {
-          if (context.read<BusinessDashboardViewModel>().hasShops) {
+          if (context.read<BusinessDashboardViewModel>().hasShops &&
+              context
+                  .read<BusinessDashboardViewModel>()
+                  .businessShops!
+                  .isNotEmpty) {
 //
             context.read<BusinessDashboardViewModel>().getWeeklyStatistics(
                   context
