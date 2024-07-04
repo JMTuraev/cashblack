@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,7 @@ import '../../view_models/business/business_settings_view_model.dart';
 import '../../view_models/business/business_statistics_view_model.dart';
 import '../../view_models/business/business_view_model.dart';
 import '../../widgets/logo_animated_widget.dart';
+import '../select_type_view/select_type_view.dart';
 import 'business_dashboard_view/business_dashboard_view.dart';
 import 'scanner_view/barcode_scanner_view.dart';
 import 'scanner_view/freezed_view.dart';
@@ -35,6 +37,32 @@ class _BusinessViewState extends State<BusinessView>
     with WidgetsBindingObserver {
   Timer? timer;
 
+  Future<void> _getProfile() async {
+    final res =
+        await context.read<BusinessSettingsViewModel>().getOwnerProfile();
+    //todo check login error
+    if (res == false) {
+      context.read<BusinessDashboardViewModel>().maxSum = 10;
+      context.read<BusinessViewModel>().logout().then(
+        (value) {
+          context
+              .read<BusinessStatisticsViewModel>()
+              .cashbackAndWithdraws
+              .clear();
+
+          context.read<BusinessDashboardViewModel>().clearData();
+
+          return Navigator.of(context).pushAndRemoveUntil(
+            CupertinoPageRoute(
+              builder: (context) => const SelectTypeView(),
+            ),
+            (route) => false,
+          );
+        },
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -46,7 +74,7 @@ class _BusinessViewState extends State<BusinessView>
     );
 
     // checkIsSeller() == true ? print('yes') : print('no');
-    context.read<BusinessSettingsViewModel>().getOwnerProfile(); // profil
+    _getProfile(); // profil
     context.read<BusinessNotificationsViewModel>().getPrices(); // balansi
     context
         .read<BusinessPaymentViewModel>()

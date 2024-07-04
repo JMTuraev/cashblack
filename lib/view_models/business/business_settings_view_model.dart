@@ -13,16 +13,32 @@ class BusinessSettingsViewModel extends ChangeNotifier {
   // bool isLoadingProfile = false;
   bool isDisabling = false;
   bool isGettingWorkers = false;
-  BusinessProfile? businessProfile;
+  BusinessProfile? businessProfile = BusinessProfile(
+    id: -1,
+    phone: '0',
+    nickname: '',
+    firstName: '',
+    lastName: '',
+    balance: '0',
+    totalAmount: '0',
+    totalExpense: '0',
+    type: 'owner',
+    status: 1,
+    licence: [],
+  );
   List<SellerProfile> workers = [];
   bool isEditing = false;
   bool isUploading = false;
 
-  Future<void> getOwnerProfile() async {
+  Future<bool> getOwnerProfile() async {
     isLoading = true;
     businessProfile = await _businessApi.getOwnerProfile();
     isLoading = false;
     notifyListeners();
+    if (businessProfile!.id == -1) {
+      return false;
+    }
+    return true;
   }
 
   Future<bool> deleteBusinessProfile() async {

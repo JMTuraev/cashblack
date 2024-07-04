@@ -37,13 +37,30 @@ class BusinessApi {
   Future<BusinessProfile> getOwnerProfile() async {
     await _setDioHeader();
 
-    final response = await _dio.get('${Constants.path}/v1/owner/profile');
-    // var bookingList = response.data as List;
-    final owner =
-        BusinessProfile.fromJson(response.data['data'] as Map<String, Object?>);
-    print('get ownerprofile');
+    try {
+      final response = await _dio.get('${Constants.path}/v1/owner/profile');
+      // var bookingList = response.data as List;
+      final owner = BusinessProfile.fromJson(
+        response.data['data'] as Map<String, Object?>,
+      );
+      print('get ownerprofile');
 
-    return owner;
+      return owner;
+    } on DioException catch (e) {
+      return BusinessProfile(
+        id: -1,
+        phone: '0',
+        nickname: '',
+        firstName: '',
+        lastName: '',
+        balance: '0',
+        totalAmount: '0',
+        totalExpense: '0',
+        type: 'owner',
+        status: 1,
+        licence: [],
+      );
+    }
   }
 
   Future<bool> deleteBusinessProfile() async {
