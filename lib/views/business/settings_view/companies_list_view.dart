@@ -145,6 +145,17 @@ class ShopCardWidget extends StatelessWidget {
                                   .getBusinessShops()
                                   .then((value) {
                                 Navigator.pop(context);
+                                // Navigator.of(context).push(
+                                //   CupertinoPageRoute(
+                                //     builder: (context) => CompaniesListView(
+                                //       shops: context
+                                //               .read<
+                                //                   BusinessDashboardViewModel>()
+                                //               .businessShopsAll ??
+                                //           [],
+                                //     ),
+                                //   ),
+                                // );
                                 Navigator.push(
                                   context,
                                   PageRouteBuilder(

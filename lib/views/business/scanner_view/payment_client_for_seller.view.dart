@@ -6,11 +6,11 @@ import '../../../string_extensions.dart';
 import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_payment_view_model.dart';
+import '../../../view_models/seller/seller_view_model.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../seller/seller_payment_success_view.dart';
 import 'payment_phone_view.dart';
-import 'payment_success_view.dart';
 
 class PaymentClientViewForSeller extends StatefulWidget {
   const PaymentClientViewForSeller({
@@ -213,42 +213,49 @@ class _PaymentClientViewForSellerState
                                               .validate()) {
                                             print(isWithdraw);
 
+                                            // await context
+                                            //     .read<
+                                            //         BusinessPaymentViewModel>()
+                                            //     .setShopBeforeCashbackOrWithdraw(
+                                            //       widget.isSeller
+                                            //           ? context
+                                            //               .read<
+                                            //                   SellerViewModel>()
+                                            //               .sellerProfile!
+                                            //               .shop
+                                            //               .id
+                                            //               .toString()
+                                            //           : selectedShop.toString(),
+                                            //     )
+                                            //     .then((value) async {
+                                            //   if (value) {}
+                                            // });
+
                                             await context
-                                                .read<
-                                                    BusinessPaymentViewModel>()
-                                                .setShopBeforeCashbackOrWithdraw(
-                                                  selectedShop.toString(),
+                                                .read<SellerViewModel>()
+                                                .payCashback(
+                                                  // widget.isSeller
+                                                  //     ? widget.shopId.toString()
+                                                  //     : selectedShop.toString(),
+                                                  // maskFormatter.getUnmaskedText(),
+                                                  // phoneController.text.phoneFormatterForCall().removeForPhone(),
+                                                  widget.code
+                                                      .removeWhitespace()
+                                                      .removeForPhone(),
+                                                  priceController.text,
                                                 )
-                                                .then((value) async {
+                                                .then((value) {
                                               if (value) {
-                                                await context
-                                                    .read<
-                                                        BusinessPaymentViewModel>()
-                                                    .payCashback(
-                                                      // widget.isSeller
-                                                      //     ? widget.shopId.toString()
-                                                      //     : selectedShop.toString(),
-                                                      // maskFormatter.getUnmaskedText(),
-                                                      // phoneController.text.phoneFormatterForCall().removeForPhone(),
-                                                      widget.code
-                                                          .removeWhitespace()
-                                                          .removeForPhone(),
-                                                      priceController.text,
-                                                    )
-                                                    .then((value) {
-                                                  if (value) {
-                                                    Navigator.of(context)
-                                                        .pushAndRemoveUntil(
-                                                      CupertinoPageRoute(
-                                                        builder: (context) =>
-                                                            const PaymentSuccessView(
-                                                          title: 'Оплачено',
-                                                        ),
-                                                      ),
-                                                      (route) => false,
-                                                    );
-                                                  }
-                                                });
+                                                Navigator.of(context)
+                                                    .pushAndRemoveUntil(
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        const SellerPaymentSuccessView(
+                                                      title: 'Оплачено',
+                                                    ),
+                                                  ),
+                                                  (route) => false,
+                                                );
                                               }
                                             });
                                           }

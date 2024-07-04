@@ -346,6 +346,7 @@ class _BrandCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onDoubleTap: () {},
       onTap: () {
         Navigator.of(context).push(
           CupertinoPageRoute(
@@ -398,6 +399,28 @@ class _BrandCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            SizedBox(width: getW(10)),
+            IconButton(
+              color: Colors.white,
+              hoverColor: Colors.transparent,
+              enableFeedback: false,
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onPressed: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => CompaniesListView(
+                      shops: context
+                              .read<BusinessDashboardViewModel>()
+                              .businessShopsAll ??
+                          [],
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.info_outline),
             ),
             SizedBox(width: getW(10)),
             Column(

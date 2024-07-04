@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -69,18 +70,28 @@ class _EditStoreViewState extends State<EditStoreView> {
             if (!widget.fromShortcut) {
               print('shortuc bilan emas');
               Navigator.pop(context);
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) =>
-                      CompaniesListView(
+              // Navigator.push(
+              //   context,
+              //   PageRouteBuilder(
+              //     pageBuilder: (context, animation1, animation2) =>
+              //         CompaniesListView(
+              //       shops: context
+              //               .read<BusinessDashboardViewModel>()
+              //               .businessShopsAll ??
+              //           [],
+              //     ),
+              //     transitionDuration: Duration.zero,
+              //     reverseTransitionDuration: Duration.zero,
+              //   ),
+              // );
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => CompaniesListView(
                     shops: context
                             .read<BusinessDashboardViewModel>()
                             .businessShopsAll ??
                         [],
                   ),
-                  transitionDuration: Duration.zero,
-                  reverseTransitionDuration: Duration.zero,
                 ),
               );
             }
@@ -179,19 +190,29 @@ class _EditStoreViewState extends State<EditStoreView> {
                             if (!widget.fromShortcut) {
                               print('shortuc bilan emas');
                               Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation1, animation2) =>
-                                          CompaniesListView(
+                              // Navigator.push(
+                              //   context,
+                              //   PageRouteBuilder(
+                              //     pageBuilder:
+                              //         (context, animation1, animation2) =>
+                              //             CompaniesListView(
+                              //       shops: context
+                              //               .read<BusinessDashboardViewModel>()
+                              //               .businessShopsAll ??
+                              //           [],
+                              //     ),
+                              //     transitionDuration: Duration.zero,
+                              //     reverseTransitionDuration: Duration.zero,
+                              //   ),
+                              // );
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) => CompaniesListView(
                                     shops: context
                                             .read<BusinessDashboardViewModel>()
                                             .businessShopsAll ??
                                         [],
                                   ),
-                                  transitionDuration: Duration.zero,
-                                  reverseTransitionDuration: Duration.zero,
                                 ),
                               );
                             }
@@ -504,6 +525,7 @@ class _SelectCategoryWidget extends StatelessWidget {
           style: const TextStyle(
             fontSize: 16,
           ),
+          menuMaxHeight: SizeConfig.screenHeight / 2,
           hint: Text(hint),
           isExpanded: true,
           value: selectedOption,

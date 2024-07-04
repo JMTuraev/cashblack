@@ -652,6 +652,7 @@ class _SelectCategoryWidget extends StatelessWidget {
           style: const TextStyle(
             fontSize: 16,
           ),
+          menuMaxHeight: SizeConfig.screenHeight / 2,
           hint: Text(hint),
           isExpanded: true,
           value: _selectedOption,

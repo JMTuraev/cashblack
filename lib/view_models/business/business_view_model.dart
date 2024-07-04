@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/api/business_api.dart';
 import '../../domain/models/common/category.dart';
+import '../../string_extensions.dart';
 // import '../../domain/models/category.dart';
 
 class BusinessViewModel extends ChangeNotifier {
@@ -41,6 +42,7 @@ class BusinessViewModel extends ChangeNotifier {
   Future<void> getCategories() async {
     isLoadingCategories = true;
     categories = await _businessApi.getCategories();
+    categories = categories.sortedBy((e) => e.title).toList();
     isLoadingCategories = false;
     notifyListeners();
   }
