@@ -303,31 +303,12 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                   const SizedBox(height: 20),
                   MainButtonWidget(
                       text: 'OK',
-                      isLoading: false,
+                      isLoading: context.watch<BusinessDashboardViewModel>().isCreatingStore,
                       method: () async {
                         if (_isChecked
                             //  && _fileList.isNotEmpty
                             ) {
-                          // context
-                          //     .read<CreateStoreViewViewModel>()
-                          //     .createstore(
-                          //       int.parse(_selectedCategory!),
-                          //       _brandName.text,
-                          //       int.parse(_cashback.text.removeWhitespaces()),
-                          //       int.parse(_selectedProvince!),
-                          //       int.parse(_selectedCity!),
-                          //       _fileList[0]!,
-                          //     )
-                          //     .then(
-                          //       (value) =>
-                          //           Navigator.of(context).pushAndRemoveUntil(
-                          //               CupertinoPageRoute(
-                          //                 builder: (context) =>
-                          //                     const BusinessView(),
-                          //               ),
-                          //               (route) => false),
-                          //     );
-                          context
+                         await context
                               .read<BusinessDashboardViewModel>()
                               .createLocalStore(
                                   _brandName.text,

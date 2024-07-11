@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,7 +7,6 @@ import '../../../size_config.dart';
 import '../../../string_extensions.dart';
 import '../../../utils/helpers.dart';
 import '../../../view_models/business/business_notifications_view_model.dart';
-import '../../../view_models/business/business_settings_view_model.dart';
 import '../../domain/models/owner/business_shop.dart';
 import '../../domain/models/seller/seller_owner_profile.dart';
 import '../../view_models/seller/seller_view_model.dart';
@@ -104,38 +102,40 @@ class _ShopCardWidget extends StatelessWidget {
     return _BorderContainerWidget(
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(20),
+          // ClipRRect(
+          //   borderRadius: const BorderRadius.all(
+          //     Radius.circular(20),
+          //   ),
+          //   child: SizedBox(
+          //     width: getW(60),
+          //     height: getH(60),
+          //     child: context.watch<BusinessSettingsViewModel>().isUploading
+          //         ? const CupertinoActivityIndicator()
+          //         : CachedNetworkImage(
+          //             fit: BoxFit.cover,
+          //             imageUrl: company.logo ?? '',
+          //             errorWidget: (context, url, error) => const Icon(
+          //               Icons.home_repair_service_rounded,
+          //               size: 40,
+          //             ),
+          //           ),
+          //   ),
+          // ),
+          // SizedBox(width: getW(18)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _SimpleTextWidget(
+                  title: company.name,
+                ),
+                SizedBox(height: getH(4)),
+                Text(
+                  company.address,
+                  style: const TextStyle(fontSize: 15),
+                ),
+              ],
             ),
-            child: SizedBox(
-              width: getW(60),
-              height: getH(60),
-              child: context.watch<BusinessSettingsViewModel>().isUploading
-                  ? const CupertinoActivityIndicator()
-                  : CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      imageUrl: company.logo ?? '',
-                      errorWidget: (context, url, error) => const Icon(
-                        Icons.home_repair_service_rounded,
-                        size: 40,
-                      ),
-                    ),
-            ),
-          ),
-          SizedBox(width: getW(18)),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _SimpleTextWidget(
-                title: company.name,
-              ),
-              SizedBox(height: getH(4)),
-              Text(
-                company.address,
-                style: const TextStyle(fontSize: 15),
-              ),
-            ],
           ),
         ],
       ),

@@ -10,6 +10,8 @@ class BusinessSettingsViewModel extends ChangeNotifier {
   final BusinessApi _businessApi = BusinessApi();
 
   bool isLoading = false;
+  bool isDeleting = false;
+  bool isCreatingWorker = false;
   // bool isLoadingProfile = false;
   bool isDisabling = false;
   bool isGettingWorkers = false;
@@ -32,6 +34,7 @@ class BusinessSettingsViewModel extends ChangeNotifier {
 
   Future<bool> getOwnerProfile() async {
     isLoading = true;
+    // notifyListeners();
     businessProfile = await _businessApi.getOwnerProfile();
     isLoading = false;
     notifyListeners();
@@ -42,15 +45,17 @@ class BusinessSettingsViewModel extends ChangeNotifier {
   }
 
   Future<bool> deleteBusinessProfile() async {
-    isLoading = true;
+    isDeleting = true;
+    notifyListeners();
     final res = await _businessApi.deleteBusinessProfile();
-    isLoading = false;
+    isDeleting = false;
     notifyListeners();
     return res;
   }
 
   Future<bool> subscribe(int priceId) async {
     isLoading = true;
+    notifyListeners();
     final res = await _businessApi.subscribe(priceId);
     isLoading = false;
     notifyListeners();
@@ -63,6 +68,7 @@ class BusinessSettingsViewModel extends ChangeNotifier {
     String phone,
   ) async {
     isEditing = true;
+    notifyListeners();
     final res = await _businessApi.editOwnerProfile(firstName, lastName, phone);
     isEditing = false;
     notifyListeners();
@@ -80,6 +86,7 @@ class BusinessSettingsViewModel extends ChangeNotifier {
     String districtId,
   ) async {
     isEditing = true;
+    notifyListeners();
     final res = await _businessApi.editBusinessCompany(
       name,
       address,
@@ -102,7 +109,8 @@ class BusinessSettingsViewModel extends ChangeNotifier {
     String districtId,
     String shopId,
   ) async {
-    isLoading = true;
+    isCreatingWorker = true;
+    notifyListeners();
     final res = await _businessApi.createSeller(
       phone,
       nickname,
@@ -111,13 +119,14 @@ class BusinessSettingsViewModel extends ChangeNotifier {
       districtId,
       shopId,
     );
-    isLoading = false;
+    isCreatingWorker = false;
     notifyListeners();
     return res;
   }
 
   Future<void> getWorkers() async {
     isGettingWorkers = true;
+    // notifyListeners();
     workers = await _businessApi.getWorkers();
     isGettingWorkers = false;
     notifyListeners();
@@ -125,6 +134,7 @@ class BusinessSettingsViewModel extends ChangeNotifier {
 
   Future<bool> updateSellerStatus(int sellerId, int status) async {
     isDisabling = true;
+    notifyListeners();
     final res = await _businessApi.updateWorkerStatus(sellerId, status);
     isDisabling = false;
     notifyListeners();
@@ -133,6 +143,7 @@ class BusinessSettingsViewModel extends ChangeNotifier {
 
   Future<bool> uploadCompanyAvatar(File file) async {
     isUploading = true;
+    notifyListeners();
     final res = await _businessApi.uploadCompanyAvatar(file);
     isUploading = false;
     notifyListeners();
@@ -141,6 +152,7 @@ class BusinessSettingsViewModel extends ChangeNotifier {
 
   Future<bool> uploadShopAvatar(File file, int shopId) async {
     isUploading = true;
+    notifyListeners();
     final res = await _businessApi.uploadShopAvatar(file, shopId);
     isUploading = false;
     notifyListeners();

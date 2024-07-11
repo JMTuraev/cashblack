@@ -35,6 +35,8 @@ class SellerViewModel extends ChangeNotifier {
   }
 
   Future<void> logout() async {
+    mergedList.clear();
+    stats.clear();
     final prefs = await SharedPreferences.getInstance();
     const storage = FlutterSecureStorage();
 
@@ -79,6 +81,7 @@ class SellerViewModel extends ChangeNotifier {
     String price,
   ) async {
     isPaying = true;
+    notifyListeners();
     final result = await _sellerApi.payCashback(clientPhone, price);
     isPaying = false;
     notifyListeners();
@@ -91,6 +94,7 @@ class SellerViewModel extends ChangeNotifier {
     String phone,
   ) async {
     isEditing = true;
+    notifyListeners();
     final res = await _sellerApi.editSellerProfile(firstName, lastName, phone);
     isEditing = false;
     notifyListeners();

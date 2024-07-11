@@ -18,6 +18,7 @@ class BusinessPaymentViewModel extends ChangeNotifier {
     String shopId,
   ) async {
     isLoading = true;
+    notifyListeners();
     final result = await _businessApi.setShopBeforeCashbackOrWithdraw(shopId);
     isLoading = false;
     notifyListeners();
@@ -30,6 +31,7 @@ class BusinessPaymentViewModel extends ChangeNotifier {
     String price,
   ) async {
     isLoading = true;
+    notifyListeners();
     final result = await _businessApi.payCashback(clientPhone, price);
     isLoading = false;
     notifyListeners();

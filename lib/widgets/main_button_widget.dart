@@ -11,14 +11,14 @@ class MainButtonWidget extends StatelessWidget {
     required this.method,
     this.color,
     this.percent,
-    this.isLoading,
+    required this.isLoading,
   });
 
   final String text;
   final VoidCallback? method;
   final Color? color;
   final int? percent;
-  final bool? isLoading;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,7 @@ class MainButtonWidget extends StatelessWidget {
           width: double.infinity,
           // height: getH(60),
           child: ElevatedButton(
-            onPressed:
-                (isLoading == null || isLoading == false) ? method : null,
+            onPressed: (isLoading == false) ? method : null,
             style: ButtonStyle(
               backgroundColor: color != null
                   ? MaterialStateProperty.all<Color?>(

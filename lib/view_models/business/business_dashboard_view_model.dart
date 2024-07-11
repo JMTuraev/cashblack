@@ -9,6 +9,9 @@ class BusinessDashboardViewModel extends ChangeNotifier {
   final BusinessApi _businessApi = BusinessApi();
 
   bool isLoading = false;
+  bool isCreatingStore = false;
+  bool isCreatingCompany = false;
+  bool isEditingStore = false;
   bool isGettingCompany = false;
   bool isGettingShops = false;
   bool isWeeklyLoading = false;
@@ -115,7 +118,8 @@ class BusinessDashboardViewModel extends ChangeNotifier {
     // String provinceId,
     String districtId,
   ) async {
-    isLoading = true;
+    isCreatingCompany = true;
+    notifyListeners();
     final res = await _businessApi.createBusinessCompany(
       name,
       address,
@@ -125,7 +129,7 @@ class BusinessDashboardViewModel extends ChangeNotifier {
       pinfl,
       districtId,
     );
-    isLoading = false;
+    isCreatingCompany = false;
     notifyListeners();
     return res;
   }
@@ -138,7 +142,8 @@ class BusinessDashboardViewModel extends ChangeNotifier {
     String districtId,
     String address,
   ) async {
-    isLoading = true;
+    isCreatingStore = true;
+    notifyListeners();
     final res = await _businessApi.createStore(
       name,
       percent,
@@ -147,7 +152,7 @@ class BusinessDashboardViewModel extends ChangeNotifier {
       districtId,
       address,
     );
-    isLoading = false;
+    isCreatingStore = false;
     notifyListeners();
     return res;
   }
@@ -161,7 +166,8 @@ class BusinessDashboardViewModel extends ChangeNotifier {
     String districtId,
     String address,
   ) async {
-    isLoading = true;
+    isEditingStore = true;
+    notifyListeners();
     final res = await _businessApi.editBusinessShop(
       shopId,
       name,
@@ -171,7 +177,7 @@ class BusinessDashboardViewModel extends ChangeNotifier {
       districtId,
       address,
     );
-    isLoading = false;
+    isEditingStore = false;
     notifyListeners();
     return res;
   }

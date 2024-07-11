@@ -116,6 +116,8 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
                 ),
                 const Spacer(),
                 MainButtonWidget(
+                  isLoading:
+                      context.watch<SkladViewModel>().isCreatingWarehouseItem,
                   text: 'Сохранить',
                   method: () async {
                     if (formKey.currentState!.validate()) {
@@ -136,6 +138,7 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
                           ),
                           const SizedBox(height: 10),
                           MainButtonWidget(
+                            isLoading: false,
                             text: 'OK',
                             method: () {
                               Navigator.pop(context);

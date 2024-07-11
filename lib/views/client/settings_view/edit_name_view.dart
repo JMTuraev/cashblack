@@ -68,6 +68,8 @@ class _EditNameViewState extends State<EditNameView> {
                   ),
                   const Spacer(),
                   MainButtonWidget(
+                    isLoading:
+                        context.watch<ClientSettingsViewModel>().isEditing,
                     text: 'OK',
                     method: () async {
                       await context
@@ -105,6 +107,7 @@ class _EditNameViewState extends State<EditNameView> {
                         ),
                         const SizedBox(height: 10),
                         MainButtonWidget(
+                          isLoading: false,
                           color: Colors.blue,
                           text: 'Отмена',
                           method: () async {
@@ -113,6 +116,9 @@ class _EditNameViewState extends State<EditNameView> {
                         ),
                         const SizedBox(height: 10),
                         MainButtonWidget(
+                          isLoading: context
+                              .watch<ClientSettingsViewModel>()
+                              .isDeleting,
                           color: Colors.red,
                           text: 'Удалить',
                           method: () async {

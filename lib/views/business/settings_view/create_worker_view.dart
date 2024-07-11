@@ -38,6 +38,15 @@ MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
       phoneController.text = '+998';
     }
 
+    if (context.read<BusinessDashboardViewModel>().businessShops?.length == 1) {
+      selectedShop = context
+          .read<BusinessDashboardViewModel>()
+          .businessShops
+          ?.first
+          .id
+          .toString();
+    }
+
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -138,7 +147,7 @@ MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
                         print('xato');
                       }
                     });
-                  },
+                  }, isLoading: context.watch<BusinessSettingsViewModel>().isCreatingWorker,
                 ),
                 SizedBox(height: getH(20)),
               ],

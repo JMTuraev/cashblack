@@ -42,6 +42,15 @@ class PaymentPhoneView extends StatelessWidget {
       phoneController.text = '+998';
     }
 
+    if (context.read<BusinessDashboardViewModel>().businessShops?.length == 1) {
+      selectedShop = context
+          .read<BusinessDashboardViewModel>()
+          .businessShops
+          ?.first
+          .id
+          .toString();
+    }
+
     void submit() async {
       // print(phoneController.text.phoneFormatterForCall().removeForPhone());
       // print(maskFormatter.getUnmaskedText());
@@ -49,33 +58,32 @@ class PaymentPhoneView extends StatelessWidget {
       if (_formKey.currentState!.validate()) {
         await context
             .read<BusinessPaymentViewModel>()
-            .setShopBeforeCashbackOrWithdraw(selectedShop.toString()).then((value) async {
+            .setShopBeforeCashbackOrWithdraw(selectedShop.toString())
+            .then((value) async {
+          if (value) {
+            await context
+                .read<BusinessPaymentViewModel>()
+                .payCashback(
+                  // selectedShop.toString(),
+                  // maskFormatter.getUnmaskedText(),
+                  phoneController.text.phoneFormatterForCall().removeForPhone(),
+                  priceController.text,
+                )
+                .then((value) {
               if (value) {
-                
-          await context
-              .read<BusinessPaymentViewModel>()
-              .payCashback(
-                // selectedShop.toString(),
-                // maskFormatter.getUnmaskedText(),
-                phoneController.text.phoneFormatterForCall().removeForPhone(),
-                priceController.text,
-              )
-              .then((value) {
-            if (value) {
-              Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(
-                  builder: (context) => const PaymentSuccessView(
-                    title: 'Оплачено',
+                Navigator.of(context).pushAndRemoveUntil(
+                  CupertinoPageRoute(
+                    builder: (context) => const PaymentSuccessView(
+                      title: 'Оплачено',
+                    ),
                   ),
-                ),
-                (route) => false,
-              );
-            }
-          });
-        
+                  (route) => false,
+                );
               }
             });
-        
+          }
+        });
+
         // await context.read<PaymentClientViewModel>().payPhone(
         //     context,
         //     priceController.text.removeWhitespaces(),
@@ -149,18 +157,17 @@ class PaymentPhoneView extends StatelessWidget {
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
-                            int.parse(value.removeWhitespace()) <= 0 ) {
+                            int.parse(value.removeWhitespace()) <= 0) {
                           return 'Введите номер телефона';
                         }
-                        if ( value.removeWhitespace().length < 13) {
+                        if (value.removeWhitespace().length < 13) {
                           return 'Введите правылный номер телефона';
                         }
-                        if (
-                            context
-                                    .read<BusinessSettingsViewModel>()
-                                    .businessProfile!
-                                    .phone ==
-                                value.removeWhitespace().removeAllSymbols()) {
+                        if (context
+                                .read<BusinessSettingsViewModel>()
+                                .businessProfile!
+                                .phone ==
+                            value.removeWhitespace().removeAllSymbols()) {
                           return 'Введите правылный номер телефона';
                         }
                         return null;
@@ -229,7 +236,7 @@ class PaymentPhoneView extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     MainButtonWidget(
-                      isLoading: false,
+                      isLoading: context.watch<BusinessPaymentViewModel>().isLoading,
                       text: 'Оплатит',
                       method: submit,
                     ),
@@ -278,7 +285,7 @@ class SelectCategoryWidget extends StatelessWidget {
           ),
           hint: Text(hint),
           isExpanded: true,
-          // value: _selectedOption,
+          value: _selectedOption,
           items: categoryItems,
           onChanged: (value) => onChanged(value),
           decoration: const InputDecoration(

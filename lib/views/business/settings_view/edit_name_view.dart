@@ -69,6 +69,8 @@ class _EditNameViewState extends State<EditNameView> {
                   ),
                   const Spacer(),
                   MainButtonWidget(
+                    isLoading:
+                        context.watch<BusinessSettingsViewModel>().isEditing,
                     text: 'OK',
                     method: () async {
                       await context
@@ -111,9 +113,13 @@ class _EditNameViewState extends State<EditNameView> {
                           method: () async {
                             Navigator.pop(context);
                           },
+                          isLoading: false,
                         ),
                         const SizedBox(height: 10),
                         MainButtonWidget(
+                          isLoading: context
+                              .watch<BusinessSettingsViewModel>()
+                              .isDeleting,
                           color: Colors.red,
                           text: 'Удалить',
                           method: () async {

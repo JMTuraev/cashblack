@@ -435,6 +435,7 @@ class _PrixodViewState extends State<PrixodView> {
                             // ),
                             // const SizedBox(height: 10),
                             MainButtonWidget(
+                              isLoading: false,
                               text: 'Сохранить',
                               method: () {
                                 if (formKey.currentState!.validate()) {
@@ -462,6 +463,7 @@ class _PrixodViewState extends State<PrixodView> {
                                     ),
                                     const SizedBox(height: 10),
                                     MainButtonWidget(
+                                      isLoading: false,
                                       text: 'OK',
                                       method: () {
                                         model.clearFields();
@@ -558,6 +560,7 @@ class _PrixodViewState extends State<PrixodView> {
                             ),
                             MainButtonWidget(
                               text: 'Сохранить',
+                              isLoading: false,
                               method: () {
                                 model.addPrixod();
                                 showModal(context, [
@@ -584,6 +587,7 @@ class _PrixodViewState extends State<PrixodView> {
                                   // ),
                                   const SizedBox(height: 10),
                                   MainButtonWidget(
+                                    isLoading: false,
                                     text: 'OK',
                                     method: () {
                                       model

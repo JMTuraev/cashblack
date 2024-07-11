@@ -36,6 +36,7 @@ class PaymentSuccessView extends StatelessWidget {
                   Center(child: MediumTitleWidget(text: title)),
                   const SizedBox(height: 20),
                   MainButtonWidget(
+                    isLoading: false,
                     text: 'OK',
                     method: () {
                       context.read<BusinessViewModel>().onChange(0);

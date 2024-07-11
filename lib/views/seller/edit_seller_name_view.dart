@@ -63,6 +63,7 @@ class _EditSellerNameViewState extends State<EditSellerNameView> {
                   ),
                   const Spacer(),
                   MainButtonWidget(
+                    isLoading: context.watch<SellerViewModel>().isEditing,
                     text: 'OK',
                     method: () async {
                       await context

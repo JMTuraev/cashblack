@@ -19,6 +19,7 @@ class SkladViewModel extends ChangeNotifier {
   bool isGettingWarehouseUnits = false;
   Future<void> getWarehouseUnits() async {
     isGettingWarehouseUnits = true;
+    notifyListeners();
     warehouseUnits = await _warehousesApi.getWarehouseUnits();
     isGettingWarehouseUnits = false;
     notifyListeners();
@@ -34,6 +35,8 @@ class SkladViewModel extends ChangeNotifier {
 
   Future<bool> createWarehouse() async {
     isCreatingWarehouse = true;
+    notifyListeners();
+
     final res = await _warehousesApi.createWarehouse(
       name: warehouseNameController.text.trim(),
       address: warehouseAddressController.text.trim(),
@@ -46,6 +49,8 @@ class SkladViewModel extends ChangeNotifier {
 
   Future<void> getWarehouses() async {
     isGettingWarehouses = true;
+    notifyListeners();
+
     warehouses = await _warehousesApi.getWarehouses();
     isGettingWarehouses = false;
     notifyListeners();
@@ -70,6 +75,7 @@ class SkladViewModel extends ChangeNotifier {
 
   Future<bool> createWarehouseProvider() async {
     isCreatingWarehouseProvider = true;
+    notifyListeners();
     final res = await _warehousesApi.createWarehouseProvider(
       name: warehouseProviderNameController.text.trim(),
       email: warehouseProviderEmailController.text.trim(),
@@ -84,6 +90,8 @@ class SkladViewModel extends ChangeNotifier {
 
   Future<void> getWarehouseProviders() async {
     isGettingWarehouseProviders = true;
+    notifyListeners();
+
     warehouseProviders = await _warehousesApi.getWarehouseProviders();
     isGettingWarehouseProviders = false;
     notifyListeners();
@@ -107,6 +115,7 @@ class SkladViewModel extends ChangeNotifier {
 
   Future<bool> createWarehouseCategory() async {
     isCreatingWarehouseCategory = true;
+    notifyListeners();
     final res = await _warehousesApi.createWarehouseCategory(
       name: warehouseCategoryNameController.text.trim(),
       title: warehouseCategoryTitleController.text.trim(),
@@ -119,6 +128,7 @@ class SkladViewModel extends ChangeNotifier {
 
   Future<void> getWarehouseCategories() async {
     isGettingWarehouseCategorys = true;
+    notifyListeners();
     warehouseCategories = await _warehousesApi.getWarehouseCategories();
     isGettingWarehouseCategorys = false;
     notifyListeners();
@@ -144,6 +154,7 @@ class SkladViewModel extends ChangeNotifier {
 
   Future<bool> createWarehouseItem() async {
     isCreatingWarehouseItem = true;
+    notifyListeners();
     final res = await _warehousesApi.createWarehouseItem(
       categoryId: selectedWarehouseItemCategoryId.toString(),
       barCode: warehouseItemBarcodeController.text,
@@ -157,6 +168,8 @@ class SkladViewModel extends ChangeNotifier {
 
   Future<void> getWarehouseItems() async {
     isGettingWarehouseItems = true;
+    notifyListeners();
+
     warehouseItems = await _warehousesApi.getWarehouseItems();
     isGettingWarehouseItems = false;
     notifyListeners();

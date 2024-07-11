@@ -139,6 +139,7 @@ class SubscriptionView extends StatelessWidget {
                             },
                           )
                         : MainButtonWidget(
+                            isLoading: false,
                             text: 'Пополнить баланс',
                             method: () async {
                               // Navigator.of(context).push(

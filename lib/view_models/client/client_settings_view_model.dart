@@ -8,6 +8,7 @@ class ClientSettingsViewModel extends ChangeNotifier {
   final ClientApi _clientApi = ClientApi();
 
   bool isLoading = false;
+  bool isDeleting = false;
   bool isEditing = false;
   bool isDisabling = false;
   bool isGettingWorkers = false;
@@ -22,9 +23,10 @@ class ClientSettingsViewModel extends ChangeNotifier {
   }
 
   Future<bool> deleteClientProfile() async {
-    isLoading = true;
+    isDeleting = true;
+    notifyListeners();
     final res = await _clientApi.deleteClientProfile();
-    isLoading = false;
+    isDeleting = false;
     notifyListeners();
     return res;
   }
@@ -35,6 +37,8 @@ class ClientSettingsViewModel extends ChangeNotifier {
     String phone,
   ) async {
     isEditing = true;
+    notifyListeners();
+
     final res = await _clientApi.editClientProfile(firstName, lastName, phone);
     isEditing = false;
     notifyListeners();

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../size_config.dart';
 import '../../../../widgets/main_button_widget.dart';
 import '../../../../widgets/show_modal.dart';
-import '../../../../widgets/text_field_widget.dart';
 import '../../../../widgets/text_field_with_label_widget.dart';
 import '../../../../widgets/text_field_with_phone_widget.dart';
 
@@ -59,7 +58,6 @@ class CreateStaffView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(64),
                               border: Border.all(
                                 color: const Color(0xff6c7072),
-                                width: 1,
                               ),
                               color: const Color(0xff1c1c1d),
                             ),
@@ -250,6 +248,7 @@ class CreateStaffView extends StatelessWidget {
                       onChanged: (v) {},
                     ),
                     MainButtonWidget(
+                      isLoading: false,
                       text: 'Применять',
                       method: () {
                         Navigator.pop(context);
@@ -313,7 +312,7 @@ class CreateStaffView extends StatelessWidget {
                                 color: Colors.white,
                                 fontSize: 14,
                               ),
-                            )
+                            ),
                           ],
                         ),
                         Positioned(
@@ -328,7 +327,7 @@ class CreateStaffView extends StatelessWidget {
                             ),
                             child: const Center(child: Text('12')),
                           ),
-                        )
+                        ),
                       ],
                     );
                   },
@@ -336,6 +335,7 @@ class CreateStaffView extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               MainButtonWidget(
+                isLoading: false,
                 text: 'Добавить',
                 method: () {
                   Navigator.pop(context);

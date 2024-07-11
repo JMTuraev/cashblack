@@ -38,6 +38,10 @@ class TextFieldWidget extends StatelessWidget {
       onChanged: onChanged,
       validator: validator,
       decoration: InputDecoration(
+        suffixIcon: IconButton(
+          onPressed: () => controller?.clear(),
+          icon: const Icon(Icons.clear),
+        ),
         enabled: isReadOnly == true ? false : true,
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(

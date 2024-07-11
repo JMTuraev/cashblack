@@ -84,6 +84,9 @@ class _CreateWarehouseProviderViewState
                 // const SizedBox(height: 10),
                 const Spacer(),
                 MainButtonWidget(
+                  isLoading: context
+                      .watch<SkladViewModel>()
+                      .isCreatingWarehouseProvider,
                   text: 'Сохранить',
                   method: () async {
                     if (formKey.currentState!.validate()) {
@@ -109,6 +112,7 @@ class _CreateWarehouseProviderViewState
                               Navigator.pop(context);
                               Navigator.pop(context);
                             },
+                            isLoading: false,
                           ),
                           const SizedBox(height: 40),
                         ]);

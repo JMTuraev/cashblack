@@ -154,6 +154,7 @@ class SellerBarcodeScannerView extends StatelessWidget {
                     ),
                   ),
                   MainButtonWidget(
+                    isLoading: false,
                     method: () {
                       Navigator.of(context).push(
                         CupertinoPageRoute(
