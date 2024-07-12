@@ -14,6 +14,7 @@ import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../widgets/public_offer_widget.dart';
+import '../../widgets/text_field_widget.dart';
 import 'create_store_view/create_store_view.dart';
 
 class CreateCompanyView extends StatefulWidget {
@@ -194,15 +195,9 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                   const SizedBox(height: 20),
                   // _BrandNameWidget(controller: _brandName),
 
-                  GenericTextFieldWidget(
+                  TextFieldWidget(
                     controller: _brandName,
-                    title: 'Название',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Заполните поле';
-                      }
-                      return null;
-                    },
+                    hintText: 'Название',
                   ),
                   // const SizedBox(height: 20),
                   // _SelectCategoryWidget(
@@ -278,15 +273,9 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                   //   },
                   // ),
                   const SizedBox(height: 20),
-                  GenericTextFieldWidget(
+                  TextFieldWidget(
                     controller: _address,
-                    title: 'Адрес',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Заполните поле';
-                      }
-                      return null;
-                    },
+                    hintText: 'Адрес',
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -327,28 +316,22 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  _NumberTextFieldWidget(
+                  TextFieldWidget(
                     controller: _inn,
-                    title: 'ИНН',
+                    hintText: 'ИНН',
                     maxLength: 9,
-                    validator: (value) {
-                      if (value == null || value.isEmpty || value.length < 9) {
-                        return 'Должен быть 9 знаков';
-                      }
-                      return null;
-                    },
+                    skipNumberFormatter: true,
+                    textType: TextInputType.number,
                   ),
                   const SizedBox(height: 20),
-                  _NumberTextFieldWidget(
+                  TextFieldWidget(
                     controller: _pinfl,
-                    title: 'ПИНФЛ',
+                    textType: TextInputType.number,
+                    hintText: 'ПИНФЛ',
                     maxLength: 13,
-                    // validator: (value) {
-                    //   if (value == null || value.isEmpty || value.length < 13) {
-                    //     return 'Должен быть 13 знаков';
-                    //   }
-                    //   return null;
-                    // },
+                    validator: (p0) {
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -368,13 +351,17 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
                           fontSize: 16,
                         ),
                       ),
-                       const PublicOfferWidget(fontSize: 16,),
+                      const PublicOfferWidget(
+                        fontSize: 16,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 20),
                   MainButtonWidget(
                     text: 'OK',
-                    isLoading: false,
+                    isLoading: context
+                        .watch<BusinessDashboardViewModel>()
+                        .isCreatingCompany,
                     method: () async {
                       if (_isChecked && formKey.currentState!.validate()
                           //  && _fileList.isNotEmpty

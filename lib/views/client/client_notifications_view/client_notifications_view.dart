@@ -84,8 +84,6 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                                       color: Color.fromRGBO(44, 45, 47, 1),
                                     ),
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -182,7 +180,7 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                                                   ),
                                                 ),
                                               ],
-                                            )
+                                            ),
                                           ],
                                         ),
                                         const SizedBox(height: 20),
@@ -360,7 +358,7 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                                             ),
                                             const SizedBox(width: 14),
                                           ],
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ),

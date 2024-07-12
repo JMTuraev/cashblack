@@ -42,7 +42,7 @@ class _BusinessViewState extends State<BusinessView>
         await context.read<BusinessSettingsViewModel>().getOwnerProfile();
     //todo check login error
     if (res == false) {
-      context.read<BusinessDashboardViewModel>().maxSum = 10;
+      context.read<BusinessDashboardViewModel>().maxSum = 0;
       context.read<BusinessViewModel>().logout().then(
         (value) {
           context

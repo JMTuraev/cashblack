@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -7,10 +8,12 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/owner/business_company.dart';
 import '../../../size_config.dart';
+import '../../../string_extensions.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
+import '../../../widgets/text_field_widget.dart';
 import '../create_company_view.dart';
 
 class EditCompanyView extends StatefulWidget {
@@ -37,18 +40,23 @@ class _EditCompanyViewState extends State<EditCompanyView> {
     _passport.text = widget.company.passwordId ?? '';
     _address.text = widget.company.address;
     _inn.text = widget.company.inn;
-    _pinfl.text = widget.company.pinfl?? '';
+    _pinfl.text = widget.company.pinfl ?? '';
   }
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+
+    inspect(widget.company);
 
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
+          key: _formKey,
           child: Align(
             alignment: Alignment.topCenter,
             child: SingleChildScrollView(
@@ -56,58 +64,74 @@ class _EditCompanyViewState extends State<EditCompanyView> {
                 children: [
                   const HeroTitleWidget(text: 'Изменить компанию'),
                   const SizedBox(height: 20),
-                  GenericTextFieldWidget(
+                  TextFieldWidget(
                     controller: _brandName,
-                    title: 'Название',
+                    hintText: 'Название',
                   ),
                   const SizedBox(height: 20),
-                  GenericTextFieldWidget(
+                  TextFieldWidget(
                     controller: _address,
-                    title: 'Адрес',
+                    hintText: 'Адрес',
                   ),
                   const SizedBox(height: 20),
-                  GenericTextFieldWidget(
+                  TextFieldWidget(
                     controller: _passport,
-                    title: 'Паспорт серия',
-                    maxlength: 9,
-                  ),
-                  const SizedBox(height: 20),
-                  NumberTextFieldWidget(
-                    controller: _inn,
-                    title: 'ИНН',
+                    hintText: 'Паспорт серия',
                     maxLength: 9,
+                    validator: (p0) {
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
-                  NumberTextFieldWidget(
+                  TextFieldWidget(
+                    controller: _inn,
+                    hintText: 'ИНН',
+                    maxLength: 9,
+                    skipNumberFormatter: true,
+                    textType: TextInputType.number,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFieldWidget(
                     controller: _pinfl,
-                    title: 'ПИНФЛ',
+                    textType: TextInputType.number,
+                    hintText: 'ПИНФЛ',
                     maxLength: 13,
+                    validator: (p0) {
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   MainButtonWidget(
                     text: 'OK',
-                    isLoading: false,
+                    isLoading:
+                        context.watch<BusinessSettingsViewModel>().isEditing,
                     method: () async {
-                      context
-                          .read<BusinessSettingsViewModel>()
-                          .editBusinessCompany(
-                              _brandName.text,
-                              _address.text,
-                              _passport.text.substring(0, 2),
-                              _passport.text.substring(2),
-                              _inn.text,
-                              _pinfl.text,
-                              '44')
-                          .then((value) {
-                        if (value) {
-                          context
-                              .read<BusinessDashboardViewModel>()
-                              .getBusinessCompany();
-                          Navigator.pop(context);
-                        } else {
-                          print('Ошибка сервера');
-                        }
-                      });
+                      if (_formKey.currentState!.validate()) {
+                        await context
+                            .read<BusinessSettingsViewModel>()
+                            .editBusinessCompany(
+                                _brandName.text,
+                                _address.text,
+                                _passport.text.isEmpty
+                                    ? ''
+                                    : _passport.text.substring(0, 2),
+                                _passport.text.isEmpty
+                                    ? ''
+                                    : _passport.text.substring(2),
+                                _inn.text.removeWhitespace(),
+                                _pinfl.text.removeWhitespace(),
+                                '44')
+                            .then((value) {
+                          if (value) {
+                            context
+                                .read<BusinessDashboardViewModel>()
+                                .getBusinessCompany();
+                            Navigator.pop(context);
+                          } else {
+                            print('Ошибка сервера');
+                          }
+                        });
+                      }
                     },
                   ),
                   const SizedBox(height: 20),

@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -10,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/category.dart';
-// import '../../../domain/models/city.dart';
+import '../../../domain/models/city.dart';
 import '../../../string_extensions.dart';
 import '../../../size_config.dart';
 import '../../../utils/numberic_text_formatter.dart';
@@ -19,9 +20,11 @@ import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_statistics_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
 import '../../../view_models/create_store_view_view_model.dart';
+import '../../../widgets/dropdown_select_widget.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/public_offer_widget.dart';
+import '../../../widgets/text_field_widget.dart';
 import '../business_view.dart';
 
 class CreateStoreView extends StatefulWidget {
@@ -138,6 +141,8 @@ class _CreateStoreViewState extends State<CreateStoreView> {
   final TextEditingController _address = TextEditingController();
   final TextEditingController _cashback = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     // Future<List<Category>> categoryItems =
@@ -155,6 +160,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
+          key: _formKey,
           child: Align(
             alignment: Alignment.topCenter,
             child: SingleChildScrollView(
@@ -201,9 +207,10 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                   //   },
                   // ),
                   const SizedBox(height: 20),
-                  _BrandNameWidget(controller: _brandName),
+                  // _BrandNameWidget(controller: _brandName),
+                  TextFieldWidget(hintText: 'Бренд', controller: _brandName,),
                   const SizedBox(height: 20),
-                  _SelectCategoryWidget(
+                  DropdownSelectWidget(
                     hint: 'Категория',
                     selectedOption: _selectedCategory,
                     categoryItems:
@@ -222,63 +229,14 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                     onChanged: onCategoryChanged,
                   ),
                   const SizedBox(height: 20),
-                  _CashbackWidget(controller: _cashback),
-                  // const SizedBox(height: 20),
-                  // FutureBuilder(
-                  //   future: provinceItems,
-                  //   builder: (context, snapshot) {
-                  //     if (snapshot.hasData) {
-                  //       var provincy = snapshot.data as List<Province>;
-                  //       return _SelectCategoryWidget(
-                  //         hint: 'Область',
-                  //         selectedOption: _selectedProvince,
-                  //         categoryItems: provincy
-                  //             .map(
-                  //               (e) => DropdownMenuItem<String>(
-                  //                 value: e.id.toString(),
-                  //                 child: Text(e.name),
-                  //               ),
-                  //             )
-                  //             .toList(),
-                  //         onChanged: onProvinceChanged,
-                  //       );
-                  //     } else {
-                  //       return const _DefaultSelectCategoryWidget(
-                  //         hint: 'Область',
-                  //       );
-                  //     }
-                  //   },
-                  // ),
-                  // const SizedBox(height: 20),
-                  // FutureBuilder(
-                  //   future: cityItems,
-                  //   builder: (context, snapshot) {
-                  //     if (snapshot.hasData) {
-                  //       var city = snapshot.data as List<City>;
-                  //       return _SelectCategoryWidget(
-                  //         hint: 'Город',
-                  //         selectedOption: _selectedCity,
-                  //         categoryItems: city
-                  //             .map(
-                  //               (e) => DropdownMenuItem<String>(
-                  //                 value: e.id.toString(),
-                  //                 child: Text(e.name),
-                  //               ),
-                  //             )
-                  //             .toList(),
-                  //         onChanged: onCityChanged,
-                  //       );
-                  //     } else {
-                  //       return const _DefaultSelectCategoryWidget(
-                  //         hint: 'Город',
-                  //       );
-                  //     }
-                  //   },
-                  // ),
+                  // _CashbackWidget(controller: _cashback),
+                  TextFieldWidget(hintText: 'Кэшбек', controller: _cashback, textType: TextInputType.number, maxLength: 2,),
                   const SizedBox(height: 20),
-                  _AddressNameWidget(controller: _address),
+                  // _AddressNameWidget(controller: _address),
+                  TextFieldWidget(hintText: 'Адрес', controller: _address,),
                   const SizedBox(height: 20),
-                  _WaymarkNameWidget(controller: _waymark),
+                  // _WaymarkNameWidget(controller: _waymark),
+                  TextFieldWidget(hintText: 'Ориентир', controller: _waymark,),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -306,7 +264,7 @@ class _CreateStoreViewState extends State<CreateStoreView> {
                       isLoading: context.watch<BusinessDashboardViewModel>().isCreatingStore,
                       method: () async {
                         if (_isChecked
-                            //  && _fileList.isNotEmpty
+                             && _formKey.currentState!.validate()
                             ) {
                          await context
                               .read<BusinessDashboardViewModel>()
@@ -600,63 +558,6 @@ class _AddressNameWidget extends StatelessWidget {
       keyboardAppearance: Brightness.dark,
       showCursor: true,
       keyboardType: TextInputType.text,
-    );
-  }
-}
-
-class _SelectCategoryWidget extends StatelessWidget {
-  const _SelectCategoryWidget({
-    Key? key,
-    required String? selectedOption,
-    required this.categoryItems,
-    required this.onChanged,
-    required this.hint,
-  })  : _selectedOption = selectedOption,
-        super(key: key);
-
-  final String? _selectedOption;
-  final List<DropdownMenuItem<String>> categoryItems;
-  final Function onChanged;
-  final String hint;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(20),
-          ),
-        ),
-        child: DropdownButtonFormField<String>(
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-          menuMaxHeight: SizeConfig.screenHeight / 2,
-          hint: Text(hint),
-          isExpanded: true,
-          value: _selectedOption,
-          items: categoryItems,
-          onChanged: (value) => onChanged(value),
-          decoration: const InputDecoration(
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-                width: 2,
-              ),
-              borderRadius: BorderRadius.all(
-                Radius.circular(20),
-              ),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(20),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -19,7 +19,9 @@ class BusinessDashboardViewModel extends ChangeNotifier {
   List<BusinessShop>? businessShops = [];
   List<BusinessShop>? businessShopsAll = [];
   List<WeeklyStat> weeklyStatistics = [];
-  double maxSum = 10;
+  double maxSum = 0;
+  double totalCashback = 0;
+  double totalWithdraw = 0;
 
   bool hasCompany = false;
   bool hasShops = false;
@@ -29,7 +31,7 @@ class BusinessDashboardViewModel extends ChangeNotifier {
     businessShops = [];
     businessShopsAll = [];
     weeklyStatistics = [];
-    maxSum = 10;
+    maxSum = 0;
     hasCompany = false;
     hasShops = false;
     isLoading = false;
@@ -60,11 +62,15 @@ class BusinessDashboardViewModel extends ChangeNotifier {
   }
 
   Future<void> getWeeklyStatistics(int shopId) async {
-    maxSum = 10;
+    maxSum = 0;
+    totalCashback = 0;
+    totalWithdraw = 0;
     isWeeklyLoading = true;
     weeklyStatistics = await _businessApi.getWeeklyStatistics(shopId);
     for (final e in weeklyStatistics) {
       maxSum += double.parse(e.totalCashback.toString());
+      totalCashback += double.parse(e.cashback.toString());
+      totalWithdraw += double.parse(e.withdraw.toString());
     }
     isWeeklyLoading = false;
     notifyListeners();

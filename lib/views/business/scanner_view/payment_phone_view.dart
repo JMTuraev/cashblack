@@ -154,6 +154,7 @@ class PaymentPhoneView extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
+                      //todo phone
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||

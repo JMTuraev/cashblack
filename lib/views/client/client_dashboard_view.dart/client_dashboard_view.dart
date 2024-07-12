@@ -399,10 +399,12 @@ class _CashbackBalanceWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     const Text(
-                      'сумма покупки',
+                      // 'сумма покупки',
+                      'Выдано',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Color.fromRGBO(103, 206, 103, 1),
+                        // color: Color.fromRGBO(103, 206, 103, 1),
+                        color: Color.fromRGBO(255, 144, 62, 1),
                       ),
                     ),
                     SizedBox(height: getH(6)),
@@ -412,7 +414,8 @@ class _CashbackBalanceWidget extends StatelessWidget {
                           : (clientProfile?.withdraw ?? '0').getAmountInSum(),
                       textAlign: TextAlign.end,
                       style: const TextStyle(
-                        color: Color.fromRGBO(103, 206, 103, 1),
+                        // color: Color.fromRGBO(103, 206, 103, 1),
+                        color: Color.fromRGBO(255, 144, 62, 1),
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -424,10 +427,11 @@ class _CashbackBalanceWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     const Text(
-                      'все кэшбеки',
+                      'Все кэшбеки',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Color.fromRGBO(75, 132, 231, 1),
+                        // color: Color.fromRGBO(75, 132, 231, 1),
+                        color: Color.fromRGBO(103, 206, 103, 1),
                       ),
                     ),
                     SizedBox(height: getH(6)),
@@ -439,7 +443,8 @@ class _CashbackBalanceWidget extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromRGBO(75, 132, 231, 1),
+                        // color: Color.fromRGBO(75, 132, 231, 1),
+                        color: Color.fromRGBO(103, 206, 103, 1),
                       ),
                     ),
                   ],

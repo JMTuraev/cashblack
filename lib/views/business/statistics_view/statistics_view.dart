@@ -19,6 +19,8 @@ import '../../../widgets/active_switcher_widget.dart';
 import '../../../widgets/empty_widget.dart';
 import '../../../widgets/inactive_switcher_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
+import '../../../widgets/search_widget.dart';
+import '../../../widgets/text_field_widget.dart';
 
 class StatisticsView extends StatefulWidget {
   const StatisticsView({super.key});
@@ -79,7 +81,7 @@ class _StatisticsViewState extends State<StatisticsView> {
         _CashbackListWidget(
           mergedList: context.read<BusinessStatisticsViewModel>().mergedList,
         ),
-        const _ClientCashbackWidget(),
+        _ClientCashbackWidget(),
       ],
     );
 
@@ -278,7 +280,6 @@ class _StatisticsViewState extends State<StatisticsView> {
                       final end =
                           DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-                          
                       // statCashback = context
                       //     .read<StatisticsViewModel>()
                       //     .getSumStats(start: start, end: end);
@@ -374,7 +375,9 @@ class _CashbackListWidget extends StatelessWidget {
               child: GroupedListView<InlineCashbackAndWithdraw, String>(
                 elements: mergedList,
                 groupBy: (element) {
-                  final dates = DateTime.parse(element.date!);
+                  final dates =
+                      DateTime.parse(element.date!).add(Duration(hours: 5));
+                  // print(DateFormat('yyyy-MM-dd').parse(element.date!));
                   return DateUtils.dateOnly(dates).toString();
                   // return DateTime(dates.year, dates.month, dates.day,
                   //         dates.hour, dates.minute)
@@ -451,10 +454,31 @@ class _CashbackListWidget extends StatelessWidget {
   }
 }
 
-class _ClientCashbackWidget extends StatelessWidget {
-  const _ClientCashbackWidget({
+class _ClientCashbackWidget extends StatefulWidget {
+  _ClientCashbackWidget({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<_ClientCashbackWidget> createState() => _ClientCashbackWidgetState();
+}
+
+class _ClientCashbackWidgetState extends State<_ClientCashbackWidget> {
+  var searchController = TextEditingController();
+
+  // List<ReportCashbackClient> filteredClients = [];
+  // List<ReportCashbackClient> clientsAll = [];
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   // clientsAll = context.read<BusinessStatisticsViewModel>().clients;
+  //   filteredClients = [...clientsAll];
+  //   setState(() {
+
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -462,28 +486,55 @@ class _ClientCashbackWidget extends StatelessWidget {
       fontWeight: FontWeight.bold,
       fontSize: 15,
     );
+    var model = context.read<BusinessStatisticsViewModel>();
+    // clientsAll = context.read<BusinessStatisticsViewModel>().clients;
+    // filteredClients = [...clientsAll];
+
     return Column(
       children: [
+        SearchWidget(
+          hintText: 'Поиск',
+          controller: searchController,
+          onChanged: (value) {
+            if (value.isEmpty || searchController.text.isEmpty) {
+              model.filteredClients = model.clients;
+            }
+
+           model.filteredClients = model.clients
+                .where((element) =>
+                    element.name
+                        .toLowerCase()
+                        .contains(searchController.text.toLowerCase()) ||
+                    element.phone
+                        .toLowerCase()
+                        .contains(searchController.text.toLowerCase()))
+                .toList();
+            setState(() {});
+          },
+          onRemoved: () {
+            model.filteredClients = model.clients;
+            setState(() {});
+          },
+        ),
+        SizedBox(height: 10),
         context.watch<BusinessStatisticsViewModel>().isClientsLoading
             ? const LogoAnimatedWidget(size: 1.5)
-            : (context
-                      .read<BusinessStatisticsViewModel>()
-                      .clients
-                      .isEmpty ?  const Center(child: EmptyWidget()): Expanded(
-                child: ListView.separated(
-                  itemCount: context
-                      .read<BusinessStatisticsViewModel>()
-                      .clients
-                      .length,
-                  separatorBuilder: (context, index) =>
-                      SizedBox(height: getH(10)),
-                  itemBuilder: (context, index) => _CardClient(
-                    sumCashback: context
-                        .read<BusinessStatisticsViewModel>()
-                        .clients[index],
-                  ),
-                ),
-              )),
+            : (model.filteredClients.isEmpty
+                ? const Center(child: EmptyWidget())
+                : Expanded(
+                    child: ListView.separated(
+                      itemCount: model.filteredClients.isEmpty
+                          ? model.clients.length
+                          : model.filteredClients.length,
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: getH(10)),
+                      itemBuilder: (context, index) => _CardClient(
+                        sumCashback: model.filteredClients.isEmpty
+                            ? model.clients[index]
+                            : model.filteredClients[index],
+                      ),
+                    ),
+                  )),
       ],
     );
   }

@@ -108,7 +108,8 @@ class _BusinessDetailsViewState extends State<BusinessDetailsView> {
                           child: Column(
                             children: [
                               const Text(
-                                'Сумма покупки',
+                                // 'Сумма покупки',
+                                'Выдано',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Color.fromRGBO(255, 144, 62, 1),

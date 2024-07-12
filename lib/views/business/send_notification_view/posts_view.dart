@@ -14,6 +14,7 @@ import '../../../string_extensions.dart';
 import '../../../utils/helpers.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_notifications_view_model.dart';
+import '../../../widgets/empty_widget.dart';
 import '../../../widgets/logo_animated_widget.dart';
 import 'notification_info_view.dart';
 import 'send_notification_view.dart';
@@ -27,21 +28,28 @@ class PostsView extends StatefulWidget {
 
 class _PostsViewState extends State<PostsView> {
   // List<SentNotification> notifications = [];
-  List<dynamic> notifications = ['asd', 'asd', 'asd'];
-  @override
-  void initState() {
-    // sentFuture = context.read<SendNotificationViewModel>().getNotifications();
-    context.read<BusinessNotificationsViewModel>().getNotifications();
-    super.initState();
-  }
 
   int currentShopIndex = -1;
   List<OwnerNotification> filteredNotifications = [];
 
   @override
+  void initState() {
+    // sentFuture = context.read<SendNotificationViewModel>().getNotifications();
+    context
+        .read<BusinessNotificationsViewModel>()
+        .getNotifications()
+        .then((value) {
+      filteredNotifications =
+          context.read<BusinessNotificationsViewModel>().notifations;
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final notifications =
         context.read<BusinessNotificationsViewModel>().notifations;
+    // filteredNotifications = notifications;
     // filteredNotifications = notifications;
     final businessShops =
         context.read<BusinessDashboardViewModel>().businessShops!;
@@ -79,6 +87,7 @@ class _PostsViewState extends State<PostsView> {
             height: getH(85),
             child: Row(
               children: [
+                const SizedBox(width: 10),
                 Expanded(
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
@@ -89,13 +98,17 @@ class _PostsViewState extends State<PostsView> {
                     itemBuilder: (context, index) {
                       final shop = businessShops[index];
                       return GestureDetector(
+                        onDoubleTap: () {},
                         onTap: () {
-                          // print(notifications
-                          //     .where(
-                          //       (element) => element.shop?.id == 12,
-                          //     )
-                          //     .toList());
+                          // inspect(
+                          //   notifications
+                          //       .where(
+                          //         (element) => element.shop?.id == shop.id,
+                          //       )
+                          //       .toList(),
+                          // );
                           setState(() {
+                            //todo posts errorni tuzat
                             // currentShopIndex =
                             //     currentShopIndex == -1 ? index : -1;
                             if (currentShopIndex != index) {
@@ -105,11 +118,10 @@ class _PostsViewState extends State<PostsView> {
                             }
                             filteredNotifications = notifications
                                 .where(
-                                  (element) =>
-                                      element.shop?.id ==
-                                      businessShops[index].id,
+                                  (element) => element.shop?.id == shop.id,
                                 )
                                 .toList();
+                            print(filteredNotifications.length);
                           });
                         },
                         child: Container(
@@ -208,18 +220,18 @@ class _PostsViewState extends State<PostsView> {
                       .isLoadingNotifications
                   ? const LogoAnimatedWidget(size: 1.5)
                   : ListView.separated(
-                      itemCount: currentShopIndex == -1
-                          ? notifications.length
-                          : filteredNotifications.length,
+                      itemCount: filteredNotifications.length,
                       itemBuilder: (context, index) {
+                        if (filteredNotifications.isEmpty) {
+                          return const EmptyWidget();
+                        }
                         return GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(
                               CupertinoPageRoute(
                                 builder: (context) => NotificationInfoView(
-                                  sentNotification: currentShopIndex == -1
-                                      ? notifications[index]
-                                      : filteredNotifications[index],
+                                  sentNotification:
+                                      filteredNotifications[index],
                                 ),
                               ),
                             );
@@ -240,10 +252,8 @@ class _PostsViewState extends State<PostsView> {
                                     ClipOval(
                                       child: CachedNetworkImage(
                                         // 'assets/images/notification/ak-3.png',
-                                        imageUrl: context
-                                                .read<
-                                                    BusinessDashboardViewModel>()
-                                                .businessCompany
+                                        imageUrl: filteredNotifications[index]
+                                                .shop
                                                 ?.logo ??
                                             '',
                                         fit: BoxFit.cover,
@@ -259,10 +269,8 @@ class _PostsViewState extends State<PostsView> {
                                           ),
                                           child: Center(
                                             child: Text(
-                                              context
-                                                      .read<
-                                                          BusinessDashboardViewModel>()
-                                                      .businessCompany
+                                              filteredNotifications[index]
+                                                      .shop
                                                       ?.name
                                                       .substring(0, 1) ??
                                                   'C',
@@ -280,7 +288,7 @@ class _PostsViewState extends State<PostsView> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          notifications[index]
+                                          filteredNotifications[index]
                                               .title
                                               .split('-')
                                               .first,
@@ -295,7 +303,7 @@ class _PostsViewState extends State<PostsView> {
                                           ),
                                         ),
                                         Text(
-                                          notifications[index]
+                                          filteredNotifications[index]
                                               .updatedAt
                                               .getLocaleDateTime(
                                                 addingHours: 5,
@@ -320,7 +328,7 @@ class _PostsViewState extends State<PostsView> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      notifications[index].text,
+                                      filteredNotifications[index].text,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -344,7 +352,7 @@ class _PostsViewState extends State<PostsView> {
                                     // ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      notifications[index]
+                                      filteredNotifications[index]
                                           .updatedAt
                                           .getLocaleDateTime(addingHours: 5),
                                       maxLines: 2,
@@ -352,7 +360,8 @@ class _PostsViewState extends State<PostsView> {
                                     ),
                                     Container(
                                       // child: notifications[index].status == 1
-                                      child: notifications[index].status ==
+                                      child: filteredNotifications[index]
+                                                  .status ==
                                               'pending'
                                           ? const Text(
                                               'Проверяется',
@@ -366,10 +375,12 @@ class _PostsViewState extends State<PostsView> {
                                               ),
                                             )
                                           // : notifications[index].status == 3
-                                          : notifications[index].status ==
+                                          : filteredNotifications[index]
+                                                      .status ==
                                                   'approved'
                                               ? DateTime.parse(
-                                                  notifications[index].endAt,
+                                                  filteredNotifications[index]
+                                                      .endAt,
                                                 ).isAfter(
                                                   DateTime.now(),
                                                 )
@@ -383,7 +394,8 @@ class _PostsViewState extends State<PostsView> {
                                                         ),
                                                         Text(
                                                           '${DateTime.parse(
-                                                            notifications[index]
+                                                            filteredNotifications[
+                                                                    index]
                                                                 .endAt,
                                                           ).difference(
                                                                 DateTime.now(),
@@ -420,16 +432,19 @@ class _PostsViewState extends State<PostsView> {
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(20),
                                   ),
-                                  child: notifications[index].image != null
+                                  child: filteredNotifications[index].image !=
+                                          null
                                       ? CachedNetworkImage(
-                                          imageUrl:
-                                              notifications[index].image ?? '',
+                                          imageUrl: filteredNotifications[index]
+                                                  .image ??
+                                              '',
                                           fit: BoxFit.cover,
                                           errorWidget: (context, url, error) {
                                             return Image.asset(
                                               Helpers.getLocalImage(
                                                 // 'assets/images/notification/ak-${index + 1}.png',
-                                                notifications[index].title,
+                                                filteredNotifications[index]
+                                                    .title,
                                               ),
                                             );
                                           },
@@ -437,7 +452,7 @@ class _PostsViewState extends State<PostsView> {
                                       : Image.asset(
                                           Helpers.getLocalImage(
                                             // 'assets/images/notification/ak-${index + 1}.png',
-                                            notifications[index].title,
+                                            filteredNotifications[index].title,
                                           ),
                                           // height: MediaQuery.of(context).size.width / 4,
                                           // width: MediaQuery.of(context).size.width / 3,

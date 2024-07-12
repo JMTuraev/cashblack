@@ -13,6 +13,7 @@ class BusinessStatisticsViewModel extends ChangeNotifier {
   List<InlineCashbackAndWithdraw> mergedList = [];
 
   List<ReportCashbackClient> clients = [];
+  List<ReportCashbackClient> filteredClients = [];
 
   List shopIdsForHideOrShow = [];
 
@@ -49,6 +50,7 @@ class BusinessStatisticsViewModel extends ChangeNotifier {
   Future<void> getClients() async {
     isClientsLoading = true;
     clients = await _businessApi.getCashbackStatisticsByClient();
+    filteredClients = [...clients];
     isClientsLoading = false;
     notifyListeners();
   }

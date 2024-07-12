@@ -53,7 +53,7 @@ dependencies:
   shared_preferences: ^2.2.2
   cached_network_image: ^3.3.1
   image_cropper: ^5.0.1
-  grouped_list: ^5.1.2
+  grouped_list: ^6.0.0
   mobile_scanner: ^4.0.0
   google_fonts: ^6.1.0
   # flutter_native_splash: ^2.3.13

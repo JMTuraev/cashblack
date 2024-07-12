@@ -14,9 +14,11 @@ import '../../../utils/numberic_text_formatter.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
+import '../../../widgets/dropdown_select_widget.dart';
 import '../../../widgets/hero_title_widget.dart';
 import '../../../widgets/image_view_widget.dart';
 import '../../../widgets/main_button_widget.dart';
+import '../../../widgets/text_field_widget.dart';
 import '../settings_view/companies_list_view.dart';
 
 class EditStoreView extends StatefulWidget {
@@ -116,6 +118,9 @@ class _EditStoreViewState extends State<EditStoreView> {
     _selectedCategory = widget.shop.categoryShopId.toString();
   }
 
+    final _formKey = GlobalKey<FormState>();
+
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -125,6 +130,7 @@ class _EditStoreViewState extends State<EditStoreView> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
+          key: _formKey,
           child: Align(
             alignment: Alignment.topCenter,
             child: SingleChildScrollView(
@@ -137,9 +143,10 @@ class _EditStoreViewState extends State<EditStoreView> {
                     imageUrl: widget.shop.logo ?? '',
                   ),
                   const SizedBox(height: 20),
-                  _BrandNameWidget(controller: _brandName),
+                  // _BrandNameWidget(controller: _brandName),
+                  TextFieldWidget(hintText: 'Бренд', controller: _brandName),
                   const SizedBox(height: 20),
-                  _SelectCategoryWidget(
+                  DropdownSelectWidget(
                     hint: 'Категория',
                     selectedOption: _selectedCategory,
                     categoryItems:
@@ -159,16 +166,21 @@ class _EditStoreViewState extends State<EditStoreView> {
                     onChanged: onCategoryChanged,
                   ),
                   const SizedBox(height: 20),
-                  _CashbackWidget(controller: _cashback),
+                  // _CashbackWidget(controller: _cashback),
+                  TextFieldWidget(hintText: 'Кэшбек', controller: _cashback, textType: TextInputType.number, maxLength: 2,),
                   const SizedBox(height: 20),
-                  _AddressNameWidget(controller: _address),
+                  // _AddressNameWidget(controller: _address),
+                  TextFieldWidget(hintText: 'Адрес', controller: _address,),
                   const SizedBox(height: 20),
-                  _WaymarkNameWidget(controller: _waymark),
+                  // _WaymarkNameWidget(controller: _waymark),
+                  TextFieldWidget(hintText: 'Ориентир', controller: _waymark,),
                   const SizedBox(height: 20),
                   MainButtonWidget(
                     text: 'OK',
-                    isLoading: false,
+                    isLoading: context.watch<BusinessDashboardViewModel>().isEditingStore,
                     method: () async {
+                      if (_formKey.currentState!.validate()) {
+                        
                       await context
                           .read<BusinessDashboardViewModel>()
                           .editLocalStore(
@@ -232,6 +244,8 @@ class _EditStoreViewState extends State<EditStoreView> {
                           print('xato');
                         }
                       });
+                    
+                      }
                     },
                   ),
                   const SizedBox(height: 20),

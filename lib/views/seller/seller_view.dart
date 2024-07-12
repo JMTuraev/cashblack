@@ -13,6 +13,8 @@ import '../../view_models/business/business_view_model.dart';
 import '../../view_models/seller/seller_view_model.dart';
 import '../../widgets/logo_animated_widget.dart';
 import '../business/scanner_view/barcode_scanner_view.dart';
+import '../business/scanner_view/freezed_view.dart';
+import '../business/scanner_view/subscription_view.dart';
 import '../business/statistics_view/statistics_view.dart';
 import '../seller/settings_view.dart';
 import 'seller_barcode_scanner_view.dart';
@@ -113,11 +115,11 @@ class _SellerViewState extends State<SellerView>with WidgetsBindingObserver {
               children: [
                 // const StatisticsView(),
                 const SellerStatisticsView(),
-                currentIndex == 1
+                currentIndex == 1 && context.read<SellerViewModel>().sellerProfile!.status == 1
                     ? SellerBarcodeScannerView(
                         shopId: 1,
                       )
-                    : SizedBox(),
+                    : FreezedView(),
                 const SettingsView(),
               ],
             ),

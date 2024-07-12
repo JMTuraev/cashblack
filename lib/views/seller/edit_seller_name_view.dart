@@ -29,6 +29,8 @@ class _EditSellerNameViewState extends State<EditSellerNameView> {
     widget.lastNameController.text = widget.user.lastName;
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,18 +41,19 @@ class _EditSellerNameViewState extends State<EditSellerNameView> {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Form(
+            key: _formKey,
             child: Align(
               child: Column(
                 children: [
-                  const SizedBox(height: 20),
-                  widget.user.firstName.isEmpty && widget.user.lastName.isEmpty
-                      ? const _SimpleTextWidget(
-                          title: '',
-                        )
-                      : _SimpleTextWidget(
-                          title:
-                              '${widget.user.firstName} ${widget.user.lastName}',
-                        ),
+                  // const SizedBox(height: 20),
+                  // widget.user.firstName.isEmpty && widget.user.lastName.isEmpty
+                  //     ? const _SimpleTextWidget(
+                  //         title: '',
+                  //       )
+                  //     : _SimpleTextWidget(
+                  //         title:
+                  //             '${widget.user.firstName} ${widget.user.lastName}',
+                  //       ),
                   const SizedBox(height: 40),
                   TextFieldWidget(
                     hintText: 'Имя',
@@ -66,19 +69,21 @@ class _EditSellerNameViewState extends State<EditSellerNameView> {
                     isLoading: context.watch<SellerViewModel>().isEditing,
                     text: 'OK',
                     method: () async {
-                      await context
-                          .read<SellerViewModel>()
-                          .editSellerProfile(
-                            widget.firstNameController.text,
-                            widget.lastNameController.text,
-                            widget.user.phone,
-                          )
-                          .then((value) {
-                        if (value) {
-                          context.read<SellerViewModel>().getSellerProfile();
-                          Navigator.pop(context);
-                        }
-                      });
+                      if (_formKey.currentState!.validate()) {
+                        await context
+                            .read<SellerViewModel>()
+                            .editSellerProfile(
+                              widget.firstNameController.text,
+                              widget.lastNameController.text,
+                              widget.user.phone,
+                            )
+                            .then((value) {
+                          if (value) {
+                            context.read<SellerViewModel>().getSellerProfile();
+                            Navigator.pop(context);
+                          }
+                        });
+                      }
                     },
                   ),
                   const SizedBox(height: 20),

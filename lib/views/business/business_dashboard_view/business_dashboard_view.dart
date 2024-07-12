@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -140,6 +141,8 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
     ),
   ];
 
+  double tempShopPercent = 0.01;
+
   @override
   Widget build(BuildContext context) {
     // var user = context.watch<BusinessHomeViewModel>().user;
@@ -149,12 +152,31 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
     final businessShops =
         context.read<BusinessDashboardViewModel>().businessShops!;
     final profile = context.read<BusinessSettingsViewModel>().businessProfile;
-    return Container(
-      // header: const CupertinoHeader(),
-      // onRefresh: () {
-      //   context.read<BusinessDashboardViewModel>().getBusinessShops();
-      // },
-      child: Column(
+    return EasyRefresh(
+      header: const MaterialHeader(),
+      onRefresh: () {
+        // context.read<BusinessDashboardViewModel>().getBusinessShops();
+        if (context.read<BusinessDashboardViewModel>().hasShops &&
+            context
+                .read<BusinessDashboardViewModel>()
+                .businessShops!
+                .isNotEmpty) {
+//
+          print(currentShopIndex);
+          context.read<BusinessDashboardViewModel>().getWeeklyStatistics(
+                context
+                    .read<BusinessDashboardViewModel>()
+                    .businessShops![currentShopIndex]
+                    .id,
+              );
+        }
+      },
+      footer: const NotLoadFooter(
+        clamping: true,
+      ),
+      child: ListView(
+        shrinkWrap: true,
+        // physics: const ClampingScrollPhysics(),
         children: [
           const SizedBox(height: 10),
           Container(
@@ -240,6 +262,8 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                                         .getWeeklyStatistics(shop.id);
                                     setState(() {
                                       currentShopIndex = index;
+                                      tempShopPercent =
+                                          double.parse(shop.percent);
                                     });
                                   },
                                   onLongPress: () {
@@ -733,6 +757,7 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                         aWeekStatistics: dummyWeekStatistics,
                         maxSum:
                             context.read<BusinessDashboardViewModel>().maxSum,
+                        percent: -1,
                       )
                     : _ChartCashbackWidget(
                         aWeekStatistics: context
@@ -740,8 +765,100 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                             .weeklyStatistics,
                         maxSum:
                             context.read<BusinessDashboardViewModel>().maxSum,
+                        percent: tempShopPercent,
                       )),
           ),
+          context.watch<BusinessDashboardViewModel>().isWeeklyLoading
+              ? const SizedBox()
+              : _BorderContainerWidget(
+                  child: Column(
+                    children: [
+                      const Text(
+                        'Итоги недели',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          const Text(
+                            'Сумма',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Color.fromRGBO(103, 206, 103, 1),
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            context
+                                .read<BusinessDashboardViewModel>()
+                                .maxSum
+                                .toString()
+                                .getAmountInSum(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          const Text(
+                            'Кэшбэк',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Color.fromRGBO(255, 144, 62, 1),
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            context
+                                .read<BusinessDashboardViewModel>()
+                                .totalCashback
+                                .toString()
+                                .getAmountInSum(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // const SizedBox(height: 4),
+                      // const Row(
+                      //   children: [
+                      //     Text(
+                      //       'Использованные кэшбэки',
+                      //       style: TextStyle(
+                      //         fontSize: 16,
+                      //         fontWeight: FontWeight.w400,
+                      //         color: Color.fromRGBO(75, 132, 231, 1),
+                      //       ),
+                      //     ),
+                      //     Spacer(),
+                      //     Text(
+                      //       '888 888 888 cem',
+                      //       // context
+                      //       //     .read<BusinessDashboardViewModel>()
+                      //       //     .totalWithdraw
+                      //       //     .toString()
+                      //       //     .getAmountInSum(),
+                      //       style: TextStyle(
+                      //         fontSize: 16,
+                      //         fontWeight: FontWeight.bold,
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                    ],
+                  ),
+                ),
         ],
       ),
     );
@@ -992,10 +1109,12 @@ class _ChartCashbackWidget extends StatefulWidget {
   const _ChartCashbackWidget({
     required this.aWeekStatistics,
     required this.maxSum,
+    required this.percent,
   });
 
   final List<WeeklyStat> aWeekStatistics;
   final double maxSum;
+  final double percent;
 
   @override
   State<_ChartCashbackWidget> createState() => _ChartCashbackWidgetState();
@@ -1007,7 +1126,17 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
   bool showCashback = true;
 
 //TODO farqi graphda
-  final cashbackDifferenceForGraph = 5;
+  int cashbackDifferenceForGraph = 5;
+  @override
+  void initState() {
+    super.initState();
+    print(widget.percent);
+
+    if (widget.percent > 9.9) {
+      print('object2');
+      cashbackDifferenceForGraph = 1;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1146,10 +1275,27 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                 widget.aWeekStatistics.length,
                 (index) => FlSpot(
                   double.parse(index.toString()),
-                  double.parse(
-                        widget.aWeekStatistics[index].cashback.toString(),
-                      ) *
-                      cashbackDifferenceForGraph,
+                  (double.parse(
+                                widget.aWeekStatistics[index].cashback
+                                    .toString(),
+                              ) *
+                              cashbackDifferenceForGraph) <
+                          double.parse(
+                            widget.aWeekStatistics[index].totalCashback
+                                .toString(),
+                          )
+                      ? (double.parse(
+                            widget.aWeekStatistics[index].cashback.toString(),
+                          ) *
+                          cashbackDifferenceForGraph)
+                      : double.parse(
+                          widget.aWeekStatistics[index].cashback.toString(),
+                        ),
+                  //todo graph old
+                  // double.parse(
+                  //       widget.aWeekStatistics[index].cashback.toString(),
+                  //     ) *
+                  //     cashbackDifferenceForGraph,
                 ),
               ),
 
@@ -1181,6 +1327,165 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
     return Column(
       children: [
         // const _LineInfoWidget(),
+
+        Row(
+          children: [
+            const SizedBox(width: 4),
+            Text(
+              widget.maxSum.toString().kMBgenerator(),
+              textAlign: TextAlign.start,
+              style: const TextStyle(
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              // top: 20,
+              left: 20,
+              right: 20,
+            ),
+            child: Container(
+              // color: Colors.red,
+              child: LineChart(
+                LineChartData(
+                  maxY: widget.maxSum,
+                  minY: -widget.maxSum / 10,
+                  lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      // tooltipBgColor: Colors.grey[900],
+                      tooltipBgColor: Colors.grey.shade900,
+                      showOnTopOfTheChartBoxArea: true,
+                      fitInsideHorizontally: true,
+                      fitInsideVertically: true,
+                      getTooltipItems: (touchedBarSpots) {
+                        return touchedBarSpots.map((barSpot) {
+                          return barSpot.barIndex == 0
+                              ? LineTooltipItem(
+                                  NumberFormat.simpleCurrency(
+                                    name: '',
+                                    locale: 'ru_RU',
+                                    decimalDigits: 0,
+                                  ).format(barSpot.y),
+                                  TextStyle(
+                                    color: barSpot.bar.color,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              : LineTooltipItem(
+                                  NumberFormat.simpleCurrency(
+                                    name: '',
+                                    locale: 'ru_RU',
+                                    decimalDigits: 0,
+                                  ).format(
+                                    barSpot.y /
+                                        cashbackDifferenceForGraph, // bu yerda faqat qiyamti 5 ga bo'linadi, haqiqiysi
+                                    // barSpot.y,
+                                  ),
+                                  TextStyle(
+                                    color: barSpot.bar.color,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  // children: [
+                                  //   TextSpan(
+                                  //     text: barSpot.y.toString(),
+                                  //     style: TextStyle(
+                                  //       color: Colors.blue[300],
+                                  //     ),
+                                  //   ),
+                                  //   TextSpan(
+                                  //     text: barSpot.y.toString(),
+                                  //     style: TextStyle(
+                                  //       color: Colors.red[300],
+                                  //     ),
+                                  //   ),
+                                  // ],
+                                );
+                        }).toList();
+                      },
+                    ),
+                  ),
+                  titlesData: FlTitlesData(
+                    rightTitles: const AxisTitles(),
+                    leftTitles: const AxisTitles(),
+                    topTitles: const AxisTitles(
+                        // sideTitles: SideTitles(
+                        //   getTitlesWidget: (value, meta) {
+                        //     // return SideTitleWidget(
+                        //     //   axisSide: AxisSide.top,
+                        //     //   child: Text(
+                        //     //     value.toInt() > 0
+                        //     //         ? '${(value.toInt() / 1000).toStringAsFixed(0)} тыс'
+                        //     //         : '',
+                        //     //     // 'se',
+                        //     //     textAlign: TextAlign.center,
+                        //     //     style: const TextStyle(fontSize: 10),
+                        //     //   ),
+                        //     // );
+                        //     return Padding(
+                        //       padding: const EdgeInsets.only(right: 2),
+                        //       child: Text(
+                        //         // value.toInt() > 0
+                        //         //     ? '${(value.toInt() / 1000).toStringAsFixed(0)} тыс'
+                        //         //     : '',
+                        //         widget.maxSum.toString(),
+                        //         textAlign: TextAlign.center,
+                        //         style: const TextStyle(fontSize: 10),
+                        //       ),
+                        //     );
+                        //   },
+                        //   showTitles: true,
+                        //   // interval: widget.maxSum != 0 ? (widget.maxSum / 2) : 1,
+                        //   interval: widget.maxSum != 0 ? (widget.maxSum) : 1,
+                        //   // reservedSize: 30,
+                        // ),
+                        ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        getTitlesWidget: (value, meta) {
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              top: 30,
+                              left: 10,
+                              // right: 10,
+                            ),
+                            child: RotationTransition(
+                              turns: const AlwaysStoppedAnimation(-45 / 360),
+                              child: Text(
+                                widget.aWeekStatistics[value.toInt()].date
+                                    .toString()
+                                    .getLocaleDateWithoutYearWithMont(),
+                                // 'as',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        showTitles: true,
+                        interval: 1,
+                        reservedSize: 60,
+                      ),
+                    ),
+                  ),
+                  gridData: const FlGridData(
+                    verticalInterval: 1,
+                  ),
+                  lineBarsData: [
+                    sumChartBarData,
+                    cashbackChartBarData,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -1252,135 +1557,6 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
           ],
         ),
         const SizedBox(height: 10),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: 20,
-              left: 10,
-              right: 20,
-            ),
-            child: Container(
-              child: LineChart(
-                LineChartData(
-                  maxY: widget.maxSum,
-                  minY: -widget.maxSum / 10,
-                  lineTouchData: LineTouchData(
-                    touchTooltipData: LineTouchTooltipData(
-                      // tooltipBgColor: Colors.grey[900],
-                      tooltipBgColor: Colors.grey.shade900,
-                      showOnTopOfTheChartBoxArea: true,
-                      fitInsideHorizontally: true,
-                      fitInsideVertically: true,
-                      getTooltipItems: (touchedBarSpots) {
-                        return touchedBarSpots.map((barSpot) {
-                          return barSpot.barIndex == 0
-                              ? LineTooltipItem(
-                                  NumberFormat.simpleCurrency(
-                                    name: '',
-                                    locale: 'ru_RU',
-                                    decimalDigits: 0,
-                                  ).format(barSpot.y),
-                                  TextStyle(
-                                    color: barSpot.bar.color,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              : LineTooltipItem(
-                                  NumberFormat.simpleCurrency(
-                                    name: '',
-                                    locale: 'ru_RU',
-                                    decimalDigits: 0,
-                                  ).format(
-                                    barSpot.y /
-                                        cashbackDifferenceForGraph, // bu yerda faqat qiyamti 5 ga bo'linadi, haqiqiysi
-                                    // barSpot.y,
-                                  ),
-                                  TextStyle(
-                                    color: barSpot.bar.color,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  // children: [
-                                  //   TextSpan(
-                                  //     text: barSpot.y.toString(),
-                                  //     style: TextStyle(
-                                  //       color: Colors.blue[300],
-                                  //     ),
-                                  //   ),
-                                  //   TextSpan(
-                                  //     text: barSpot.y.toString(),
-                                  //     style: TextStyle(
-                                  //       color: Colors.red[300],
-                                  //     ),
-                                  //   ),
-                                  // ],
-                                );
-                        }).toList();
-                      },
-                    ),
-                  ),
-                  titlesData: FlTitlesData(
-                    rightTitles: const AxisTitles(),
-                    topTitles: const AxisTitles(),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        getTitlesWidget: (value, meta) {
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 2),
-                            child: Text(
-                              value.toInt() > 0
-                                  ? '${(value.toInt() / 1000).toStringAsFixed(0)} тыс'
-                                  : '',
-                              // 'se',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 10),
-                            ),
-                          );
-                        },
-                        showTitles: true,
-                        interval: widget.maxSum != 0 ? (widget.maxSum / 2) : 1,
-                        reservedSize: 30,
-                      ),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        getTitlesWidget: (value, meta) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              top: 30,
-                            ),
-                            child: RotationTransition(
-                              turns: const AlwaysStoppedAnimation(-45 / 360),
-                              child: Text(
-                                widget.aWeekStatistics[value.toInt()].date
-                                    .toString()
-                                    .getLocaleDateWithoutYearWithMont(),
-                                // 'as',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        showTitles: true,
-                        interval: 1,
-                        reservedSize: 60,
-                      ),
-                    ),
-                  ),
-                  gridData: const FlGridData(
-                    verticalInterval: 1,
-                  ),
-                  lineBarsData: [
-                    sumChartBarData,
-                    cashbackChartBarData,
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -1424,6 +1600,37 @@ class _AddStoreWidget extends StatelessWidget {
         'assets/svg/broken_add.svg',
         color: Colors.white,
       ),
+    );
+  }
+}
+
+class _BorderContainerWidget extends StatelessWidget {
+  const _BorderContainerWidget({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        horizontal: getW(20),
+        vertical: getW(16),
+      ),
+      margin: EdgeInsets.symmetric(
+        horizontal: getW(10),
+      ),
+      decoration: const BoxDecoration(
+        // border: Border.all(
+        //   width: 1,
+        //   color: Colors.white24,
+        // ),
+        color: Color.fromRGBO(28, 28, 29, 1),
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
+        ),
+      ),
+      child: child,
     );
   }
 }

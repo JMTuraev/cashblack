@@ -7,6 +7,7 @@ import '../../../string_extensions.dart';
 import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_view_model.dart';
+import '../../../widgets/dropdown_select_widget.dart';
 import '../../../widgets/main_button_widget.dart';
 import '../../../widgets/text_field_widget.dart';
 
@@ -30,6 +31,9 @@ MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
     String? selectedShop;
 
       TextEditingController phoneController = TextEditingController(text: '+998');
+
+        final _formKey = GlobalKey<FormState>();
+
 
 
   @override
@@ -56,12 +60,32 @@ MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
+          key: _formKey,
           child: Container(
             // alignment: Alignment.center,
             child: Column(
               children: [
                 SizedBox(height: getH(140)),
-                TextField(
+                TextFormField(
+                  //todo phone
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        int.parse(value.removeWhitespace()) <= 0) {
+                      return 'Введите номер телефона';
+                    }
+                    if (value.removeWhitespace().length < 13) {
+                      return 'Введите правылный номер телефона';
+                    }
+                    if (context
+                            .read<BusinessSettingsViewModel>()
+                            .businessProfile!
+                            .phone ==
+                        value.removeWhitespace().removeAllSymbols()) {
+                      return 'Введите правылный номер телефона';
+                    }
+                    return null;
+                  },
                   decoration: const InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -106,7 +130,7 @@ MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
                   controller: lastNameController,
                 ),
                 SizedBox(height: getH(20)),
-                _SelectCategoryWidget(
+                DropdownSelectWidget(
                   categoryItems: context
                       .read<BusinessDashboardViewModel>()
                       .businessShops!
@@ -128,6 +152,8 @@ MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
                 MainButtonWidget(
                   text: 'OK',
                   method: () async {
+                    if(_formKey.currentState!.validate()) {
+
                     await context
                         .read<BusinessSettingsViewModel>()
                         .createSeller(
@@ -147,7 +173,10 @@ MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
                         print('xato');
                       }
                     });
-                  }, isLoading: context.watch<BusinessSettingsViewModel>().isCreatingWorker,
+                  
+                    }
+                  }, 
+                  isLoading: context.watch<BusinessSettingsViewModel>().isCreatingWorker,
                 ),
                 SizedBox(height: getH(20)),
               ],

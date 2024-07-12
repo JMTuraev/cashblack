@@ -14,13 +14,17 @@ class BusinessPaymentViewModel extends ChangeNotifier {
   bool isPriceLoading = false;
   List<BonusPrice> bonusPrices = [];
 
+  bool isPaying = false;
+  bool isWithdrawing = false;
+  bool isChangingStore = false;
+
   Future<bool> setShopBeforeCashbackOrWithdraw(
     String shopId,
   ) async {
-    isLoading = true;
+    isChangingStore = true;
     notifyListeners();
     final result = await _businessApi.setShopBeforeCashbackOrWithdraw(shopId);
-    isLoading = false;
+    isChangingStore = false;
     notifyListeners();
     return result;
   }
@@ -30,10 +34,10 @@ class BusinessPaymentViewModel extends ChangeNotifier {
     String clientPhone,
     String price,
   ) async {
-    isLoading = true;
+    isPaying = true;
     notifyListeners();
     final result = await _businessApi.payCashback(clientPhone, price);
-    isLoading = false;
+    isPaying = false;
     notifyListeners();
     return result;
   }
@@ -43,11 +47,10 @@ class BusinessPaymentViewModel extends ChangeNotifier {
     String clientPhone,
     String price,
   ) async {
-    isLoading = true;
+    isWithdrawing = true;
     notifyListeners();
-
     final result = await _businessApi.payWithdraw(clientPhone, price);
-    isLoading = false;
+    isWithdrawing = false;
     notifyListeners();
     return result;
   }

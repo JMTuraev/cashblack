@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/owner/business_license.dart';
 import '../../../string_extensions.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
 
@@ -21,7 +20,7 @@ class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
 
   @override
   Widget build(BuildContext context) {
-    List<BusinessLicense> payments = context
+    final payments = context
             .read<BusinessSettingsViewModel>()
             .businessProfile
             ?.licence
@@ -63,13 +62,7 @@ class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                payments[index]
-                                        .startAt
-                                        .getLocaleDateWithoutYear() +
-                                    ' - ' +
-                                    payments[index]
-                                        .endAt
-                                        .getLocaleDateWithYear(),
+                                '${payments[index].startAt.getLocaleDateWithoutYear()} - ${payments[index].endAt.getLocaleDateWithYear()}',
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
@@ -97,7 +90,7 @@ class _PaymentsHistoryViewState extends State<PaymentsHistoryView> {
                                 // ).format(
                                 //   int.parse('123'),
                                 // ),
-                                payments[index].amount.getAmountInSum(),
+                                payments[index].amount.getFormattedNumber(),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.green[400],

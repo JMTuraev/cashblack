@@ -95,7 +95,12 @@ class _ClientNotificationInfoViewState
                               .likeNotification(
                                 widget.receivedNotification.id,
                                 //  widget.receivedNotification.like.toString() == '1' ? 0 : 1,
-                                1,
+
+                                (widget.receivedNotification.like == 0 ||
+                                        widget.receivedNotification.like ==
+                                            false)
+                                    ? 1
+                                    : 0,
                               );
                         });
                       },

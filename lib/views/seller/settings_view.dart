@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -102,26 +103,26 @@ class _ShopCardWidget extends StatelessWidget {
     return _BorderContainerWidget(
       child: Row(
         children: [
-          // ClipRRect(
-          //   borderRadius: const BorderRadius.all(
-          //     Radius.circular(20),
-          //   ),
-          //   child: SizedBox(
-          //     width: getW(60),
-          //     height: getH(60),
-          //     child: context.watch<BusinessSettingsViewModel>().isUploading
-          //         ? const CupertinoActivityIndicator()
-          //         : CachedNetworkImage(
-          //             fit: BoxFit.cover,
-          //             imageUrl: company.logo ?? '',
-          //             errorWidget: (context, url, error) => const Icon(
-          //               Icons.home_repair_service_rounded,
-          //               size: 40,
-          //             ),
-          //           ),
-          //   ),
-          // ),
-          // SizedBox(width: getW(18)),
+          ClipRRect(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20),
+            ),
+            child: SizedBox(
+              width: getW(60),
+              height: getH(60),
+              child: context.watch<SellerViewModel>().isLoading
+                  ? const CupertinoActivityIndicator()
+                  : CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: company.logo ?? '',
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.home_repair_service_rounded,
+                        size: 40,
+                      ),
+                    ),
+            ),
+          ),
+          SizedBox(width: getW(18)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

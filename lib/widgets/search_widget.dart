@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../utils/numberic_text_formatter.dart';
 
-class TextFieldWidget extends StatelessWidget {
-  TextFieldWidget({
+class SearchWidget extends StatelessWidget {
+  SearchWidget({
     super.key,
     required this.hintText,
     this.controller,
@@ -14,6 +14,7 @@ class TextFieldWidget extends StatelessWidget {
     this.validator,
     this.maxLength,
     this.onChanged,
+    this.onRemoved,
     this.skipNumberFormatter,
   });
 
@@ -27,6 +28,7 @@ class TextFieldWidget extends StatelessWidget {
   TextInputType? textType;
   final String? Function(String?)? validator;
   Function(String)? onChanged;
+  void Function()? onRemoved;
   // NumericTextFormatter numericTextFormatter = NumericTextFormatter();
   // NumericRangeFormatter numericRangeFormatter = NumericRangeFormatter();
 
@@ -51,7 +53,10 @@ class TextFieldWidget extends StatelessWidget {
           },
       decoration: InputDecoration(
         suffixIcon: IconButton(
-          onPressed: () => controller?.clear(),
+          onPressed: () {
+            onRemoved!();
+            controller?.clear();
+          },
           icon: const Icon(
             Icons.clear,
             size: 20,
@@ -75,7 +80,7 @@ class TextFieldWidget extends StatelessWidget {
           ),
         ),
         // labelText: showLabel == true ? hintText : null,
-        labelText: hintText,
+        // labelText: hintText,
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(radius ?? 20),

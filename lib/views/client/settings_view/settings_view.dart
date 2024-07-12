@@ -10,7 +10,6 @@ import '../../../string_extensions.dart';
 import '../../../view_models/client/client_settings_view_model.dart';
 import '../../../view_models/client/client_view_model.dart';
 import '../../../widgets/logo_animated_widget.dart';
-import '../../../widgets/small_title_widget.dart';
 import '../../select_type_view/select_type_view.dart';
 import 'edit_name_view.dart';
 
@@ -92,22 +91,35 @@ class _SettingsViewState extends State<SettingsView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            '${client.firstName} ${client.lastName}',
-                            // style: GoogleFonts.abrilFatface(
-                            //   fontSize: 26,
-                            // ),
-                            style: const TextStyle(
-                              fontSize: 26,
+                          const Icon(
+                            Icons.edit,
+                            size: 20,
+                            color: Colors.transparent,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              '${client.firstName} ${client.lastName}',
+                              // style: GoogleFonts.abrilFatface(
+                              //   fontSize: 26,
+                              // ),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 26,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const SizedBox(width: 6),
                           const Icon(
                             Icons.edit,
-                            size: 14,
+                            size: 20,
                           ),
+                          const SizedBox(width: 6),
                         ],
                       ),
+                      onDoubleTap: () {},
                       onTap: () {
                         Navigator.of(context).push(
                           CupertinoPageRoute(
@@ -119,9 +131,13 @@ class _SettingsViewState extends State<SettingsView> {
                       },
                     ),
                     const SizedBox(height: 30),
-                    SmallTitleWidget(
+                    Text(
                       // text: '998${client.phone}'.phoneFormatter(),
-                      text: client.phone.phoneFormatter(),
+                      client.phone.phoneFormatter(),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                      ),
                     ),
                   ],
                 ),

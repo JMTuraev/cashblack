@@ -36,7 +36,10 @@ class _ClientViewState extends State<ClientView> {
      //todo auto check
     timer = Timer.periodic(
       const Duration(seconds: 15),
-      (Timer t) => context.read<ClientSettingsViewModel>().getClientProfile(),
+      (Timer t) {
+        context.read<ClientSettingsViewModel>().getClientProfile();
+        context.read<ClientDashboardViewModel>().getClientCategories();
+      },
     );
     super.initState();
   }

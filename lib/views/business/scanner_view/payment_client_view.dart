@@ -199,7 +199,14 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                     Container(
                                       // flex: 2,
                                       child: MainButtonWidget(
-                                        isLoading: isLoading,
+                                        isLoading: context
+                                                .watch<
+                                                    BusinessPaymentViewModel>()
+                                                .isChangingStore ||
+                                            context
+                                                .watch<
+                                                    BusinessPaymentViewModel>()
+                                                .isPaying,
                                         percent: percent.isEmpty
                                             ? null
                                             : int.parse(percent),
@@ -261,7 +268,14 @@ class _PaymentClientViewState extends State<PaymentClientView> {
                                           62,
                                           1,
                                         ),
-                                        isLoading: isSmallLoading,
+                                        isLoading: context
+                                                .watch<
+                                                    BusinessPaymentViewModel>()
+                                                .isChangingStore ||
+                                            context
+                                                .watch<
+                                                    BusinessPaymentViewModel>()
+                                                .isWithdrawing,
                                         text: 'Использовать кэшбек',
                                         method: () async {
                                           isWithdraw = true;
