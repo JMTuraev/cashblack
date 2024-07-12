@@ -137,7 +137,7 @@ class ClientApi {
     final notification =
         ClientNotification.fromJson(response.data as Map<String, Object?>);
 
-    print('owner notifs');
+    print('client notifs');
 
     return notification;
   }

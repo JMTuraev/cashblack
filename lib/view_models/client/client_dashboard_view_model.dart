@@ -83,6 +83,7 @@ class ClientDashboardViewModel extends ChangeNotifier {
 
   Future<void> likeNotification(int id, int status) async {
     isLiking = true;
+    notifyListeners();
     await _clientApi.likeNotifications(id, status);
     isLiking = false;
     notifyListeners();

@@ -28,7 +28,10 @@ class _ClientNotificationInfoViewState
 
     context
         .read<ClientDashboardViewModel>()
-        .readNotification(widget.receivedNotification.id);
+        .readNotification(widget.receivedNotification.id)
+        .then((value) {
+      context.read<ClientDashboardViewModel>().getNotifications();
+    });
   }
 
   @override
@@ -41,7 +44,7 @@ class _ClientNotificationInfoViewState
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +104,12 @@ class _ClientNotificationInfoViewState
                                             false)
                                     ? 1
                                     : 0,
-                              );
+                              )
+                              .then((value) {
+                            context
+                                .read<ClientDashboardViewModel>()
+                                .getNotifications();
+                          });
                         });
                       },
                       icon: widget.receivedNotification.like == 0 ||
@@ -147,7 +155,7 @@ class _ClientNotificationInfoViewState
                       color: Color.fromRGBO(164, 164, 164, 1),
                       size: 26,
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 8),
                     Text(
                       widget.receivedNotification.showedCount.toString(),
                       style: const TextStyle(

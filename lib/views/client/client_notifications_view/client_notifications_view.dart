@@ -274,7 +274,13 @@ class _ClientNotificationsViewState extends State<ClientNotificationsView> {
                                                       .likeNotification(
                                                         notifications[index].id,
                                                         1,
-                                                      );
+                                                      )
+                                                      .then((value) {
+                                                    context
+                                                        .read<
+                                                            ClientDashboardViewModel>()
+                                                        .getNotifications();
+                                                  });
                                                 });
                                               },
                                               icon: context

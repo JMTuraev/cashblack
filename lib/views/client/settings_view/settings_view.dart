@@ -99,7 +99,10 @@ class _SettingsViewState extends State<SettingsView> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              '${client.firstName} ${client.lastName}',
+                              client.firstName.contains(client.phone) &&
+                                      client.lastName.contains(client.phone)
+                                  ? 'Имя Фамилия'
+                                  : '${client.firstName} ${client.lastName}',
                               // style: GoogleFonts.abrilFatface(
                               //   fontSize: 26,
                               // ),
