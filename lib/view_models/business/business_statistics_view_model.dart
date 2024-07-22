@@ -16,10 +16,18 @@ class BusinessStatisticsViewModel extends ChangeNotifier {
   List<ReportCashbackClient> filteredClients = [];
 
   List shopIdsForHideOrShow = [];
+  double allCashbackSums = 0;
+  double allWithdrawSums = 0;
+  double allTotalSums = 0;
 
-  Future<void> getStats() async {
+  Future<void> getStats(int shopId) async {
     isLoading = true;
     mergedList.clear();
+    allCashbackSums = 0;
+    allWithdrawSums = 0;
+    allTotalSums = 0;
+    print(shopId);
+    // shopIdsForHideOrShow.clear(); // `todo` kerakmi bu?
     cashbackAndWithdraws = await _businessApi.getCashbackStatistics();
 
     // mergedList = cashbackAndWithdraws.first.cashback;
@@ -32,12 +40,30 @@ class BusinessStatisticsViewModel extends ChangeNotifier {
         ..addAll(element.withdraw)
         ..addAll(element.cashback);
 
+      // allCashbackSums += double.parse(element.cashbackSum.toString());
+      // allWithdrawSums += double.parse(element.withdrawSum.toString());
+      for (final element in element.cashback) {
+        if (element.shopId == shopId) {
+          allTotalSums += double.parse(element.totalPrice.toString());
+        }
+      }
+      for (final element in element.cashback) {
+        if (element.shopId == shopId) {
+          allCashbackSums += double.parse(element.amount.toString());
+        }
+      }
+      for (final element in element.withdraw) {
+        if (element.shopId == shopId) {
+          allWithdrawSums += double.parse(element.amount.toString());
+        }
+      }
+
       for (final el in element.cashback) {
         shopIdsForHideOrShow.add(el.shopId);
       }
     }
-
-    print(shopIdsForHideOrShow);
+    print('all total shums $allTotalSums');
+    // print(shopIdsForHideOrShow);
 
     mergedList.sort(
       (a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)),

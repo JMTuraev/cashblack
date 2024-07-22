@@ -219,303 +219,329 @@ class _PostsViewState extends State<PostsView> {
                       .watch<BusinessNotificationsViewModel>()
                       .isLoadingNotifications
                   ? const LogoAnimatedWidget(size: 1.5)
-                  : ListView.separated(
-                      itemCount: filteredNotifications.length,
-                      itemBuilder: (context, index) {
-                        if (filteredNotifications.isEmpty) {
-                          return const EmptyWidget();
-                        }
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                builder: (context) => NotificationInfoView(
-                                  sentNotification:
-                                      filteredNotifications[index],
+                  : (filteredNotifications.isNotEmpty
+                      ? ListView.separated(
+                          itemCount: filteredNotifications.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                    builder: (context) => NotificationInfoView(
+                                      sentNotification:
+                                          filteredNotifications[index],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                  color: Color.fromRGBO(44, 45, 47, 1),
                                 ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20),
-                              ),
-                              color: Color.fromRGBO(44, 45, 47, 1),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    ClipOval(
-                                      child: CachedNetworkImage(
-                                        // 'assets/images/notification/ak-3.png',
-                                        imageUrl: filteredNotifications[index]
-                                                .shop
-                                                ?.logo ??
-                                            '',
-                                        fit: BoxFit.cover,
-                                        height: getH(50),
-                                        width: getH(50),
-                                        errorWidget:
-                                            (context, error, stackTrace) =>
-                                                Container(
-                                          height: getH(50),
-                                          width: getH(50),
-                                          decoration: const BoxDecoration(
-                                            color: Colors.white24,
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              filteredNotifications[index]
-                                                      .shop
-                                                      ?.name
-                                                      .substring(0, 1) ??
-                                                  'C',
-                                              style: const TextStyle(
-                                                fontSize: 20,
+                                    Row(
+                                      children: [
+                                        ClipOval(
+                                          child: CachedNetworkImage(
+                                            // 'assets/images/notification/ak-3.png',
+                                            imageUrl:
+                                                filteredNotifications[index]
+                                                        .shop
+                                                        ?.logo ??
+                                                    '',
+                                            fit: BoxFit.cover,
+                                            height: getH(50),
+                                            width: getH(50),
+                                            errorWidget:
+                                                (context, error, stackTrace) =>
+                                                    Container(
+                                              height: getH(50),
+                                              width: getH(50),
+                                              decoration: const BoxDecoration(
+                                                color: Colors.white24,
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  filteredNotifications[index]
+                                                          .shop
+                                                          ?.name
+                                                          .substring(0, 1) ??
+                                                      'C',
+                                                  style: const TextStyle(
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
+                                        SizedBox(width: getW(16)),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              filteredNotifications[index]
+                                                  .title
+                                                  .split('-')
+                                                  .first,
+                                              style: const TextStyle(
+                                                color: Color.fromRGBO(
+                                                  103,
+                                                  206,
+                                                  103,
+                                                  1,
+                                                ),
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            Text(
+                                              filteredNotifications[index]
+                                                  .updatedAt
+                                                  .getLocaleDateTime(
+                                                    addingHours: 5,
+                                                  ),
+                                              style: const TextStyle(
+                                                color: Color.fromRGBO(
+                                                  147,
+                                                  147,
+                                                  147,
+                                                  1,
+                                                ),
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(width: getW(16)),
+                                    const SizedBox(height: 20),
                                     Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          filteredNotifications[index]
-                                              .title
-                                              .split('-')
-                                              .first,
+                                          filteredNotifications[index].text,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
-                                            color: Color.fromRGBO(
-                                              103,
-                                              206,
-                                              103,
-                                              1,
-                                            ),
-                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
+                                        // const SizedBox(height: 4),
+                                        // Padding(
+                                        //   padding: const EdgeInsets.only(
+                                        //     right: 4,
+                                        //   ),
+                                        //   child: Text(
+                                        //     notifications[index].content,
+                                        //     maxLines: 2,
+                                        //     overflow:
+                                        //         TextOverflow.ellipsis,
+                                        //     style: const TextStyle(
+                                        //       fontSize: 18,
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        const SizedBox(height: 4),
                                         Text(
                                           filteredNotifications[index]
                                               .updatedAt
                                               .getLocaleDateTime(
                                                 addingHours: 5,
                                               ),
-                                          style: const TextStyle(
-                                            color: Color.fromRGBO(
-                                              147,
-                                              147,
-                                              147,
-                                              1,
-                                            ),
-                                            fontSize: 16,
-                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      filteredNotifications[index].text,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    // const SizedBox(height: 4),
-                                    // Padding(
-                                    //   padding: const EdgeInsets.only(
-                                    //     right: 4,
-                                    //   ),
-                                    //   child: Text(
-                                    //     notifications[index].content,
-                                    //     maxLines: 2,
-                                    //     overflow:
-                                    //         TextOverflow.ellipsis,
-                                    //     style: const TextStyle(
-                                    //       fontSize: 18,
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      filteredNotifications[index]
-                                          .updatedAt
-                                          .getLocaleDateTime(addingHours: 5),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Container(
-                                      // child: notifications[index].status == 1
-                                      child: filteredNotifications[index]
-                                                  .status ==
-                                              'pending'
-                                          ? const Text(
-                                              'Проверяется',
-                                              style: TextStyle(
-                                                color: Color.fromRGBO(
-                                                  75,
-                                                  132,
-                                                  231,
-                                                  1,
-                                                ),
-                                              ),
-                                            )
-                                          // : notifications[index].status == 3
-                                          : filteredNotifications[index]
+                                        Container(
+                                          // child: notifications[index].status == 1
+                                          child: filteredNotifications[index]
                                                       .status ==
-                                                  'approved'
-                                              ? DateTime.parse(
-                                                  filteredNotifications[index]
-                                                      .endAt,
-                                                ).isAfter(
-                                                  DateTime.now(),
+                                                  'pending'
+                                              ? const Text(
+                                                  'Проверяется',
+                                                  style: TextStyle(
+                                                    color: Color.fromRGBO(
+                                                      75,
+                                                      132,
+                                                      231,
+                                                      1,
+                                                    ),
+                                                  ),
                                                 )
-                                                  ? Row(
-                                                      children: [
-                                                        const Text(
-                                                          'Видимость: ',
-                                                          style: TextStyle(
-                                                            color: Colors.green,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          '${DateTime.parse(
-                                                            filteredNotifications[
-                                                                    index]
-                                                                .endAt,
-                                                          ).difference(
-                                                                DateTime.now(),
-                                                              ).inHours} часов',
-                                                          style:
-                                                              const TextStyle(
-                                                            color: Colors.green,
-                                                          ),
-                                                        ),
-                                                      ],
+                                              // : notifications[index].status == 3
+                                              : filteredNotifications[index]
+                                                          .status ==
+                                                      'approved'
+                                                  ? DateTime.parse(
+                                                      filteredNotifications[
+                                                              index]
+                                                          .endAt,
+                                                    ).isAfter(
+                                                      DateTime.now(),
                                                     )
+                                                      ? Row(
+                                                          children: [
+                                                            const Text(
+                                                              'Видимость: ',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .green,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              '${DateTime.parse(
+                                                                filteredNotifications[
+                                                                        index]
+                                                                    .endAt,
+                                                              ).difference(
+                                                                    DateTime
+                                                                        .now(),
+                                                                  ).inHours} часов',
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .green,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : const Text(
+                                                          'Истекло',
+                                                          style: TextStyle(
+                                                            color: Colors.red,
+                                                          ),
+                                                        )
                                                   : const Text(
-                                                      'Истекло',
+                                                      'Отменен',
                                                       style: TextStyle(
                                                         color: Colors.red,
                                                       ),
-                                                    )
-                                              : const Text(
-                                                  'Отменен',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                  ),
-                                                ),
+                                                    ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                ClipRRect(
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  // borderRadius: const BorderRadius.only(
-                                  //   topLeft: Radius.circular(20),
-                                  //   bottomLeft: Radius.circular(20),
-                                  // ),
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                  child: filteredNotifications[index].image !=
-                                          null
-                                      ? CachedNetworkImage(
-                                          imageUrl: filteredNotifications[index]
-                                                  .image ??
-                                              '',
-                                          fit: BoxFit.cover,
-                                          errorWidget: (context, url, error) {
-                                            return Image.asset(
+                                    const SizedBox(height: 4),
+                                    ClipRRect(
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      // borderRadius: const BorderRadius.only(
+                                      //   topLeft: Radius.circular(20),
+                                      //   bottomLeft: Radius.circular(20),
+                                      // ),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      child: filteredNotifications[index]
+                                                  .image !=
+                                              null
+                                          ? CachedNetworkImage(
+                                              imageUrl:
+                                                  filteredNotifications[index]
+                                                          .image ??
+                                                      '',
+                                              fit: BoxFit.cover,
+                                              errorWidget:
+                                                  (context, url, error) {
+                                                return Image.asset(
+                                                  Helpers.getLocalImage(
+                                                    // 'assets/images/notification/ak-${index + 1}.png',
+                                                    filteredNotifications[index]
+                                                        .title,
+                                                  ),
+                                                );
+                                              },
+                                            )
+                                          : Image.asset(
                                               Helpers.getLocalImage(
                                                 // 'assets/images/notification/ak-${index + 1}.png',
                                                 filteredNotifications[index]
                                                     .title,
                                               ),
-                                            );
-                                          },
-                                        )
-                                      : Image.asset(
-                                          Helpers.getLocalImage(
-                                            // 'assets/images/notification/ak-${index + 1}.png',
-                                            filteredNotifications[index].title,
-                                          ),
-                                          // height: MediaQuery.of(context).size.width / 4,
-                                          // width: MediaQuery.of(context).size.width / 3,
+                                              // height: MediaQuery.of(context).size.width / 4,
+                                              // width: MediaQuery.of(context).size.width / 3,
+                                            ),
+                                      //   CachedNetworkImage(
+                                      //     fit: BoxFit.fitHeight,
+                                      //     height: MediaQuery.of(context)
+                                      //             .size
+                                      //             .width /
+                                      //         4,
+                                      //     width: MediaQuery.of(context)
+                                      //             .size
+                                      //             .width /
+                                      //         3,
+                                      //     imageUrl: Constants.media +
+                                      //         notifications[index].image,
+                                      //   ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        const SizedBox(width: 10),
+                                        const Icon(
+                                          Icons.favorite_border_rounded,
+                                          color:
+                                              Color.fromRGBO(164, 164, 164, 1),
+                                          size: 28,
                                         ),
-                                  //   CachedNetworkImage(
-                                  //     fit: BoxFit.fitHeight,
-                                  //     height: MediaQuery.of(context)
-                                  //             .size
-                                  //             .width /
-                                  //         4,
-                                  //     width: MediaQuery.of(context)
-                                  //             .size
-                                  //             .width /
-                                  //         3,
-                                  //     imageUrl: Constants.media +
-                                  //         notifications[index].image,
-                                  //   ),
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    const SizedBox(width: 10),
-                                    const Icon(
-                                      Icons.favorite_border_rounded,
-                                      color: Color.fromRGBO(164, 164, 164, 1),
-                                      size: 28,
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          notifications[index]
+                                              .likeCount
+                                              .toString(),
+                                          style: const TextStyle(
+                                            color: Color.fromRGBO(
+                                              164,
+                                              164,
+                                              164,
+                                              1,
+                                            ),
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        const Icon(
+                                          Icons.remove_red_eye_rounded,
+                                          color:
+                                              Color.fromRGBO(164, 164, 164, 1),
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          notifications[index]
+                                              .showedCount
+                                              .toString(),
+                                          style: const TextStyle(
+                                            color: Color.fromRGBO(
+                                              164,
+                                              164,
+                                              164,
+                                              1,
+                                            ),
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 14),
+                                      ],
                                     ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      notifications[index].likeCount.toString(),
-                                      style: const TextStyle(
-                                        color: Color.fromRGBO(164, 164, 164, 1),
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    const Icon(
-                                      Icons.remove_red_eye_rounded,
-                                      color: Color.fromRGBO(164, 164, 164, 1),
-                                      size: 20,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      notifications[index]
-                                          .showedCount
-                                          .toString(),
-                                      style: const TextStyle(
-                                        color: Color.fromRGBO(164, 164, 164, 1),
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 14),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: getH(10));
-                      },
-                    ),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox(height: getH(10));
+                          },
+                        )
+                      : const EmptyWidget()),
             ),
           ),
         ],

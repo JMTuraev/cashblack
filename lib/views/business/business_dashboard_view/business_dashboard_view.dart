@@ -162,7 +162,14 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                 .businessShops!
                 .isNotEmpty) {
 //
-          print(currentShopIndex);
+          print("currentshopindex " + currentShopIndex.toString());
+          context.read<BusinessStatisticsViewModel>().getStats(
+                context
+                    .read<BusinessDashboardViewModel>()
+                    .businessShops![currentShopIndex]
+                    .id,
+              );
+          context.read<BusinessStatisticsViewModel>().getClients();
           context.read<BusinessDashboardViewModel>().getWeeklyStatistics(
                 context
                     .read<BusinessDashboardViewModel>()
@@ -260,6 +267,9 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                                     context
                                         .read<BusinessDashboardViewModel>()
                                         .getWeeklyStatistics(shop.id);
+                                    context
+                                        .read<BusinessStatisticsViewModel>()
+                                        .getStats(shop.id);
                                     setState(() {
                                       currentShopIndex = index;
                                       tempShopPercent =
@@ -755,16 +765,18 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                         .isEmpty
                     ? _ChartCashbackWidget(
                         aWeekStatistics: dummyWeekStatistics,
-                        maxSum:
-                            context.read<BusinessDashboardViewModel>().maxSum,
+                        maxSum: context
+                            .read<BusinessDashboardViewModel>()
+                            .maxCashback,
                         percent: -1,
                       )
                     : _ChartCashbackWidget(
                         aWeekStatistics: context
                             .read<BusinessDashboardViewModel>()
                             .weeklyStatistics,
-                        maxSum:
-                            context.read<BusinessDashboardViewModel>().maxSum,
+                        maxSum: context
+                            .read<BusinessDashboardViewModel>()
+                            .maxCashback,
                         percent: tempShopPercent,
                       )),
           ),
@@ -773,14 +785,15 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
               : _BorderContainerWidget(
                   child: Column(
                     children: [
-                      const Text(
-                        'Итоги недели',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
+                      // const Text(
+                      //   'Итоги недели',
+                      //   style: TextStyle(
+                      //     fontSize: 18,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
+                      // const SizedBox(height: 10),
+
                       Row(
                         children: [
                           const Text(
@@ -794,8 +807,8 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                           const Spacer(),
                           Text(
                             context
-                                .read<BusinessDashboardViewModel>()
-                                .maxSum
+                                .read<BusinessStatisticsViewModel>()
+                                .allTotalSums
                                 .toString()
                                 .getAmountInSum(),
                             style: const TextStyle(
@@ -819,8 +832,33 @@ class _CashbackWidgetState extends State<_CashbackWidget> {
                           const Spacer(),
                           Text(
                             context
-                                .read<BusinessDashboardViewModel>()
-                                .totalCashback
+                                .read<BusinessStatisticsViewModel>()
+                                .allCashbackSums
+                                .toString()
+                                .getAmountInSum(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          const Text(
+                            'Оплачено',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Color.fromRGBO(75, 132, 231, 1),
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            context
+                                .read<BusinessStatisticsViewModel>()
+                                .allWithdrawSums
                                 .toString()
                                 .getAmountInSum(),
                             style: const TextStyle(
@@ -1340,6 +1378,7 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
             ),
           ],
         ),
+        const SizedBox(height: 6),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(

@@ -134,7 +134,7 @@ class _EditNameViewState extends State<EditNameView> {
                             if (res) {
                               context
                                   .read<BusinessDashboardViewModel>()
-                                  .maxSum = 0;
+                                  .maxCashback = 0;
                               await context
                                   .read<BusinessViewModel>()
                                   .logout()

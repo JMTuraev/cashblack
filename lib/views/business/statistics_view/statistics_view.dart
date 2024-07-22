@@ -12,6 +12,7 @@ import '../../../domain/models/sum_cashback.dart';
 import '../../../domain/models/sum_stat.dart';
 import '../../../size_config.dart';
 import '../../../string_extensions.dart';
+import '../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../view_models/business/business_settings_view_model.dart';
 import '../../../view_models/business/business_statistics_view_model.dart';
 import '../../../view_models/statistics_view_model.dart';
@@ -287,7 +288,20 @@ class _StatisticsViewState extends State<StatisticsView> {
                       // statssum = context
                       //     .read<StatisticsViewModel>()
                       //     .getCashbackStats();
-                      context.read<BusinessStatisticsViewModel>().getStats();
+                      if (context.read<BusinessDashboardViewModel>().hasShops &&
+                          context
+                              .read<BusinessDashboardViewModel>()
+                              .businessShops!
+                              .isNotEmpty) {
+
+context.read<BusinessStatisticsViewModel>().getStats(
+                            context
+                                .read<BusinessDashboardViewModel>()
+                                .businessShops!.first
+                                .id,
+                          );
+                              }
+                      
                       context.read<BusinessStatisticsViewModel>().getClients();
                     });
                   },
@@ -500,7 +514,7 @@ class _ClientCashbackWidgetState extends State<_ClientCashbackWidget> {
               model.filteredClients = model.clients;
             }
 
-           model.filteredClients = model.clients
+            model.filteredClients = model.clients
                 .where((element) =>
                     element.name
                         .toLowerCase()

@@ -86,7 +86,7 @@ class _SettingsViewState extends State<SettingsView> {
         actions: [
           IconButton(
             onPressed: () async {
-              context.read<BusinessDashboardViewModel>().maxSum = 0;
+              context.read<BusinessDashboardViewModel>().maxCashback = 0;
               await context.read<BusinessViewModel>().logout().then(
                 (value) {
                   context

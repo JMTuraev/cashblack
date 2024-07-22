@@ -41,8 +41,9 @@ class _BusinessViewState extends State<BusinessView>
     final res =
         await context.read<BusinessSettingsViewModel>().getOwnerProfile();
     //todo check login error
-    if (res == false) {
-      context.read<BusinessDashboardViewModel>().maxSum = 0;
+    // if (res == false) {
+    if (false) {
+      context.read<BusinessDashboardViewModel>().maxCashback = 0;
       context.read<BusinessViewModel>().logout().then(
         (value) {
           context
@@ -105,13 +106,20 @@ class _BusinessViewState extends State<BusinessView>
                       .first
                       .id,
                 );
+
+                context.read<BusinessStatisticsViewModel>().getStats(
+                  context
+                    .read<BusinessDashboardViewModel>()
+                    .businessShops!.first
+                    .id,
+                ); //stat
 //
 
             context
                 .read<BusinessSettingsViewModel>()
                 .getWorkers(); // shop yoki magazin bo'lmasa call qilmasin, xatosi bor
 
-            context.read<BusinessStatisticsViewModel>().getStats(); //stat
+            
             context
                 .read<BusinessStatisticsViewModel>()
                 .getClients(); //clientlar

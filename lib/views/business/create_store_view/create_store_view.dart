@@ -286,7 +286,12 @@ class _CreateStoreViewState extends State<CreateStoreView> {
             // context
             //     .read<BusinessViewModel>()
             //     .getCategories(); // firma tuzishda kategoriya
-            context.read<BusinessStatisticsViewModel>().getStats(); //stat
+            context.read<BusinessStatisticsViewModel>().getStats(
+              context
+                    .read<BusinessDashboardViewModel>()
+                    .businessShops!.first
+                    .id,
+            ); //stat
             context
                 .read<BusinessStatisticsViewModel>()
                 .getClients(); //clientlar
