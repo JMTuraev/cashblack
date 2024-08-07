@@ -202,7 +202,9 @@ class _PaymentClientViewForSellerState
                                     Container(
                                       // flex: 2,
                                       child: MainButtonWidget(
-                                        isLoading: isLoading,
+                                        isLoading: context
+                                            .watch<SellerViewModel>()
+                                            .isPaying, //todo error
                                         percent: percent.isEmpty
                                             ? null
                                             : int.parse(percent),

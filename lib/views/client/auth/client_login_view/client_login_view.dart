@@ -145,13 +145,13 @@ class _ClientLoginViewState extends State<ClientLoginView> {
           MainButtonWidget(
             isLoading: context.watch<ClientLoginViewModel>().isLoading,
             text: 'Вход',
-            // method: () {
-            //   if (_formKey.currentState!.validate()) {
-            //     print('object1');
-            //     context.watch<ClientLoginViewModel>().isLoading
-            //         ? null
-            //         : submit();
-            //   }
+            // method: () async {
+            //   context.read<ClientLoginViewModel>().isLoading = true;
+            //   setState(() {});
+            //   await Future.delayed(const Duration(seconds: 11));
+            //   context.read<ClientLoginViewModel>().isLoading = false;
+            //   setState(() {});
+            //   print('object');
             // },
             method: checked
                 ? (context.watch<ClientLoginViewModel>().isLoading

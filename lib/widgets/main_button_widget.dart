@@ -30,12 +30,16 @@ class MainButtonWidget extends StatelessWidget {
           child: ElevatedButton(
             onPressed: (isLoading == false) ? method : null,
             style: ButtonStyle(
-              backgroundColor: color != null
-                  ? MaterialStateProperty.all<Color?>(
-                      color,
-                    )
+              backgroundColor: (isLoading == false)
+                  ? (color != null
+                      ? MaterialStateProperty.all<Color?>(
+                          color,
+                        )
+                      : MaterialStateProperty.all<Color?>(
+                          const Color.fromRGBO(52, 200, 90, 1),
+                        ))
                   : MaterialStateProperty.all<Color?>(
-                      const Color.fromRGBO(52, 200, 90, 1),
+                      const Color.fromARGB(255, 91, 113, 97),
                     ),
               padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
                 const EdgeInsets.all(16),
@@ -58,8 +62,9 @@ class MainButtonWidget extends StatelessWidget {
                       child: Text(
                         text,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color:
+                              (isLoading == false) ? Colors.white : Colors.grey,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
