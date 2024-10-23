@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../size_config.dart';
 import '../services/task/tasks_view.dart';
+import '../services/warehouse/warehouse_dashboard_view.dart';
 import 'posts_view.dart';
 import 'task_item_widget.dart';
 
@@ -88,30 +89,30 @@ class _ServicesViewState extends State<ServicesView> {
                         ],
                       ),
                       const SizedBox(height: 30),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           _IconWidget(
                             svg: 'assets/svg/service-store.svg',
                             title: 'Склад',
-                            color: Color.fromRGBO(30, 37, 30, 1),
-                            // onTap: () {
-                            //   Navigator.of(context).push(
-                            //     CupertinoPageRoute(
-                            //       builder: (context) =>
-                            //           const WarehouseDashboardView(),
-                            //     ),
-                            //   );
-                            // },
-                            onTap: null,
+                            color: const Color.fromRGBO(30, 37, 30, 1),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) =>
+                                      const WarehouseDashboardView(),
+                                ),
+                              );
+                            },
+                            // onTap: null,
                           ),
-                          _IconWidget(
+                          const _IconWidget(
                             svg: 'assets/svg/service-shop.svg',
                             title: 'Продажа',
                             color: Color.fromRGBO(53, 30, 38, 1),
                             onTap: null,
                           ),
-                          _IconWidget(
+                          const _IconWidget(
                             svg: 'assets/svg/service-calculator.svg',
                             title: 'Касса',
                             color: Color.fromRGBO(23, 36, 53, 1),
