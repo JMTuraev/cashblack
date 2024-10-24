@@ -1,23 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../string_extensions.dart';
 import '../../../../../view_models/sklad/sklad_view_model.dart';
 import '../../../../../widgets/logo_animated_widget.dart';
-import 'create_warehouse_item_view.dart';
 
-class WarehoueseItemsListView extends StatefulWidget {
-  const WarehoueseItemsListView({
+class RemainingItemsListView extends StatefulWidget {
+  const RemainingItemsListView({
     super.key,
   });
 
   @override
-  State<WarehoueseItemsListView> createState() =>
-      _WarehoueseItemsListViewState();
+  State<RemainingItemsListView> createState() => _RemainingItemsListViewState();
 }
 
-class _WarehoueseItemsListViewState extends State<WarehoueseItemsListView> {
+class _RemainingItemsListViewState extends State<RemainingItemsListView> {
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -25,53 +22,71 @@ class _WarehoueseItemsListViewState extends State<WarehoueseItemsListView> {
     super.initState();
   }
 
+  int counter = 1;
+
   @override
   Widget build(BuildContext context) {
     final model = context.read<SkladViewModel>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Номенклатура'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                CupertinoPageRoute(
-                  builder: (context) => const CreateWarehouseItemView(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.add),
-          ),
+        title: const Text('Остаток'),
+        actions: const [
+          // IconButton(
+          //   onPressed: () {
+          //   },
+          //   icon: const Icon(Icons.add),
+          // ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: context.watch<SkladViewModel>().isGettingWarehouseItems
+        child: context.watch<SkladViewModel>().isGettingWarehouseRemainings
             ? const LogoAnimatedWidget(size: 1.5)
             : ListView.separated(
-                itemCount: model.warehouseItems.length,
+                itemCount: model.skladRemainings.length,
                 separatorBuilder: (context, index) {
                   return const Divider();
                 },
                 itemBuilder: (context, index) {
                   return ListTile(
                     // onDoubleTap: () {},
-                    // onTap: () {
-
-                    // },
+                    onTap: () {},
                     // leading: Text('${counter++}'),
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           // 'Приход ${counter++}',
-                          model.warehouseItems[index].name,
+                          model.skladRemainings[index].warehouseItem.name,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              // skladPrixods[index].model.warehouses.length.toString(),
+                              'Остаток ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              // skladPrixods[index].model.warehouses.length.toString(),
+                              model.skladRemainings[index].quantity
+                                  .toString()
+                                  .getFormattedNumber(),
+                              style: const TextStyle(
+                                color: Color(0xff34c85a),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                         Row(
                           children: [
@@ -85,7 +100,8 @@ class _WarehoueseItemsListViewState extends State<WarehoueseItemsListView> {
                             ),
                             Text(
                               // skladPrixods[index].model.warehouses.length.toString(),
-                              model.warehouseItems[index].unit.title,
+                              model.skladRemainings[index].warehouseItem.unit
+                                  .name,
                               style: const TextStyle(
                                 color: Color(0xff34c85a),
                                 fontSize: 14,
@@ -115,51 +131,6 @@ class _WarehoueseItemsListViewState extends State<WarehoueseItemsListView> {
                             ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            const Text(
-                              // skladPrixods[index].model.warehouses.length.toString(),
-                              'Порог оповещения ',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            Text(
-                              // skladPrixods[index].model.warehouses.length.toString(),
-                              model.warehouseItems[index].lower
-                                  .toString()
-                                  .getFormattedNumber(),
-                              style: const TextStyle(
-                                color: Color(0xff34c85a),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const Text(
-                              // skladPrixods[index].model.warehouses.length.toString(),
-                              'Баркод ',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            Text(
-                              // skladPrixods[index].model.warehouses.length.toString(),
-                              model.warehouseItems[index].barCode,
-                              style: const TextStyle(
-                                color: Color(0xff34c85a),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        // const SizedBox(width: 10),
                       ],
                     ),
                   );

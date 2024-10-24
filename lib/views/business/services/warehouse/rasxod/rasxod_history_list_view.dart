@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -10,16 +9,16 @@ import '../../../../../string_extensions.dart';
 import '../../../../../view_models/sklad/sklad_view_model.dart';
 import 'prixod_history_view.dart';
 
-class PrixodHistoryListView extends StatefulWidget {
-  const PrixodHistoryListView({
+class RasxpdHistoryListView extends StatefulWidget {
+  const RasxpdHistoryListView({
     super.key,
   });
 
   @override
-  State<PrixodHistoryListView> createState() => _PrixodHistoryListViewState();
+  State<RasxpdHistoryListView> createState() => _RasxpdHistoryListViewState();
 }
 
-class _PrixodHistoryListViewState extends State<PrixodHistoryListView> {
+class _RasxpdHistoryListViewState extends State<RasxpdHistoryListView> {
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -32,13 +31,12 @@ class _PrixodHistoryListViewState extends State<PrixodHistoryListView> {
   @override
   Widget build(BuildContext context) {
     final model = context.read<SkladViewModel>();
-    inspect(model.warehousePrixodItems);
-    final prixodList = model.prixodList.reversed.toList();
+    final prixodList = model.rasxodList.reversed.toList();
     // final skladItems = model.warehousePrixodItems!.data.reversed.toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('История приходов'),
+        title: const Text('История расходов'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -49,9 +47,9 @@ class _PrixodHistoryListViewState extends State<PrixodHistoryListView> {
           },
           itemBuilder: (context, index) {
             var totalPrice = 0.0;
-            for (final element in prixodList[index].skladItems) {
-              totalPrice +=
-                  double.parse(element.price) * double.parse(element.quantity);
+            for (final element in prixodList[index].rasxodItems) {
+              totalPrice =
+                  double.parse(element.priceSellAll.removeWhitespace());
             }
             return ListTile(
               // onDoubleTap: () {},
@@ -60,7 +58,7 @@ class _PrixodHistoryListViewState extends State<PrixodHistoryListView> {
                   CupertinoPageRoute(
                     builder: (context) =>
                         // PrixodHistoryView(skladItem: skladItems[index]),
-                        PrixodHistoryView(skladItem: prixodList[index]),
+                        RasxodHistoryView(skladItem: prixodList[index]),
                   ),
                 );
               },
@@ -96,8 +94,8 @@ class _PrixodHistoryListViewState extends State<PrixodHistoryListView> {
                     children: [
                       Text(
                         // prixodList[index].skladItems.length.toString(),
-                        prixodList[index].skladItems.length.toString() +
-                            (prixodList[index].skladItems.length == 1
+                        prixodList[index].rasxodItems.length.toString() +
+                            (prixodList[index].rasxodItems.length == 1
                                 ? ' товар'
                                 : ' товаров'),
                         // skladItems[index].products.length.toString() +

@@ -105,7 +105,7 @@ extension StringExtensions on String {
       name: 'сум',
       locale: 'ru_RU',
       decimalDigits: 0,
-    ).format(double.parse(removeCommas()));
+    ).format(double.parse(removeCommas().removeWhitespace()));
   }
 
   String getFormattedNumber() {

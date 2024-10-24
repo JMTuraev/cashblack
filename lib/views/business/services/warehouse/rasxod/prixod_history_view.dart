@@ -2,34 +2,32 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../../../../../domain/models/services/sklad_prixod.dart';
+import '../../../../../domain/models/services/sklad_rasxod.dart';
 import '../../../../../string_extensions.dart';
-import '../../../../../view_models/sklad/sklad_view_model.dart';
 import '../../../../../widgets/info_title_widget.dart';
 
-class PrixodHistoryView extends StatefulWidget {
+class RasxodHistoryView extends StatefulWidget {
   // final Datum skladItem;
-  final SkladPrixod skladItem;
-  const PrixodHistoryView({
+  final SkladRasxod skladItem;
+  const RasxodHistoryView({
     super.key,
     required this.skladItem,
   });
 
   @override
-  State<PrixodHistoryView> createState() => _PrixodHistoryViewState();
+  State<RasxodHistoryView> createState() => _RasxodHistoryViewState();
 }
 
-class _PrixodHistoryViewState extends State<PrixodHistoryView> {
+class _RasxodHistoryViewState extends State<RasxodHistoryView> {
   double totalPrice = 0;
 
   @override
   Widget build(BuildContext context) {
     // final model = context.read<SkladViewModel>();
-    for (final element in widget.skladItem.skladItems) {
-      totalPrice +=
-          double.parse(element.price) * double.parse(element.quantity);
+    for (final element in widget.skladItem.rasxodItems) {
+      totalPrice += double.parse(element.priceSellSingle.removeWhitespace()) *
+          double.parse(element.quantity.toString().removeWhitespace());
     }
     return Scaffold(
       appBar: AppBar(
@@ -76,6 +74,23 @@ class _PrixodHistoryViewState extends State<PrixodHistoryView> {
             const SizedBox(height: 10),
             Text(
               // 'widget.skladItem.total.getFormattedNumber()',
+              widget.skladItem.rasxodItems.first.client,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const Text(
+              'Клиент',
+              style: TextStyle(
+                color: Color(0xff667084),
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              // 'widget.skladItem.total.getFormattedNumber()',
               totalPrice.toString().getAmountInSum(),
               style: const TextStyle(
                 color: Colors.white,
@@ -101,20 +116,13 @@ class _PrixodHistoryViewState extends State<PrixodHistoryView> {
             const Divider(),
             Expanded(
               child: ListView.separated(
-                itemCount: widget.skladItem.skladItems.length,
+                itemCount: widget.skladItem.rasxodItems.length,
                 separatorBuilder: (context, index) {
                   return const Divider();
                 },
                 itemBuilder: (context, index) {
-                  final product = context
-                      .read<SkladViewModel>()
-                      .warehouseItems
-                      .where(
-                        (element) =>
-                            element.id.toString() ==
-                            widget.skladItem.skladItems[index].productiId,
-                      )
-                      .first;
+                  final product =
+                      widget.skladItem.rasxodItems[index].warehouseItem;
                   // final attName = context
                   //     .read<SkladViewModel>()
                   //     .warehouseUnits
@@ -125,17 +133,7 @@ class _PrixodHistoryViewState extends State<PrixodHistoryView> {
                   //     )
                   //     .first
                   //     .title;
-                  final attName = context
-                      .read<SkladViewModel>()
-                      .warehouseItems
-                      .where(
-                        (element) =>
-                            element.id.toString() ==
-                            widget.skladItem.skladItems[index].productiId,
-                      )
-                      .first
-                      .unit
-                      .title;
+                  final attName = product.unit;
                   return Column(
                     children: [
                       Row(
@@ -178,7 +176,7 @@ class _PrixodHistoryViewState extends State<PrixodHistoryView> {
                           InfoTitleWidget(
                             title:
                                 // 'widget.skladItem.products[index].unit.title',
-                                attName,
+                                attName.title,
                           ),
                         ],
                       ),
@@ -189,22 +187,24 @@ class _PrixodHistoryViewState extends State<PrixodHistoryView> {
                           InfoTitleWidget(
                             title:
                                 // 'widget.skladItem.products[index].incomeQty.toString().getFormattedNumber()',
-                                widget.skladItem.skladItems[index].quantity,
+                                widget.skladItem.rasxodItems[index].quantity
+                                    .toString(),
                           ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          const Text('Цена прихода'),
-                          const Spacer(),
-                          InfoTitleWidget(
-                            title:
-                                // 'widget.skladItem.products[index].price.getFormattedNumber()',
-                                widget.skladItem.skladItems[index].price
-                                    .getAmountInSum(),
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   children: [
+                      //     const Text('Цена прихода'),
+                      //     const Spacer(),
+                      //     InfoTitleWidget(
+                      //       title:
+                      //           // 'widget.skladItem.products[index].price.getFormattedNumber()',
+                      //           widget.skladItem.rasxodItems[index]
+                      //               .priceSellSingle
+                      //               .getAmountInSum(),
+                      //     ),
+                      //   ],
+                      // ),
                       Row(
                         children: [
                           const Text('Цена продажи'),
@@ -212,7 +212,8 @@ class _PrixodHistoryViewState extends State<PrixodHistoryView> {
                           InfoTitleWidget(
                             title:
                                 // 'widget.skladItem.products[index].sellPrice.getFormattedNumber()',
-                                widget.skladItem.skladItems[index].priceSell
+                                widget.skladItem.rasxodItems[index]
+                                    .priceSellSingle
                                     .getAmountInSum(),
                           ),
                         ],
@@ -224,15 +225,7 @@ class _PrixodHistoryViewState extends State<PrixodHistoryView> {
                           InfoTitleWidget(
                             title:
                                 // 'widget.skladItem.products[index].price.getFormattedNumber()',
-                                (double.parse(
-                                          widget.skladItem.skladItems[index]
-                                              .price,
-                                        ) *
-                                        double.parse(
-                                          widget.skladItem.skladItems[index]
-                                              .quantity,
-                                        ))
-                                    .toString()
+                                widget.skladItem.rasxodItems[index].priceSellAll
                                     .getAmountInSum(),
                           ),
                         ],

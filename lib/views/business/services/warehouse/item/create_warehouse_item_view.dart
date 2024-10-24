@@ -74,6 +74,33 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
                     }
                     return null;
                   },
+                  selectedOption: model.selectedWarehouseItemUnitId,
+                  categoryItems: [
+                    const DropdownMenuItem(
+                      value: '0',
+                      enabled: false,
+                      child: Text('Выберите аттрибут'),
+                    ),
+                    ...model.warehouseUnits.map(
+                      (e) => DropdownMenuItem(
+                        value: e.id.toString(),
+                        child: Text(e.title),
+                      ),
+                    ),
+                  ],
+                  onChanged: (String value) {
+                    model.selectedWarehouseItemUnitId = value;
+                  },
+                  hint: 'Аттрибут',
+                ),
+                const SizedBox(height: 10),
+                SelectCategoryWidget(
+                  validator: (value) {
+                    if (value == null || value == '0') {
+                      return 'Выберите поле';
+                    }
+                    return null;
+                  },
                   selectedOption: model.selectedWarehouseItemCategoryId,
                   categoryItems: [
                     const DropdownMenuItem(

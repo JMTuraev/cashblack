@@ -64,7 +64,7 @@ class WarehousesApi {
       print('$result');
       // return 'checkout.paycom.uz/$result';
       return true;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print(e.response!.data);
       return false;
     }
@@ -125,7 +125,7 @@ class WarehousesApi {
       print('$result');
       // return 'checkout.paycom.uz/$result';
       return true;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print(e.response!.data);
       return false;
     }
@@ -169,7 +169,7 @@ class WarehousesApi {
 
       print('$result');
       return true;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print(e.response!.data);
       return false;
     }
@@ -182,13 +182,14 @@ class WarehousesApi {
         await _dio.get('${Constants.path}/v1/owner/warehouse/product');
     // var bookingList = response.data as List;
 
-    final warehouseItems = (response.data['data'] as List)
-        .map((x) => WarehouseItem.fromJson(x as Map<String, Object?>))
-        .toList();
+    // final warehouseItems = (response.data['data'] as List)
+    //     .map((x) => WarehouseItem.fromJson(x as Map<String, Object?>))
+    //     .toList();
 
     print('get warehouse items');
 
-    return warehouseItems;
+    // return warehouseItems;
+    return [];
   }
 
   Future<bool> createWarehouseItem({
@@ -217,7 +218,7 @@ class WarehousesApi {
 
       print('$result');
       return true;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print(e.response!.data);
       return false;
     }
@@ -274,7 +275,7 @@ class WarehousesApi {
 
       print('$result');
       return true;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print(e.response!.data);
       return false;
     }

@@ -7,7 +7,10 @@ import 'category/warehouse_categories_list_view.dart';
 import 'invoice/prixod_history_list_view.dart';
 import 'invoice/prixod_view.dart';
 import 'item/warehouse_items_list_view.dart';
+import 'ostatok/remaining_items_list_view.dart';
 import 'provider/warehouse_providers_list_view.dart';
+import 'rasxod/rasxod_history_list_view.dart';
+import 'rasxod/rasxod_view.dart';
 import 'warehouse/warehouses_list_view.dart';
 
 class WarehouseDashboardView extends StatefulWidget {
@@ -28,6 +31,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
     context.read<SkladViewModel>().getWarehouseCategories();
     context.read<SkladViewModel>().getWarehouseItems();
     context.read<SkladViewModel>().getWarehousePrixodItems();
+    context.read<SkladViewModel>().getRemainingItems();
     super.initState();
   }
 
@@ -46,7 +50,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
       },
       {
         'name': 'Расход',
-        // 'page': const RasxodView(),
+        'page': const RasxodView(),
         'icon': const FittedBox(
           child: Icon(
             Icons.remove,
@@ -96,7 +100,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
       },
       {
         'name': 'Остаток',
-        // 'page': const PrixodHistoryListView(),
+        'page': const RemainingItemsListView(),
         'icon': const FittedBox(
           child: Icon(
             Icons.store,
@@ -116,7 +120,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
       },
       {
         'name': 'История расходов',
-        // 'page': const PrixodHistoryListView(),
+        'page': const RasxpdHistoryListView(),
         'icon': const FittedBox(
           child: Icon(
             Icons.history,
@@ -126,7 +130,7 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
       },
       {
         'name': 'Инвентаризация',
-        // 'page': const PrixodHistoryListView(),
+        'page': const RemainingItemsListView(),
         'icon': const FittedBox(
           child: Icon(
             Icons.inventory,

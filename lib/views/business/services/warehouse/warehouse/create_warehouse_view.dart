@@ -98,7 +98,9 @@ class _CreateWarehouseViewState extends State<CreateWarehouseView> {
                   text: 'Сохранить',
                   method: () async {
                     if (formKey.currentState!.validate()) {
-                      final res = await model.createWarehouse();
+                      final res = await model.createWarehouse(
+                        context,
+                      );
                       if (res) {
                         await model.getWarehouses();
                         await showModal(context, [

@@ -7,7 +7,6 @@ import 'package:toggle_switch/toggle_switch.dart';
 import '../../../../../size_config.dart';
 import '../../../../../string_extensions.dart';
 import '../../../../../view_models/sklad/sklad_view_model.dart';
-import '../../../../../widgets/date_picker_widget.dart';
 import '../../../../../widgets/main_button_widget.dart';
 import '../../../../../widgets/show_modal.dart';
 import '../../../../../widgets/text_field_widget.dart';
@@ -158,33 +157,33 @@ class _PrixodViewState extends State<PrixodView> {
                               hint: 'Наименование товара',
                             ),
                             const SizedBox(height: 10),
-                            SelectCategoryWidget(
-                              validator: (value) {
-                                if (value == null || value == '0') {
-                                  return 'Выберите поле';
-                                }
-                                return null;
-                              },
-                              selectedOption: model.selectedPrixodUnit,
-                              categoryItems: [
-                                const DropdownMenuItem(
-                                  value: '0',
-                                  enabled: false,
-                                  child: Text('Выберите аттрибут'),
-                                ),
-                                ...model.warehouseUnits.map(
-                                  (e) => DropdownMenuItem(
-                                    value: e.id.toString(),
-                                    child: Text(e.title),
-                                  ),
-                                ),
-                              ],
-                              onChanged: (String value) {
-                                model.selectedPrixodUnit = value;
-                              },
-                              hint: 'Аттрибут',
-                            ),
-                            const SizedBox(height: 10),
+                            // SelectCategoryWidget(
+                            //   validator: (value) {
+                            //     if (value == null || value == '0') {
+                            //       return 'Выберите поле';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   selectedOption: model.selectedPrixodUnit,
+                            //   categoryItems: [
+                            //     const DropdownMenuItem(
+                            //       value: '0',
+                            //       enabled: false,
+                            //       child: Text('Выберите аттрибут'),
+                            //     ),
+                            //     ...model.warehouseUnits.map(
+                            //       (e) => DropdownMenuItem(
+                            //         value: e.id.toString(),
+                            //         child: Text(e.title),
+                            //       ),
+                            //     ),
+                            //   ],
+                            //   onChanged: (String value) {
+                            //     model.selectedPrixodUnit = value;
+                            //   },
+                            //   hint: 'Аттрибут',
+                            // ),
+                            // const SizedBox(height: 10),
                             SelectCategoryWidget(
                               validator: (value) {
                                 if (value == null || value == '0') {
@@ -267,49 +266,49 @@ class _PrixodViewState extends State<PrixodView> {
                             //   hint: 'Субкатегория',
                             // ),
                             // const SizedBox(height: 10),
-                            DatePickerWidget(
-                              isDark: true,
-                              title: context
-                                          .watch<SkladViewModel>()
-                                          .prixodCreatedDate ==
-                                      null
-                                  ? 'Дата и время прихода'
-                                  : model.prixodCreatedDate
-                                      .toString()
-                                      .getLocaleDateTime(),
-                              onTap: () async {
-                                await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime.now(),
-                                  lastDate: DateTime.now()
-                                      .add(const Duration(days: 60)),
-                                ).then((value) async {
-                                  if (value != null) {
-                                    final date = value;
-                                    await showTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.now(),
-                                    ).then((value) {
-                                      if (value != null) {
-                                        setState(() {
-                                          model.prixodCreatedDate = date
-                                              .add(
-                                                Duration(
-                                                  hours: value.hour,
-                                                  minutes: value.minute,
-                                                ),
-                                              )
-                                              .toString();
-                                          // startDateTextController.text = selectedDate.toString().getLocaleDate();
-                                        });
-                                      }
-                                    });
-                                  }
-                                });
-                              },
-                            ),
-                            const SizedBox(height: 10),
+                            // DatePickerWidget(
+                            //   isDark: true,
+                            //   title: context
+                            //               .watch<SkladViewModel>()
+                            //               .prixodCreatedDate ==
+                            //           null
+                            //       ? 'Дата и время прихода'
+                            //       : model.prixodCreatedDate
+                            //           .toString()
+                            //           .getLocaleDateTime(),
+                            //   onTap: () async {
+                            //     await showDatePicker(
+                            //       context: context,
+                            //       initialDate: DateTime.now(),
+                            //       firstDate: DateTime.now(),
+                            //       lastDate: DateTime.now()
+                            //           .add(const Duration(days: 60)),
+                            //     ).then((value) async {
+                            //       if (value != null) {
+                            //         final date = value;
+                            //         await showTimePicker(
+                            //           context: context,
+                            //           initialTime: TimeOfDay.now(),
+                            //         ).then((value) {
+                            //           if (value != null) {
+                            //             setState(() {
+                            //               model.prixodCreatedDate = date
+                            //                   .add(
+                            //                     Duration(
+                            //                       hours: value.hour,
+                            //                       minutes: value.minute,
+                            //                     ),
+                            //                   )
+                            //                   .toString();
+                            //               // startDateTextController.text = selectedDate.toString().getLocaleDate();
+                            //             });
+                            //           }
+                            //         });
+                            //       }
+                            //     });
+                            //   },
+                            // ),
+                            // const SizedBox(height: 10),
                             TextFieldWidget(
                               onChanged: (value) {
                                 if (value.isEmpty) {
@@ -344,13 +343,6 @@ class _PrixodViewState extends State<PrixodView> {
                                 }
                                 return null;
                               },
-                              hintText: 'Цена прихода одной единицы',
-                              showLabel: true,
-                              textType: TextInputType.number,
-                              controller: model.prixodPriceBuyController,
-                            ),
-                            const SizedBox(height: 10),
-                            TextFieldWidget(
                               onChanged: (value) {
                                 if (value.isEmpty) {
                                   model.prixodPriceSumOfAllController.clear();
@@ -365,6 +357,27 @@ class _PrixodViewState extends State<PrixodView> {
                                       .getFormattedNumber();
                                 }
                               },
+                              hintText: 'Цена прихода одной единицы',
+                              showLabel: true,
+                              textType: TextInputType.number,
+                              controller: model.prixodPriceBuyController,
+                            ),
+                            const SizedBox(height: 10),
+                            TextFieldWidget(
+                              // onChanged: (value) {
+                              //   if (value.isEmpty) {
+                              //     model.prixodPriceSumOfAllController.clear();
+                              //   } else {
+                              //     model.prixodPriceSumOfAllController
+                              //         .text = (int.parse(
+                              //               model.prixodQuantityController.text
+                              //                   .removeWhitespace(),
+                              //             ) *
+                              //             int.parse(value.removeWhitespace()))
+                              //         .toString()
+                              //         .getFormattedNumber();
+                              //   }
+                              // },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Заполните поле';
@@ -493,14 +506,15 @@ class _PrixodViewState extends State<PrixodView> {
                                   return const SizedBox(height: 10);
                                 },
                                 itemBuilder: (context, index) {
-                                  final unitname = model.warehouseUnits
+                                  final unitname = model.warehouseItems
                                       .where(
                                         (element) =>
                                             element.id.toString() ==
                                             model.prixodItemsForCreate[index]
-                                                .unitId,
+                                                .productiId,
                                       )
                                       .first
+                                      .unit
                                       .title;
                                   return Row(
                                     children: [
@@ -524,8 +538,19 @@ class _PrixodViewState extends State<PrixodView> {
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           Text(
-                                            model.prixodItemsForCreate[index]
-                                                .productiId,
+                                            model.warehouseItems
+                                                .where(
+                                                  (element) =>
+                                                      element.id.toString() ==
+                                                      model
+                                                          .prixodItemsForCreate[
+                                                              index]
+                                                          .productiId,
+                                                )
+                                                .first
+                                                .name,
+                                            // model.prixodItemsForCreate[index]
+                                            //     .productiId,
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -534,7 +559,8 @@ class _PrixodViewState extends State<PrixodView> {
                                           ),
                                           Text(
                                             model.prixodItemsForCreate[index]
-                                                .price,
+                                                .price
+                                                .getAmountInSum(),
                                             style: const TextStyle(
                                               color: Color(0xff667084),
                                               fontSize: 14,
@@ -543,13 +569,40 @@ class _PrixodViewState extends State<PrixodView> {
                                         ],
                                       ),
                                       const Spacer(),
-                                      Text(
-                                        '${model.prixodItemsForCreate[index].quantity} $unitname',
-                                        style: const TextStyle(
-                                          color: Color(0xff34c85a),
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            '${model.prixodItemsForCreate[index].quantity} $unitname',
+                                            style: const TextStyle(
+                                              color: Color(0xff34c85a),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          Text(
+                                            (int.parse(
+                                                      model
+                                                          .prixodItemsForCreate[
+                                                              index]
+                                                          .quantity,
+                                                    ) *
+                                                    double.parse(
+                                                      model
+                                                          .prixodItemsForCreate[
+                                                              index]
+                                                          .price,
+                                                    ))
+                                                .toString()
+                                                .getAmountInSum(),
+                                            style: const TextStyle(
+                                              color: Color(0xff34c85a),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                       const SizedBox(width: 10),
                                       const SizedBox(height: 40),
@@ -592,7 +645,9 @@ class _PrixodViewState extends State<PrixodView> {
                                     method: () {
                                       model
                                         ..clearFields()
-                                        ..clearSkladItems();
+                                        ..clearSkladItems()
+                                        ..getRemainingItems();
+
                                       setState(() {});
                                       Navigator.pop(context);
                                     },
