@@ -36,7 +36,7 @@ class _CreateWarehouseProviderViewState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create provider'),
+        title: const Text('Создать'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),

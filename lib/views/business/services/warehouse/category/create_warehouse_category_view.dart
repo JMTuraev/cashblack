@@ -32,7 +32,7 @@ class _CreateWarehouseCategoryViewState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create category'),
+        title: const Text('Создать'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),

@@ -30,7 +30,7 @@ class _CreateWarehouseViewState extends State<CreateWarehouseView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create warehouse'),
+        title: const Text('Создать склад'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),

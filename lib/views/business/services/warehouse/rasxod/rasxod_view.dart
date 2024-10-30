@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -9,6 +10,7 @@ import '../../../../../widgets/main_button_widget.dart';
 import '../../../../../widgets/show_modal.dart';
 import '../../../../../widgets/text_field_widget.dart';
 import '../../../scanner_view/payment_phone_view.dart';
+import 'rasxod_history_list_view.dart';
 
 class RasxodView extends StatefulWidget {
   const RasxodView({
@@ -40,6 +42,18 @@ class _RasxodViewState extends State<RasxodView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Расход'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => const RasxpdHistoryListView(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.history),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -135,16 +149,20 @@ class _RasxodViewState extends State<RasxodView> {
                                   enabled: false,
                                   child: Text('Выберите товар'),
                                 ),
-                                ...model.skladRemainings.map(
-                                  (e) => DropdownMenuItem(
-                                    value: e.warehouseItemId,
-                                    child: Column(
-                                      children: [
-                                        Text(e.warehouseItem.name),
-                                      ],
+                                ...model.skladRemainings
+                                    .where(
+                                      (element) => element.quantity > 0,
+                                    )
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e.warehouseItemId,
+                                        child: Column(
+                                          children: [
+                                            Text(e.warehouseItem.name),
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
                               ],
                               onChanged: (String value) {
                                 model.selectedSkladItem = value;
@@ -394,7 +412,7 @@ class _RasxodViewState extends State<RasxodView> {
                             // const SizedBox(height: 10),
                             const SizedBox(height: 10),
                             MainButtonWidget(
-                              text: 'Сохранить',
+                              text: 'Добавить',
                               method: () {
                                 if (formKey.currentState!.validate()) {
                                   model.removeFromSklad();
@@ -424,7 +442,13 @@ class _RasxodViewState extends State<RasxodView> {
                                       text: 'OK',
                                       method: () {
                                         model.clearRasxodFields();
-                                        // Navigator.pop(context);
+
+                                        // model
+                                        // ..clearFields()
+                                        // ..clearSkladItems()
+                                        // ..getRemainingItems();
+
+                                        setState(() {});
                                         Navigator.pop(context);
                                       },
                                       isLoading: false,

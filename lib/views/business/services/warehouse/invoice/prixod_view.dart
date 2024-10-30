@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -11,6 +12,7 @@ import '../../../../../widgets/main_button_widget.dart';
 import '../../../../../widgets/show_modal.dart';
 import '../../../../../widgets/text_field_widget.dart';
 import '../../../scanner_view/payment_phone_view.dart';
+import 'prixod_history_list_view.dart';
 
 class PrixodView extends StatefulWidget {
   const PrixodView({
@@ -46,6 +48,18 @@ class _PrixodViewState extends State<PrixodView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Приход'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => const PrixodHistoryListView(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.history),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -449,7 +463,7 @@ class _PrixodViewState extends State<PrixodView> {
                             // const SizedBox(height: 10),
                             MainButtonWidget(
                               isLoading: false,
-                              text: 'Сохранить',
+                              text: 'Добавить',
                               method: () {
                                 if (formKey.currentState!.validate()) {
                                   model.addToSklad();

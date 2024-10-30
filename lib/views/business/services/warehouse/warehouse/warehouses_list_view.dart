@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../size_config.dart';
 import '../../../../../view_models/sklad/sklad_view_model.dart';
+import '../../../../../widgets/empty_widget.dart';
 import '../../../../../widgets/logo_animated_widget.dart';
 import 'create_warehouse_view.dart';
 
@@ -41,76 +43,80 @@ class _WarehouesesListViewState extends State<WarehouesesListView> {
                 ),
               );
             },
-            icon: const Icon(Icons.add),
+            icon: const DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(90),
+                ),
+              ),
+              child: Icon(Icons.add),
+            ),
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: context.watch<SkladViewModel>().isGettingWarehouses
             ? const LogoAnimatedWidget(size: 1.5)
-            : ListView.separated(
-                itemCount: model.warehouses.length,
-                separatorBuilder: (context, index) {
-                  return const Divider();
-                },
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    // onDoubleTap: () {},
-                    // onTap: () {
-                    //   Navigator.of(context).push(
-                    //     CupertinoPageRoute(
-                    //       builder: (context) =>
-                    //           PrixodHistoryView(skladItem: skladItems[index]),
-                    //     ),
-                    //   );
-                    // },
-                    // leading: Text('${counter++}'),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          // 'Приход ${counter++}',
-                          model.warehouses[index].name,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Text(
-                          // skladPrixods[index].dateTime.getLocaleDateTime(),
-                          model.warehouses[index].address,
-                          style: const TextStyle(
-                            color: Color(0xff667084),
-                            fontSize: 14,
-                          ),
-                        ),
+            : (model.warehouses.isEmpty
+                ? const Center(child: EmptyWidget())
+                : ListView.separated(
+                    itemCount: model.warehouses.length,
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(height: 10);
+                    },
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        minTileHeight: getH(80),
+                        tileColor: const Color.fromRGBO(28, 28, 29, 1),
+                        onTap: () {},
+                        // leading: Text('${counter++}'),
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              // 'Приход ${counter++}',
+                              model.warehouses[index].name,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              // skladPrixods[index].dateTime.getLocaleDateTime(),
+                              model.warehouses[index].address,
+                              style: const TextStyle(
+                                color: Color(0xff667084),
+                                fontSize: 14,
+                              ),
+                            ),
 
-                        Text(
-                          // skladPrixods[index].model.warehouses.length.toString(),
-                          model.warehouses[index].shop.name,
-                          style: const TextStyle(
-                            color: Color(0xff34c85a),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                            Text(
+                              // skladPrixods[index].model.warehouses.length.toString(),
+                              model.warehouses[index].shop.name,
+                              style: const TextStyle(
+                                color: Color(0xff34c85a),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            // Text(
+                            //   // skladPrixods[index].model.warehouses.length.toString(),
+                            //   model.warehouses[index].shop.name,
+                            //   style: const TextStyle(
+                            //     color: Color(0xff34c85a),
+                            //     fontSize: 14,
+                            //     fontWeight: FontWeight.w500,
+                            //   ),
+                            // ),
+                            // const SizedBox(width: 10),
+                          ],
                         ),
-                        // Text(
-                        //   // skladPrixods[index].model.warehouses.length.toString(),
-                        //   model.warehouses[index].shop.name,
-                        //   style: const TextStyle(
-                        //     color: Color(0xff34c85a),
-                        //     fontSize: 14,
-                        //     fontWeight: FontWeight.w500,
-                        //   ),
-                        // ),
-                        // const SizedBox(width: 10),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                      );
+                    },
+                  )),
       ),
     );
   }

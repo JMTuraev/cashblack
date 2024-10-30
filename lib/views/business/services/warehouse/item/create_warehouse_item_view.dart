@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../size_config.dart';
 import '../../../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../../../view_models/sklad/sklad_view_model.dart';
 import '../../../../../widgets/main_button_widget.dart';
@@ -45,7 +46,7 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create item'),
+        title: const Text('Новый товар'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -134,14 +135,158 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
                   },
                 ),
                 const SizedBox(height: 10),
-                const SizedBox(height: 10),
                 TextFieldWidget(
                   hintText: 'Barcode',
                   showLabel: true,
                   isReadOnly: true,
                   controller: model.warehouseItemBarcodeController,
                 ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: getW(100),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: getW(100),
+                        width: getW(100),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white30),
+                          // color: const Color.fromRGBO(28, 28, 29, 1),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                        ),
+                        child: Stack(
+                          children: [
+                            Image.asset(
+                              'assets/images/temp.png',
+                              height: getW(100),
+                              width: getW(100),
+                              fit: BoxFit.cover,
+                            ),
+                            Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(4),
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.delete_outline_rounded,
+                                  // size: 20,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Container(
+                        height: getW(100),
+                        width: getW(100),
+                        decoration: const BoxDecoration(
+                          color: Color.fromRGBO(28, 28, 29, 1),
+                          // border: Border.all(color: Colors.white30),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                        ),
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_box_rounded,
+                              size: 40,
+                              color: Color.fromRGBO(114, 119, 122, 1),
+                            ),
+                            Text(
+                              'Фото',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Color.fromRGBO(114, 119, 122, 1),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
                 const Spacer(),
+                Column(
+                  children: [
+                    SizedBox(
+                      height: getW(40),
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 20,
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(width: 4);
+                        },
+                        itemBuilder: (context, index) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(32),
+                              color: index == 0
+                                  ? const Color(0xff34c85a)
+                                  : const Color(0xff262629),
+                            ),
+                            child: Text(
+                              'Ichki teg ${Random().nextInt(100)}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: getW(4)),
+                    SizedBox(
+                      height: getW(40),
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 3,
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(width: 4);
+                        },
+                        itemBuilder: (context, index) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(32),
+                              color: index == 2
+                                  ? const Color(0xff34c85a)
+                                  : const Color(0xff262629),
+                            ),
+                            child: const Text(
+                              'Asosiy teg',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 MainButtonWidget(
                   isLoading:
                       context.watch<SkladViewModel>().isCreatingWarehouseItem,

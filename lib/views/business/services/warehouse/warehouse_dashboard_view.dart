@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../view_models/sklad/sklad_view_model.dart';
@@ -35,109 +36,204 @@ class _WarehouseDashboardViewState extends State<WarehouseDashboardView> {
     super.initState();
   }
 
+  final double svgSize = 100;
+
   @override
   Widget build(BuildContext context) {
     final selections = <Map<String, dynamic>>[
       {
         'name': 'Приход',
+        'title': 'Создание прихода',
+        'background': const Color.fromRGBO(40, 30, 29, 1),
         'page': const PrixodView(),
-        'icon': const FittedBox(
-          child: Icon(
-            Icons.add,
-            size: 100,
+        'icon': Container(
+          padding: const EdgeInsets.all(10),
+          // child: Icon(
+          //   Icons.add,
+          //   size: 100,
+          //   color: Color.fromRGBO(222, 93, 71, 1),
+          // ),
+          child: SvgPicture.asset(
+            'assets/svg/warehouse/prixod.svg',
+            color: const Color.fromRGBO(222, 93, 71, 1),
+            height: svgSize,
+            width: svgSize,
           ),
         ),
       },
       {
         'name': 'Расход',
+        'title': 'Создание расхода',
+        'background': const Color.fromRGBO(23, 36, 53, 1),
         'page': const RasxodView(),
-        'icon': const FittedBox(
-          child: Icon(
-            Icons.remove,
-            size: 100,
-          ),
-        ),
-      },
-      {
-        'name': 'Номенклатура',
-        'page': const WarehoueseItemsListView(),
-        'icon': const FittedBox(
-          child: Icon(
-            Icons.store,
-            size: 100,
-          ),
-        ),
-      },
-      {
-        'name': 'Склады',
-        'page': const WarehouesesListView(),
-        'icon': const FittedBox(
-          child: Icon(
-            Icons.store,
-            size: 100,
-          ),
-        ),
-      },
-      {
-        'name': 'Категории',
-        'page': const WarehoueseCategoriesListView(),
-        'icon': const FittedBox(
-          child: Icon(
-            Icons.store,
-            size: 100,
-          ),
-        ),
-      },
-      {
-        'name': 'Поставщики',
-        'page': const WarehoueseProvidersListView(),
-        'icon': const FittedBox(
-          child: Icon(
-            Icons.person,
-            size: 100,
-          ),
-        ),
-      },
-      {
-        'name': 'Остаток',
-        'page': const RemainingItemsListView(),
-        'icon': const FittedBox(
-          child: Icon(
-            Icons.store,
-            size: 100,
+        'icon': Container(
+          padding: const EdgeInsets.all(10),
+          // child: Icon(
+          //   Icons.remove,
+          //   size: 100,
+          //   color: Color.fromRGBO(91, 142, 199, 1),
+          // ),
+          child: SvgPicture.asset(
+            'assets/svg/warehouse/rasxod.svg',
+            color: const Color.fromRGBO(91, 142, 199, 1),
+            height: svgSize,
+            width: svgSize,
           ),
         ),
       },
       {
         'name': 'История приходов',
+        'title': 'Таблицы истории приходов',
+        'background': const Color.fromRGBO(45, 37, 24, 1),
         'page': const PrixodHistoryListView(),
-        'icon': const FittedBox(
-          child: Icon(
-            Icons.history,
-            size: 100,
+        'icon': Container(
+          padding: const EdgeInsets.all(10),
+          // child: Icon(
+          //   Icons.history,
+          //   size: 100,
+          //   color: Color.fromRGBO(239, 195, 41, 1),
+          // ),
+          child: SvgPicture.asset(
+            'assets/svg/warehouse/historyprixod.svg',
+            color: const Color.fromRGBO(239, 195, 41, 1),
+            height: svgSize,
+            width: svgSize,
           ),
         ),
       },
       {
         'name': 'История расходов',
+        'title': 'История расходов (продаж)',
+        'background': const Color.fromRGBO(40, 30, 29, 1),
         'page': const RasxpdHistoryListView(),
-        'icon': const FittedBox(
-          child: Icon(
-            Icons.history,
-            size: 100,
+        'icon': Container(
+          padding: const EdgeInsets.all(10),
+          // child: Icon(
+          //   Icons.history,
+          //   size: 100,
+          //   color: Color.fromRGBO(222, 93, 71, 1),
+          // ),
+          child: SvgPicture.asset(
+            'assets/svg/warehouse/historyprixod.svg',
+            color: const Color.fromRGBO(222, 93, 71, 1),
+            height: svgSize,
+            width: svgSize,
           ),
         ),
       },
       {
-        'name': 'Инвентаризация',
+        'name': 'Остаток',
+        'title': 'Таблица склада',
+        'background': const Color.fromRGBO(53, 30, 38, 1),
         'page': const RemainingItemsListView(),
-        'icon': const FittedBox(
-          child: Icon(
-            Icons.inventory,
-            size: 100,
+        'icon': Container(
+          padding: const EdgeInsets.all(10),
+          // child: Icon(
+          //   Icons.store,
+          //   size: 100,
+          //   color: Color.fromRGBO(220, 82, 131, 1),
+          // ),
+          child: SvgPicture.asset(
+            'assets/svg/warehouse/ostatok.svg',
+            color: const Color.fromRGBO(220, 82, 131, 1),
+            height: svgSize,
+            width: svgSize,
           ),
         ),
       },
+
+      {
+        'name': 'Склады',
+        'title': 'Приход',
+        'background': const Color.fromRGBO(30, 37, 30, 1),
+        'page': const WarehouesesListView(),
+        'icon': Container(
+          padding: const EdgeInsets.all(10),
+          // child: Icon(
+          //   Icons.store,
+          //   size: 100,
+          //   color: Color.fromRGBO(71, 163, 78, 1),
+          // ),
+          child: SvgPicture.asset(
+            'assets/svg/service-store.svg',
+            color: const Color.fromRGBO(71, 163, 78, 1),
+            height: svgSize,
+            width: svgSize,
+          ),
+        ),
+      },
+      {
+        'name': 'Категории',
+        'title': 'Категории',
+        'background': const Color.fromRGBO(40, 30, 29, 1),
+        'page': const WarehoueseCategoriesListView(),
+        'icon': Container(
+          padding: const EdgeInsets.all(10),
+          // child: Icon(
+          //   Icons.store,
+          //   size: 100,
+          //   color: Color.fromRGBO(222, 93, 71, 1),
+          // ),
+          child: SvgPicture.asset(
+            'assets/svg/service-store.svg',
+            color: const Color.fromRGBO(222, 93, 71, 1),
+            height: svgSize,
+            width: svgSize,
+          ),
+        ),
+      },
+
+      {
+        'name': 'Поставщики',
+        'title': 'Поставщики',
+        'background': const Color.fromRGBO(40, 30, 29, 1),
+        'page': const WarehoueseProvidersListView(),
+        'icon': Container(
+          padding: const EdgeInsets.all(10),
+          // child: Icon(
+          //   Icons.person,
+          //   size: 100,
+          //   color: Color.fromRGBO(222, 93, 71, 1),
+          // ),
+          child: SvgPicture.asset(
+            'assets/svg/service-store.svg',
+            color: const Color.fromRGBO(239, 195, 41, 1),
+            height: svgSize,
+            width: svgSize,
+          ),
+        ),
+      },
+      {
+        'name': 'Товары',
+        'title': 'Товары',
+        'background': const Color.fromRGBO(40, 30, 29, 1),
+        'page': const WarehouseItemsListView(),
+        'icon': Container(
+          padding: const EdgeInsets.all(10),
+          // child: Icon(
+          //   Icons.store,
+          //   size: 100,
+          //   color: Color.fromRGBO(222, 93, 71, 1),
+          // ),
+          child: SvgPicture.asset(
+            'assets/svg/service-store.svg',
+            color: Colors.white,
+            height: svgSize,
+            width: svgSize,
+          ),
+        ),
+      },
+      // {
+      //   'name': 'Инвентаризация',
+      //   'page': const RemainingItemsListView(),
+      //   'icon': Container(
+      // padding: EdgeInsets.all(10),
+      //     child: Icon(
+      //       Icons.inventory,
+      //       size: 100,
+      //     ),
+      //   ),
+      // },
     ];
 
     return Scaffold(
@@ -171,12 +267,10 @@ class _GridWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-      ),
+    return ListView.separated(
+      separatorBuilder: (context, index) {
+        return const SizedBox(height: 10);
+      },
       itemCount: selections.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
@@ -196,50 +290,49 @@ class _GridWidget extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // SizedBox(
-                //   height: getW(100),
-                //   width: double.infinity,
-                //   child: ClipRRect(
-                //     borderRadius: const BorderRadius.only(
-                //       topLeft: Radius.circular(15),
-                //       topRight: Radius.circular(15),
-                //     ),
-                //     child: Image.asset(
-                //       // 'assets/images/notification/bo-3.png',
-                //       'assets/images/email.png',
-                //       fit: BoxFit.cover,
-                //     ),
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.all(15),
-                  child: Column(
+                  child: Row(
                     children: [
-                      (selections[index]['icon'] as Widget),
-
-                      Text(
-                        selections[index]['name'].toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: selections[index]['background'] as Color,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20),
+                          ),
                         ),
+                        child: selections[index]['icon'] as Widget,
                       ),
-                      // Text(
-                      //   selections[index]['name'].toString(),
-                      //   style: const TextStyle(
-                      //     color: Color(0xff667084),
-                      //     fontSize: 14,
-                      //   ),
-                      // ),
-                      // const Text(
-                      //   '0',
-                      //   style: TextStyle(
-                      //     color: Color(0xff34c85a),
-                      //     fontSize: 14,
-                      //     fontWeight: FontWeight.w500,
-                      //   ),
-                      // ),
+                      const SizedBox(width: 15),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            selections[index]['name'].toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            selections[index]['title'].toString(),
+                            style: const TextStyle(
+                              color: Color(0xff667084),
+                              fontSize: 16,
+                            ),
+                          ),
+                          // const Text(
+                          //   '0',
+                          //   style: TextStyle(
+                          //     color: Color(0xff34c85a),
+                          //     fontSize: 14,
+                          //     fontWeight: FontWeight.w500,
+                          //   ),
+                          // ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
