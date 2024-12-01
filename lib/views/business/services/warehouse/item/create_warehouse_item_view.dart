@@ -1,15 +1,16 @@
-import 'dart:math';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../size_config.dart';
 import '../../../../../view_models/business/business_dashboard_view_model.dart';
 import '../../../../../view_models/sklad/sklad_view_model.dart';
+import '../../../../../widgets/add_widget.dart';
 import '../../../../../widgets/main_button_widget.dart';
 import '../../../../../widgets/show_modal.dart';
 import '../../../../../widgets/text_field_widget.dart';
 import '../../../scanner_view/payment_phone_view.dart';
+import '../category/create_warehouse_category_view.dart';
 
 class CreateWarehouseItemView extends StatefulWidget {
   const CreateWarehouseItemView({super.key});
@@ -23,19 +24,7 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    final random = Random();
-    const min = 100000000;
-    const max = 999999999;
-    const min2 = 1000;
-    const max2 = 9999;
-    //  min + random.nextInt(max - min + 1);
-    context.read<SkladViewModel>().clearWarehouseItemCreating();
-    context.read<SkladViewModel>().warehouseItemBarcodeController.text =
-        // Random().nextInt(999999999).toString() +
-        //     Random().nextInt(9999).toString();
-        (min + random.nextInt(max - min + 1)).toString() +
-            (min2 + random.nextInt(max2 - min2 + 1)).toString();
-
+    context.read<SkladViewModel>().randomBarcode();
     super.initState();
   }
 
@@ -104,10 +93,28 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
                   },
                   selectedOption: model.selectedWarehouseItemCategoryId,
                   categoryItems: [
-                    const DropdownMenuItem(
+                    DropdownMenuItem(
                       value: '0',
                       enabled: false,
-                      child: Text('Выберите категорию'),
+                      child: Row(
+                        children: [
+                          const Text('Выберите категорию'),
+                          const Spacer(),
+                          AddWidget(
+                            onPressed: () {
+                              // Navigator.pop(
+                              //   dropdownState.currentContext!,
+                              // ); // Close the dropdown list
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) =>
+                                      const CreateWarehouseCategoryView(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                     ...model.warehouseCategories.map(
                       (e) => DropdownMenuItem(
@@ -122,11 +129,24 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
                   hint: 'Категория',
                 ),
                 const SizedBox(height: 10),
+                // TextFieldWidget(
+                //   hintText: 'Порог оповещения о количестве',
+                //   showLabel: true,
+                //   controller: model.warehouseItemLowerController,
+                //   textType: TextInputType.number,
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Заполните поле';
+                //     }
+                //     return null;
+                //   },
+                // ),
+                // const SizedBox(height: 10),
                 TextFieldWidget(
-                  hintText: 'Порог оповещения о количестве',
+                  hintText: 'Теги (vergul bilan ajratiladi)',
                   showLabel: true,
-                  controller: model.warehouseItemLowerController,
-                  textType: TextInputType.number,
+                  controller: model.warehouseItemTagsController,
+                  // textType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Заполните поле';
@@ -138,8 +158,23 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
                 TextFieldWidget(
                   hintText: 'Barcode',
                   showLabel: true,
-                  isReadOnly: true,
+                  // isReadOnly: true,
                   controller: model.warehouseItemBarcodeController,
+                  suffixWidget: Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween, // added line
+                    mainAxisSize: MainAxisSize.min, // added line
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.document_scanner_outlined),
+                      ),
+                      IconButton(
+                        onPressed: context.read<SkladViewModel>().randomBarcode,
+                        icon: const Icon(Icons.shuffle_on_rounded),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
@@ -219,74 +254,74 @@ class _CreateWarehouseItemViewState extends State<CreateWarehouseItemView> {
                 ),
                 const SizedBox(height: 10),
                 const Spacer(),
-                Column(
-                  children: [
-                    SizedBox(
-                      height: getW(40),
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 20,
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(width: 4);
-                        },
-                        itemBuilder: (context, index) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(32),
-                              color: index == 0
-                                  ? const Color(0xff34c85a)
-                                  : const Color(0xff262629),
-                            ),
-                            child: Text(
-                              'Ichki teg ${Random().nextInt(100)}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: getW(4)),
-                    SizedBox(
-                      height: getW(40),
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 3,
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(width: 4);
-                        },
-                        itemBuilder: (context, index) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(32),
-                              color: index == 2
-                                  ? const Color(0xff34c85a)
-                                  : const Color(0xff262629),
-                            ),
-                            child: const Text(
-                              'Asosiy teg',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
+                // Column(
+                //   children: [
+                //     SizedBox(
+                //       height: getW(40),
+                //       child: ListView.separated(
+                //         scrollDirection: Axis.horizontal,
+                //         itemCount: 20,
+                //         separatorBuilder: (context, index) {
+                //           return const SizedBox(width: 4);
+                //         },
+                //         itemBuilder: (context, index) {
+                //           return Container(
+                //             padding: const EdgeInsets.symmetric(
+                //               horizontal: 16,
+                //               vertical: 8,
+                //             ),
+                //             decoration: BoxDecoration(
+                //               borderRadius: BorderRadius.circular(32),
+                //               color: index == 0
+                //                   ? const Color(0xff34c85a)
+                //                   : const Color(0xff262629),
+                //             ),
+                //             child: Text(
+                //               'Ichki teg ${Random().nextInt(100)}',
+                //               style: const TextStyle(
+                //                 color: Colors.white,
+                //                 fontSize: 16,
+                //               ),
+                //             ),
+                //           );
+                //         },
+                //       ),
+                //     ),
+                //     SizedBox(height: getW(4)),
+                //     SizedBox(
+                //       height: getW(40),
+                //       child: ListView.separated(
+                //         scrollDirection: Axis.horizontal,
+                //         itemCount: 3,
+                //         separatorBuilder: (context, index) {
+                //           return const SizedBox(width: 4);
+                //         },
+                //         itemBuilder: (context, index) {
+                //           return Container(
+                //             padding: const EdgeInsets.symmetric(
+                //               horizontal: 16,
+                //               vertical: 8,
+                //             ),
+                //             decoration: BoxDecoration(
+                //               borderRadius: BorderRadius.circular(32),
+                //               color: index == 2
+                //                   ? const Color(0xff34c85a)
+                //                   : const Color(0xff262629),
+                //             ),
+                //             child: const Text(
+                //               'Asosiy teg',
+                //               style: TextStyle(
+                //                 color: Colors.white,
+                //                 fontSize: 16,
+                //               ),
+                //             ),
+                //           );
+                //         },
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // const SizedBox(height: 10),
                 MainButtonWidget(
                   isLoading:
                       context.watch<SkladViewModel>().isCreatingWarehouseItem,

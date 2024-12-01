@@ -1395,7 +1395,8 @@ class _ChartCashbackWidgetState extends State<_ChartCashbackWidget> {
                   lineTouchData: LineTouchData(
                     touchTooltipData: LineTouchTooltipData(
                       // tooltipBgColor: Colors.grey[900],
-                      tooltipBgColor: Colors.grey.shade900,
+                      //TODO version
+                      // tooltipBgColor: Colors.grey.shade900,
                       showOnTopOfTheChartBoxArea: true,
                       fitInsideHorizontally: true,
                       fitInsideVertically: true,

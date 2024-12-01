@@ -264,39 +264,39 @@ class _RemainingItemsListViewState extends State<RemainingItemsListView> {
                                       },
                                     ),
                                   ),
-                                  SizedBox(height: getW(4)),
-                                  SizedBox(
-                                    height: getW(40),
-                                    child: ListView.separated(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: 20,
-                                      separatorBuilder: (context, index) {
-                                        return const SizedBox(width: 4);
-                                      },
-                                      itemBuilder: (context, index) {
-                                        return Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 8,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(32),
-                                            color: index == 0
-                                                ? const Color(0xff34c85a)
-                                                : const Color(0xff262629),
-                                          ),
-                                          child: const Text(
-                                            'Iphone',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
+                                  // SizedBox(height: getW(4)),
+                                  // SizedBox(
+                                  //   height: getW(40),
+                                  //   child: ListView.separated(
+                                  //     scrollDirection: Axis.horizontal,
+                                  //     itemCount: 20,
+                                  //     separatorBuilder: (context, index) {
+                                  //       return const SizedBox(width: 4);
+                                  //     },
+                                  //     itemBuilder: (context, index) {
+                                  //       return Container(
+                                  //         padding: const EdgeInsets.symmetric(
+                                  //           horizontal: 16,
+                                  //           vertical: 8,
+                                  //         ),
+                                  //         decoration: BoxDecoration(
+                                  //           borderRadius:
+                                  //               BorderRadius.circular(32),
+                                  //           color: index == 0
+                                  //               ? const Color(0xff34c85a)
+                                  //               : const Color(0xff262629),
+                                  //         ),
+                                  //         child: const Text(
+                                  //           'Iphone',
+                                  //           style: TextStyle(
+                                  //             color: Colors.white,
+                                  //             fontSize: 16,
+                                  //           ),
+                                  //         ),
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),

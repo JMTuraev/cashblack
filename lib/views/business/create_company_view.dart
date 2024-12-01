@@ -55,7 +55,8 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
       maxHeight: 1080,
       maxWidth: 1080,
       aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      cropStyle: CropStyle.circle,
+      //TODO version
+      // cropStyle: CropStyle.circle,
       uiSettings: <PlatformUiSettings>[],
     );
     if (croppedImage != null) {

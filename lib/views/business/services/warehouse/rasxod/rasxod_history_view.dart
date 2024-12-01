@@ -31,7 +31,7 @@ class _RasxodHistoryViewState extends State<RasxodHistoryView> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Детали прихода'),
+        title: const Text('Детали расхода'),
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -227,6 +227,21 @@ class _RasxodHistoryViewState extends State<RasxodHistoryView> {
                                 // 'widget.skladItem.products[index].price.getFormattedNumber()',
                                 widget.skladItem.rasxodItems[index].priceSellAll
                                     .getAmountInSum(),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text('Теги'),
+                          const Spacer(),
+                          InfoTitleWidget(
+                            title:
+                                // 'widget.skladItem.products[index].price.getFormattedNumber()',
+                                widget.skladItem.rasxodItems[index]
+                                    .warehouseItem.tags
+                                    .toString()
+                                    .replaceAll('[', '')
+                                    .replaceAll(']', ''),
                           ),
                         ],
                       ),

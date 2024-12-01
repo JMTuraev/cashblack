@@ -30,6 +30,10 @@ extension StringExtensions on String {
         );
   }
 
+  String removeFirstAndLastForTag() {
+    return replaceAll('[', '').replaceAll(']', '');
+  }
+
   String cardFormatter() {
     return replaceAllMapped(
       RegExp(r'(\d{4})(\d{4})(\d{4})(\d{4})'),

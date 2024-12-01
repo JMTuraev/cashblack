@@ -237,6 +237,30 @@ class _PrixodHistoryViewState extends State<PrixodHistoryView> {
                           ),
                         ],
                       ),
+                      Row(
+                        children: [
+                          const Text('Теги'),
+                          const Spacer(),
+                          InfoTitleWidget(
+                            title:
+                                // 'widget.skladItem.products[index].price.getFormattedNumber()',
+                                context
+                                    .read<SkladViewModel>()
+                                    .warehouseItems
+                                    .where(
+                                      (element) =>
+                                          element.id.toString() ==
+                                          widget.skladItem.skladItems[index]
+                                              .productiId,
+                                    )
+                                    .first
+                                    .tags
+                                    .toString()
+                                    .replaceAll('[', '')
+                                    .replaceAll(']', ''),
+                          ),
+                        ],
+                      ),
                     ],
                   );
                 },

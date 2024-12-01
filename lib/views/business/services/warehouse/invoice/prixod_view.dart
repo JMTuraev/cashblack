@@ -8,10 +8,15 @@ import 'package:toggle_switch/toggle_switch.dart';
 import '../../../../../size_config.dart';
 import '../../../../../string_extensions.dart';
 import '../../../../../view_models/sklad/sklad_view_model.dart';
+import '../../../../../widgets/add_widget.dart';
 import '../../../../../widgets/main_button_widget.dart';
 import '../../../../../widgets/show_modal.dart';
 import '../../../../../widgets/text_field_widget.dart';
 import '../../../scanner_view/payment_phone_view.dart';
+import '../category/create_warehouse_category_view.dart';
+import '../item/create_warehouse_item_view.dart';
+import '../provider/create_warehouse_provider_view.dart';
+import '../warehouse/create_warehouse_view.dart';
 import 'prixod_history_list_view.dart';
 
 class PrixodView extends StatefulWidget {
@@ -25,6 +30,7 @@ class PrixodView extends StatefulWidget {
 
 class _PrixodViewState extends State<PrixodView> {
   final formKey = GlobalKey<FormState>();
+  // final dropdownState = GlobalKey<FormFieldState>();
 
   @override
   void initState() {
@@ -111,10 +117,29 @@ class _PrixodViewState extends State<PrixodView> {
                               },
                               selectedOption: model.selectedPrixodCategory,
                               categoryItems: [
-                                const DropdownMenuItem(
+                                DropdownMenuItem(
+                                  // key: dropdownState,
                                   value: '0',
                                   enabled: false,
-                                  child: Text('Выберите категорию'),
+                                  child: Row(
+                                    children: [
+                                      const Text('Выберите категорию'),
+                                      const Spacer(),
+                                      AddWidget(
+                                        onPressed: () {
+                                          // Navigator.pop(
+                                          //   dropdownState.currentContext!,
+                                          // ); // Close the dropdown list
+                                          Navigator.of(context).push(
+                                            CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  const CreateWarehouseCategoryView(),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 ...model.warehouseCategories.map(
                                   (e) => DropdownMenuItem(
@@ -146,10 +171,28 @@ class _PrixodViewState extends State<PrixodView> {
                                   modelWatch.selectedPrixodCategory == null
                                       ? []
                                       : [
-                                          const DropdownMenuItem(
+                                          DropdownMenuItem(
                                             value: '0',
                                             enabled: false,
-                                            child: Text('Выберите товар'),
+                                            child: Row(
+                                              children: [
+                                                const Text('Выберите товар'),
+                                                const Spacer(),
+                                                AddWidget(
+                                                  onPressed: () {
+                                                    // Navigator.pop(
+                                                    //   dropdownState.currentContext!,
+                                                    // ); // Close the dropdown list
+                                                    Navigator.of(context).push(
+                                                      CupertinoPageRoute(
+                                                        builder: (context) =>
+                                                            const CreateWarehouseItemView(),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           ...model.warehouseItems
                                               // .where(
@@ -207,10 +250,28 @@ class _PrixodViewState extends State<PrixodView> {
                               },
                               selectedOption: model.selectedPrixodProvider,
                               categoryItems: [
-                                const DropdownMenuItem(
+                                DropdownMenuItem(
                                   value: '0',
                                   enabled: false,
-                                  child: Text('Выберите поставщик'),
+                                  child: Row(
+                                    children: [
+                                      const Text('Выберите поставщик'),
+                                      const Spacer(),
+                                      AddWidget(
+                                        onPressed: () {
+                                          // Navigator.pop(
+                                          //   dropdownState.currentContext!,
+                                          // ); // Close the dropdown list
+                                          Navigator.of(context).push(
+                                            CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  const CreateWarehouseProviderView(),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 ...model.warehouseProviders.map(
                                   (e) => DropdownMenuItem(
@@ -234,10 +295,28 @@ class _PrixodViewState extends State<PrixodView> {
                               },
                               selectedOption: model.selectedPrixodUnit,
                               categoryItems: [
-                                const DropdownMenuItem(
+                                DropdownMenuItem(
                                   value: '0',
                                   enabled: false,
-                                  child: Text('Выберите склад'),
+                                  child: Row(
+                                    children: [
+                                      const Text('Выберите склад'),
+                                      const Spacer(),
+                                      AddWidget(
+                                        onPressed: () {
+                                          // Navigator.pop(
+                                          //   dropdownState.currentContext!,
+                                          // ); // Close the dropdown list
+                                          Navigator.of(context).push(
+                                            CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  const CreateWarehouseView(),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 ...model.warehouses.map(
                                   (e) => DropdownMenuItem(
@@ -411,13 +490,13 @@ class _PrixodViewState extends State<PrixodView> {
                               isReadOnly: true,
                               controller: model.prixodPriceSumOfAllController,
                             ),
-                            const SizedBox(height: 10),
-                            TextFieldWidget(
-                              hintText: 'Серия',
-                              showLabel: true,
-                              isReadOnly: true,
-                              controller: model.prixodSerialNumberController,
-                            ),
+                            // const SizedBox(height: 10),
+                            // TextFieldWidget(
+                            //   hintText: 'Серия',
+                            //   showLabel: true,
+                            //   isReadOnly: true,
+                            //   controller: model.prixodSerialNumberController,
+                            // ),
                             const SizedBox(height: 10),
                             // TextFieldWidget(
                             //   hintText: 'Партия',

@@ -181,6 +181,28 @@ class _RasxodViewState extends State<RasxodView> {
                                 ? Column(
                                     children: [
                                       const Text(
+                                        'Теги',
+                                        style: TextStyle(
+                                          color: Color(0xff667084),
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        model.skladRemainings
+                                            .where(
+                                              (element) =>
+                                                  element.warehouseItemId ==
+                                                  model.selectedSkladItem,
+                                            )
+                                            .first
+                                            .warehouseItem
+                                            .tags
+                                            .toString()
+                                            .replaceAll('[', '')
+                                            .replaceAll(']', ''),
+                                      ),
+                                      const Divider(),
+                                      const Text(
                                         'Остаток',
                                         style: TextStyle(
                                           color: Color(0xff667084),
@@ -216,7 +238,7 @@ class _RasxodViewState extends State<RasxodView> {
                                       ),
                                       const Divider(),
                                       const Text(
-                                        'Серия',
+                                        'Barcode',
                                         style: TextStyle(
                                           color: Color(0xff667084),
                                           fontSize: 14,

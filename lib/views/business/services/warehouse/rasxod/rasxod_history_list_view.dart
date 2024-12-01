@@ -10,7 +10,7 @@ import '../../../../../view_models/sklad/sklad_view_model.dart';
 import '../../../../../widgets/empty_widget.dart';
 import '../../../../../widgets/main_button_widget.dart';
 import '../../../../../widgets/search_widget.dart';
-import 'prixod_history_view.dart';
+import 'rasxod_history_view.dart';
 import 'rasxod_view.dart';
 
 class RasxpdHistoryListView extends StatefulWidget {

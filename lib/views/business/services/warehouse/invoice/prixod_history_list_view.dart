@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../../size_config.dart';
 import '../../../../../string_extensions.dart';
 import '../../../../../view_models/sklad/sklad_view_model.dart';
+import '../../../../../widgets/add_widget.dart';
 import '../../../../../widgets/empty_widget.dart';
 import '../../../../../widgets/main_button_widget.dart';
 import '../../../../../widgets/search_widget.dart';
@@ -43,7 +44,7 @@ class _PrixodHistoryListViewState extends State<PrixodHistoryListView> {
       appBar: AppBar(
         title: const Text('История приходов'),
         actions: [
-          IconButton(
+          AddWidget(
             onPressed: () {
               Navigator.of(context).push(
                 CupertinoPageRoute(
@@ -51,15 +52,6 @@ class _PrixodHistoryListViewState extends State<PrixodHistoryListView> {
                 ),
               );
             },
-            icon: const DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(90),
-                ),
-              ),
-              child: Icon(Icons.add),
-            ),
           ),
         ],
       ),

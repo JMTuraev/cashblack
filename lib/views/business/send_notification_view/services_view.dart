@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../size_config.dart';
+import '../services/kassa/kassa_view.dart';
 import '../services/task/tasks_view.dart';
-import '../services/warehouse/warehouse_dashboard_view.dart';
 import 'posts_view.dart';
 import 'task_item_widget.dart';
 
@@ -99,8 +99,8 @@ class _ServicesViewState extends State<ServicesView> {
                             onTap: () {
                               Navigator.of(context).push(
                                 CupertinoPageRoute(
-                                  builder: (context) =>
-                                      const WarehouseDashboardView(),
+                                  builder: (context) => const SizedBox(),
+                                  // const WarehouseDashboardView(),
                                 ),
                               );
                             },
@@ -112,18 +112,18 @@ class _ServicesViewState extends State<ServicesView> {
                             color: Color.fromRGBO(53, 30, 38, 1),
                             onTap: null,
                           ),
-                          const _IconWidget(
+                          _IconWidget(
                             svg: 'assets/svg/service-calculator.svg',
                             title: 'Касса',
-                            color: Color.fromRGBO(23, 36, 53, 1),
-                            onTap: null,
-                            // onTap: () {
-                            //   Navigator.of(context).push(
-                            //     CupertinoPageRoute(
-                            //       builder: (context) => const KassaView(),
-                            //     ),
-                            //   );
-                            // },
+                            color: const Color.fromRGBO(23, 36, 53, 1),
+                            // onTap: null,
+                            onTap: () {
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) => const KassaView(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),

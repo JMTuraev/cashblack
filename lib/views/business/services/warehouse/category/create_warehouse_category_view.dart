@@ -59,12 +59,12 @@ class _CreateWarehouseCategoryViewState
                   // showLabel: true,
 
                   controller: model.warehouseCategoryTitleController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Заполните поле';
-                    }
-                    return null;
-                  },
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return 'Заполните поле';
+                  //   }
+                  //   return null;
+                  // },
                 ),
                 // const SizedBox(height: 10),
                 // TextFieldWidget(

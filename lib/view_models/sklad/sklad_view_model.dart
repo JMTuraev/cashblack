@@ -12,6 +12,7 @@ import '../../domain/models/services/sklad_remaining.dart';
 import '../../domain/models/services/warehouse.dart';
 import '../../domain/models/services/warehouse_category.dart';
 import '../../domain/models/services/warehouse_item.dart';
+import '../../domain/models/services/warehouse_item_for_kassa.dart';
 import '../../domain/models/services/warehouse_prixod.dart';
 import '../../domain/models/services/warehouse_prixod_create.dart';
 import '../../domain/models/services/warehouse_provider.dart';
@@ -192,7 +193,7 @@ class SkladViewModel extends ChangeNotifier {
     // selectedWarehouseCategoryParentId = null;
   }
 
-  //nomenklatura
+  //nomenklatura / item
   List<WarehouseItem> warehouseItems = [];
   bool isGettingWarehouseItems = false;
   bool isCreatingWarehouseItem = false;
@@ -203,7 +204,119 @@ class SkladViewModel extends ChangeNotifier {
       TextEditingController();
   // TextEditingController warehouseItemRemarkController =
   //     TextEditingController();
+  TextEditingController warehouseItemTagsController = TextEditingController();
   TextEditingController warehouseItemLowerController = TextEditingController();
+
+  void randomBarcode() {
+    final random = Random();
+    const min = 100000000;
+    const max = 999999999;
+    const min2 = 1000;
+    const max2 = 9999;
+    //  min + random.nextInt(max - min + 1);
+    clearWarehouseItemCreating();
+    warehouseItemBarcodeController.text =
+        // Random().nextInt(999999999).toString() +
+        //     Random().nextInt(9999).toString();
+        (min + random.nextInt(max - min + 1)).toString() +
+            (min2 + random.nextInt(max2 - min2 + 1)).toString();
+    notifyListeners();
+  }
+
+  List<WarehouseItemForKassa> tempItems = [
+    WarehouseItemForKassa(
+      id: 0,
+      name: 'IPhone 14',
+      unit: WarehouseUnit(id: -1, name: 'шт', title: 'штук'),
+      category: WarehouseCategory(id: -1, name: 'Техника'),
+      barCode: '1234567890',
+      code: -1,
+      count: 1,
+      tags: ['128 GB'],
+      price: 11000000,
+      addition: 0,
+      totalPrice: 11000000,
+    ),
+    WarehouseItemForKassa(
+      id: 1,
+      name: 'IPhone 14',
+      unit: WarehouseUnit(id: -1, name: 'шт', title: 'штук'),
+      category: WarehouseCategory(id: -1, name: 'Техника'),
+      barCode: '1234567890',
+      code: -1,
+      count: 1,
+      tags: ['256 GB'],
+      price: 13000000,
+      addition: 0,
+      totalPrice: 13000000,
+    ),
+    WarehouseItemForKassa(
+      id: 2,
+      name: 'IPhone 13',
+      unit: WarehouseUnit(id: -1, name: 'шт', title: 'штук'),
+      category: WarehouseCategory(id: -1, name: 'Техника'),
+      barCode: '1234567890',
+      code: -1,
+      count: 1,
+      tags: ['128 GB'],
+      price: 10000000,
+      addition: 0,
+      totalPrice: 10000000,
+    ),
+    WarehouseItemForKassa(
+      id: 3,
+      name: 'IPhone 13',
+      unit: WarehouseUnit(id: -1, name: 'шт', title: 'штук'),
+      category: WarehouseCategory(id: -1, name: 'Техника'),
+      barCode: '1234567890',
+      code: -1,
+      count: 1,
+      tags: ['256 GB'],
+      price: 12000000,
+      addition: 0,
+      totalPrice: 12000000,
+    ),
+    WarehouseItemForKassa(
+      id: 4,
+      name: 'IPad 10',
+      unit: WarehouseUnit(id: -1, name: 'шт', title: 'штук'),
+      category: WarehouseCategory(id: -1, name: 'Техника'),
+      barCode: '1234567890',
+      code: -1,
+      count: 1,
+      tags: ['128 GB', 'Wifi'],
+      price: 7000000,
+      addition: 0,
+      totalPrice: 7000000,
+    ),
+    WarehouseItemForKassa(
+      id: 5,
+      name: 'IPad 10',
+      unit: WarehouseUnit(id: -1, name: 'шт', title: 'штук'),
+      category: WarehouseCategory(id: -1, name: 'Техника'),
+      barCode: '1234567890',
+      code: -1,
+      count: 1,
+      tags: ['256 GB', '4G'],
+      price: 9000000,
+      addition: 0,
+      totalPrice: 9000000,
+    ),
+  ];
+
+  void tempItemsReset() {
+    for (final element in tempItems) {
+      element.count = 1;
+    }
+  }
+
+  List<WarehouseItemForKassa> tempItemsForSale = [];
+  double tempTotalSum = 0;
+  TextEditingController tempCounterController = TextEditingController(text: '');
+  TextEditingController tempAdditionController =
+      TextEditingController(text: '0');
+
+  List<WarehouseItem> tempKassaItem = [];
 
   Future<bool> createWarehouseItem() async {
     isCreatingWarehouseItem = true;
@@ -231,7 +344,12 @@ class SkladViewModel extends ChangeNotifier {
             .first,
         barCode: warehouseItemBarcodeController.text,
         code: int.parse(warehouseItemBarcodeController.text),
-        lower: int.parse(warehouseItemLowerController.text.removeWhitespace()),
+        // lower: int.parse(warehouseItemLowerController.text.removeWhitespace()),
+        lower: -1,
+        tags: warehouseItemTagsController.text
+            .removeWhitespace()
+            .split(',')
+            .toList(),
       ),
     );
     isCreatingWarehouseItem = false;

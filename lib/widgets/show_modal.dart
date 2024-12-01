@@ -4,20 +4,19 @@ import '../size_config.dart';
 
 Future<dynamic> showModal(
   BuildContext context,
-  List<Widget> widgets,
+  List<Widget> widgets, {
+  double padding = 10,
+}
 //    {
 //   Color backgroundColor = AppColors.lightGray,
 // }
-) {
+    ) {
   return showModalBottomSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(20),
       ),
     ),
-    enableDrag: true,
-    // useSafeArea: true,
-    isDismissible: true,
     isScrollControlled: true,
     // backgroundColor: backgroundColor,
     context: context,
@@ -26,8 +25,8 @@ Future<dynamic> showModal(
         // padding: const EdgeInsets.all(10),
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
-          left: 10,
-          right: 10,
+          left: padding,
+          right: padding,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

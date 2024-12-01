@@ -15,6 +15,7 @@ class TextFieldWidget extends StatelessWidget {
     this.maxLength,
     this.onChanged,
     this.skipNumberFormatter,
+    this.suffixWidget,
   });
 
   final String hintText;
@@ -27,6 +28,7 @@ class TextFieldWidget extends StatelessWidget {
   TextInputType? textType;
   final String? Function(String?)? validator;
   Function(String)? onChanged;
+  Widget? suffixWidget;
   // NumericTextFormatter numericTextFormatter = NumericTextFormatter();
   // NumericRangeFormatter numericRangeFormatter = NumericRangeFormatter();
 
@@ -50,13 +52,14 @@ class TextFieldWidget extends StatelessWidget {
             return null;
           },
       decoration: InputDecoration(
-        suffixIcon: IconButton(
-          onPressed: () => controller?.clear(),
-          icon: const Icon(
-            Icons.clear,
-            size: 20,
-          ),
-        ),
+        suffixIcon: suffixWidget ??
+            IconButton(
+              onPressed: () => controller?.clear(),
+              icon: const Icon(
+                Icons.clear,
+                size: 20,
+              ),
+            ),
         enabled: isReadOnly == true ? false : true,
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(
