@@ -230,7 +230,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ needs.upgrade.outputs.branch_name }}
-          base: main
+          base: master
           title: "🚀 chore: Flutter and Android toolchain upgrade"
           body: |
             ## Flutter Auto-Upgrade
