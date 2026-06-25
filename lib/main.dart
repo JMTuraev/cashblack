@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -5,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'firebase_options.dart';
 import 'theme/app_bar_style.dart';
 import 'view_models/balance_view_model.dart';
 import 'view_models/business/business_dashboard_view_model.dart';
@@ -35,7 +37,11 @@ import 'views/seller/seller_view.dart';
 import 'widgets/dismiss_keyboard_widget.dart';
 
 void main() async {
-  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // await SystemChrome.setEnabledSystemUIOverlays(
   //     [SystemUiOverlay.bottom, SystemUiOverlay.top]);
