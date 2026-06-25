@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter/cupertino.dart';
 
@@ -35,7 +35,7 @@ class BusinessNotificationsViewModel extends ChangeNotifier {
     String text,
     String avatarId,
     String shopId,
-    File? image,
+    XFile? image,
   ) async {
     isSending = true;
     final res = await _businessApi.sendNotification(

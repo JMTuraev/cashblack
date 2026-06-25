@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -113,7 +113,7 @@ class BusinessApi {
     String text,
     String avatarId,
     String shopId,
-    File? image,
+    XFile? image,
   ) async {
     await _setDioHeader();
 
@@ -131,7 +131,7 @@ class BusinessApi {
         'text': text,
         'avatar_id': avatarId,
         'shop_id': shopId,
-        'image': await MultipartFile.fromFile(image.path),
+        'image': MultipartFile.fromBytes(await image.readAsBytes(), filename: image.name),
       });
     }
     try {
@@ -783,10 +783,10 @@ class BusinessApi {
     }
   }
 
-  Future<bool> uploadShopAvatar(File file, int shopId) async {
+  Future<bool> uploadShopAvatar(XFile file, int shopId) async {
     // String fileName = file.path.split('/').last;
     final formData = FormData.fromMap({
-      'logo': await MultipartFile.fromFile(file.path),
+      'logo': MultipartFile.fromBytes(await file.readAsBytes(), filename: file.name),
     });
     try {
       final response = await _dio.post(
@@ -802,10 +802,10 @@ class BusinessApi {
     }
   }
 
-  Future<bool> uploadCompanyAvatar(File file) async {
+  Future<bool> uploadCompanyAvatar(XFile file) async {
     // String fileName = file.path.split('/').last;
     final formData = FormData.fromMap({
-      'logo': await MultipartFile.fromFile(file.path),
+      'logo': MultipartFile.fromBytes(await file.readAsBytes(), filename: file.name),
     });
     try {
       final response = await _dio.post(

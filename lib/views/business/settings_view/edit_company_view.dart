@@ -1,5 +1,6 @@
 import 'dart:developer';
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import '../../../widgets/x_file_image.dart';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -193,13 +194,13 @@ class NumberTextFieldWidget extends StatelessWidget {
 class _ImageViewWidget extends StatelessWidget {
   const _ImageViewWidget({
     Key? key,
-    required List<File?> fileList,
+    required List<XFile?> fileList,
     required this.onDelete,
     required this.onEdit,
   })  : _fileList = fileList,
         super(key: key);
 
-  final List<File?> _fileList;
+  final List<XFile?> _fileList;
   final Function onDelete;
   final Function onEdit;
 
@@ -215,8 +216,8 @@ class _ImageViewWidget extends StatelessWidget {
               child: ClipRRect(
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 borderRadius: BorderRadius.circular(100),
-                child: Image.file(
-                  File(_fileList.first!.path),
+                child: XFileImage(
+                  _fileList.first!,
                   fit: BoxFit.cover,
                   height: 150,
                   width: 150,

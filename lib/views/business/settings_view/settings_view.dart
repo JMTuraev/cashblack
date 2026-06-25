@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +56,7 @@ class _SettingsViewState extends State<SettingsView> {
     if (pickedFile != null) {
       await context
           .read<BusinessSettingsViewModel>()
-          .uploadCompanyAvatar(File(pickedFile.path))
+          .uploadCompanyAvatar(pickedFile)
           .then((value) {
         if (value) {
           context.read<BusinessDashboardViewModel>().getBusinessCompany();

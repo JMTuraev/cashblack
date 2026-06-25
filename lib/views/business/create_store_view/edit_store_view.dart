@@ -1,4 +1,4 @@
-import 'dart:io';
+import '../../../widgets/x_file_image.dart';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
@@ -58,7 +58,7 @@ class _EditStoreViewState extends State<EditStoreView> {
     if (pickedFile != null) {
       await context
           .read<BusinessSettingsViewModel>()
-          .uploadShopAvatar(File(pickedFile.path), widget.shop.id)
+          .uploadShopAvatar(pickedFile, widget.shop.id)
           .then((value) {
         if (value) {
           // context.read<BusinessDashboardViewModel>().getBusinessShops();
@@ -306,12 +306,12 @@ class _CashbackWidget extends StatelessWidget {
 class _ImageViewWidget extends StatelessWidget {
   const _ImageViewWidget({
     super.key,
-    required List<File?> fileList,
+    required List<XFile?> fileList,
     required this.onDelete,
     required this.onEdit,
   }) : _fileList = fileList;
 
-  final List<File?> _fileList;
+  final List<XFile?> _fileList;
   final Function() onDelete;
   final Function() onEdit;
 
@@ -327,8 +327,8 @@ class _ImageViewWidget extends StatelessWidget {
               child: ClipRRect(
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 borderRadius: BorderRadius.circular(100),
-                child: Image.file(
-                  File(_fileList.first!.path),
+                child: XFileImage(
+                  _fileList.first!,
                   fit: BoxFit.cover,
                   height: 150,
                   width: 150,

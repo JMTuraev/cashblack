@@ -167,7 +167,7 @@ class MyApp extends StatelessWidget {
                 fontSize: 22,
               ),
             ),
-            cardTheme: CardTheme(
+            cardTheme: CardThemeData(
               color: Colors.grey.shade900,
               elevation: 0,
             ),

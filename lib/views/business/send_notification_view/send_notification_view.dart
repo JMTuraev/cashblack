@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:io';
+import '../../../widgets/x_file_image.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +31,7 @@ class SendNotificationView extends StatefulWidget {
 class _SendNotificationViewState extends State<SendNotificationView> {
   // final ImagePicker _picker = ImagePicker();
   // List<File?> _fileList = [];
-  File? _file;
+  XFile? _file;
 
   // void dltImages(data) {
   //   setState(() {
@@ -62,7 +62,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
     if (pickedFile != null) {
       print(pickedFile);
       setState(() {
-        _file = File(pickedFile.path);
+        _file = pickedFile;
       });
     }
   }
@@ -602,7 +602,7 @@ class _BigImageCardWidget extends StatelessWidget {
 }
 
 class _ImageViewWidget extends StatelessWidget {
-  final File file;
+  final XFile file;
   final VoidCallback onTap;
   const _ImageViewWidget({
     super.key,
@@ -623,8 +623,8 @@ class _ImageViewWidget extends StatelessWidget {
             SizedBox(
               height: getH(300),
               width: double.infinity,
-              child: Image.file(
-                File(file.path),
+              child: XFileImage(
+                file,
                 fit: BoxFit.cover,
               ),
             ),

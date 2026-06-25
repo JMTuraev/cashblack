@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter/cupertino.dart';
 
@@ -141,7 +141,7 @@ class BusinessSettingsViewModel extends ChangeNotifier {
     return res;
   }
 
-  Future<bool> uploadCompanyAvatar(File file) async {
+  Future<bool> uploadCompanyAvatar(XFile file) async {
     isUploading = true;
     notifyListeners();
     final res = await _businessApi.uploadCompanyAvatar(file);
@@ -150,7 +150,7 @@ class BusinessSettingsViewModel extends ChangeNotifier {
     return res;
   }
 
-  Future<bool> uploadShopAvatar(File file, int shopId) async {
+  Future<bool> uploadShopAvatar(XFile file, int shopId) async {
     isUploading = true;
     notifyListeners();
     final res = await _businessApi.uploadShopAvatar(file, shopId);

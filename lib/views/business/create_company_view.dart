@@ -1,4 +1,4 @@
-import 'dart:io';
+import '../../widgets/x_file_image.dart';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,7 +36,7 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
   bool _isChecked = false;
 
   final ImagePicker _picker = ImagePicker();
-  final List<File?> _fileList = [];
+  final List<XFile?> _fileList = [];
 
   Future<void> getFromGallery() async {
     final pickedFile = await ImagePicker().pickImage(
@@ -61,7 +61,7 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
     );
     if (croppedImage != null) {
       setState(() {
-        _fileList.add(File(croppedImage.path));
+        _fileList.add(XFile(croppedImage.path));
       });
     }
   }
@@ -81,7 +81,7 @@ class _CreateCompanyViewState extends State<CreateCompanyView> {
       source: ImageSource.gallery,
     );
     setState(() {
-      final file = File(image!.path);
+      final file = image!;
       _fileList.add(file);
     });
   }
@@ -482,12 +482,12 @@ class _NumberTextFieldWidget extends StatelessWidget {
 class _ImageViewWidget extends StatelessWidget {
   const _ImageViewWidget({
     super.key,
-    required List<File?> fileList,
+    required List<XFile?> fileList,
     required this.onDelete,
     required this.onEdit,
   }) : _fileList = fileList;
 
-  final List<File?> _fileList;
+  final List<XFile?> _fileList;
   final Function() onDelete;
   final Function() onEdit;
 
@@ -503,8 +503,8 @@ class _ImageViewWidget extends StatelessWidget {
               child: ClipRRect(
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 borderRadius: BorderRadius.circular(100),
-                child: Image.file(
-                  File(_fileList.first!.path),
+                child: XFileImage(
+                  _fileList.first!,
                   fit: BoxFit.cover,
                   height: 150,
                   width: 150,
